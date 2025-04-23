@@ -1,0 +1,73 @@
+
+import React, { useRef, useEffect } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Message } from '@/components/chat/types';
+import MessageGroup from '@/components/chat/MessageGroup';
+
+interface MessagesContainerProps {
+  messages: Message[];
+  currentUserId: string;
+  otherUserName: string;
+  otherUserAvatar?: string;
+}
+
+const MessagesContainer: React.FC<MessagesContainerProps> = ({
+  messages,
+  currentUserId,
+  otherUserName,
+  otherUserAvatar
+}) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Group messages by date
+  const groupedMessages: { [key: string]: Message[] } = {};
+  
+  messages.forEach(message => {
+    const date = new Date(message.timestamp);
+    const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    
+    if (!groupedMessages[dateKey]) {
+      groupedMessages[dateKey] = [];
+    }
+    
+    groupedMessages[dateKey].push(message);
+  });
+
+  const dateKeys = Object.keys(groupedMessages).sort();
+
+  // Scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  return (
+    <ScrollArea className="flex-1 pb-4 bg-gray-100">
+      <div className="space-y-6 p-4">
+        {dateKeys.map(dateKey => {
+          const dateMessages = groupedMessages[dateKey];
+          const date = new Date(dateKey);
+          const isToday = new Date().toDateString() === date.toDateString();
+          const isYesterday = new Date(Date.now() - 86400000).toDateString() === date.toDateString();
+          
+          let dateLabel = date.toLocaleDateString();
+          if (isToday) dateLabel = "Today";
+          else if (isYesterday) dateLabel = "Yesterday";
+          
+          return (
+            <MessageGroup
+              key={dateKey}
+              dateLabel={dateLabel}
+              messages={dateMessages}
+              currentUserId={currentUserId}
+              otherUserName={otherUserName}
+              otherUserAvatar={otherUserAvatar}
+            />
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+    </ScrollArea>
+  );
+};
+
+export default MessagesContainer;
