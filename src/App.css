@@ -11,13 +11,15 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: #f7f7f7;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
   /* Enable smooth scrolling for better transitions */
   scroll-behavior: smooth;
 }
 
 /* Improve scrolling performance */
-body, html {
+body,
+html {
   overscroll-behavior-y: none;
 }
 
@@ -25,7 +27,7 @@ body, html {
   .pill {
     @apply px-2 py-0.5 text-xs font-medium rounded-full;
   }
-  
+
   .animate-scale-in {
     opacity: 0;
     animation: scale-in 0.3s ease forwards;
@@ -40,24 +42,24 @@ body, html {
   .thin-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Desktop specific scrollbar styles */
   @media (min-width: 768px) {
     .md\:thin-scrollbar {
       scrollbar-width: thin;
       -ms-overflow-style: thin;
     }
-    
+
     .md\:thin-scrollbar::-webkit-scrollbar {
       display: block;
       width: 4px;
       height: 4px;
     }
-    
+
     .md\:thin-scrollbar::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     .md\:thin-scrollbar::-webkit-scrollbar-thumb {
       background-color: rgba(0, 0, 0, 0.2);
       border-radius: 10px;
@@ -70,7 +72,7 @@ body, html {
     border-bottom: 1px solid #e5e7eb;
     width: 100%;
   }
-  
+
   /* Ensure consistent spacing and background across large screens */
   .browser-bar {
     display: flex;
@@ -80,7 +82,7 @@ body, html {
     background-color: #f9f9f9;
     border-bottom: 1px solid #e5e7eb;
   }
-  
+
   .browser-url {
     flex: 1;
     background-color: #fff;
@@ -90,12 +92,12 @@ body, html {
     font-size: 0.875rem;
     color: #6b7280;
   }
-  
+
   .browser-action {
     margin-left: 0.75rem;
     color: #6b7280;
   }
-  
+
   .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -109,14 +111,14 @@ body, html {
     border-top: 1px solid #e5e7eb;
     z-index: 10;
   }
-  
+
   .bottom-nav-item {
     display: flex;
     align-items: center;
     justify-content: center;
     color: #6b7280;
   }
-  
+
   .create-button {
     background-color: white;
     height: 48px;
@@ -128,7 +130,7 @@ body, html {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transform: translateY(-10px);
   }
-  
+
   .status-dot {
     height: 6px;
     width: 6px;
@@ -136,15 +138,15 @@ body, html {
     display: inline-block;
     margin-right: 6px;
   }
-  
+
   .status-dot.available {
     background-color: #10b981;
   }
-  
+
   .status-dot.looking {
     background-color: #3b82f6;
   }
-  
+
   /* Custom context menu */
   .custom-context-menu {
     position: fixed;
@@ -155,48 +157,46 @@ body, html {
     padding: 5px 0;
     z-index: 1000;
   }
-  
+
   .context-menu-item {
     padding: 8px 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
   }
-  
+
   .context-menu-item:hover {
     background-color: #f3f4f6;
   }
-  
+
   /* Mobile header transition classes */
   .mobile-header-visible {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
   }
-  
+
   .mobile-header-hidden {
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
   }
-  
+
   .mobile-header-transition {
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1),
-                opacity 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+      opacity 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform, opacity;
   }
-  
+
   /* Make sure the filter tabs remain visible and fixed */
   .filter-tabs-container {
     position: sticky;
-    top: 60px;
+    top: 67px;
     z-index: 9;
     background-color: #fff;
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform;
   }
-  
-  
 }
 
 @keyframes scale-in {
