@@ -316,6 +316,7 @@ const AuthModal = ({
                           </FormControl>
                           <button
                             type="button"
+                            tabIndex={-1}
                             className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
                             onClick={() => setShowPassword(!showPassword)}
                           >
@@ -418,6 +419,7 @@ const AuthModal = ({
                           </FormControl>
                           <button
                             type="button"
+                            tabIndex={-1}
                             className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
                             onClick={() => setShowPassword(!showPassword)}
                           >
@@ -451,6 +453,7 @@ const AuthModal = ({
                           </FormControl>
                           <button
                             type="button"
+                            tabIndex={-1}
                             className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
