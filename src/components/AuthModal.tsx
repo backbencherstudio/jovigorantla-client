@@ -10,7 +10,7 @@ import { OTPInput } from "@/components/ui/otp-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import { FaFacebook } from "react-icons/fa";
-import { Mail, Lock, Eye, EyeOff, X, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, X, User, Check } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -346,8 +346,13 @@ const AuthModal = ({
                                   className="pl-3"
                                 />
                               </FormControl>
+                              {field.value.length >= 3 && (
+                                <div className="absolute right-3 top-5 text-green-500">
+                                  <Check className="h-5 w-5" />
+                                </div>
+                              )}
                             </div>
-                            <FormMessage />
+                            <FormMessage className="text-xs font-normal" />
                           </FormItem>
                         )}
                       />
@@ -367,6 +372,11 @@ const AuthModal = ({
                                   className="pl-3"
                                 />
                               </FormControl>
+                              {field.value.length >= 6 && (
+                                <div className="absolute right-10 top-5 text-green-500">
+                                  <Check className="h-5 w-5" />
+                                </div>
+                              )}
                               <button
                                 type="button"
                                 tabIndex={-1}
@@ -380,7 +390,7 @@ const AuthModal = ({
                                 )}
                               </button>
                             </div>
-                            <FormMessage />
+                            <FormMessage className="text-xs font-normal" />
                           </FormItem>
                         )}
                       />
@@ -402,6 +412,13 @@ const AuthModal = ({
                                   className="pl-3"
                                 />
                               </FormControl>
+                              {field.value.length >= 6 &&
+                                signupDetailsForm.watch("password") ===
+                                  field.value && (
+                                  <div className="absolute right-10 top-5 text-green-500">
+                                    <Check className="h-5 w-5" />
+                                  </div>
+                                )}
                               <button
                                 type="button"
                                 tabIndex={-1}
@@ -417,7 +434,7 @@ const AuthModal = ({
                                 )}
                               </button>
                             </div>
-                            <FormMessage />
+                            <FormMessage className="text-xs font-normal" />
                           </FormItem>
                         )}
                       />
@@ -537,7 +554,7 @@ const AuthModal = ({
                               />
                             </FormControl>
                           </div>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-normal" />
                         </FormItem>
                       )}
                     />
@@ -571,7 +588,7 @@ const AuthModal = ({
                               )}
                             </button>
                           </div>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-normal" />
                         </FormItem>
                       )}
                     />
@@ -597,11 +614,11 @@ const AuthModal = ({
                 </div>
               </TabsContent>
 
-              <TabsContent value="signup" className="space-y-4">
+              <TabsContent value="signup" className="">
                 <Form {...signupEmailForm}>
                   <form
                     onSubmit={signupEmailForm.handleSubmit(handleEmailSubmit)}
-                    className="space-y-4"
+                    className="space-y-8"
                   >
                     <FormField
                       control={signupEmailForm.control}
@@ -618,7 +635,7 @@ const AuthModal = ({
                               />
                             </FormControl>
                           </div>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-normal" />
                         </FormItem>
                       )}
                     />
