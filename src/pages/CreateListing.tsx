@@ -1,45 +1,56 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import ListingForm from "@/components/ListingForm";
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
-import ListingForm from '@/components/ListingForm';
+interface ListingFormData {
+  title?: string;
+  description?: string;
+  price?: number;
+  category?: string;
+  subCategory?: string;
+  address?: string;
+  postToUSA?: boolean;
+  images: File[];
+  radius: number;
+}
 
 const CreateListing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    // Check if user is authenticated
-    if (!user) {
-      toast.error('Please sign in to create a listing', {
-        description: 'You need to login to post a listing'
-      });
-      navigate('/auth');
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   // Check if user is authenticated
+  //   if (!user) {
+  //     toast.error('Please sign in to create a listing', {
+  //       description: 'You need to login to post a listing'
+  //     });
+  //     navigate('/auth');
+  //   }
+  // }, [user, navigate]);
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: ListingFormData) => {
     setIsSubmitting(true);
-    
+
     try {
-      console.log('Submitting listing data:', formData);
-      
+      console.log("Submitting listing data:", formData);
+
       // Here would normally submit to Supabase
       // For now, just simulate with toast
-      
+
       setTimeout(() => {
-        toast.success('Listing created successfully', {
-          description: 'Your listing has been posted successfully'
+        toast.success("Listing created successfully", {
+          description: "Your listing has been posted successfully",
         });
-        navigate('/');
+        navigate("/");
       }, 1500);
-      
     } catch (error) {
-      console.error('Error creating listing:', error);
-      toast.error('Failed to create listing', {
-        description: 'There was an error creating your listing. Please try again.'
+      console.error("Error creating listing:", error);
+      toast.error("Failed to create listing", {
+        description:
+          "There was an error creating your listing. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

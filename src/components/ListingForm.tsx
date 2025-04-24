@@ -1,160 +1,202 @@
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import LocationSelector from '@/components/LocationSelector';
-import { Upload, X, ImageIcon, Info } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import LocationSelector from "@/components/LocationSelector";
+import { Upload, X, ImageIcon, Info } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 100;
 
 const formSchema = z.object({
-  title: z.string()
-    .min(5, { message: 'Title must be at least 5 characters' })
-    .max(MAX_TITLE_LENGTH, { message: `Title must not exceed ${MAX_TITLE_LENGTH} characters` }),
+  title: z
+    .string()
+    .min(5, { message: "Title must be at least 5 characters" })
+    .max(MAX_TITLE_LENGTH, {
+      message: `Title must not exceed ${MAX_TITLE_LENGTH} characters`,
+    }),
   description: z.string().optional(), // Make description optional
-  price: z.coerce.number().positive({ message: 'Price must be a positive number' }).optional(),
-  category: z.string().min(1, { message: 'Please select a category' }),
-  subCategory: z.string().min(1, { message: 'Please select a subcategory' }),
-  address: z.string().min(5, { message: 'Please provide a valid address' }),
-  postToUSA: z.boolean().optional()
+  price: z.coerce
+    .number()
+    .positive({ message: "Price must be a positive number" })
+    .optional(),
+  category: z.string().min(1, { message: "Please select a category" }),
+  subCategory: z.string().min(1, { message: "Please select a subcategory" }),
+  address: z.string().min(5, { message: "Please provide a valid address" }),
+  postToUSA: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 interface ListingFormProps {
-  onSubmit: (values: FormValues & { images: File[], radius: number }) => void;
-  initialValues?: Partial<FormValues & { images: File[], radius: number }>;
+  onSubmit: (values: FormValues & { images: File[]; radius: number }) => void;
+  initialValues?: Partial<FormValues & { images: File[]; radius: number }>;
   isEditing?: boolean;
   isSubmitting?: boolean;
 }
 
 // Define the main categories and their corresponding subcategories
 const categoriesConfig = {
-  'Marketplace': ['Item', 'Service'],
-  'Rides': ['Available', 'Looking'],
-  'Accommodations': ['Available', 'Looking'],
-  'Jobs': ['Hiring', 'Looking']
+  Marketplace: ["Item", "Service"],
+  Rides: ["Available", "Looking"],
+  Accommodations: ["Available", "Looking"],
+  Jobs: ["Hiring", "Looking"],
 };
 
 const categories = Object.keys(categoriesConfig);
 
-const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting = false }: ListingFormProps) => {
-  const [selectedCategory, setSelectedCategory] = useState(initialValues?.category || '');
-  const [selectedSubCategory, setSelectedSubCategory] = useState(initialValues?.subCategory || '');
-  const [availableSubCategories, setAvailableSubCategories] = useState<string[]>([]);
+const ListingForm = ({
+  onSubmit,
+  initialValues,
+  isEditing = false,
+  isSubmitting = false,
+}: ListingFormProps) => {
+  const [selectedCategory, setSelectedCategory] = useState(
+    initialValues?.category || ""
+  );
+  const [selectedSubCategory, setSelectedSubCategory] = useState(
+    initialValues?.subCategory || ""
+  );
+  const [availableSubCategories, setAvailableSubCategories] = useState<
+    string[]
+  >([]);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [showUSAOption, setShowUSAOption] = useState(false);
-  const [titleLength, setTitleLength] = useState(initialValues?.title?.length || 0);
+  const [titleLength, setTitleLength] = useState(
+    initialValues?.title?.length || 0
+  );
   const navigate = useNavigate();
   const { locationString, radius, updateRadius } = useGeolocation();
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialValues || {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       price: undefined,
-      category: '',
-      subCategory: '',
-      address: locationString || '',
-      postToUSA: false
-    }
+      category: "",
+      subCategory: "",
+      address: locationString || "",
+      postToUSA: false,
+    },
   });
 
   useEffect(() => {
-    if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
-      const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+    if (
+      selectedCategory &&
+      categoriesConfig[selectedCategory as keyof typeof categoriesConfig]
+    ) {
+      const subcats =
+        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
+        [];
       setAvailableSubCategories(subcats);
-      
+
       // Reset subcategory if the current one isn't valid for the new category
-      const currentSubCat = form.getValues('subCategory');
+      const currentSubCat = form.getValues("subCategory");
       if (currentSubCat && !subcats.includes(currentSubCat)) {
-        form.setValue('subCategory', subcats[0] || '');
-        setSelectedSubCategory(subcats[0] || '');
+        form.setValue("subCategory", subcats[0] || "");
+        setSelectedSubCategory(subcats[0] || "");
       }
     } else {
       setAvailableSubCategories([]);
-      form.setValue('subCategory', '');
-      setSelectedSubCategory('');
+      form.setValue("subCategory", "");
+      setSelectedSubCategory("");
     }
-    
+
     // Reset postToUSA when category changes
-    form.setValue('postToUSA', false);
+    form.setValue("postToUSA", false);
   }, [selectedCategory, form]);
 
   useEffect(() => {
-    const shouldShowUSAOption = 
-      (selectedCategory === 'Marketplace' && selectedSubCategory === 'Service') || 
-      (selectedCategory === 'Jobs' && selectedSubCategory === 'Hiring');
-    
+    const shouldShowUSAOption =
+      (selectedCategory === "Marketplace" &&
+        selectedSubCategory === "Service") ||
+      (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
+
     setShowUSAOption(shouldShowUSAOption);
-    
+
     if (!shouldShowUSAOption) {
-      form.setValue('postToUSA', false);
+      form.setValue("postToUSA", false);
     }
   }, [selectedCategory, selectedSubCategory, form]);
 
   useEffect(() => {
-    if (locationString && !form.getValues('address')) {
-      form.setValue('address', locationString);
+    if (locationString && !form.getValues("address")) {
+      form.setValue("address", locationString);
     }
   }, [locationString, form]);
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
-    form.setValue('category', value);
+    form.setValue("category", value);
   };
 
   const handleSubCategoryChange = (value: string) => {
     setSelectedSubCategory(value);
-    form.setValue('subCategory', value);
+    form.setValue("subCategory", value);
   };
 
   const handleLocationChange = (location: string) => {
-    form.setValue('address', location);
+    form.setValue("address", location);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setTitleLength(value.length);
-    form.setValue('title', value);
+    form.setValue("title", value);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-    
+
     // Check if adding these files would exceed the limit of 3
     const newFilesArray = [...images];
     const newPreviewUrls = [...imagePreviewUrls];
-    
+
     for (let i = 0; i < files.length; i++) {
       if (newFilesArray.length >= 3) break; // Stop if we already have 3 images
-      
+
       const file = files[i];
-      
+
       // Check file size
       if (file.size > MAX_FILE_SIZE) {
         alert(`File ${file.name} is too large. Maximum size is 5MB.`);
         continue;
       }
-      
+
       newFilesArray.push(file);
       newPreviewUrls.push(URL.createObjectURL(file));
     }
-    
+
     setImages(newFilesArray);
     setImagePreviewUrls(newPreviewUrls);
   };
@@ -162,13 +204,13 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
   const removeImage = (index: number) => {
     const newFiles = [...images];
     const newPreviewUrls = [...imagePreviewUrls];
-    
+
     // Revoke the object URL to avoid memory leaks
     URL.revokeObjectURL(newPreviewUrls[index]);
-    
+
     newFiles.splice(index, 1);
     newPreviewUrls.splice(index, 1);
-    
+
     setImages(newFiles);
     setImagePreviewUrls(newPreviewUrls);
   };
@@ -177,16 +219,20 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
     try {
       onSubmit({ ...values, images, radius });
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
 
   // Check if photo uploads should be hidden - Hide for both Rides and Jobs
-  const showPhotoUpload = selectedCategory !== 'Rides' && selectedCategory !== 'Jobs';
+  const showPhotoUpload =
+    selectedCategory !== "Rides" && selectedCategory !== "Jobs";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 bg-white rounded-lg p-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-6 bg-white rounded-lg p-4"
+      >
         {/* Category & SubCategory Fields - placed in the same row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -195,8 +241,11 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={handleCategoryChange} defaultValue={field.value}>
-                  <FormControl>
+                <Select
+                  onValueChange={handleCategoryChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="bg-[#e6eaed]">
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
@@ -209,19 +258,22 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage className="text-xs font-normal" />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="subCategory"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Sub-Category</FormLabel>
-                <Select onValueChange={handleSubCategoryChange} defaultValue={field.value}>
-                  <FormControl>
+                <Select
+                  onValueChange={handleSubCategoryChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="bg-[#e6eaed]">
                     <SelectTrigger>
                       <SelectValue placeholder="Select a sub-category" />
                     </SelectTrigger>
@@ -234,12 +286,12 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage className="text-xs font-normal" />
               </FormItem>
             )}
           />
         </div>
-        
+
         <FormField
           control={form.control}
           name="title"
@@ -248,8 +300,9 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <div className="space-y-1">
-                  <Input 
-                    placeholder="Enter a descriptive title" 
+                  <Input
+                    className="bg-[#e6eaed]"
+                    placeholder="Enter a descriptive title"
                     maxLength={MAX_TITLE_LENGTH}
                     onChange={handleTitleChange}
                     value={field.value}
@@ -264,11 +317,11 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
                   </div>
                 </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs font-normal" />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="description"
@@ -276,40 +329,43 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
             <FormItem>
               <FormLabel>Description (optional)</FormLabel>
               <FormControl>
-                <Textarea 
-                  placeholder="Describe your listing in detail" 
-                  className="min-h-[120px] resize-none overflow-hidden"
-                  style={{ height: 'auto' }}
+                <Textarea
+                  placeholder="Describe your listing in detail"
+                  className="min-h-[120px] resize-none overflow-hidden bg-[#e6eaed]"
+                  style={{ height: "auto" }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
+                    target.style.height = "auto";
                     target.style.height = `${target.scrollHeight}px`;
                   }}
-                  {...field} 
+                  {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs font-normal" />
             </FormItem>
           )}
         />
-        
+
         {/* Image Upload - conditionally rendered based on category */}
         {showPhotoUpload && (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <FormLabel>Upload Photos (optional)</FormLabel>
-              <p className="text-xs text-gray-500">Max 3 photos of 5MB each</p>
+              <p className="text-xs text-gray-500">1 photos of 5MB</p>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-4 mb-4">
               {imagePreviewUrls.map((url, index) => (
-                <div key={index} className="relative h-32 border rounded-md overflow-hidden">
-                  <img 
-                    src={url} 
-                    alt={`Preview ${index + 1}`} 
+                <div
+                  key={index}
+                  className="relative h-32 border rounded-md overflow-hidden"
+                >
+                  <img
+                    src={url}
+                    alt={`Preview ${index + 1}`}
                     className="h-full w-full object-cover"
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => removeImage(index)}
                     className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1 text-white"
@@ -318,13 +374,11 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
                   </button>
                 </div>
               ))}
-              
+
               {images.length < 3 && (
-                <label 
-                  className="h-32 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400"
-                >
-                  <input 
-                    type="file" 
+                <label className="h-32 border-2 border-dashed bg-[#e6eaed] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
+                  <input
+                    type="file"
                     accept="image/*"
                     multiple={images.length < 3}
                     onChange={handleImageChange}
@@ -338,7 +392,7 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
             </div>
           </div>
         )}
-        
+
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -347,17 +401,17 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
               <FormItem>
                 <FormLabel>Location</FormLabel>
                 <div className="mt-2">
-                  <LocationSelector 
-                    onChange={handleLocationChange} 
-                    compact 
-                    className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+                  <LocationSelector
+                    onChange={handleLocationChange}
+                    compact
+                    className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e6eaed] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
-                <FormMessage />
+                <FormMessage className="text-xs font-normal" />
               </FormItem>
             )}
           />
-          
+
           {/* USA Posting Option - only display for specific category/subcategory combinations */}
           {showUSAOption && (
             <FormField
@@ -382,7 +436,8 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="w-[200px] text-sm">
-                            Reviewed by the Desieasy team, will go live if approved.
+                            Reviewed by the Desieasy team, will go live if
+                            approved.
                           </p>
                         </TooltipContent>
                       </Tooltip>
@@ -393,13 +448,26 @@ const ListingForm = ({ onSubmit, initialValues, isEditing = false, isSubmitting 
             />
           )}
         </div>
-        
+
         <div className="flex justify-end gap-3 pt-4 pb-12">
-          <Button variant="outline" type="button" onClick={() => navigate('/')} disabled={isSubmitting}>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => navigate("/")}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} className="mb-6 md:mb-0">
-            {isSubmitting ? 'Saving...' : isEditing ? 'Update Listing' : 'Post Listing'}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mb-6 md:mb-0"
+          >
+            {isSubmitting
+              ? "Saving..."
+              : isEditing
+              ? "Update Listing"
+              : "Post Listing"}
           </Button>
         </div>
       </form>

@@ -81,11 +81,12 @@ const Header = () => {
   }, [location.search]);
 
   const handlePostAd = () => {
-    if (user) {
-      navigate("/create-listing");
-    } else {
-      openModal("login");
-    }
+    navigate("/create-listing");
+    // if (user) {
+    //   navigate("/create-listing");
+    // } else {
+    //   openModal("login");
+    // }
   };
 
   const handleSearch = (e: React.FormEvent) => {
