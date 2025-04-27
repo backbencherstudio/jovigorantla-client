@@ -75,7 +75,7 @@ const LoginForm = ({
               </FormItem>
             )}
           />
-          <div className="text-center">
+          <div className="text-center w-[92%] md:w-full absolute md:static bottom-16">
             <Button
               variant="link"
               className="text-sm text-blue-400 p-0 hover:text-blue-700 font-normal mt-5"
@@ -87,7 +87,7 @@ const LoginForm = ({
         </div>
         <Button
           type="submit"
-          className="w-full py-5 bg-[#ff6b00] hover:bg-[#e55f00] rounded-full mt-1"
+          className=" w-[92%] md:w-full absolute md:static bottom-5 py-5 bg-[#ff6b00] hover:bg-[#e55f00] rounded-full mt-1 "
           disabled={isLoading}
         >
           {isLoading ? "Logging in..." : "Login"}

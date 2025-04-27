@@ -29,7 +29,7 @@ const EmailVerification = ({
           />
         </div>
         <div className="text-center space-y-4">
-          <p className="text-sm text-gray-500 text-center mb-2">
+          <p className="text-sm text-gray-500 text-center mb-2 md:static absolute bottom-16 md:w-full w-[92%]">
             Didn't receive the code?
             {resendDisabled ? (
               <span className="text-gray-400 mx-3">
@@ -46,7 +46,7 @@ const EmailVerification = ({
           </p>
           <Button
             onClick={() => setSignupStep("details")}
-            className="w-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
+            className="w-[92%] md:w-full absolute md:static bottom-5 left-4 bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
             disabled={isLoading}
           >
             {isLoading ? "Verifying..." : "Verify"}

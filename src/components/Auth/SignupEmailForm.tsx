@@ -37,7 +37,7 @@ const SignupEmailForm = ({
         />
         <Button
           type="submit"
-          className="w-full rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 mt-0.5"
+          className="md:w-full w-[92%] absolute md:static bottom-5 rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 mt-0.5"
           disabled={isLoading}
         >
           {isLoading ? "Sending..." : "Continue"}

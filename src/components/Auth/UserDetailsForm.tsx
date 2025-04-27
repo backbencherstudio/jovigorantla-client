@@ -135,7 +135,7 @@ const UserDetailsForm = ({
 
           <Button
             type="submit"
-            className="w-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
+            className="w-[93%] md:w-full absolute md:static bottom-5 left-4 bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
             disabled={isLoading}
           >
             {isLoading ? "Creating account..." : "Create account"}
