@@ -62,7 +62,8 @@ const AuthModal = ({
   );
   const [signupEmail, setSignupEmail] = useState("");
   const [otp, setOtp] = useState("");
-
+  const [resendTimer, setResendTimer] = useState(0);
+  const [resendDisabled, setResendDisabled] = useState(false);
   // Define schema for login and signup forms
   const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),
@@ -172,16 +173,17 @@ const AuthModal = ({
   // Handle OTP verification
   const handleVerifyOTP = async (value: string) => {
     setIsLoading(true);
-    try {
-      // Here you would verify the OTP with your backend
-      // For now, we'll just move to the next step
-      setSignupStep("details");
-      toast.success("Email verified successfully");
-    } catch (error) {
-      toast.error("Invalid verification code");
-    } finally {
-      setIsLoading(false);
-    }
+    setTimeout(() => {
+      try {
+        setSignupStep("details");
+        toast.success("Email verified successfully");
+      } catch (error) {
+        toast.error("Invalid verification code");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 1500);
+
   };
 
   // Handle final signup
@@ -264,12 +266,29 @@ const AuthModal = ({
       signupDetailsForm.reset();
     }
   }, [open]);
+  React.useEffect(() => {
+    let interval;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (resendTimer === 0 && resendDisabled) {
+      setResendDisabled(false);
+    }
+
+    return () => clearInterval(interval);
+  }, [resendTimer, resendDisabled]);
+
+
+  const handleResend = () => {
+    setResendDisabled(true);
+    setResendTimer(60);
+  };
 
   const renderMainContent = () => {
-    // If we're in the middle of signup flow (verify or details), show full-screen content
     if (signupStep === "verify" || signupStep === "details") {
       return (
-        <div className="w-full h-[500px] flex flex-col items-center justify-center px-4 bg-white">
+        <div className="w-full h-[500px] flex flex-col items-center justify-center bg-white">
           <div className="w-full max-w-md space-y-6 h-full flex flex-col bg-white">
             <div className="flex items-center justify-between">
               <Button
@@ -290,37 +309,46 @@ const AuthModal = ({
             </div>
             {signupStep === "verify" && (
               <>
-                <p className="text-sm text-gray-500 text-center">
-                  We've sent a 6-digit code to your email.
-                  <br />
-                  Please check your inbox and spam folder.
-                </p>
-                <div className="space-y-6 h-full flex flex-col justify-between">
-                  <div>
-                    <OTPInput
-                      value={otp}
-                      onChange={setOtp}
-                      onComplete={handleVerifyOTP}
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div className="text-center space-y-4">
-                    <p className="text-sm text-gray-500 text-center mb-2">
-                      Didn't receive the code?
-                      <span className="text-blue-500 hover:text-blue-700 cursor-pointer mx-3">
+              <p className="text-sm text-gray-500 text-center">
+                We've sent a 6-digit code to your email.
+                <br />
+                Please check your inbox and spam folder.
+              </p>
+              <div className="space-y-6 h-full flex flex-col justify-between">
+                <div>
+                  <OTPInput
+                    value={otp}
+                    onChange={setOtp}
+                    onComplete={handleVerifyOTP}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-gray-500 text-center mb-2">
+                    Didn't receive the code?
+                    {resendDisabled ? (
+                      <span className="text-gray-400 mx-3">
+                        Resend in {resendTimer}s
+                      </span>
+                    ) : (
+                      <span 
+                        className="text-blue-500 hover:text-blue-700 cursor-pointer mx-3"
+                        onClick={handleResend}
+                      >
                         Resend
                       </span>
-                    </p>
-                    <Button
-                      onClick={() => setSignupStep("details")}
-                      className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Verifying..." : "Verify"}
-                    </Button>
-                  </div>
+                    )}
+                  </p>
+                  <Button
+                    onClick={() => setSignupStep("details")}
+                    className="w-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Verifying..." : "Verify"}
+                  </Button>
                 </div>
-              </>
+              </div>
+            </>
             )}
 
             {signupStep === "details" && (
@@ -357,7 +385,7 @@ const AuthModal = ({
                               )}
                             </div>
                             <div className="h-5">
-                              <FormMessage className="text-xs font-normal text-red-700" />
+                              <FormMessage className="text-xs font-normal text-red-700 ml-3" />
                             </div>
                           </FormItem>
                         )}
@@ -397,7 +425,7 @@ const AuthModal = ({
                               </button>
                             </div>
                             <div className="h-5">
-                              <FormMessage className="text-xs font-normal text-red-700  " />
+                              <FormMessage className="text-xs font-normal text-red-700 ml-3" />
                             </div>
                           </FormItem>
                         )}
@@ -443,7 +471,7 @@ const AuthModal = ({
                               </button>
                             </div>
                             <div className="h-5">
-                              <FormMessage className="text-xs font-normal text-red-700" />
+                              <FormMessage className="text-xs font-normal text-red-700 ml-3" />
                             </div>
                           </FormItem>
                         )}
@@ -549,7 +577,7 @@ const AuthModal = ({
                     onSubmit={loginForm.handleSubmit(handleLogin)}
                     className="h-full flex flex-col justify-between"
                   >
-                    <div>
+                    <div className="space-y-1">
                       <FormField
                         control={loginForm.control}
                         name="email"
@@ -567,7 +595,7 @@ const AuthModal = ({
                               </FormControl>
                             </div>
                             <div className="h-5">
-                              <FormMessage className="text-xs text-red-700 font-normal" />
+                              <FormMessage className="text-xs text-red-700 font-normal ml-3" />
                             </div>
                           </FormItem>
                         )}
@@ -603,7 +631,7 @@ const AuthModal = ({
                               </button>
                             </div>
                             <div className="h-5">
-                              <FormMessage className="text-xs text-red-700 font-normal" />
+                              <FormMessage className="text-xs text-red-700 font-normal ml-3" />
                             </div>
                           </FormItem>
                         )}
@@ -651,7 +679,7 @@ const AuthModal = ({
                             </FormControl>
                           </div>
                           <div className="h-5">
-                            <FormMessage className="text-xs text-red-700 font-normal" />
+                            <FormMessage className="text-xs text-red-700 font-normal ml-3" />
                           </div>
                         </FormItem>
                       )}
@@ -679,7 +707,7 @@ const AuthModal = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="h-[85vh] bg-white">
+        <DrawerContent className="h-[100vh] bg-white">
           <div className="absolute right-4 top-4 z-10">
             <DrawerClose asChild>
               <Button variant="ghost" size="icon">
