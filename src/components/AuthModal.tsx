@@ -10,7 +10,16 @@ import { OTPInput } from "@/components/ui/otp-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import { FaFacebook } from "react-icons/fa";
-import { Mail, Lock, Eye, EyeOff, X, User, Check } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  X,
+  User,
+  Check,
+  ArrowLeft,
+} from "lucide-react";
 import {
   Form,
   FormControl,
@@ -260,8 +269,8 @@ const AuthModal = ({
     // If we're in the middle of signup flow (verify or details), show full-screen content
     if (signupStep === "verify" || signupStep === "details") {
       return (
-        <div className="w-full h-[500px] flex flex-col items-center justify-center px-4">
-          <div className="w-full max-w-md space-y-6 h-full flex flex-col">
+        <div className="w-full h-[500px] flex flex-col items-center justify-center px-4 bg-white">
+          <div className="w-full max-w-md space-y-6 h-full flex flex-col bg-white">
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
@@ -269,47 +278,42 @@ const AuthModal = ({
                 onClick={() =>
                   setSignupStep(signupStep === "verify" ? "email" : "verify")
                 }
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-800 hover:text-gray-700 rounded-full absolute left-4 top-4 text-xl"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
+                <ArrowLeft />
               </Button>
               <h2 className="text-2xl font-bold text-center flex-1 mt-10">
                 {signupStep === "verify"
                   ? "Verify your email"
-                  : "Complete your profile"}
+                  : "Set up your account"}
               </h2>
-              <div className="w-10" /> {/* Spacer for alignment */}
             </div>
             {signupStep === "verify" && (
               <>
                 <p className="text-sm text-gray-500 text-center">
-                  We've sent a verification code to
+                  We've sent a 6-digit code to your email.
                   <br />
-                  <span className="font-medium">{signupEmail}</span>
+                  Please check your inbox and spam folder.
                 </p>
                 <div className="space-y-6 h-full flex flex-col justify-between">
-                  <OTPInput
-                    value={otp}
-                    onChange={setOtp}
-                    onComplete={handleVerifyOTP}
-                    disabled={isLoading}
-                  />
+                  <div>
+                    <OTPInput
+                      value={otp}
+                      onChange={setOtp}
+                      onComplete={handleVerifyOTP}
+                      disabled={isLoading}
+                    />
+                  </div>
                   <div className="text-center space-y-4">
+                    <p className="text-sm text-gray-500 text-center mb-2">
+                      Didn't receive the code?
+                      <span className="text-blue-500 hover:text-blue-700 cursor-pointer mx-3">
+                        Resend
+                      </span>
+                    </p>
                     <Button
                       onClick={() => setSignupStep("details")}
-                      className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5"
+                      className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
                       disabled={isLoading}
                     >
                       {isLoading ? "Verifying..." : "Verify"}
@@ -331,7 +335,7 @@ const AuthModal = ({
                     )}
                     className="space-y-4 h-full flex flex-col justify-between"
                   >
-                    <div className="space-y-4">
+                    <div className="space-y-1">
                       <FormField
                         control={signupDetailsForm.control}
                         name="username"
@@ -347,12 +351,14 @@ const AuthModal = ({
                                 />
                               </FormControl>
                               {field.value.length >= 3 && (
-                                <div className="absolute right-3 top-5 text-green-500">
+                                <div className="absolute right-3 top-4 text-green-600">
                                   <Check className="h-5 w-5" />
                                 </div>
                               )}
                             </div>
-                            <FormMessage className="text-xs font-normal" />
+                            <div className="h-5">
+                              <FormMessage className="text-xs font-normal text-red-700" />
+                            </div>
                           </FormItem>
                         )}
                       />
@@ -373,14 +379,14 @@ const AuthModal = ({
                                 />
                               </FormControl>
                               {field.value.length >= 6 && (
-                                <div className="absolute right-10 top-5 text-green-500">
+                                <div className="absolute right-10 top-4 text-green-600">
                                   <Check className="h-5 w-5" />
                                 </div>
                               )}
                               <button
                                 type="button"
                                 tabIndex={-1}
-                                className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
+                                className="absolute right-3 top-4  text-gray-400 hover:text-gray-600"
                                 onClick={() => setShowPassword(!showPassword)}
                               >
                                 {showPassword ? (
@@ -390,7 +396,9 @@ const AuthModal = ({
                                 )}
                               </button>
                             </div>
-                            <FormMessage className="text-xs font-normal" />
+                            <div className="h-5">
+                              <FormMessage className="text-xs font-normal text-red-700  " />
+                            </div>
                           </FormItem>
                         )}
                       />
@@ -415,14 +423,14 @@ const AuthModal = ({
                               {field.value.length >= 6 &&
                                 signupDetailsForm.watch("password") ===
                                   field.value && (
-                                  <div className="absolute right-10 top-5 text-green-500">
+                                  <div className="absolute right-10 top-4 text-green-500">
                                     <Check className="h-5 w-5" />
                                   </div>
                                 )}
                               <button
                                 type="button"
                                 tabIndex={-1}
-                                className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
+                                className="absolute right-3 top-4 text-gray-400 hover:text-gray-600"
                                 onClick={() =>
                                   setShowConfirmPassword(!showConfirmPassword)
                                 }
@@ -434,7 +442,9 @@ const AuthModal = ({
                                 )}
                               </button>
                             </div>
-                            <FormMessage className="text-xs font-normal" />
+                            <div className="h-5">
+                              <FormMessage className="text-xs font-normal text-red-700" />
+                            </div>
                           </FormItem>
                         )}
                       />
@@ -442,7 +452,7 @@ const AuthModal = ({
 
                     <Button
                       type="submit"
-                      className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5"
+                      className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full "
                       disabled={isLoading}
                     >
                       {isLoading ? "Creating account..." : "Create account"}
@@ -458,8 +468,8 @@ const AuthModal = ({
 
     // Otherwise show the regular login/signup tabs
     return (
-      <div className="w-full h-[500px]">
-        <div className="w-full text-center mb-6">
+      <div className="w-full h-[500px] bg-white">
+        <div className="w-full text-center mb-6 bg-white">
           <h1 className="text-xl md:text-2xl font-bold mt-2 text-center">
             Login or Signup
           </h1>
@@ -476,8 +486,8 @@ const AuthModal = ({
           </p>
         </div>
 
-        <Card className="w-full shadow-none border-none bg-[#f8fafc]">
-          <CardContent className="grid gap-4 p-0">
+        <Card className="w-full shadow-none border-none bg-white">
+          <CardContent className="grid gap-4 p-0 bg-white">
             <Tabs defaultValue={defaultTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-4">
                 <TabsTrigger value="login">Login</TabsTrigger>
@@ -491,7 +501,7 @@ const AuthModal = ({
                   type="button"
                   onClick={() => handleOAuthSignIn("google")}
                   disabled={isLoading}
-                  className="w-full py-5 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all"
+                  className="w-full rounded-full flex items-center justify-between py-5 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all"
                 >
                   {/* Google logo */}
                   <svg
@@ -518,6 +528,7 @@ const AuthModal = ({
                     <path fill="none" d="M1 1h22v22H1z" />
                   </svg>
                   <span className="font-medium">Continue with Google</span>
+                  <div></div>
                 </Button>
               </div>
 
@@ -536,89 +547,93 @@ const AuthModal = ({
                 <Form {...loginForm}>
                   <form
                     onSubmit={loginForm.handleSubmit(handleLogin)}
-                    className="space-y-4"
+                    className="h-full flex flex-col justify-between"
                   >
-                    <FormField
-                      control={loginForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="relative">
-                            {/* <Mail className="absolute left-3 top-5 h-4 w-4 text-gray-400 z-10" /> */}
-                            <FormControl>
-                              <FloatingInput
-                                label="Email"
-                                {...field}
-                                disabled={isLoading}
-                                className="pl-3"
-                              />
-                            </FormControl>
-                          </div>
-                          <FormMessage className="text-xs font-normal" />
-                        </FormItem>
-                      )}
-                    />
+                    <div>
+                      <FormField
+                        control={loginForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="relative">
+                              {/* <Mail className="absolute left-3 top-5 h-4 w-4 text-gray-400 z-10" /> */}
+                              <FormControl>
+                                <FloatingInput
+                                  label="Email"
+                                  {...field}
+                                  disabled={isLoading}
+                                  className="pl-3"
+                                />
+                              </FormControl>
+                            </div>
+                            <div className="h-5">
+                              <FormMessage className="text-xs text-red-700 font-normal" />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="relative">
-                            {/* <Lock className="absolute left-3 top-5 h-4 w-4 text-gray-400 z-10" /> */}
-                            <FormControl>
-                              <FloatingInput
-                                type={showPassword ? "text" : "password"}
-                                label="Password"
-                                {...field}
-                                disabled={isLoading}
-                                className="pl-3"
-                              />
-                            </FormControl>
-                            <button
-                              type="button"
-                              tabIndex={-1}
-                              className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? (
-                                <EyeOff className="h-4 w-4" />
-                              ) : (
-                                <Eye className="h-4 w-4" />
-                              )}
-                            </button>
-                          </div>
-                          <FormMessage className="text-xs font-normal" />
-                        </FormItem>
-                      )}
-                    />
-
+                      <FormField
+                        control={loginForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="relative">
+                              {/* <Lock className="absolute left-3 top-5 h-4 w-4 text-gray-400 z-10" /> */}
+                              <FormControl>
+                                <FloatingInput
+                                  type={showPassword ? "text" : "password"}
+                                  label="Password"
+                                  {...field}
+                                  disabled={isLoading}
+                                  className="pl-3"
+                                />
+                              </FormControl>
+                              <button
+                                type="button"
+                                tabIndex={-1}
+                                className="absolute right-3 top-5 text-gray-400 hover:text-gray-600"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-4 w-4 -mt-0.5" />
+                                ) : (
+                                  <Eye className="h-4 w-4 -mt-0.5" />
+                                )}
+                              </button>
+                            </div>
+                            <div className="h-5">
+                              <FormMessage className="text-xs text-red-700 font-normal" />
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                      <div className="text-center">
+                        <Button
+                          variant="link"
+                          className="text-sm text-blue-400 p-0 hover:text-blue-700 font-normal mt-5"
+                          onClick={() => setForgotPassword(true)}
+                        >
+                          Forgot your password?
+                        </Button>
+                      </div>
+                    </div>
                     <Button
                       type="submit"
-                      className="w-full py-5 bg-[#ff6b00] hover:bg-[#e55f00]"
+                      className="w-full py-5 bg-[#ff6b00] hover:bg-[#e55f00] rounded-full mt-3"
                       disabled={isLoading}
                     >
                       {isLoading ? "Logging in..." : "Login"}
                     </Button>
                   </form>
                 </Form>
-
-                <div className="text-center">
-                  <Button
-                    variant="link"
-                    className="text-sm text-blue-400 p-0 hover:text-blue-700"
-                    onClick={() => setForgotPassword(true)}
-                  >
-                    Forgot your password?
-                  </Button>
-                </div>
               </TabsContent>
 
-              <TabsContent value="signup" className="">
+              <TabsContent value="signup" className="h-full">
                 <Form {...signupEmailForm}>
                   <form
                     onSubmit={signupEmailForm.handleSubmit(handleEmailSubmit)}
-                    className="space-y-8"
+                    className=" h-full flex flex-col justify-between"
                   >
                     <FormField
                       control={signupEmailForm.control}
@@ -635,13 +650,15 @@ const AuthModal = ({
                               />
                             </FormControl>
                           </div>
-                          <FormMessage className="text-xs font-normal" />
+                          <div className="h-5">
+                            <FormMessage className="text-xs text-red-700 font-normal" />
+                          </div>
                         </FormItem>
                       )}
                     />
                     <Button
                       type="submit"
-                      className="w-full bg-[#ff6b00] hover:bg-[#e55f00] py-5"
+                      className="w-full rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 mt-0.5"
                       disabled={isLoading}
                     >
                       {isLoading ? "Sending..." : "Continue"}
@@ -662,7 +679,7 @@ const AuthModal = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="h-[85vh]">
+        <DrawerContent className="h-[85vh] bg-white">
           <div className="absolute right-4 top-4 z-10">
             <DrawerClose asChild>
               <Button variant="ghost" size="icon">
@@ -670,7 +687,7 @@ const AuthModal = ({
               </Button>
             </DrawerClose>
           </div>
-          <div className="px-4 py-8 h-full">{authContent}</div>
+          <div className="px-4 py-8 h-full bg-white">{authContent}</div>
         </DrawerContent>
       </Drawer>
     );
@@ -678,13 +695,17 @@ const AuthModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto p-3">
+      <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto p-3 bg-white">
         <DialogClose className="absolute right-4 top-4 z-10">
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-800 rounded-full"
+          >
             <X className="h-4 w-4" />
           </Button>
         </DialogClose>
-        <div className="p-6 h-full">{authContent}</div>
+        <div className="p-6 h-full bg-white">{authContent}</div>
       </DialogContent>
     </Dialog>
   );
