@@ -192,7 +192,7 @@ const Header = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-9 w-9"
+                    className="rounded-full h-9 w-9 bg-[#f1f5f9]"
                     onClick={() => navigate("/messages")}
                   >
                     <MessageCircle

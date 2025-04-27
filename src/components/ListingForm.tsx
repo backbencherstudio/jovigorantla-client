@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-const MAX_TITLE_LENGTH = 100;
+const MAX_TITLE_LENGTH = 60;
 
 const formSchema = z.object({
   title: z
