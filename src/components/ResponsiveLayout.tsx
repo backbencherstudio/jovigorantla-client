@@ -123,14 +123,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
             {isMobile && (
               <div
                 ref={mobileHeaderRef}
-                className="sticky top-[60px] z-10 transition-transform"
-                style={{
-                  transform: `translateY(${(headerVisibility - 1) * 20}%)`,
-                  opacity: headerVisibility,
-                  visibility: "visible",
-                  transition: "transform 0.5s ease-out, opacity 0.5s ease-out",
-                  willChange: "transform, opacity",
-                }}
+                className=" z-10 transition-transform bg-white"
+        
               >
                 <div className="px-4 pt-2 pb-2">
                   <form onSubmit={handleSearchSubmit}>
