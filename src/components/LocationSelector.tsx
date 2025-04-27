@@ -128,9 +128,11 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange, className
           >
             <div className="flex items-center">
               <MapPin className="h-4 w-4 mr-2 text-primary" />
-              <span className="truncate">{displayText || 'Select location'}</span>
             </div>
-            {radius && <span className="text-xs text-gray-500 ml-1">• {radius} mi</span>}
+           <div>
+           <span className="truncate text-gray-600">{displayText || 'Select location'}</span>
+           {radius && <span className="text-xs text-gray-600 ml-1">• {radius} mi</span>}
+           </div>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-3" align="start">

@@ -87,7 +87,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 
         {/* Right sidebar with ad banners - always visible on desktop */}
         {isDesktop && (
-          <div className="w-[300px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
+          <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
             <div className="sticky top-[70px] p-4 space-y-4">
               <AdBanner position="right_top" className="mb-4" />
             </div>

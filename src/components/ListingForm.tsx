@@ -234,7 +234,7 @@ const ListingForm = ({
         className="space-y-6 bg-white rounded-lg p-4"
       >
         {/* Category & SubCategory Fields - placed in the same row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid  gap-4">
           <FormField
             control={form.control}
             name="category"
@@ -245,8 +245,8 @@ const ListingForm = ({
                   onValueChange={handleCategoryChange}
                   defaultValue={field.value}
                 >
-                  <FormControl className="bg-[#e6eaed]">
-                    <SelectTrigger>
+                  <FormControl className="bg-[#e5ebee] rounded-xl focus-within:ring-0">
+                    <SelectTrigger className="focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                   </FormControl>
@@ -273,7 +273,7 @@ const ListingForm = ({
                   onValueChange={handleSubCategoryChange}
                   defaultValue={field.value}
                 >
-                  <FormControl className="bg-[#e6eaed]">
+                  <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                     <SelectTrigger>
                       <SelectValue placeholder="Select a sub-category" />
                     </SelectTrigger>
@@ -301,7 +301,7 @@ const ListingForm = ({
               <FormControl>
                 <div className="space-y-1">
                   <Input
-                    className="bg-[#e6eaed]"
+                    className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
                     placeholder="Enter a descriptive title"
                     maxLength={MAX_TITLE_LENGTH}
                     onChange={handleTitleChange}
@@ -331,7 +331,7 @@ const ListingForm = ({
               <FormControl>
                 <Textarea
                   placeholder="Describe your listing in detail"
-                  className="min-h-[120px] resize-none overflow-hidden bg-[#e6eaed]"
+                  className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
                   style={{ height: "auto" }}
                   onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
@@ -350,8 +350,8 @@ const ListingForm = ({
         {showPhotoUpload && (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <FormLabel>Upload Photos (optional)</FormLabel>
-              <p className="text-xs text-gray-500">1 photos of 5MB</p>
+              <FormLabel>Upload Photo (optional)</FormLabel>
+              <p className="text-xs text-gray-500">1 photo of 5MB</p>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mb-4">
@@ -376,7 +376,7 @@ const ListingForm = ({
               ))}
 
               {images.length < 3 && (
-                <label className="h-32 border-2 border-dashed bg-[#e6eaed] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
+                <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
                   <input
                     type="file"
                     accept="image/*"
@@ -404,7 +404,7 @@ const ListingForm = ({
                   <LocationSelector
                     onChange={handleLocationChange}
                     compact
-                    className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e6eaed] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
                 <FormMessage className="text-xs font-normal" />
@@ -418,21 +418,13 @@ const ListingForm = ({
               control={form.control}
               name="postToUSA"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
+                <FormItem className="flex justify-end space-x-3 space-y-0">
+                 
                   <div className="space-y-1 leading-none flex items-center">
-                    <FormLabel className="font-medium">
-                      Also post in USA Listings
-                    </FormLabel>
-                    <TooltipProvider>
+                  <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 ml-2 text-gray-500 cursor-help" />
+                          <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="w-[200px] text-sm">
@@ -442,7 +434,19 @@ const ListingForm = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    <FormLabel className="font-medium">
+                      Also post in USA Listings
+                    </FormLabel>
+                   
                   </div>
+                 <div className="flex flex-col justify-end">
+                 <FormControl className="">
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                 </div>
                 </FormItem>
               )}
             />
