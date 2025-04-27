@@ -45,7 +45,26 @@ const AuthModal = ({
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
   const [resendDisabled, setResendDisabled] = useState(false);
-
+  useEffect(() => {
+    if (!open) {
+      setSignupStep("email");
+      setSignupEmail("");
+      setOtp("");
+      setForgotPassword(false);
+      
+      // Reset all forms including their error states
+      signupEmailForm.reset();
+      signupDetailsForm.reset();
+      loginForm.reset();
+      resetPasswordForm.reset();
+      
+      // Clear errors for all forms
+      loginForm.clearErrors();
+      signupEmailForm.clearErrors();
+      signupDetailsForm.clearErrors();
+      resetPasswordForm.clearErrors();
+    }
+  }, [open]);
   // Define schemas for forms
   const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),

@@ -81,7 +81,7 @@ const ManageListings = () => {
   };
   if (!user) return null;
   return <div className="bg-gray-50">
-      <div className="bg-white rounded-md shadow-sm p-4">
+      <div className="bg-white p-4">
         
 
         {isLoading ? <div className="space-y-4">
@@ -99,7 +99,7 @@ const ManageListings = () => {
                   Create Listing
                 </Button>
               </div> : <div className="space-y-4">
-                {listings.map(listing => <div key={listing.id} className="border rounded-lg p-4 w-full hover:bg-gray-50 transition-colors">
+                {listings.map(listing => <div key={listing.id} className=" rounded-lg p-4 w-full hover:bg-gray-50 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-medium text-lg mb-1">{listing.title}</h3>
@@ -122,7 +122,7 @@ const ManageListings = () => {
                         <Button variant="outline" size="sm" onClick={() => handleEditListing(listing.id)} className="h-8">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm" onClick={e => openDeleteDialog(e, listing.id)} className="h-8 text-red-500 hover:text-red-600 hover:bg-red-50">
+                        <Button variant="outline" size="sm" onClick={e => openDeleteDialog(e, listing.id)} className="h-8 text-[#bc0117] hover:text-[#bc0117] hover:bg-red-50">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

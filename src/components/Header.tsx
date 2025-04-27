@@ -280,7 +280,7 @@ const Header = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
-                      className="text-red-500"
+                      className="text-[#bc0117]"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       <span>Sign Out</span>

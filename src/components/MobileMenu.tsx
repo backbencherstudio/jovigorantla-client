@@ -112,9 +112,9 @@ const MobileMenu: React.FC = () => {
 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center px-3 py-3 text-base font-medium rounded-md text-red-600 hover:bg-red-50"
+                  className="w-full flex items-center px-3 py-3 text-base font-medium rounded-md text-[#bc0117] hover:bg-red-50"
                 >
-                  <LogOut className="h-5 w-5 text-red-500" />
+                  <LogOut className="h-5 w-5 text-[#bc0117]" />
                   <span className="ml-3">Sign Out</span>
                 </button>
               </nav>

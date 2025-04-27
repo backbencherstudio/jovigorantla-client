@@ -84,7 +84,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           <DropdownMenuItem onClick={onReportConversation} className="cursor-pointer text-orange-600">
             Report
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onDeleteConversation} className="cursor-pointer text-red-600">
+          <DropdownMenuItem onClick={onDeleteConversation} className="cursor-pointer text-[#bc0117]">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

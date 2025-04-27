@@ -242,7 +242,7 @@ const Auth = () => {
                 disabled={isLoading}
                 className="w-full py-5 border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all"
               >
-                <FaGoogle className="mr-2 h-5 w-5 text-red-500" />
+                <FaGoogle className="mr-2 h-5 w-5 text-[#bc0117]" />
                 <span className="font-medium">Google</span>
               </Button>
               <Button
