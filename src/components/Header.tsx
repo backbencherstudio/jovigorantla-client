@@ -81,11 +81,12 @@ const Header = () => {
   }, [location.search]);
 
   const handlePostAd = () => {
-    if (user) {
-      navigate("/create-listing");
-    } else {
-      openModal("login");
-    }
+    navigate("/create-listing");
+    // if (user) {
+    //   navigate("/create-listing");
+    // } else {
+    //   openModal("login");
+    // }
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -122,7 +123,7 @@ const Header = () => {
     >
       <header className="bg-white px-4 md:px-6 border-b sticky top-0 z-20 shadow-sm py-[13px]">
         <div className="max-w-full mx-auto flex justify-between">
-          <div className="flex items-center justify-between w-[57%]">
+          <div className="flex items-center justify-between w-[54%]">
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <img
@@ -144,7 +145,7 @@ const Header = () => {
                   placeholder="Search"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                  className="pl-9 pr-4 py-2 rounded-full bg-gray-100 lg:w-[570px] border-none h-10 focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </form>
             )}
@@ -191,7 +192,7 @@ const Header = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-9 w-9"
+                    className="rounded-full h-9 w-9 bg-[#f1f5f9]"
                     onClick={() => navigate("/messages")}
                   >
                     <MessageCircle
@@ -279,7 +280,7 @@ const Header = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
-                      className="text-red-500"
+                      className="text-[#bc0117]"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       <span>Sign Out</span>

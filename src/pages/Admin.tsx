@@ -860,7 +860,7 @@ const Admin = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="text-red-600 border-red-200 hover:bg-red-50"
+                        className="text-[#bc0117] border-red-200 hover:bg-red-50"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleBlockListing(listing.id);
@@ -1012,7 +1012,7 @@ const Admin = () => {
                                 <Button 
                                   variant="ghost" 
                                   size="sm"
-                                  className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                                  className="text-[#bc0117] hover:text-red-800 hover:bg-red-50"
                                   onClick={() => handleDeleteAdGroup(group.id)}
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -1096,7 +1096,7 @@ const Admin = () => {
                                               <Button 
                                                 variant="ghost"
                                                 size="sm"
-                                                className="h-7 w-7 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                                className="h-7 w-7 p-0 text-[#bc0117] hover:text-red-800 hover:bg-red-50"
                                                 onClick={() => handleDeleteAd(group.id, ad.id)}
                                               >
                                                 <Trash2 className="h-3.5 w-3.5" />
@@ -1627,7 +1627,7 @@ const Admin = () => {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-red-600 border-red-200 hover:bg-red-50"
+                                    className="text-[#bc0117] border-red-200 hover:bg-red-50"
                                     onClick={() => handleRejectUSAListing(listing.id)}
                                   >
                                     <X className="h-4 w-4 mr-1" />

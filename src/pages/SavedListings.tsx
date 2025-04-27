@@ -267,7 +267,7 @@ const SavedListings = () => {
       ) : (
         <>
           {listings.length === 0 ? (
-            <div className="bg-white rounded-lg p-8 text-center">
+            <div className="bg-white p-8 text-center">
               <h3 className="text-lg font-medium mb-2">No saved listings</h3>
               <p className="text-gray-500 mb-4">You haven't saved any listings yet.</p>
               <Button 

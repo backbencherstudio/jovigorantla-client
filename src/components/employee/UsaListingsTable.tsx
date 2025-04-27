@@ -82,7 +82,7 @@ const UsaListingsTable: React.FC<UsaListingsTableProps> = ({
                     <Button 
                       size="sm" 
                       variant="outline"
-                      className="text-red-600"
+                      className="text-[#bc0117]"
                       onClick={() => onRejectUsaListing(listing.id)}
                     >
                       <X className="h-4 w-4 mr-1" />

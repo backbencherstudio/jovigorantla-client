@@ -76,7 +76,7 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
             className={cn(
-              "w-12 h-12 text-center text-xl font-semibold rounded-xl border bg-[#e6eaed] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+              "w-12 h-12 text-center text-xl font-semibold rounded-xl border bg-[#e5ebee] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
               disabled && "opacity-50 cursor-not-allowed"
             )}
           />

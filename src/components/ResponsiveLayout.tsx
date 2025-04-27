@@ -66,7 +66,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
 
       // Calculate how much the header should be visible (value between 0 and 1)
       // Implement scroll-synced animation based on scroll direction and magnitude
-      if (scrollDifference > 0) {
+      if (scrollDifference > 10) {
         // Scrolling down, hide header gradually
         const newVisibility = Math.max(
           0,
@@ -123,14 +123,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
             {isMobile && (
               <div
                 ref={mobileHeaderRef}
-                className="sticky top-[60px] z-10 bg-white transition-transform"
-                style={{
-                  transform: `translateY(${(headerVisibility - 1) * 100}%)`,
-                  opacity: headerVisibility,
-                  visibility: headerVisibility === 0 ? "hidden" : "visible",
-                  transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
-                  willChange: "transform, opacity",
-                }}
+                className=" z-10 transition-transform bg-white"
+        
               >
                 <div className="px-4 pt-2 pb-2">
                   <form onSubmit={handleSearchSubmit}>

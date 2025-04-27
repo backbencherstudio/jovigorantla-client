@@ -103,7 +103,7 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
               <Skeleton className="h-3 w-32 mt-1" />
             </div>
           ) : error ? (
-            <div className="text-sm text-red-500">{error}</div>
+            <div className="text-sm text-[#bc0117]">{error}</div>
           ) : (
             <div className="text-sm truncate">
               <p className="font-medium truncate">{locationName}</p>
