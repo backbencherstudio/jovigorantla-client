@@ -16,7 +16,7 @@ const UserDetailsForm = ({
   return (
     <>
       <p className="text-sm text-gray-500 text-center">
-        Please provide your details to complete the signup
+        Fill in a few details to finish signing up.
       </p>
       <Form {...signupDetailsForm}>
         <form

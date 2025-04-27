@@ -171,6 +171,7 @@ const AuthModal = ({
 
   // Handle password reset
   const handleResetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
+    setSignupStep("verify");
     setIsLoading(true);
     try {
       const { error } = await resetPassword(values.email);
