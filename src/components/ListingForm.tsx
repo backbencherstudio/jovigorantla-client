@@ -419,17 +419,15 @@ const ListingForm = ({
               name="postToUSA"
               render={({ field }) => (
                 <FormItem className="flex justify-end space-x-3 space-y-0">
-                 
                   <div className="space-y-1 leading-none flex items-center">
-                  <TooltipProvider>
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="w-[200px] text-sm">
-                            Reviewed by the Desieasy team, will go live if
-                            approved.
+                            Reviewed by Desieasy team, will go live if approved.
                           </p>
                         </TooltipContent>
                       </Tooltip>
@@ -437,16 +435,15 @@ const ListingForm = ({
                     <FormLabel className="font-medium">
                       Also post in USA Listings
                     </FormLabel>
-                   
                   </div>
-                 <div className="flex flex-col justify-end">
-                 <FormControl className="">
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                 </div>
+                  <div className="flex flex-col justify-end">
+                    <FormControl className="">
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </div>
                 </FormItem>
               )}
             />

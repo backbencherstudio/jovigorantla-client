@@ -2,7 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Eye, EyeOff } from "lucide-react";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 const LoginForm = ({
   loginForm,
@@ -10,7 +16,7 @@ const LoginForm = ({
   isLoading,
   showPassword,
   setShowPassword,
-  setForgotPassword
+  setForgotPassword,
 }) => {
   return (
     <Form {...loginForm}>
@@ -78,7 +84,7 @@ const LoginForm = ({
           <div className="text-center w-[92%] md:w-full absolute md:static bottom-16">
             <Button
               variant="link"
-              className="text-sm text-blue-400 p-0 hover:text-blue-700 font-normal mt-5"
+              className="text-sm text-[#3b82f6] p-0 hover:text-blue-600 font-normal mt-5"
               onClick={() => setForgotPassword(true)}
             >
               Forgot your password?

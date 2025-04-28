@@ -10,7 +10,7 @@ const EmailVerification = ({
   resendTimer,
   resendDisabled,
   handleResend,
-  setSignupStep
+  setSignupStep,
 }) => {
   return (
     <>
@@ -36,8 +36,8 @@ const EmailVerification = ({
                 Resend in {resendTimer}s
               </span>
             ) : (
-              <span 
-                className="text-blue-500 hover:text-blue-700 cursor-pointer mx-3"
+              <span
+                className="text-[#3b82f6] hover:text-blue-600 cursor-pointer mx-3"
                 onClick={handleResend}
               >
                 Resend
