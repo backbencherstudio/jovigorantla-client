@@ -123,33 +123,31 @@ const Header = () => {
     >
       <header className="bg-white px-4 md:px-6 border-b sticky top-0 z-20 shadow-sm py-[13px]">
         <div className="max-w-full mx-auto flex justify-between">
-          <div className="flex items-center justify-between w-[54%]">
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img
-                src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
-                alt="DesiEasy Logo"
-                className="h-10"
-              />
-            </Link>
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <img
+              src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
+              alt="DesiEasy Logo"
+              className="h-10"
+            />
+          </Link>
 
-            {/* Search - Only on Tablet and Desktop */}
-            {!isMobile && (
-              <form
-                onSubmit={handleSearch}
-                className="flex-1 max-w-md mx-4 relative"
-              >
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="pl-9 pr-4 py-2 rounded-full bg-gray-100 lg:w-[570px] border-none h-10 focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </form>
-            )}
-          </div>
+          {/* Search - Only on Tablet and Desktop */}
+          {!isMobile && (
+            <form
+              onSubmit={handleSearch}
+              className=" mx-4 ml-[10%] w-[25vw] relative"
+            >
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+            </form>
+          )}
 
           <div className="flex items-center justify-end gap-2">
             {/* Location - Only on Tablet and Desktop */}

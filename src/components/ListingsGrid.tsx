@@ -66,7 +66,7 @@ const ListingsGrid = memo(
       setTimeout(() => {
         const startIndex = (page - 1) * ITEMS_PER_PAGE;
         const endIndex = page * ITEMS_PER_PAGE;
-        let newListings = listings.slice(startIndex, endIndex);
+        const newListings = listings.slice(startIndex, endIndex);
 
         if (newListings.length > 0) {
           // Convert regular listings to format with isAd flag

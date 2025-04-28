@@ -150,7 +150,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-64 p-3" align="start">
+        <PopoverContent className="w-64 p-3" align="end">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />

@@ -240,7 +240,7 @@ const ListingForm = ({
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel className="text-black">Category</FormLabel>
                 <Select
                   onValueChange={handleCategoryChange}
                   defaultValue={field.value}
@@ -258,7 +258,7 @@ const ListingForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
               </FormItem>
             )}
           />
@@ -268,7 +268,7 @@ const ListingForm = ({
             name="subCategory"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sub-Category</FormLabel>
+                <FormLabel className="text-black">Sub-Category</FormLabel>
                 <Select
                   onValueChange={handleSubCategoryChange}
                   defaultValue={field.value}
@@ -286,7 +286,7 @@ const ListingForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
               </FormItem>
             )}
           />
@@ -296,10 +296,10 @@ const ListingForm = ({
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
+            <FormItem className="relative">
+              <FormLabel className="text-black">Title</FormLabel>
               <FormControl>
-                <div className="space-y-1">
+                <div className="space-y-1 ">
                   <Input
                     className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
                     placeholder="Enter a descriptive title"
@@ -317,7 +317,7 @@ const ListingForm = ({
                   </div>
                 </div>
               </FormControl>
-              <FormMessage className="text-xs font-normal" />
+              <FormMessage className="text-xs font-normal absolute -bottom-1 text-[#c01c1c]" />
             </FormItem>
           )}
         />
@@ -327,7 +327,9 @@ const ListingForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description (optional)</FormLabel>
+              <FormLabel className="text-black">
+                Description (optional)
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe your listing in detail"
@@ -341,7 +343,7 @@ const ListingForm = ({
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="text-xs font-normal" />
+              <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
             </FormItem>
           )}
         />
@@ -350,7 +352,9 @@ const ListingForm = ({
         {showPhotoUpload && (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <FormLabel>Upload Photo (optional)</FormLabel>
+              <FormLabel className="text-black">
+                Upload Photo (optional)
+              </FormLabel>
               <p className="text-xs text-gray-500">1 photo of 5MB</p>
             </div>
 
@@ -407,7 +411,7 @@ const ListingForm = ({
                     className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
               </FormItem>
             )}
           />

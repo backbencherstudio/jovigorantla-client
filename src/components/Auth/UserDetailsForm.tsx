@@ -51,7 +51,7 @@ const UserDetailsForm = ({
                     )}
                   </div>
                   <div className="h-5">
-                    <FormMessage className="text-xs font-normal text-red-700 ml-3" />
+                    <FormMessage className="text-xs font-normal text-red-700 ml-3 -mt-[6.5px]" />
                   </div>
                 </FormItem>
               )}
@@ -91,7 +91,7 @@ const UserDetailsForm = ({
                     </button>
                   </div>
                   <div className="h-5">
-                    <FormMessage className="text-xs font-normal text-red-700 ml-3" />
+                    <FormMessage className="text-xs font-normal text-red-700 ml-3 -mt-[6.5px]" />
                   </div>
                 </FormItem>
               )}
@@ -134,7 +134,7 @@ const UserDetailsForm = ({
                     </button>
                   </div>
                   <div className="h-5">
-                    <FormMessage className="text-xs font-normal text-red-700 ml-3" />
+                    <FormMessage className="text-xs font-normal text-red-700 ml-3 -mt-[6.5px]" />
                   </div>
                 </FormItem>
               )}
