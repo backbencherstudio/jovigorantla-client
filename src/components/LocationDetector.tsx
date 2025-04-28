@@ -1,11 +1,10 @@
-
-import { useState, useEffect } from 'react';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { MapPin, Locate } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from "react";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { MapPin, Locate } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 interface LocationDetectorProps {
   onLocationChange: (lat: number, lng: number) => void;
@@ -13,8 +12,8 @@ interface LocationDetectorProps {
 
 const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
   const { position, loading, error, updateLocation } = useGeolocation();
-  const [locationName, setLocationName] = useState<string>('');
-  const [manualAddress, setManualAddress] = useState<string>('');
+  const [locationName, setLocationName] = useState<string>("");
+  const [manualAddress, setManualAddress] = useState<string>("");
   const [showManualInput, setShowManualInput] = useState<boolean>(false);
 
   useEffect(() => {
@@ -29,14 +28,14 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
       // This would normally use a geocoding API, but for now we'll simulate it
       setLocationName(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
     } catch (err) {
-      console.error('Error fetching location name:', err);
-      setLocationName('Unknown location');
+      console.error("Error fetching location name:", err);
+      setLocationName("Unknown location");
     }
   };
 
   const handleRefreshLocation = () => {
     if (navigator.geolocation) {
-      toast('Updating your location...');
+      toast("Updating your location...");
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // Instead of using setManualPosition, we'll use the updateLocation method
@@ -44,48 +43,48 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           const locationString = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-          
-          updateLocation(locationString)
-            .then(success => {
-              if (success) {
-                toast.success('Location updated successfully');
-                // Refresh the page to update listings with new location
-                window.location.reload();
-              } else {
-                toast.error('Failed to update location');
-              }
-            });
+
+          updateLocation(locationString).then((success) => {
+            if (success) {
+              toast.success("Location updated successfully");
+              // Refresh the page to update listings with new location
+              window.location.reload();
+            } else {
+              toast.error("Failed to update location");
+            }
+          });
         },
         (error) => {
-          console.error('Error getting location:', error);
-          toast.error('Could not get your location. Please try again.');
+          console.error("Error getting location:", error);
+          toast.error("Could not get your location. Please try again.");
         }
       );
     } else {
-      toast.error('Geolocation is not supported by your browser');
+      toast.error("Geolocation is not supported by your browser");
     }
   };
 
   const handleManualAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualAddress) {
-      toast.error('Please enter an address');
+      toast.error("Please enter an address");
       return;
     }
-    
+
     // Use the updateLocation method to set the location
-    updateLocation(manualAddress)
-      .then(success => {
-        if (success) {
-          setLocationName(manualAddress);
-          toast.success('Location set manually');
-          setShowManualInput(false);
-          // Refresh the page to update listings with new location
-          window.location.reload();
-        } else {
-          toast.error('Could not set the location. Please try a different address.');
-        }
-      });
+    updateLocation(manualAddress).then((success) => {
+      if (success) {
+        setLocationName(manualAddress);
+        toast.success("Location set manually");
+        setShowManualInput(false);
+        // Refresh the page to update listings with new location
+        window.location.reload();
+      } else {
+        toast.error(
+          "Could not set the location. Please try a different address."
+        );
+      }
+    });
   };
 
   const toggleManualInput = () => {
@@ -113,7 +112,7 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
             </div>
           )}
         </div>
-        
+
         <div className="flex gap-2">
           <Button
             variant="ghost"
@@ -124,18 +123,18 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
             <Locate className="h-3 w-3" />
             GPS
           </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
             onClick={toggleManualInput}
             className="gap-1 text-xs h-8"
           >
-            {showManualInput ? 'Cancel' : 'Set Manual'}
+            {showManualInput ? "Cancel" : "Set Manual"}
           </Button>
         </div>
       </div>
-      
+
       {showManualInput && (
         <form onSubmit={handleManualAddressSubmit} className="flex gap-2">
           <Input
@@ -144,7 +143,13 @@ const LocationDetector = ({ onLocationChange }: LocationDetectorProps) => {
             onChange={(e) => setManualAddress(e.target.value)}
             className="flex-1"
           />
-          <Button type="submit" size="sm" className="bg-brand hover:bg-brand/90">Set Location</Button>
+          <Button
+            type="submit"
+            size="sm"
+            className="bg-brand hover:bg-brand/90"
+          >
+            Set Location
+          </Button>
         </form>
       )}
     </div>

@@ -124,7 +124,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
               <div
                 ref={mobileHeaderRef}
                 className=" z-10 transition-transform bg-white"
-        
               >
                 <div className="px-4 pt-2 pb-2">
                   <form onSubmit={handleSearchSubmit}>

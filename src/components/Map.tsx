@@ -1,10 +1,9 @@
-
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Listing } from '@/utils/mockData';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Layers, Maximize2, Minimize2, MapPin } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Listing } from "@/utils/mockData";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Layers, Maximize2, Minimize2, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface MapProps {
   listings: Listing[];
@@ -13,7 +12,12 @@ interface MapProps {
   onListingSelect?: (listing: Listing) => void;
 }
 
-const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) => {
+const Map = ({
+  listings,
+  currentLocation,
+  radius,
+  onListingSelect,
+}: MapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -34,12 +38,15 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
     setIsFullscreen(!isFullscreen);
   };
 
-  const handleMarkerClick = useCallback((listing: Listing) => {
-    setSelectedListing(listing);
-    if (onListingSelect) {
-      onListingSelect(listing);
-    }
-  }, [onListingSelect]);
+  const handleMarkerClick = useCallback(
+    (listing: Listing) => {
+      setSelectedListing(listing);
+      if (onListingSelect) {
+        onListingSelect(listing);
+      }
+    },
+    [onListingSelect]
+  );
 
   const viewListingDetails = useCallback(() => {
     if (selectedListing) {
@@ -48,25 +55,32 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
   }, [navigate, selectedListing]);
 
   // Calculate distance from current location to a listing
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
     const R = 3958.8; // Radius of the Earth in miles
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in miles
   };
 
   // Filter listings by radius
-  const filteredListings = currentLocation 
-    ? listings.filter(listing => {
+  const filteredListings = currentLocation
+    ? listings.filter((listing) => {
         const distance = calculateDistance(
-          currentLocation.lat, 
-          currentLocation.lng, 
-          listing.location.lat, 
+          currentLocation.lat,
+          currentLocation.lng,
+          listing.location.lat,
           listing.location.lng
         );
         return distance <= radius;
@@ -74,9 +88,11 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
     : listings;
 
   return (
-    <div 
+    <div
       className={`relative rounded-lg overflow-hidden transition-all duration-300 ease-in-out bg-gray-100 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'h-[300px] sm:h-[400px]'
+        isFullscreen
+          ? "fixed inset-0 z-50 rounded-none"
+          : "h-[300px] sm:h-[400px]"
       }`}
     >
       {!isLoaded ? (
@@ -86,12 +102,12 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
           {/* Simulated map with markers */}
           <div className="absolute inset-0">
             {currentLocation && (
-              <div 
+              <div
                 className="absolute animate-pulse"
-                style={{ 
-                  left: `${50}%`, 
+                style={{
+                  left: `${50}%`,
                   top: `${50}%`,
-                  transform: 'translate(-50%, -50%)'
+                  transform: "translate(-50%, -50%)",
                 }}
               >
                 <div className="h-6 w-6 bg-blue-500 rounded-full flex items-center justify-center">
@@ -102,17 +118,29 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
                 </div>
               </div>
             )}
-            
+
             {/* Render listing markers */}
             {filteredListings.map((listing, index) => (
               <div
                 key={listing.id}
                 className={`absolute cursor-pointer transition-all duration-200 ${
-                  selectedListing?.id === listing.id ? 'scale-125 z-10' : ''
+                  selectedListing?.id === listing.id ? "scale-125 z-10" : ""
                 }`}
-                style={{ 
-                  left: `${(listing.location.lng - (currentLocation?.lng || -122.4194) + 0.05) * 1000 % 100}%`, 
-                  top: `${(listing.location.lat - (currentLocation?.lat || 37.7749) + 0.05) * 1000 % 100}%`,
+                style={{
+                  left: `${
+                    ((listing.location.lng -
+                      (currentLocation?.lng || -122.4194) +
+                      0.05) *
+                      1000) %
+                    100
+                  }%`,
+                  top: `${
+                    ((listing.location.lat -
+                      (currentLocation?.lat || 37.7749) +
+                      0.05) *
+                      1000) %
+                    100
+                  }%`,
                 }}
                 onClick={() => handleMarkerClick(listing)}
               >
@@ -122,27 +150,29 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
               </div>
             ))}
           </div>
-          
+
           {/* Radius circle visualization */}
           {currentLocation && (
-            <div 
+            <div
               className="absolute rounded-full border-2 border-blue-500/30 bg-blue-500/10"
-              style={{ 
-                left: '50%', 
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
+              style={{
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
                 width: `${Math.min(radius * 5, 80)}%`,
                 height: `${Math.min(radius * 5, 80)}%`,
               }}
             />
           )}
-          
+
           {/* Selected listing popup */}
           {selectedListing && (
             <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-white p-3 rounded-lg shadow-lg max-w-xs w-full">
               <h3 className="font-medium truncate">{selectedListing.title}</h3>
-              <p className="text-sm text-muted-foreground">${selectedListing.price}</p>
-              <Button 
+              <p className="text-sm text-muted-foreground">
+                ${selectedListing.price}
+              </p>
+              <Button
                 onClick={viewListingDetails}
                 className="w-full mt-2"
                 size="sm"
@@ -151,19 +181,21 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
               </Button>
             </div>
           )}
-          
+
           {/* Map info */}
           <div className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm p-2 rounded-md text-xs">
-            <p className="font-medium">Showing {filteredListings.length} listings</p>
+            <p className="font-medium">
+              Showing {filteredListings.length} listings
+            </p>
             <p className="text-muted-foreground">Radius: {radius} miles</p>
           </div>
         </div>
       )}
 
       <div className="absolute top-3 right-3 flex gap-2">
-        <Button 
-          variant="secondary" 
-          size="icon" 
+        <Button
+          variant="secondary"
+          size="icon"
           className="h-8 w-8 bg-white/80 backdrop-blur-sm hover:bg-white/90"
           onClick={toggleFullscreen}
         >
@@ -173,9 +205,9 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
             <Maximize2 className="h-4 w-4" />
           )}
         </Button>
-        <Button 
-          variant="secondary" 
-          size="icon" 
+        <Button
+          variant="secondary"
+          size="icon"
           className="h-8 w-8 bg-white/80 backdrop-blur-sm hover:bg-white/90"
         >
           <Layers className="h-4 w-4" />
@@ -184,10 +216,7 @@ const Map = ({ listings, currentLocation, radius, onListingSelect }: MapProps) =
 
       {isFullscreen && (
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-          <Button 
-            onClick={toggleFullscreen}
-            className="shadow-lg"
-          >
+          <Button onClick={toggleFullscreen} className="shadow-lg">
             Close Map
           </Button>
         </div>

@@ -1,16 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { useMediaQuery } from '@/hooks/use-media-query';
-import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useNavigate } from 'react-router-dom';
-import ChatConversation from '@/components/ChatConversation';
-import { Message } from '@/components/chat/types';
-import { useUnreadMessages } from '@/components/Header';
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { formatDistanceToNow } from "date-fns";
+import { ArrowLeft, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNavigate } from "react-router-dom";
+import ChatConversation from "@/components/ChatConversation";
+import { Message } from "@/components/chat/types";
+import { useUnreadMessages } from "@/components/Header";
 
 // Conversation type definition
 interface Conversation {
@@ -33,150 +33,175 @@ interface Conversation {
 
 const Messages = () => {
   const { user } = useAuth();
-  const [activeConversation, setActiveConversation] = useState<string | null>(null);
-  const isMobile = useMediaQuery('(max-width: 767px)');
+  const [activeConversation, setActiveConversation] = useState<string | null>(
+    null
+  );
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const navigate = useNavigate();
   const { unreadMessages, setUnreadMessages } = useUnreadMessages();
 
   // Mock conversations data
   const [conversations, setConversations] = useState<Conversation[]>([
     {
-      id: '1',
+      id: "1",
       otherUser: {
-        id: 'user1',
-        name: 'John Smith'
+        id: "user1",
+        name: "John Smith",
       },
       lastMessage: {
-        text: 'Is this room still available?',
+        text: "Is this room still available?",
         timestamp: new Date(Date.now() - 3600000),
         isRead: true,
-        sentByCurrentUser: false
+        sentByCurrentUser: false,
       },
       unreadCount: 0,
-      listingTitle: 'Room for rent in Downtown area',
-      listingId: '101',
+      listingTitle: "Room for rent in Downtown area",
+      listingId: "101",
       // Mock listing ID
-      messages: [{
-        id: '1-1',
-        senderId: 'user1',
-        content: 'Hello, is this room still available?',
-        timestamp: new Date(Date.now() - 3600000),
-        read: true
-      }, {
-        id: '1-2',
-        senderId: user?.id || 'current-user',
-        content: 'Yes, it is still available. When would you like to see it?',
-        timestamp: new Date(Date.now() - 3500000),
-        read: true
-      }]
-    }, {
-      id: '2',
+      messages: [
+        {
+          id: "1-1",
+          senderId: "user1",
+          content: "Hello, is this room still available?",
+          timestamp: new Date(Date.now() - 3600000),
+          read: true,
+        },
+        {
+          id: "1-2",
+          senderId: user?.id || "current-user",
+          content: "Yes, it is still available. When would you like to see it?",
+          timestamp: new Date(Date.now() - 3500000),
+          read: true,
+        },
+      ],
+    },
+    {
+      id: "2",
       otherUser: {
-        id: 'user2',
-        name: 'Sarah Johnson'
+        id: "user2",
+        name: "Sarah Johnson",
       },
       lastMessage: {
-        text: 'I can offer $150 for this.',
+        text: "I can offer $150 for this.",
         timestamp: new Date(Date.now() - 86400000),
         isRead: false,
-        sentByCurrentUser: false
+        sentByCurrentUser: false,
       },
       unreadCount: 2,
-      listingTitle: 'Used bicycle for sale',
-      listingId: '102',
+      listingTitle: "Used bicycle for sale",
+      listingId: "102",
       // Mock listing ID
-      messages: [{
-        id: '2-1',
-        senderId: user?.id || 'current-user',
-        content: 'Hi, is the bicycle still available?',
-        timestamp: new Date(Date.now() - 90000000),
-        read: true
-      }, {
-        id: '2-2',
-        senderId: 'user2',
-        content: 'Yes it is. Are you interested?',
-        timestamp: new Date(Date.now() - 89000000),
-        read: true
-      }, {
-        id: '2-3',
-        senderId: user?.id || 'current-user',
-        content: 'How much are you asking for it?',
-        timestamp: new Date(Date.now() - 88000000),
-        read: true
-      }, {
-        id: '2-4',
-        senderId: 'user2',
-        content: 'I was asking for $200 but I can negotiate.',
-        timestamp: new Date(Date.now() - 87000000),
-        read: true
-      }, {
-        id: '2-5',
-        senderId: user?.id || 'current-user',
-        content: 'Would you take $130?',
-        timestamp: new Date(Date.now() - 86500000),
-        read: true
-      }, {
-        id: '2-6',
-        senderId: 'user2',
-        content: 'I can offer $150 for this.',
-        timestamp: new Date(Date.now() - 86400000),
-        read: false
-      }, {
-        id: '2-7',
-        senderId: 'user2',
-        content: 'Does that work for you?',
-        timestamp: new Date(Date.now() - 86300000),
-        read: false
-      }]
-    }, {
-      id: '3',
+      messages: [
+        {
+          id: "2-1",
+          senderId: user?.id || "current-user",
+          content: "Hi, is the bicycle still available?",
+          timestamp: new Date(Date.now() - 90000000),
+          read: true,
+        },
+        {
+          id: "2-2",
+          senderId: "user2",
+          content: "Yes it is. Are you interested?",
+          timestamp: new Date(Date.now() - 89000000),
+          read: true,
+        },
+        {
+          id: "2-3",
+          senderId: user?.id || "current-user",
+          content: "How much are you asking for it?",
+          timestamp: new Date(Date.now() - 88000000),
+          read: true,
+        },
+        {
+          id: "2-4",
+          senderId: "user2",
+          content: "I was asking for $200 but I can negotiate.",
+          timestamp: new Date(Date.now() - 87000000),
+          read: true,
+        },
+        {
+          id: "2-5",
+          senderId: user?.id || "current-user",
+          content: "Would you take $130?",
+          timestamp: new Date(Date.now() - 86500000),
+          read: true,
+        },
+        {
+          id: "2-6",
+          senderId: "user2",
+          content: "I can offer $150 for this.",
+          timestamp: new Date(Date.now() - 86400000),
+          read: false,
+        },
+        {
+          id: "2-7",
+          senderId: "user2",
+          content: "Does that work for you?",
+          timestamp: new Date(Date.now() - 86300000),
+          read: false,
+        },
+      ],
+    },
+    {
+      id: "3",
       otherUser: {
-        id: 'user3',
-        name: 'David Brown'
+        id: "user3",
+        name: "David Brown",
       },
       lastMessage: {
-        text: 'Can you tell me more about the job?',
+        text: "Can you tell me more about the job?",
         timestamp: new Date(Date.now() - 172800000),
         isRead: true,
-        sentByCurrentUser: false
+        sentByCurrentUser: false,
       },
       unreadCount: 0,
-      listingTitle: 'Software Developer Job Opening',
-      listingId: '103',
+      listingTitle: "Software Developer Job Opening",
+      listingId: "103",
       // Mock listing ID
-      messages: [{
-        id: '3-1',
-        senderId: user?.id || 'current-user',
-        content: 'Hi, I saw your job posting and I have questions about the role.',
-        timestamp: new Date(Date.now() - 180000000),
-        read: true
-      }, {
-        id: '3-2',
-        senderId: 'user3',
-        content: 'Sure, what would you like to know?',
-        timestamp: new Date(Date.now() - 179000000),
-        read: true
-      }, {
-        id: '3-3',
-        senderId: user?.id || 'current-user',
-        content: 'Can you tell me more about the job?',
-        timestamp: new Date(Date.now() - 172800000),
-        read: true
-      }]
-    }
+      messages: [
+        {
+          id: "3-1",
+          senderId: user?.id || "current-user",
+          content:
+            "Hi, I saw your job posting and I have questions about the role.",
+          timestamp: new Date(Date.now() - 180000000),
+          read: true,
+        },
+        {
+          id: "3-2",
+          senderId: "user3",
+          content: "Sure, what would you like to know?",
+          timestamp: new Date(Date.now() - 179000000),
+          read: true,
+        },
+        {
+          id: "3-3",
+          senderId: user?.id || "current-user",
+          content: "Can you tell me more about the job?",
+          timestamp: new Date(Date.now() - 172800000),
+          read: true,
+        },
+      ],
+    },
   ]);
 
   // Calculate total unread count for notification badge and sync with header
   useEffect(() => {
-    const count = conversations.reduce((total, conv) => total + conv.unreadCount, 0);
+    const count = conversations.reduce(
+      (total, conv) => total + conv.unreadCount,
+      0
+    );
     setUnreadMessages(count);
   }, [conversations, setUnreadMessages]);
 
   // Format time in a brief, readable format
   const formatMessageTime = (date: Date) => {
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    if (diffInMinutes < 1) return 'now';
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60)
+    );
+    if (diffInMinutes < 1) return "now";
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) return `${diffInHours}h ago`;
@@ -186,28 +211,30 @@ const Messages = () => {
   };
 
   // Find active conversation
-  const activeConversationData = conversations.find(conv => conv.id === activeConversation);
+  const activeConversationData = conversations.find(
+    (conv) => conv.id === activeConversation
+  );
 
   // Mark messages as read when opening conversation
   useEffect(() => {
     if (activeConversation) {
-      setConversations(prevConversations => 
-        prevConversations.map(conv => {
+      setConversations((prevConversations) =>
+        prevConversations.map((conv) => {
           if (conv.id === activeConversation) {
             // Mark all messages as read
-            const updatedMessages = conv.messages.map(msg => ({
+            const updatedMessages = conv.messages.map((msg) => ({
               ...msg,
-              read: true
+              read: true,
             }));
-            
+
             return {
               ...conv,
               unreadCount: 0,
               lastMessage: {
                 ...conv.lastMessage,
-                isRead: true
+                isRead: true,
               },
-              messages: updatedMessages
+              messages: updatedMessages,
             };
           }
           return conv;
@@ -222,30 +249,32 @@ const Messages = () => {
       // Create new message
       const message: Message = {
         id: Date.now().toString(),
-        senderId: user?.id || 'current-user',
+        senderId: user?.id || "current-user",
         content: content,
         timestamp: new Date(),
-        read: true // Own messages are always read
+        read: true, // Own messages are always read
       };
 
       // Update conversations state
-      setConversations(prevConversations => prevConversations.map(conv => {
-        if (conv.id === activeConversation) {
-          return {
-            ...conv,
-            messages: [...conv.messages, message],
-            lastMessage: {
-              text: content,
-              timestamp: new Date(),
-              isRead: true, // Own messages are always read
-              sentByCurrentUser: true // Important: Mark as sent by current user
-            }
-          };
-        }
-        return conv;
-      }));
+      setConversations((prevConversations) =>
+        prevConversations.map((conv) => {
+          if (conv.id === activeConversation) {
+            return {
+              ...conv,
+              messages: [...conv.messages, message],
+              lastMessage: {
+                text: content,
+                timestamp: new Date(),
+                isRead: true, // Own messages are always read
+                sentByCurrentUser: true, // Important: Mark as sent by current user
+              },
+            };
+          }
+          return conv;
+        })
+      );
 
-      toast.success('Message sent');
+      toast.success("Message sent");
     }
   };
 
@@ -272,24 +301,39 @@ const Messages = () => {
               </div>
             ) : (
               <ul className="divide-y divide-gray-100">
-                {conversations.map(conv => (
-                  <li 
-                    key={conv.id} 
-                    className={`cursor-pointer ${!conv.lastMessage.isRead && !conv.lastMessage.sentByCurrentUser ? 'bg-blue-50' : ''}`}
+                {conversations.map((conv) => (
+                  <li
+                    key={conv.id}
+                    className={`cursor-pointer ${
+                      !conv.lastMessage.isRead &&
+                      !conv.lastMessage.sentByCurrentUser
+                        ? "bg-blue-50"
+                        : ""
+                    }`}
                     onClick={() => setActiveConversation(conv.id)}
                   >
                     <div className="p-3 hover:bg-gray-50">
                       <div className="flex justify-between items-start">
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{conv.listingTitle}</p>
-                          <p className="text-xs text-gray-500 mt-1">{conv.otherUser.name}</p>
-                          <p className={`text-sm mt-1 truncate ${
-                            !conv.lastMessage.isRead && !conv.lastMessage.sentByCurrentUser ? 'font-medium' : 'text-gray-600'
-                          }`}>
-                            {conv.lastMessage.sentByCurrentUser && "You: "}{conv.lastMessage.text}
+                          <p className="text-sm font-medium truncate">
+                            {conv.listingTitle}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {conv.otherUser.name}
+                          </p>
+                          <p
+                            className={`text-sm mt-1 truncate ${
+                              !conv.lastMessage.isRead &&
+                              !conv.lastMessage.sentByCurrentUser
+                                ? "font-medium"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {conv.lastMessage.sentByCurrentUser && "You: "}
+                            {conv.lastMessage.text}
                           </p>
                         </div>
-                        
+
                         <div className="flex flex-col items-end ml-2">
                           <span className="text-xs text-gray-500">
                             {formatMessageTime(conv.lastMessage.timestamp)}
@@ -309,10 +353,10 @@ const Messages = () => {
           </div>
         </div>
       )}
-      
+
       {/* Chat View (shown when a conversation is active) */}
       {activeConversation && activeConversationData && (
-        <ChatConversation 
+        <ChatConversation
           conversationId={activeConversationData.id}
           otherUserName={activeConversationData.otherUser.name}
           listingTitle={activeConversationData.listingTitle}
