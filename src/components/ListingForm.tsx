@@ -258,7 +258,7 @@ const ListingForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px]" />
               </FormItem>
             )}
           />
@@ -286,7 +286,7 @@ const ListingForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px]" />
               </FormItem>
             )}
           />
@@ -317,7 +317,7 @@ const ListingForm = ({
                   </div>
                 </div>
               </FormControl>
-              <FormMessage className="text-xs font-normal" />
+              <FormMessage className="text-xs font-normal -mt-[6.5px] " />
             </FormItem>
           )}
         />
@@ -341,7 +341,7 @@ const ListingForm = ({
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="text-xs font-normal" />
+              <FormMessage className="text-xs font-normal -mt-[6.5px]" />
             </FormItem>
           )}
         />
@@ -407,7 +407,7 @@ const ListingForm = ({
                     className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </div>
-                <FormMessage className="text-xs font-normal" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px]" />
               </FormItem>
             )}
           />

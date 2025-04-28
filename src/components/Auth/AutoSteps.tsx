@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import EmailVerification from "./EmailVarification";
 import UserDetailsForm from "./UserDetailsForm";
+import { UseFormReturn } from "react-hook-form";
+
 const AuthSteps = ({
   signupStep,
   setSignupStep,
@@ -18,7 +20,33 @@ const AuthSteps = ({
   showPassword,
   setShowPassword,
   showConfirmPassword,
-  setShowConfirmPassword
+  setShowConfirmPassword,
+  signupEmailForm,
+}: {
+  signupStep: "verify" | "details";
+  setSignupStep: (step: "email" | "verify" | "details") => void;
+  otp: string;
+  setOtp: (otp: string) => void;
+  isLoading: boolean;
+  handleVerifyOTP: (value: string) => void;
+  resendTimer: number;
+  resendDisabled: boolean;
+  handleResend: () => void;
+  signupDetailsForm: UseFormReturn<{
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>;
+  handleDetailsSubmit: (values: {
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+  }) => void;
+  showPassword: boolean;
+  setShowPassword: (show: boolean) => void;
+  showConfirmPassword: boolean;
+  setShowConfirmPassword: (show: boolean) => void;
+  signupEmailForm?: UseFormReturn<{ email: string }>;
 }) => {
   return (
     <div className="w-full h-[500px] flex flex-col items-center justify-center bg-white">
@@ -27,20 +55,24 @@ const AuthSteps = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() =>
-              setSignupStep(signupStep === "verify" ? "email" : "verify")
-            }
+            onClick={() => {
+              setSignupStep("email");
+              // Reset the form when going back
+              // signupEmailForm?.reset();
+            }}
             className="text-gray-800 hover:text-gray-700 rounded-full absolute left-4 top-4 text-xl"
           >
             <ArrowLeft />
           </Button>
           <h2 className="text-2xl font-bold text-center flex-1 mt-10">
-            {signupStep === "verify" ? "Verify your email" : "Set up your account"}
+            {signupStep === "verify"
+              ? "Verify your email"
+              : "Set up your account"}
           </h2>
         </div>
-        
+
         {signupStep === "verify" && (
-          <EmailVerification 
+          <EmailVerification
             otp={otp}
             setOtp={setOtp}
             isLoading={isLoading}

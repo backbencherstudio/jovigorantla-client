@@ -29,7 +29,8 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           htmlFor={inputId}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-focus:top-3 peer-focus:text-xs peer-focus:text-foreground peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-foreground cursor-text"
         >
-          {label}<span className="text-[#bc0117]"> *</span>
+          {label}
+          <span className="text-[#bc0117]"> *</span>
         </label>
       </div>
     );

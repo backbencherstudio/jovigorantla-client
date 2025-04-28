@@ -1,13 +1,15 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
-const SignupEmailForm = ({
-  signupEmailForm,
-  handleEmailSubmit,
-  isLoading
-}) => {
+const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
   return (
     <Form {...signupEmailForm}>
       <form
@@ -30,7 +32,7 @@ const SignupEmailForm = ({
                 </FormControl>
               </div>
               <div className="h-5">
-                <FormMessage className="text-xs text-red-700 font-normal ml-3" />
+                <FormMessage className="text-xs text-red-700 font-normal ml-3 -mt-[6.5px]" />
               </div>
             </FormItem>
           )}

@@ -129,7 +129,7 @@ const ListingsContainer = ({
   }
 
   return (
-    <div className="space-y-4 max-w-xl overflow-visible">
+    <div className="space-y-4 overflow-visible">
       {filteredListings.map((listing, index) => (
         <div key={`listing-container-${listing.id}`}>
           <ListingItem

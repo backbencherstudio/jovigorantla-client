@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 import { X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useForm } from "react-hook-form";
@@ -37,10 +33,13 @@ const AuthModal = ({
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const isMobile = useIsMobile();
 
   // State for signup steps
-  const [signupStep, setSignupStep] = useState<"email" | "verify" | "details">("email");
+  const [signupStep, setSignupStep] = useState<"email" | "verify" | "details">(
+    "email"
+  );
   const [signupEmail, setSignupEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
@@ -51,13 +50,14 @@ const AuthModal = ({
       setSignupEmail("");
       setOtp("");
       setForgotPassword(false);
-      
+      setActiveTab(defaultTab);
+
       // Reset all forms including their error states
       signupEmailForm.reset();
       signupDetailsForm.reset();
       loginForm.reset();
       resetPasswordForm.reset();
-      
+
       // Clear errors for all forms
       loginForm.clearErrors();
       signupEmailForm.clearErrors();
@@ -65,10 +65,20 @@ const AuthModal = ({
       resetPasswordForm.clearErrors();
     }
   }, [open]);
+
+  // Update active tab when signup step changes
+  useEffect(() => {
+    if (signupStep === "email") {
+      setActiveTab("signup");
+    }
+  }, [signupStep]);
+
   // Define schemas for forms
   const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),
-    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" }),
   });
 
   const signupEmailSchema = z.object({
@@ -77,9 +87,15 @@ const AuthModal = ({
 
   const signupDetailsSchema = z
     .object({
-      username: z.string().min(3, { message: "Full name must be at least 3 characters" }),
-      password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-      confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
+      username: z
+        .string()
+        .min(3, { message: "Full name must be at least 3 characters" }),
+      password: z
+        .string()
+        .min(6, { message: "Password must be at least 6 characters" }),
+      confirmPassword: z
+        .string()
+        .min(6, { message: "Password must be at least 6 characters" }),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords don't match",
@@ -123,18 +139,25 @@ const AuthModal = ({
         onOpenChange(false);
       }
     } catch (error) {
-      toast.error("Login failed", { description: "An unexpected error occurred" });
+      toast.error("Login failed", {
+        description: "An unexpected error occurred",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   // Handle email submission
-  const handleEmailSubmit = async (values: z.infer<typeof signupEmailSchema>) => {
+  const handleEmailSubmit = async (
+    values: z.infer<typeof signupEmailSchema>
+  ) => {
     setIsLoading(true);
     try {
       setSignupEmail(values.email);
       setSignupStep("verify");
+      // Start the resend timer
+      setResendDisabled(true);
+      setResendTimer(60);
       toast.success("Verification code sent to your email");
     } catch (error) {
       toast.error("Failed to send verification code");
@@ -159,10 +182,16 @@ const AuthModal = ({
   };
 
   // Handle final signup
-  const handleDetailsSubmit = async (values: z.infer<typeof signupDetailsSchema>) => {
+  const handleDetailsSubmit = async (
+    values: z.infer<typeof signupDetailsSchema>
+  ) => {
     setIsLoading(true);
     try {
-      const { error } = await signUp(signupEmail, values.password, values.username);
+      const { error } = await signUp(
+        signupEmail,
+        values.password,
+        values.username
+      );
       if (error) {
         toast.error("Signup failed", { description: error.message });
       } else {
@@ -170,7 +199,9 @@ const AuthModal = ({
         onOpenChange(false);
       }
     } catch (error) {
-      toast.error("Signup failed", { description: "An unexpected error occurred" });
+      toast.error("Signup failed", {
+        description: "An unexpected error occurred",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -181,15 +212,21 @@ const AuthModal = ({
     try {
       const { error } = await signInWithProvider(provider);
       if (error) {
-        toast.error(`${provider} sign-in failed`, { description: error.message });
+        toast.error(`${provider} sign-in failed`, {
+          description: error.message,
+        });
       }
     } catch (error) {
-      toast.error(`${provider} sign-in failed`, { description: "An unexpected error occurred" });
+      toast.error(`${provider} sign-in failed`, {
+        description: "An unexpected error occurred",
+      });
     }
   };
 
   // Handle password reset
-  const handleResetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
+  const handleResetPassword = async (
+    values: z.infer<typeof resetPasswordSchema>
+  ) => {
     setSignupStep("verify");
     setIsLoading(true);
     try {
@@ -203,7 +240,9 @@ const AuthModal = ({
         setForgotPassword(false);
       }
     } catch (error) {
-      toast.error("Password reset failed", { description: "An unexpected error occurred" });
+      toast.error("Password reset failed", {
+        description: "An unexpected error occurred",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -215,17 +254,6 @@ const AuthModal = ({
     setResendTimer(60);
     toast.success("Verification code resent to your email");
   };
-
-  // Reset signup state when modal closes
-  useEffect(() => {
-    if (!open) {
-      setSignupStep("email");
-      setSignupEmail("");
-      setOtp("");
-      signupEmailForm.reset();
-      signupDetailsForm.reset();
-    }
-  }, [open]);
 
   // Timer effect for resend button
   useEffect(() => {
@@ -299,14 +327,19 @@ const AuthModal = ({
 
         <Card className="w-full shadow-none border-none bg-white">
           <CardContent className="grid gap-4 p-0 bg-white">
-            <Tabs defaultValue={defaultTab} className="w-full">
+            <Tabs
+              defaultValue={defaultTab}
+              value={activeTab}
+              onValueChange={(value: "login" | "signup") => setActiveTab(value)}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2 mb-4">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
               {/* Social login buttons */}
-              <SocialAuthButtons 
+              <SocialAuthButtons
                 handleOAuthSignIn={handleOAuthSignIn}
                 isLoading={isLoading}
               />
