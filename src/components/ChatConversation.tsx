@@ -99,29 +99,33 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden bg-gray-100 fixed left-0 top-[60px] bottom-0 md:static md:top-0 md:z-auto z-10">
-      {/* Header */}
-      <ChatHeader
-        otherUserName={otherUserName}
-        listingTitle={listingTitle}
-        listingId={listingId}
-        otherUserAvatar={otherUserAvatar}
-        onBack={onBack}
-        onBlockUser={handleBlockUser}
-        onReportConversation={handleReportConversation}
-        onDeleteConversation={handleDeleteConversation}
-      />
+    <div className="flex flex-col h-full w-full overflow-hidden bg-gray-100">
+      {/* Header - Fixed at top */}
+      <div className="sticky top-0 z-20 bg-white">
+        <ChatHeader
+          otherUserName={otherUserName}
+          listingTitle={listingTitle}
+          listingId={listingId}
+          otherUserAvatar={otherUserAvatar}
+          onBack={onBack}
+          onBlockUser={handleBlockUser}
+          onReportConversation={handleReportConversation}
+          onDeleteConversation={handleDeleteConversation}
+        />
+      </div>
 
-      {/* Messages */}
-      <MessagesContainer
-        messages={displayMessages}
-        currentUserId={user?.id || "current-user"}
-        otherUserName={otherUserName}
-        otherUserAvatar={otherUserAvatar}
-      />
+      {/* Messages - Scrollable area */}
+      <div className="flex-1 overflow-y-auto h-full">
+        <MessagesContainer
+          messages={displayMessages}
+          currentUserId={user?.id || "current-user"}
+          otherUserName={otherUserName}
+          otherUserAvatar={otherUserAvatar}
+        />
+      </div>
 
       {/* Message Input - Fixed at bottom */}
-      <div className="sticky bottom-0 left-0 right-0 z-10">
+      <div className="sticky bottom-0 left-0 right-0 z-20 bg-gray-100">
         <MessageInput onSendMessage={handleSendMessage} />
       </div>
     </div>

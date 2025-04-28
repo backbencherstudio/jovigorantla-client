@@ -290,7 +290,7 @@ const Messages = () => {
 
   // Single column layout - always show either conversation list or active conversation
   return (
-    <div className="h-[calc(100vh-60px)] flex flex-col">
+    <div className="h-[85vh] flex flex-col bg-white">
       {/* Conversations List (shown when no active conversation) */}
       {!activeConversation && (
         <div className="w-full h-full flex flex-col">
