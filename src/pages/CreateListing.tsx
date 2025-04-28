@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import ListingForm from "@/components/ListingForm";
+import { useAuthModal } from "@/hooks/useAuthModal";
+import AuthModal from "@/components/AuthModal";
 
 interface ListingFormData {
   title?: string;
@@ -20,6 +22,7 @@ const CreateListing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
 
   // useEffect(() => {
   //   // Check if user is authenticated
@@ -33,18 +36,16 @@ const CreateListing = () => {
 
   const handleSubmit = async (formData: ListingFormData) => {
     setIsSubmitting(true);
-
+    sessionStorage.setItem("postData", JSON.stringify(formData));
+    if (!user) {
+      openModal("login");
+    }
     try {
       console.log("Submitting listing data:", formData);
-
-      // Here would normally submit to Supabase
-      // For now, just simulate with toast
-
       setTimeout(() => {
         toast.success("Listing created successfully", {
           description: "Your listing has been posted successfully",
         });
-        navigate("/");
       }, 1500);
     } catch (error) {
       console.error("Error creating listing:", error);
@@ -60,6 +61,11 @@ const CreateListing = () => {
   return (
     <div className="pb-6">
       <ListingForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+      <AuthModal
+        open={isOpen}
+        onOpenChange={closeModal}
+        defaultTab={defaultTab}
+      />
     </div>
   );
 };

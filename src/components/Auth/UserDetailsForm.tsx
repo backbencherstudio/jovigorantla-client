@@ -2,7 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Eye, EyeOff, Check } from "lucide-react";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 const UserDetailsForm = ({
   signupDetailsForm,
@@ -11,7 +17,7 @@ const UserDetailsForm = ({
   showPassword,
   setShowPassword,
   showConfirmPassword,
-  setShowConfirmPassword
+  setShowConfirmPassword,
 }) => {
   return (
     <>
@@ -108,7 +114,7 @@ const UserDetailsForm = ({
                     </FormControl>
                     {field.value.length >= 6 &&
                       signupDetailsForm.watch("password") === field.value && (
-                        <div className="absolute right-10 top-4 text-green-500">
+                        <div className="absolute right-10 top-4 text-green-600">
                           <Check className="h-5 w-5" />
                         </div>
                       )}
@@ -116,7 +122,9 @@ const UserDetailsForm = ({
                       type="button"
                       tabIndex={-1}
                       className="absolute right-3 top-4 text-gray-400 hover:text-gray-600"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-4 w-4" />

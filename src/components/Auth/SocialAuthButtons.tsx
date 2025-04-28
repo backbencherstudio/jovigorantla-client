@@ -9,7 +9,7 @@ const SocialAuthButtons = ({ handleOAuthSignIn, isLoading }) => {
         type="button"
         onClick={() => handleOAuthSignIn("google")}
         disabled={isLoading}
-        className="w-full rounded-full flex items-center justify-between py-5 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all"
+        className="w-full rounded-full flex items-center justify-between py-5 border-gray-300 bg-white hover:bg-gray-50 hover:border-[#ff7417] transition-all"
       >
         {/* Google logo */}
         <svg

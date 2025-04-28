@@ -1,31 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Mail, User } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Mail, User } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!user) {
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
 
     // Load user data
-    setEmail(user.email || '');
-    
+    setEmail(user.email || "");
+
     // Get name from localStorage or use the first part of email as a fallback
     const storedName = localStorage.getItem(`userName_${user.id}`);
-    setName(storedName || user.email?.split('@')[0] || '');
+    setName(storedName || user.email?.split("@")[0] || "");
   }, [user, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,10 +36,10 @@ const Profile = () => {
       // Save name to localStorage (in a real app this would be saved to a database)
       if (user) {
         localStorage.setItem(`userName_${user.id}`, name);
-        toast.success('Profile updated successfully');
+        toast.success("Profile updated successfully");
       }
     } catch (error) {
-      toast.error('Failed to update profile');
+      toast.error("Failed to update profile");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -50,7 +50,7 @@ const Profile = () => {
 
   return (
     <div className="bg-gray-50">
-      <div className="p-3 space-y-6 bg-white rounded-md shadow-sm">
+      <div className="p-3 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
@@ -83,12 +83,8 @@ const Profile = () => {
             <p className="text-sm text-gray-500">Email cannot be changed</p>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Saving...' : 'Save Changes'}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </form>
       </div>

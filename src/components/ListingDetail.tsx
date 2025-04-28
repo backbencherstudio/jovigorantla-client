@@ -1,12 +1,24 @@
-
-import { useState } from 'react';
-import { ArrowLeft, MessageSquare, Share2, Star, MoreVertical, EyeOff, Flag } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Listing } from '@/utils/mockData';
-import { formatDistanceToNow } from 'date-fns';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useMediaQuery } from '@/hooks/use-media-query';
+import { useState } from "react";
+import {
+  ArrowLeft,
+  MessageSquare,
+  Share2,
+  Star,
+  MoreVertical,
+  EyeOff,
+  Flag,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Listing } from "@/utils/mockData";
+import { formatDistanceToNow } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface ListingDetailProps {
   listing: Listing;
@@ -17,23 +29,16 @@ interface ListingDetailProps {
 const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const isMobile = !useMediaQuery('(min-width: 768px)');
-  
-  const {
-    title,
-    description,
-    location,
-    image,
-    category,
-    createdAt,
-    userId
-  } = listing;
+  const isMobile = !useMediaQuery("(min-width: 768px)");
+
+  const { title, description, location, image, category, createdAt, userId } =
+    listing;
 
   const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
 
   // Extract city from location
-  const locationParts = location.address.split(',');
-  const city = locationParts[0]?.trim() || '';
+  const locationParts = location.address.split(",");
+  const city = locationParts[0]?.trim() || "";
 
   const toggleSaveListing = () => {
     setIsSaved(!isSaved);
@@ -45,7 +50,7 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
       navigator.share({
         title: listing.title,
         text: `Check out this listing: ${listing.title}`,
-        url: window.location.href
+        url: window.location.href,
       });
     } else {
       // Copy to clipboard for desktop
@@ -60,16 +65,16 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
         <Button variant="ghost" size="icon" onClick={onBack}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        
+
         <div className="flex gap-1">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={toggleSaveListing}
-          >
-            <Star className={`h-5 w-5 ${isSaved ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+          <Button variant="ghost" size="icon" onClick={toggleSaveListing}>
+            <Star
+              className={`h-5 w-5 ${
+                isSaved ? "fill-[#ff6b00] text-[#ff6b00]" : ""
+              }`}
+            />
           </Button>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -93,7 +98,7 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
           </DropdownMenu>
         </div>
       </div>
-      
+
       <div className="px-4 pb-6">
         <div className="flex items-center justify-between text-gray-500 text-sm mb-2">
           <div className="flex items-center gap-2">
@@ -102,9 +107,9 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
             <span>Looking</span>
           </div>
         </div>
-        
+
         <h1 className="text-2xl font-bold mb-4">{title}</h1>
-        
+
         {/* User info and metadata - using the same format as listings */}
         <div className="flex items-center text-sm text-gray-500 mb-4">
           <span>{userId.substring(0, 8)}</span>
@@ -113,7 +118,7 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
           <span className="mx-2">•</span>
           <span>{timeAgo}</span>
         </div>
-        
+
         {description && (
           <Card className="mb-4 border-none shadow-none">
             <CardContent className="p-0">
@@ -122,7 +127,7 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
             </CardContent>
           </Card>
         )}
-        
+
         {image && (
           <div className="my-4">
             <img
@@ -133,9 +138,9 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
             />
           </div>
         )}
-        
-        <Button 
-          className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-5 mt-4" 
+
+        <Button
+          className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-5 mt-4"
           onClick={onContact}
         >
           <MessageSquare className="h-5 w-5 mr-2" />
