@@ -1,0 +1,136 @@
+// Mock data for flagged listings
+export const mockFlaggedListings = [
+  {
+    id: "1",
+    listingId: "listing-101",
+    listingTitle: "2BR Apartment Near Campus - Utilities Included",
+    reportedBy: "user123@example.com",
+    reportedAt: "2023-09-15T14:30:00",
+    category: "Accommodations",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+  {
+    id: "2",
+    listingId: "listing-102",
+    listingTitle: "Junior Developer Position - Remote Friendly",
+    reportedBy: "jane_doe@example.com",
+    reportedAt: "2023-09-14T09:45:00",
+    category: "Jobs",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+  {
+    id: "3",
+    listingId: "listing-103",
+    listingTitle: "MacBook Pro 2022 - Like New Condition",
+    reportedBy: "security_team@example.com",
+    reportedAt: "2023-09-13T16:20:00",
+    category: "Marketplace",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+];
+
+// History of decisions for flagged listings
+export const mockFlaggedHistory = [
+  {
+    id: "flagged-history-1",
+    listingId: "listing-104",
+    listingTitle: "iPhone 13 Pro Max - Mint Condition",
+    reportedBy: "moderator@example.com",
+    reportedAt: "2023-09-10T11:20:00",
+    category: "Marketplace",
+    decision: "approved",
+    decisionBy: "admin@example.com",
+    decisionAt: "2023-09-11T09:15:00",
+  },
+  {
+    id: "flagged-history-2",
+    listingId: "listing-105",
+    listingTitle: "Roommate Wanted - Shared Apartment",
+    reportedBy: "user456@example.com",
+    reportedAt: "2023-09-09T16:35:00",
+    category: "Accommodations",
+    decision: "blocked",
+    decisionBy: "admin@example.com",
+    decisionAt: "2023-09-09T17:30:00",
+  },
+  {
+    id: "flagged-history-3",
+    listingId: "listing-106",
+    listingTitle: "Part-time Bartender Needed",
+    reportedBy: "community_watch@example.com",
+    reportedAt: "2023-09-08T14:10:00",
+    category: "Jobs",
+    decision: "deleted",
+    decisionBy: "admin@example.com",
+    decisionAt: "2023-09-08T15:45:00",
+  },
+];
+
+// Mock data for USA listings pending approval
+export const mockUSAListings = [
+  {
+    id: "usa1",
+    title: "Software Developer position at Tech Corp",
+    postedBy: "tech_recruiter@example.com",
+    postedAt: "2023-09-10T11:30:00",
+    category: "Jobs",
+    status: "pending",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+  {
+    id: "usa2",
+    title: "Freelance Web Design Services Available",
+    postedBy: "designer@example.com",
+    postedAt: "2023-09-11T14:45:00",
+    category: "Marketplace",
+    status: "pending",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+  {
+    id: "usa3",
+    title: "Tutoring Services for Computer Science",
+    postedBy: "tutor@example.com",
+    postedAt: "2023-09-12T09:15:00",
+    category: "Marketplace",
+    status: "pending",
+    decision: null,
+    decisionBy: null,
+    decisionAt: null,
+  },
+];
+
+// History of USA listing decisions
+export const mockUSAHistory = [
+  {
+    id: "usa-history-1",
+    title: "Math Tutoring Services",
+    postedBy: "math_expert@example.com",
+    postedAt: "2023-09-05T10:30:00",
+    category: "Marketplace",
+    status: "approved",
+    decision: "approved",
+    decisionBy: "admin@example.com",
+    decisionAt: "2023-09-06T11:20:00",
+  },
+  {
+    id: "usa-history-2",
+    title: "Frontend Developer at Startup",
+    postedBy: "startup_recruiter@example.com",
+    postedAt: "2023-09-07T14:15:00",
+    category: "Jobs",
+    status: "rejected",
+    decision: "rejected",
+    decisionBy: "admin@example.com",
+    decisionAt: "2023-09-08T09:45:00",
+  },
+];
