@@ -18,26 +18,28 @@ const CustomModal: React.FC<CustomModalProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className=" rounded-lg">
-        <DialogClose className="absolute h-8 w-8 flex justify-center items-center right-4 top-4 rounded-full hover:bg-gray-100 p-2">
-          <span className="sr-only">Close</span>✕
-        </DialogClose>
+      <div className="">
+        <DialogContent className="rounded-lg">
+          <DialogClose className="absolute h-8 w-8 flex justify-center items-center right-4 top-4 rounded-full hover:bg-gray-100 p-2">
+            ✕
+          </DialogClose>
 
-        <div className="flex flex-col items-center justify-center space-y-6 p-6">
-          {icon}
+          <div className="flex flex-col items-center justify-center space-y-6 p-6">
+            {icon}
 
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-semibold">{title}</h2>
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-semibold">{title}</h2>
+            </div>
+
+            <Button
+              className="w-full bg-[#ff6b00] hover:bg-[#e55f00] text-white rounded-full py-6"
+              onClick={() => onOpenChange(false)}
+            >
+              Browse Listings
+            </Button>
           </div>
-
-          <Button
-            className="w-full bg-[#ff6b00] hover:bg-[#e55f00] text-white rounded-full py-6"
-            onClick={() => onOpenChange(false)}
-          >
-            Browse Listings
-          </Button>
-        </div>
-      </DialogContent>
+        </DialogContent>
+      </div>
     </Dialog>
   );
 };

@@ -40,7 +40,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   };
 
   return (
-    <div className="p-3 bg-white border-gray-200 flex items-center justify-between fixed  top-[66px] z-10 w-[100vw] sm:w-[768px] lg:w-[58vw] xl:w 2xl:w-[40vw]">
+    <div className="p-3 bg-white border-t flex items-center justify-between fixed  top-[66px] z-10 w-[100vw] sm:w-[768px] lg:w-[58vw] xl:w 2xl:w-[40vw]">
       <div className="flex items-center flex-1">
         <Button
           variant="ghost"
