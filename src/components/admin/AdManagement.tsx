@@ -635,7 +635,10 @@ const AdManagement = () => {
 
             <TabsContent value="groups">
               <div className="flex justify-end mb-4">
-                <Button onClick={() => setCreateMode(true)}>
+                <Button
+                  className="rounded-full"
+                  onClick={() => setCreateMode(true)}
+                >
                   <PlusCircle className="h-4 w-4 mr-2" />
                   Create Ad Group
                 </Button>
@@ -863,7 +866,7 @@ const AdManagement = () => {
                     <div className="space-y-2">
                       <Label htmlFor="topAdImage">Ad Image</Label>
                       <div className="flex items-center gap-4">
-                        <div className="border rounded p-2 cursor-pointer hover:bg-gray-50 flex-grow">
+                        <div className="border rounded p-2 cursor-pointer bg-[#e5ebee] hover:bg-gray-50 flex-grow">
                           <Input
                             id="topAdImage"
                             type="file"
@@ -893,31 +896,31 @@ const AdManagement = () => {
                     </div>
 
                     <div className="grid gap-2 grid-cols-3">
-                        <Button
-                          variant="outline"
-                          onClick={() => handleToggleSidebarAdActive("top")}
-                        >
-                          {adService.getSidebarAd("top")?.active ? (
-                            <>
-                              <Ban className="h-4 w-4 " />
-                              Deactivate
-                            </>
-                          ) : (
-                            <>
-                              <Check className="h-4 w-4 mr-1" />
-                              Activate
-                            </>
-                          )}
-                        </Button>
-                        <Button variant="outline" onClick={previewSidebarTopAd}>
-                          <Eye className="h-4 w-4" />
-                          Preview
-                        </Button>
-                        
+                      <Button
+                        variant="outline"
+                        onClick={() => handleToggleSidebarAdActive("top")}
+                      >
+                        {adService.getSidebarAd("top")?.active ? (
+                          <>
+                            <Ban className="h-4 w-4 " />
+                            Deactivate
+                          </>
+                        ) : (
+                          <>
+                            <Check className="h-4 w-4 mr-1" />
+                            Activate
+                          </>
+                        )}
+                      </Button>
+                      <Button variant="outline" onClick={previewSidebarTopAd}>
+                        <Eye className="h-4 w-4" />
+                        Preview
+                      </Button>
+
                       <Button onClick={handleSaveSidebarTopAd}>
-                          <Save className="h-4 w-4" />
-                          Save
-                        </Button>
+                        <Save className="h-4 w-4" />
+                        Save
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -944,7 +947,7 @@ const AdManagement = () => {
                     <div className="space-y-2">
                       <Label htmlFor="bottomAdImage">Ad Image</Label>
                       <div className="flex items-center gap-4">
-                        <div className="border rounded p-2 cursor-pointer hover:bg-gray-50 flex-grow">
+                        <div className="border rounded bg-[#e5ebee] p-2 cursor-pointer hover:bg-gray-50 flex-grow">
                           <Input
                             id="bottomAdImage"
                             type="file"
@@ -974,33 +977,33 @@ const AdManagement = () => {
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => handleToggleSidebarAdActive("bottom")}
-                        >
-                          {adService.getSidebarAd("bottom")?.active ? (
-                            <>
-                              <Ban className="h-4 w-4" />
-                              Deactivate
-                            </>
-                          ) : (
-                            <>
-                              <Check className="h-4 w-4" />
-                              Activate
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={previewSidebarBottomAd}
-                        >
-                          <Eye className="h-4 w-4" />
-                          Preview
-                        </Button>
-                        <Button onClick={handleSaveSidebarBottomAd}>
-                          <Save className="h-4 w-4" />
-                          Save
-                        </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleToggleSidebarAdActive("bottom")}
+                      >
+                        {adService.getSidebarAd("bottom")?.active ? (
+                          <>
+                            <Ban className="h-4 w-4" />
+                            Deactivate
+                          </>
+                        ) : (
+                          <>
+                            <Check className="h-4 w-4" />
+                            Activate
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={previewSidebarBottomAd}
+                      >
+                        <Eye className="h-4 w-4" />
+                        Preview
+                      </Button>
+                      <Button onClick={handleSaveSidebarBottomAd}>
+                        <Save className="h-4 w-4" />
+                        Save
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -1063,7 +1066,7 @@ const AdManagement = () => {
                 <div className="grid gap-2">
                   <Label htmlFor="adImage">Ad Image</Label>
                   <div className="flex items-center gap-4">
-                    <div className="border rounded p-2 cursor-pointer hover:bg-gray-50 flex-grow">
+                    <div className="border rounded p-2 cursor-pointer bg-[#e5ebee] hover:bg-gray-50 flex-grow">
                       <Input
                         id="adImage"
                         type="file"
@@ -1136,6 +1139,7 @@ const AdManagement = () => {
                     value={formState.name}
                     onChange={(e) => updateFormField("name", e.target.value)}
                     placeholder="E.g., Featured Services"
+                    className="bg-[#e5ebee]"
                   />
                 </div>
 
@@ -1187,6 +1191,7 @@ const AdManagement = () => {
                       Frequency (show every X listings)
                     </Label>
                     <Input
+                      className="bg-[#e5ebee]"
                       id="frequency"
                       type="number"
                       min="1"
@@ -1205,6 +1210,7 @@ const AdManagement = () => {
                   <div className="grid gap-2">
                     <Label htmlFor="startDate">Start Date (Optional)</Label>
                     <Input
+                      className="bg-[#e5ebee]"
                       id="startDate"
                       type="date"
                       value={formState.startDate}
@@ -1217,6 +1223,7 @@ const AdManagement = () => {
                   <div className="grid gap-2">
                     <Label htmlFor="endDate">End Date (Optional)</Label>
                     <Input
+                      className="bg-[#e5ebee]"
                       id="endDate"
                       type="date"
                       value={formState.endDate}
@@ -1236,6 +1243,7 @@ const AdManagement = () => {
                       <div className="grid gap-2">
                         <Label htmlFor="firstAdName">Ad Name</Label>
                         <Input
+                          className="bg-[#e5ebee]"
                           id="firstAdName"
                           value={newAdForm.name}
                           onChange={(e) =>
@@ -1251,6 +1259,7 @@ const AdManagement = () => {
                       <div className="grid gap-2">
                         <Label htmlFor="firstAdTargetUrl">Target URL</Label>
                         <Input
+                          className="bg-[#e5ebee]"
                           id="firstAdTargetUrl"
                           value={newAdForm.targetUrl}
                           onChange={(e) =>
@@ -1266,7 +1275,7 @@ const AdManagement = () => {
                       <div className="grid gap-2">
                         <Label htmlFor="firstAdImage">Ad Image</Label>
                         <div className="flex items-center gap-4">
-                          <div className="border rounded p-2 cursor-pointer hover:bg-gray-50 flex-grow">
+                          <div className="border rounded p-2 bg-[#e5ebee] cursor-pointer hover:bg-gray-50 flex-grow">
                             <Input
                               id="firstAdImage"
                               type="file"
@@ -1276,7 +1285,7 @@ const AdManagement = () => {
                             />
                             <Label
                               htmlFor="firstAdImage"
-                              className="flex items-center justify-center cursor-pointer"
+                              className="flex items-center  justify-center cursor-pointer"
                             >
                               <UploadCloud className="h-5 w-5 mr-2 text-gray-400" />
                               <span>Select Image</span>
