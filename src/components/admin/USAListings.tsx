@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, ListFilter, Eye, Check, X, Flag, Ban, Trash2 } from "lucide-react";
+import {
+  History,
+  ListFilter,
+  Eye,
+  Check,
+  X,
+  Flag,
+  Ban,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +21,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { mockUSAHistory, mockUSAListings } from "@/data/data";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
 interface USAListing {
   id: string;
@@ -43,17 +58,20 @@ const USAListings = () => {
         decisionAt: new Date().toISOString(),
       };
 
-      setUsaHistory([{
-        id: updatedListing.id,
-        title: updatedListing.title,
-        postedBy: updatedListing.postedBy,
-        postedAt: updatedListing.postedAt,
-        category: updatedListing.category,
-        status: updatedListing.status,
-        decision: updatedListing.decision!,
-        decisionBy: updatedListing.decisionBy!,
-        decisionAt: updatedListing.decisionAt!
-      }, ...usaHistory]);
+      setUsaHistory([
+        {
+          id: updatedListing.id,
+          title: updatedListing.title,
+          postedBy: updatedListing.postedBy,
+          postedAt: updatedListing.postedAt,
+          category: updatedListing.category,
+          status: updatedListing.status,
+          decision: updatedListing.decision!,
+          decisionBy: updatedListing.decisionBy!,
+          decisionAt: updatedListing.decisionAt!,
+        },
+        ...usaHistory,
+      ]);
       setUsaListings(usaListings.filter((listing) => listing.id !== id));
       toast.success("USA listing approved and published");
     }
@@ -70,17 +88,20 @@ const USAListings = () => {
         decisionAt: new Date().toISOString(),
       };
 
-      setUsaHistory([{
-        id: updatedListing.id,
-        title: updatedListing.title,
-        postedBy: updatedListing.postedBy,
-        postedAt: updatedListing.postedAt,
-        category: updatedListing.category,
-        status: updatedListing.status,
-        decision: updatedListing.decision!,
-        decisionBy: updatedListing.decisionBy!,
-        decisionAt: updatedListing.decisionAt!
-      }, ...usaHistory]);
+      setUsaHistory([
+        {
+          id: updatedListing.id,
+          title: updatedListing.title,
+          postedBy: updatedListing.postedBy,
+          postedAt: updatedListing.postedAt,
+          category: updatedListing.category,
+          status: updatedListing.status,
+          decision: updatedListing.decision!,
+          decisionBy: updatedListing.decisionBy!,
+          decisionAt: updatedListing.decisionAt!,
+        },
+        ...usaHistory,
+      ]);
       setUsaListings(usaListings.filter((listing) => listing.id !== id));
       toast.success("USA listing rejected. User will be notified.");
     }
@@ -116,80 +137,78 @@ const USAListings = () => {
       </div>
 
       {!showUsaHistory && (
-       <>
-       {usaListings.length === 0 ? (
-         <div className="text-center py-8 bg-gray-50 rounded-lg">
-           <Flag className="w-12 h-12 mx-auto text-gray-400 mb-2" />
-           <p className="text-gray-500">No USA listings to review</p>
-         </div>
-       ) : (
-         usaListings.map((listing) => (
-           <Card
-             key={listing.id}
-             className="mb-4 cursor-pointer hover:shadow-md"
-             onClick={() => handleViewListing(listing.id)}
-           >
-             <CardHeader>
-               <div className="flex justify-between items-start">
-                 <div>
-                   <CardTitle className="text-lg">
-                     {listing.title}
-                   </CardTitle>
-                   <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
-                     {listing.category}
-                   </span>
-                 </div>
-                 <span className="text-sm text-gray-500">
-                   Reported {formatDate(listing.postedAt)}
-                 </span>
-               </div>
-             </CardHeader>
-             <CardContent>
-               <div>
-                 <span className="font-medium text-sm">Reported by:</span>
-                 <p className="text-gray-700">{listing.postedBy}</p>
-               </div>
-             </CardContent>
-             <CardFooter className="flex justify-end space-x-2">
-               <Button
-                 variant="outline"
-                 size="sm"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   handleApproveUSAListing(listing.id);
-                 }}
-               >
-                 <Eye className="h-4 w-4 mr-1" />
-                 Approve
-               </Button>
-               <Button
-                 variant="outline"
-                 size="sm"
-                 className="text-[#bc0117] border-red-200 hover:bg-red-50"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   handleRejectUSAListing(listing.id);
-                 }}
-               >
-                 <Ban className="h-4 w-4 mr-1" />
-                 Block
-               </Button>
-               <Button
-                 variant="destructive"
-                 size="sm"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   handleRejectUSAListing(listing.id);
-                 }}
-               >
-                 <Trash2 className="h-4 w-4 mr-1" />
-                 Delete
-               </Button>
-             </CardFooter>
-           </Card>
-         ))
-       )}
-     </>
+        <>
+          {usaListings.length === 0 ? (
+            <div className="text-center py-8 bg-gray-50 rounded-lg">
+              <Flag className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+              <p className="text-gray-500">No USA listings to review</p>
+            </div>
+          ) : (
+            usaListings.map((listing) => (
+              <Card
+                key={listing.id}
+                className="mb-4 cursor-pointer hover:shadow-md"
+                onClick={() => handleViewListing(listing.id)}
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{listing.title}</CardTitle>
+                      <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
+                        {listing.category}
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      Reported {formatDate(listing.postedAt)}
+                    </span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div>
+                    <span className="font-medium text-sm">Reported by:</span>
+                    <p className="text-gray-700">{listing.postedBy}</p>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleApproveUSAListing(listing.id);
+                    }}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    Approve
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-[#bc0117] border-red-200 hover:bg-red-50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRejectUSAListing(listing.id);
+                    }}
+                  >
+                    <Ban className="h-4 w-4 mr-1" />
+                    Block
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRejectUSAListing(listing.id);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))
+          )}
+        </>
       )}
 
       {showUsaHistory && (

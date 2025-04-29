@@ -32,6 +32,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import CustomModal from "./shared/CustomModal";
+import loadingImg from "@/assets/loading.png";
+import successImg from "@/assets/success.png";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 60;
@@ -96,7 +98,7 @@ const ListingForm = ({
   );
   const navigate = useNavigate();
   const { locationString, radius, updateRadius } = useGeolocation();
-  const [isOpenSuccess,setIsOpenSuccess] = useState(false);
+  const [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -231,263 +233,272 @@ const ListingForm = ({
     selectedCategory !== "Rides" && selectedCategory !== "Jobs";
 
   return (
-   <div>
-     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6 bg-white rounded-lg p-4"
-      >
-        {/* Category & SubCategory Fields - placed in the same row */}
-        <div className="grid  gap-4">
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-black">Category</FormLabel>
-                <Select
-                  onValueChange={handleCategoryChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="bg-[#e5ebee] rounded-xl focus-within:ring-0">
-                    <SelectTrigger className="focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="subCategory"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-black">Sub-Category</FormLabel>
-                <Select
-                  onValueChange={handleSubCategoryChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a sub-category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {availableSubCategories.map((subCategory) => (
-                      <SelectItem key={subCategory} value={subCategory}>
-                        {subCategory}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem className="relative">
-              <FormLabel className="text-black">Title</FormLabel>
-              <FormControl>
-                <div className="space-y-1 ">
-                  <Input
-                    className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
-                    placeholder="Enter a descriptive title"
-                    maxLength={MAX_TITLE_LENGTH}
-                    onChange={handleTitleChange}
-                    value={field.value}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                  />
-                  <div className="flex justify-end">
-                    <span className="text-xs text-gray-400">
-                      {titleLength}/{MAX_TITLE_LENGTH}
-                    </span>
-                  </div>
-                </div>
-              </FormControl>
-              <FormMessage className="text-xs font-normal absolute -bottom-1 text-[#c01c1c]" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-black">
-                Description (optional)
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe your listing in detail"
-                  className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
-                  style={{ height: "auto" }}
-                  onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = "auto";
-                    target.style.height = `${target.scrollHeight}px`;
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
-            </FormItem>
-          )}
-        />
-
-        {/* Image Upload - conditionally rendered based on category */}
-        {showPhotoUpload && (
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <FormLabel className="text-black">
-                Upload Photo (optional)
-              </FormLabel>
-              <p className="text-xs text-gray-500">1 photo of 5MB</p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              {imagePreviewUrls.map((url, index) => (
-                <div
-                  key={index}
-                  className="relative h-32 border rounded-md overflow-hidden"
-                >
-                  <img
-                    src={url}
-                    alt={`Preview ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1 text-white"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-
-              {images.length < 3 && (
-                <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple={images.length < 3}
-                    onChange={handleImageChange}
-                    className="hidden"
-                    disabled={isSubmitting}
-                  />
-                  <Upload size={24} className="text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-500">Upload</span>
-                </label>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <div className="mt-2">
-                  <LocationSelector
-                    onChange={handleLocationChange}
-                    compact
-                    className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
-              </FormItem>
-            )}
-          />
-
-          {/* USA Posting Option - only display for specific category/subcategory combinations */}
-          {showUSAOption && (
+    <div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-6 bg-white rounded-lg p-4"
+        >
+          {/* Category & SubCategory Fields - placed in the same row */}
+          <div className="grid  gap-4">
             <FormField
               control={form.control}
-              name="postToUSA"
+              name="category"
               render={({ field }) => (
-                <FormItem className="flex justify-end space-x-3 space-y-0">
-                  <div className="space-y-1 leading-none flex items-center">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="w-[200px] text-sm">
-                            Reviewed by Desieasy team, will go live if approved.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <FormLabel className="font-medium">
-                      Also post in USA Listings
-                    </FormLabel>
-                  </div>
-                  <div className="flex flex-col justify-end">
-                    <FormControl className="">
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                <FormItem>
+                  <FormLabel className="text-black">Category</FormLabel>
+                  <Select
+                    onValueChange={handleCategoryChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="bg-[#e5ebee] rounded-xl focus-within:ring-0">
+                      <SelectTrigger className="focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
                     </FormControl>
-                  </div>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
                 </FormItem>
               )}
             />
-          )}
-        </div>
 
-        <div className="flex justify-end gap-3 pt-4 pb-12">
-          <Button
-            variant="outline"
-            type="button"
-            onClick={() => navigate("/")}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="mb-6 md:mb-0"
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-              ? "Update Listing"
-              : "Post Listing"}
-          </Button>
+            <FormField
+              control={form.control}
+              name="subCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-black">Sub-Category</FormLabel>
+                  <Select
+                    onValueChange={handleSubCategoryChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a sub-category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableSubCategories.map((subCategory) => (
+                        <SelectItem key={subCategory} value={subCategory}>
+                          {subCategory}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="relative">
+                <FormLabel className="text-black">Title</FormLabel>
+                <FormControl>
+                  <div className="space-y-1 ">
+                    <Input
+                      className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
+                      placeholder="Enter a descriptive title"
+                      maxLength={MAX_TITLE_LENGTH}
+                      onChange={handleTitleChange}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
+                    <div className="flex justify-end">
+                      <span className="text-xs text-gray-400">
+                        {titleLength}/{MAX_TITLE_LENGTH}
+                      </span>
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage className="text-xs font-normal absolute -bottom-1 text-[#c01c1c]" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-black">
+                  Description (optional)
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your listing in detail"
+                    className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
+                    style={{ height: "auto" }}
+                    onInput={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = "auto";
+                      target.style.height = `${target.scrollHeight}px`;
+                    }}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+              </FormItem>
+            )}
+          />
+
+          {/* Image Upload - conditionally rendered based on category */}
+          {showPhotoUpload && (
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <FormLabel className="text-black">
+                  Upload Photo (optional)
+                </FormLabel>
+                <p className="text-xs text-gray-500">1 photo of 5MB</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {imagePreviewUrls.map((url, index) => (
+                  <div
+                    key={index}
+                    className="relative h-32 border rounded-md overflow-hidden"
+                  >
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1 text-white"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+
+                {images.length < 3 && (
+                  <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple={images.length < 3}
+                      onChange={handleImageChange}
+                      className="hidden"
+                      disabled={isSubmitting}
+                    />
+                    <Upload size={24} className="text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Upload</span>
+                  </label>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <div className="mt-2">
+                    <LocationSelector
+                      onChange={handleLocationChange}
+                      compact
+                      className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                </FormItem>
+              )}
+            />
+
+            {/* USA Posting Option - only display for specific category/subcategory combinations */}
+            {showUSAOption && (
+              <FormField
+                control={form.control}
+                name="postToUSA"
+                render={({ field }) => (
+                  <FormItem className="flex justify-end space-x-3 space-y-0">
+                    <div className="space-y-1 leading-none flex items-center">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="w-[200px] text-sm">
+                              Reviewed by Desieasy team, will go live if
+                              approved.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <FormLabel className="font-medium">
+                        Also post in USA Listings
+                      </FormLabel>
+                    </div>
+                    <div className="flex flex-col justify-end">
+                      <FormControl className="">
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 pb-12">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => navigate("/")}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="mb-6 md:mb-0"
+            >
+              {isSubmitting
+                ? "Saving..."
+                : isEditing
+                ? "Update Listing"
+                : "Post Listing"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <CustomModal
+        open={isOpenSuccess}
+        onOpenChange={setIsOpenSuccess}
+        title=<div>
+          Awesome! <br /> Your listing is successfully posted.{" "}
         </div>
-      </form>
-    </Form>
-    <CustomModal
-  open={isOpenSuccess} 
-  onOpenChange={setIsOpenSuccess}
-  title = "Your listing is under review and will be live within 24 hours."
-  icon = {<CheckCircle className="h-10 w-10 text-green-500" />}
-/>
-   </div>
+        icon={<img className="ml-10" src={successImg} alt="loading" />}
+      />
+      <CustomModal
+        open={isOpenSuccess}
+        onOpenChange={setIsOpenSuccess}
+        title="Your listing is under review and will be live within 24 hours."
+        icon={<img className="" src={loadingImg} alt="loading" />}
+      />
+    </div>
   );
 };
 
