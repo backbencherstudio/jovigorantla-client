@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import LocationSelector from "@/components/LocationSelector";
-import { Upload, X, ImageIcon, Info } from "lucide-react";
+import { Upload, X, ImageIcon, Info, CheckCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
@@ -31,6 +31,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import CustomModal from "./shared/CustomModal";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 60;
@@ -95,6 +96,7 @@ const ListingForm = ({
   );
   const navigate = useNavigate();
   const { locationString, radius, updateRadius } = useGeolocation();
+  const [isOpenSuccess,setIsOpenSuccess] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -216,6 +218,7 @@ const ListingForm = ({
   };
 
   const handleSubmit = (values: FormValues) => {
+    setIsOpenSuccess(true);
     try {
       onSubmit({ ...values, images, radius });
     } catch (error) {
@@ -228,7 +231,8 @@ const ListingForm = ({
     selectedCategory !== "Rides" && selectedCategory !== "Jobs";
 
   return (
-    <Form {...form}>
+   <div>
+     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6 bg-white rounded-lg p-4"
@@ -477,6 +481,13 @@ const ListingForm = ({
         </div>
       </form>
     </Form>
+    <CustomModal
+  open={isOpenSuccess} 
+  onOpenChange={setIsOpenSuccess}
+  title = "Your listing is under review and will be live within 24 hours."
+  icon = {<CheckCircle className="h-10 w-10 text-green-500" />}
+/>
+   </div>
   );
 };
 
