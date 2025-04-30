@@ -190,7 +190,7 @@ function AppRoutes() {
       <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
-        defaultTab={defaultTab}
+        defaultTab={defaultTab as "login" | "signup"}
       />
     </div>
   );
