@@ -492,12 +492,6 @@ const ListingForm = ({
         </div>
         icon={<img className="ml-10" src={successImg} alt="loading" />}
       />
-      <CustomModal
-        open={isOpenSuccess}
-        onOpenChange={setIsOpenSuccess}
-        title="Your listing is under review and will be live within 24 hours."
-        icon={<img className="" src={loadingImg} alt="loading" />}
-      />
     </div>
   );
 };

@@ -77,15 +77,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem
-            onClick={onBlockUser}
-            className="cursor-pointer text-orange-600"
-          >
+          <DropdownMenuItem onClick={onBlockUser} className="cursor-pointer ">
             Block User
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onReportConversation}
-            className="cursor-pointer text-orange-600"
+            className="cursor-pointer"
           >
             Report
           </DropdownMenuItem>

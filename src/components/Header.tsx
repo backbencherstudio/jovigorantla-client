@@ -134,10 +134,7 @@ const Header = () => {
 
           {/* Search - Only on Tablet and Desktop */}
           {!isMobile && (
-            <form
-              onSubmit={handleSearch}
-              className=" mx-4 ml-[10%] w-[25vw] relative"
-            >
+            <form onSubmit={handleSearch} className=" mx-4 w-[25vw] relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 type="text"
@@ -186,12 +183,14 @@ const Header = () => {
 
               {/* Messages button with notification badge - Only shown for logged in users */}
               {user && (
-                <div className="relative">
+                <div
+                  onClick={() => navigate("/messages")}
+                  className="relative  rounded-full cursor-pointer"
+                >
                   <Button
                     variant="ghost"
                     size="icon"
                     className="rounded-full h-9 w-9 bg-[#f1f5f9]"
-                    onClick={() => navigate("/messages")}
                   >
                     <MessageCircle
                       className={`text-brand ${

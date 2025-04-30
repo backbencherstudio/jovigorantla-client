@@ -137,14 +137,14 @@ const ListingsContainer = ({
             listing={listing}
             onToggleSave={toggleSaveListing}
           />
-          {index === 5 && (
+          {/* {index === 5 && (
             <img
               src={listImg}
               alt={listing.title}
               className=" h-32 object-cover rounded-2xl bg-orange-500 mt-4 w-full"
               onClick={() => handleListingClick(listing.id)}
             />
-          )}
+          )} */}
 
           {/* Insert ad card after every 15 listings */}
           {(index + 1) % 15 === 0 && index + 1 < filteredListings.length && (
