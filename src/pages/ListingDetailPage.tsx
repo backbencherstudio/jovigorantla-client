@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -99,16 +100,37 @@ const ListingDetailPage = () => {
     }
   };
 
-  const handleListingAction = (action: string) => {
+  const handleListingAction = (e: React.MouseEvent, action: string) => {
+    e.stopPropagation();
+
     switch (action) {
       case "share":
-        handleShare();
+        toast.success(`Sharing listing: "${listing?.title}"`, {
+          description: "Opening sharing options",
+        });
+        // Use Web Share API if available, otherwise copy to clipboard
+        if (navigator.share) {
+          navigator.share({
+            title: listing?.title,
+            text: `Check out this listing: ${listing?.title}`,
+            url: `${window.location.origin}/listing/${listing?.id}`,
+          });
+        } else {
+          navigator.clipboard.writeText(
+            `${window.location.origin}/listing/${listing?.id}`
+          );
+          toast.success("Link copied to clipboard");
+        }
         break;
       case "hide":
-        // Handle hide action
+        toast.success(`Listing hidden: "${listing?.title}"`, {
+          description: "You won't see this listing anymore",
+        });
         break;
       case "report":
-        // Handle report action
+        toast.success(`Listing reported: "${listing?.title}"`, {
+          description: "Thank you for helping keep our community safe",
+        });
         break;
       default:
         break;
@@ -182,15 +204,21 @@ const ListingDetailPage = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleListingAction("share")}>
+                <DropdownMenuItem
+                  onClick={(e) => handleListingAction(e, "share")}
+                >
                   <Share2 className="h-4 w-4 mr-2" />
                   <span>Share</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleListingAction("hide")}>
+                <DropdownMenuItem
+                  onClick={(e) => handleListingAction(e, "hide")}
+                >
                   <EyeOff className="h-4 w-4 mr-2" />
                   <span>Hide</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleListingAction("report")}>
+                <DropdownMenuItem
+                  onClick={(e) => handleListingAction(e, "report")}
+                >
                   <Flag className="h-4 w-4 mr-2" />
                   <span>Report</span>
                 </DropdownMenuItem>

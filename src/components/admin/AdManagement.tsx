@@ -885,13 +885,27 @@ const AdManagement = () => {
                       </div>
 
                       {sidebarTopPreview && (
-                        <div className="mt-2 border rounded p-2">
+                        <div className="mt-2 rounded p-2">
                           <img
                             src={sidebarTopPreview}
                             alt="Top Sidebar Ad"
-                            className="max-h-64 mx-auto"
+                            className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
                         </div>
+                      )}
+                      {!sidebarTopPreview && (
+                        <Button
+                          variant="outline"
+                          onClick={previewAd}
+                          disabled={
+                            !newAdForm.name.trim() ||
+                            !newAdForm.targetUrl.trim()
+                          }
+                          className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Preview Ad
+                        </Button>
                       )}
                     </div>
 
@@ -966,13 +980,26 @@ const AdManagement = () => {
                       </div>
 
                       {sidebarBottomPreview && (
-                        <div className="mt-2 border rounded p-2">
+                        <div className="mt-2 rounded p-2">
                           <img
-                            src={sidebarBottomPreview}
-                            alt="Bottom Sidebar Ad"
-                            className="max-h-64 mx-auto"
+                            src={sidebarTopPreview}
+                            alt="Top Sidebar Ad"
+                            className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
                         </div>
+                      )}
+                      {!sidebarBottomPreview && (
+                        <Button
+                          variant="outline"
+                          onClick={previewAd}
+                          disabled={
+                            !newAdForm.name.trim() ||
+                            !newAdForm.targetUrl.trim()
+                          }
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Preview Ad
+                        </Button>
                       )}
                     </div>
 
@@ -1090,11 +1117,11 @@ const AdManagement = () => {
                   </div>
 
                   {adPreview && (
-                    <div className="mt-2 border rounded p-2">
+                    <div className="rounded-lg">
                       <img
                         src={adPreview}
                         alt="Ad Preview"
-                        className="max-h-32 mx-auto"
+                        className="h-[124px] object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
                       />
                     </div>
                   )}
@@ -1239,7 +1266,7 @@ const AdManagement = () => {
                     <h3 className="font-medium mb-3">
                       Create First Ad (Optional)
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-4 ">
                       <div className="grid gap-2">
                         <Label htmlFor="firstAdName">Ad Name</Label>
                         <Input
@@ -1299,27 +1326,32 @@ const AdManagement = () => {
                         </div>
 
                         {adPreview && (
-                          <div className="mt-2 border rounded p-2">
+                          <div className="rounded-lg">
                             <img
                               src={adPreview}
                               alt="Ad Preview"
-                              className="max-h-32 mx-auto"
+                              className="h-[124px] object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
                             />
                           </div>
                         )}
                       </div>
 
-                      <Button
-                        variant="outline"
-                        onClick={previewAd}
-                        disabled={
-                          !newAdForm.name.trim() || !newAdForm.targetUrl.trim()
-                        }
-                        className="w-full"
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        Preview Ad
-                      </Button>
+                      <div className="flex justify-center ">
+                        {!adPreview && (
+                          <Button
+                            variant="outline"
+                            onClick={previewAd}
+                            disabled={
+                              !newAdForm.name.trim() ||
+                              !newAdForm.targetUrl.trim()
+                            }
+                            className="w-full lg:w-[574px] z-50 h-[124px]"
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Preview Ad
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
