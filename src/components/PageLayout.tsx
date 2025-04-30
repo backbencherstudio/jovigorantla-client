@@ -24,6 +24,13 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isSmallDesktop = useMediaQuery(
+    "(min-width: 1024px) and (max-width: 1180px)"
+  );
+  const isMediumDesktop = useMediaQuery(
+    "(min-width: 1120px) and (max-width: 1300px)"
+  );
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,6 +41,20 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   // Calculate the left sidebar width based on device
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
+
+  // Title bar width calculation
+  const getTitleBarWidth = () => {
+    if (isSmallDesktop) {
+      return `484px`; // Specific width for devices between 1024px and 1300px
+    }
+    if (isMediumDesktop) {
+      return `740px`; // Specific width for devices between 1024px and 1300px
+    } else if (fullWidth) {
+      return "100%";
+    } else {
+      return "min(100%, 48rem)"; // 48rem = 3xl (768px)
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -65,18 +86,27 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           >
             {/* Page Header with back button */}
             {title && (
-              <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center">
-                {!hideBackButton && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleBack}
-                    className="mr-2"
-                  >
-                    <ArrowLeft className="h-5 w-5" />
-                  </Button>
-                )}
-                <h1 className="text-xl font-bold">{title}</h1>
+              <div className="relative">
+                <div
+                  className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center"
+                  style={{
+                    width: getTitleBarWidth(),
+                    top: "67px" /* Header height */,
+                  }}
+                >
+                  {!hideBackButton && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleBack}
+                      className="mr-2"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                  )}
+                  <h1 className="text-xl font-bold">{title}</h1>
+                </div>
+                <div className="h-[65px] bg-white border-b "></div>
               </div>
             )}
 
