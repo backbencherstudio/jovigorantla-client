@@ -20,7 +20,7 @@ import SignupEmailForm from "./Auth/SignupEmailForm";
 interface AuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultTab?: "login" | "signup";
+  defaultTab?: "login";
 }
 
 const AuthModal = ({
@@ -65,13 +65,6 @@ const AuthModal = ({
       resetPasswordForm.clearErrors();
     }
   }, [open]);
-
-  // Update active tab when signup step changes
-  useEffect(() => {
-    if (signupStep === "email") {
-      setActiveTab("signup");
-    }
-  }, [signupStep]);
 
   // Define schemas for forms
   const loginSchema = z.object({
@@ -157,7 +150,7 @@ const AuthModal = ({
       setSignupStep("verify");
       // Start the resend timer
       setResendDisabled(true);
-      setResendTimer(6);
+      setResendTimer(60);
       toast.success("Verification code sent to your email");
     } catch (error) {
       toast.error("Failed to send verification code");
