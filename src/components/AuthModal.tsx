@@ -20,7 +20,7 @@ import SignupEmailForm from "./Auth/SignupEmailForm";
 interface AuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultTab?: "login" | "signup";
+  defaultTab: "login" | "signup";
 }
 
 const AuthModal = ({
@@ -33,7 +33,7 @@ const AuthModal = ({
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState<"login" | "signup">(defaultTab);
   const isMobile = useIsMobile();
 
   // State for signup steps
@@ -65,13 +65,6 @@ const AuthModal = ({
       resetPasswordForm.clearErrors();
     }
   }, [open]);
-
-  // Update active tab when signup step changes
-  useEffect(() => {
-    if (signupStep === "email") {
-      setActiveTab("signup");
-    }
-  }, [signupStep]);
 
   // Define schemas for forms
   const loginSchema = z.object({

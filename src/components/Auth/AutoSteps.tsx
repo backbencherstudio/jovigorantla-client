@@ -56,7 +56,11 @@ const AuthSteps = ({
             variant="ghost"
             size="icon"
             onClick={() => {
-              setSignupStep("email");
+              if (signupStep === "details") {
+                setSignupStep("verify");
+              } else {
+                setSignupStep("email");
+              }
               // Reset the form when going back
               // signupEmailForm?.reset();
             }}

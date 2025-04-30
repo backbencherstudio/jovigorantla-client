@@ -40,7 +40,7 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
   return (
     <div
       key={listing.id}
-      className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow w-full"
+      className="bg-white max-w-[574px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleClick}
     >
       <div className="p-4">
@@ -50,7 +50,7 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
           <span>{displayStatus}</span>
         </div>
 
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium text-gray-900 mb-2 text-nowrap overflow-hidden text-ellipsis">
           {listing.title}
         </h3>
 

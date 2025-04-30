@@ -9,7 +9,7 @@ import ListingsGrid from "./ListingsGrid";
 import AdCard from "./AdCard";
 import { ListingType } from "@/types/listing";
 import adService from "@/services/adService";
-import listImg from "@/assets/listingimg.png";
+import listImg from "@/assets/listingImg.jpg";
 
 interface ListingsContainerProps {
   listings: ListingType[];
@@ -141,7 +141,7 @@ const ListingsContainer = ({
             <img
               src={listImg}
               alt={listing.title}
-              className=" h-32 object-cover rounded-2xl bg-orange-500 mt-4 w-full"
+              className=" h-[124px] object-cover rounded-lg shadow-md mt-4 bg-[#e5ebee] w-full lg:w-[574px]"
               onClick={() => handleListingClick(listing.id)}
             />
           )}

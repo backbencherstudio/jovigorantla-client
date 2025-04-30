@@ -27,10 +27,10 @@ const ResetPasswordForm = ({
         <ArrowLeft />
       </Button>
       <div className="w-full max-w-md space-y-6 mt-10">
-        <h2 className="text-2xl font-bold text-center">Reset Password</h2>
+        <h2 className="text-2xl font-bold text-center">Reset your password</h2>
         <p className="text-sm text-gray-500 text-center">
-          Enter your email address and we'll send you a link to reset your
-          password.
+          Enter your email address and we'll send you OTP<br></br> to verify
+          your email.
         </p>
 
         <Form {...resetPasswordForm}>

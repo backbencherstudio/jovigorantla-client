@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -99,16 +100,37 @@ const ListingDetailPage = () => {
     }
   };
 
-  const handleListingAction = (action: string) => {
+  const handleListingAction = (e: React.MouseEvent, action: string) => {
+    e.stopPropagation();
+
     switch (action) {
       case "share":
-        handleShare();
+        toast.success(`Sharing listing: "${listing?.title}"`, {
+          description: "Opening sharing options",
+        });
+        // Use Web Share API if available, otherwise copy to clipboard
+        if (navigator.share) {
+          navigator.share({
+            title: listing?.title,
+            text: `Check out this listing: ${listing?.title}`,
+            url: `${window.location.origin}/listing/${listing?.id}`,
+          });
+        } else {
+          navigator.clipboard.writeText(
+            `${window.location.origin}/listing/${listing?.id}`
+          );
+          toast.success("Link copied to clipboard");
+        }
         break;
       case "hide":
-        // Handle hide action
+        toast.success(`Listing hidden: "${listing?.title}"`, {
+          description: "You won't see this listing anymore",
+        });
         break;
       case "report":
-        // Handle report action
+        toast.success(`Listing reported: "${listing?.title}"`, {
+          description: "Thank you for helping keep our community safe",
+        });
         break;
       default:
         break;
@@ -153,91 +175,101 @@ const ListingDetailPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
-      <div className="px-4 flex-1 py-[10px] overflow-y-auto pb-24 max-w-3xl mx-auto w-full">
+      <div className="flex-1 py-[10px] overflow-y-auto pb-24 max-w-3xl mx-auto w-full">
         {/* Category, status and action buttons */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center text-gray-500 text-sm gap-2">
-            <span>{displayCategory}</span>
-            <span>•</span>
-            <span>{displayStatus}</span>
+        <div className="px-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center text-gray-500 text-sm gap-2">
+              <span>{displayCategory}</span>
+              <span>•</span>
+              <span>{displayStatus}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSaveListing}
+                className="h-8 w-8"
+              >
+                <Star
+                  className={`h-5 w-5 ${
+                    isSaved ? "fill-[#ff6b00] text-[#ff6b00]" : ""
+                  }`}
+                />
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={(e) => handleListingAction(e, "share")}
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    <span>Share</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => handleListingAction(e, "hide")}
+                  >
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    <span>Hide</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => handleListingAction(e, "report")}
+                  >
+                    <Flag className="h-4 w-4 mr-2" />
+                    <span>Report</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSaveListing}
-              className="h-8 w-8"
-            >
-              <Star
-                className={`h-5 w-5 ${
-                  isSaved ? "fill-[#ff6b00] text-[#ff6b00]" : ""
-                }`}
-              />
-            </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleListingAction("share")}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  <span>Share</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleListingAction("hide")}>
-                  <EyeOff className="h-4 w-4 mr-2" />
-                  <span>Hide</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleListingAction("report")}>
-                  <Flag className="h-4 w-4 mr-2" />
-                  <span>Report</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Title */}
+          <h1 className="text-2xl font-bold mb-4">{listing.title}</h1>
+
+          {/* User info and metadata - updated format */}
+          <div className="flex items-center text-sm text-gray-500 mb-4">
+            <span>Ramesh</span>
+            <span className="mx-2">•</span>
+            <span>12h ago</span>
+            <span className="mx-2">•</span>
+            <span>Denton, TX</span>
           </div>
+
+          {/* Description - only show if it exists */}
+          {listing.description && (
+            <Card className="mb-6 border-none shadow-none">
+              <CardContent className="p-0">
+                <h2 className="text-lg font-bold mb-2">Description</h2>
+                <p className="text-gray-700 whitespace-pre-line">
+                  {listing.description}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Photo Gallery - only show if there are images and not for jobs/rides */}
+          {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
+            <PhotoGallery images={[listing.image]} listingId={listing.id} />
+          )}
         </div>
-
-        {/* Title */}
-        <h1 className="text-2xl font-bold mb-4">{listing.title}</h1>
-
-        {/* User info and metadata - updated format */}
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <span>Ramesh</span>
-          <span className="mx-2">•</span>
-          <span>12h ago</span>
-          <span className="mx-2">•</span>
-          <span>Denton, TX</span>
-        </div>
-
-        {/* Description - only show if it exists */}
-        {listing.description && (
-          <Card className="mb-6 border-none shadow-none">
-            <CardContent className="p-0">
-              <h2 className="text-lg font-bold mb-2">Description</h2>
-              <p className="text-gray-700 whitespace-pre-line">
-                {listing.description}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Photo Gallery - only show if there are images and not for jobs/rides */}
-        {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
-          <PhotoGallery images={[listing.image]} listingId={listing.id} />
-        )}
-
         {/* Contact button - only show on desktop */}
         {!isMobile && (
-          <div className="my-8 max-w-3xl mx-auto">
-            <Button
-              onClick={handleContact}
-              className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
-            >
-              <MessageSquare className="h-5 w-5 mr-2" />
-              Message
-            </Button>
+          <div className="w-full relative">
+            <div className="my-8 p-4  max-w-3xl w-[768px] mx-auto fixed  -bottom-10 bg-white">
+              <Button
+                onClick={handleContact}
+                className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Message
+              </Button>
+            </div>
+            <div className="h-16"></div>
           </div>
         )}
       </div>

@@ -99,6 +99,7 @@ const ListingForm = ({
   const navigate = useNavigate();
   const { locationString, radius, updateRadius } = useGeolocation();
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
+  const [isOpenPending, setIsOpenPending] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -220,7 +221,13 @@ const ListingForm = ({
   };
 
   const handleSubmit = (values: FormValues) => {
-    setIsOpenSuccess(true);
+    // Check if postToUSA is true, then show pending modal, else show success modal
+    if (values.postToUSA) {
+      setIsOpenPending(true);
+    } else {
+      setIsOpenSuccess(true);
+    }
+
     try {
       onSubmit({ ...values, images, radius });
     } catch (error) {
@@ -484,17 +491,23 @@ const ListingForm = ({
           </div>
         </form>
       </Form>
+
+      {/* Success Modal - shown when postToUSA is false */}
       <CustomModal
         open={isOpenSuccess}
         onOpenChange={setIsOpenSuccess}
-        title=<div>
-          Awesome! <br /> Your listing is successfully posted.{" "}
-        </div>
-        icon={<img className="ml-10" src={successImg} alt="loading" />}
+        title={
+          <div>
+            Awesome! <br /> Your listing is successfully posted.{" "}
+          </div>
+        }
+        icon={<img className="ml-10" src={successImg} alt="success" />}
       />
+
+      {/* Pending Review Modal - shown when postToUSA is true */}
       <CustomModal
-        open={isOpenSuccess}
-        onOpenChange={setIsOpenSuccess}
+        open={isOpenPending}
+        onOpenChange={setIsOpenPending}
         title="Your listing is under review and will be live within 24 hours."
         icon={<img className="" src={loadingImg} alt="loading" />}
       />
