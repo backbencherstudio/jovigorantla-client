@@ -13,6 +13,28 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [width, setWidth] = useState("768px");
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else if (screenWidth < 1024 && screenWidth > 778) {
+        setWidth(`${770}px`);
+      } else if (screenWidth < 778) {
+        setWidth("100%");
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -83,9 +105,11 @@ const Profile = () => {
             <p className="text-sm text-gray-500">Email cannot be changed</p>
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Button>
+          <div style={{ width: width }} className="fixed bottom-3  pr-6">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>
