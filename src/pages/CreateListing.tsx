@@ -60,11 +60,15 @@ const CreateListing = () => {
 
   return (
     <div className="pb-6">
-      <ListingForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+      <ListingForm
+        user={user}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
       <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
-        defaultTab={defaultTab}
+        defaultTab={defaultTab as "login" | "signup"}
       />
     </div>
   );

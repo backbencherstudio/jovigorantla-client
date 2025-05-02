@@ -34,6 +34,7 @@ import {
 import CustomModal from "./shared/CustomModal";
 import loadingImg from "@/assets/loading.png";
 import successImg from "@/assets/success.png";
+import { User } from "@supabase/supabase-js";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 60;
@@ -63,6 +64,7 @@ interface ListingFormProps {
   initialValues?: Partial<FormValues & { images: File[]; radius: number }>;
   isEditing?: boolean;
   isSubmitting?: boolean;
+  user: User;
 }
 
 // Define the main categories and their corresponding subcategories
@@ -76,6 +78,7 @@ const categoriesConfig = {
 const categories = Object.keys(categoriesConfig);
 
 const ListingForm = ({
+  user,
   onSubmit,
   initialValues,
   isEditing = false,
@@ -222,10 +225,12 @@ const ListingForm = ({
 
   const handleSubmit = (values: FormValues) => {
     // Check if postToUSA is true, then show pending modal, else show success modal
-    if (values.postToUSA) {
-      setIsOpenPending(true);
-    } else {
-      setIsOpenSuccess(true);
+    if (user) {
+      if (values.postToUSA) {
+        setIsOpenPending(true);
+      } else {
+        setIsOpenSuccess(true);
+      }
     }
 
     try {
