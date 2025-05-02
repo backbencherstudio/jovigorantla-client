@@ -23,6 +23,7 @@ import AboutUs from "@/pages/AboutUs";
 import AuthModal from "@/components/AuthModal";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import "./App.css";
+import ChatPage from "./pages/ChatPage";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -115,6 +116,16 @@ function AppRoutes() {
             <PrivateRoute>
               <PageLayout title="Messages">
                 <Messages />
+              </PageLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/messages/:conversationId"
+          element={
+            <PrivateRoute>
+              <PageLayout title="Chat">
+                <ChatPage />
               </PageLayout>
             </PrivateRoute>
           }

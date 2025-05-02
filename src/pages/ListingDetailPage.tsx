@@ -101,7 +101,7 @@ const ListingDetailPage = () => {
       const conversationId = "1"; // In a real app, this would be fetched or created
 
       // Redirect to the specific conversation
-      navigate(`/messages?conversation=${conversationId}`);
+      navigate(`/messages/${conversationId}`);
     } else {
       setIsOpen(true);
     }

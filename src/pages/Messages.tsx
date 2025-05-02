@@ -288,6 +288,30 @@ const Messages = () => {
     navigate(`/listing/${listingId}`);
   };
 
+  const handleConversationSelect = (conversationId: string) => {
+    // Mark the selected conversation as read before navigating
+    setConversations((prevConversations) =>
+      prevConversations.map((conv) => {
+        if (conv.id === conversationId) {
+          return {
+            ...conv,
+            unreadCount: 0,
+            lastMessage: {
+              ...conv.lastMessage,
+              isRead: true,
+            },
+            messages: conv.messages.map((msg) => ({
+              ...msg,
+              read: true,
+            })),
+          };
+        }
+        return conv;
+      })
+    );
+    navigate(`/messages/${conversationId}`);
+  };
+
   // Single column layout - always show either conversation list or active conversation
   return (
     <div className="h-[85vh] flex flex-col bg-white">
@@ -310,7 +334,7 @@ const Messages = () => {
                         ? "bg-blue-50"
                         : ""
                     }`}
-                    onClick={() => setActiveConversation(conv.id)}
+                    onClick={() => handleConversationSelect(conv.id)}
                   >
                     <div className="p-3 hover:bg-gray-50">
                       <div className="flex justify-between items-start">
