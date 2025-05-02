@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   MessageSquare,
@@ -67,6 +67,25 @@ const ListingDetailPage = () => {
     formattedTime = formattedTime.replace(/(\d+) days? ago/, "$1d ago");
     return formattedTime;
   };
+  const [width, setWidth] = useState("500px");
+
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   const timeAgo = formatTime(new Date(listing.createdAt));
 
@@ -259,11 +278,14 @@ const ListingDetailPage = () => {
         </div>
         {/* Contact button - only show on desktop */}
         {!isMobile && (
-          <div className="w-full relative">
-            <div className="my-8 p-4  max-w-3xl w-[768px] mx-auto fixed  -bottom-10 bg-white">
+          <div className="w-full relative ">
+            <div
+              style={{ width: width }}
+              className="my-8 p-4 bg-white  mx-auto fixed  -bottom-10 "
+            >
               <Button
                 onClick={handleContact}
-                className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+                className=" bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
                 Message
