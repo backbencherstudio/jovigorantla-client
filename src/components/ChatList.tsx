@@ -1,11 +1,10 @@
-
-import { useState } from 'react';
-import { User, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from "react";
+import { User, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Updated interface for conversation type
 export interface Conversation {
@@ -32,36 +31,41 @@ interface ChatListProps {
   activeConversationId?: string;
 }
 
-const ChatList = ({ conversations, onSelect, activeConversationId }: ChatListProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const filteredConversations = conversations.filter(chat => 
-    chat.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    chat.listingTitle.toLowerCase().includes(searchQuery.toLowerCase())
+const ChatList = ({
+  conversations,
+  onSelect,
+  activeConversationId,
+}: ChatListProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredConversations = conversations.filter(
+    (chat) =>
+      chat.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      chat.listingTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   // Format the timestamp in a consistent format
   const formatTimeAgo = (date: Date) => {
     const timeAgo = formatDistanceToNow(date, { addSuffix: true });
-    
+
     // Replace "about" with empty string
-    let formattedTime = timeAgo.replace('about ', '');
-    
+    let formattedTime = timeAgo.replace("about ", "");
+
     // Replace "less than a minute" with "1m"
-    formattedTime = formattedTime.replace('less than a minute ago', '1m ago');
-    
+    formattedTime = formattedTime.replace("less than a minute ago", "1m ago");
+
     // Replace "X minutes" with "Xm"
-    formattedTime = formattedTime.replace(/(\d+) minutes? ago/, '$1m ago');
-    
+    formattedTime = formattedTime.replace(/(\d+) minutes? ago/, "$1m ago");
+
     // Replace "X hours" with "Xh"
-    formattedTime = formattedTime.replace(/(\d+) hours? ago/, '$1h ago');
-    
+    formattedTime = formattedTime.replace(/(\d+) hours? ago/, "$1h ago");
+
     // Replace "X days" with "Xd"
-    formattedTime = formattedTime.replace(/(\d+) days? ago/, '$1d ago');
-    
+    formattedTime = formattedTime.replace(/(\d+) days? ago/, "$1d ago");
+
     return formattedTime;
   };
-  
+
   return (
     <div className="h-full flex flex-col bg-background">
       {/* Search bar with improved styling */}
@@ -76,8 +80,7 @@ const ChatList = ({ conversations, onSelect, activeConversationId }: ChatListPro
           />
         </div>
       </div>
-      
-      {/* Conversations list with improved styling */}
+      Conversations list with improved styling
       <div className="flex-1 overflow-y-auto">
         {filteredConversations.length === 0 ? (
           <div className="h-full flex items-center justify-center text-muted-foreground p-8">
@@ -85,13 +88,15 @@ const ChatList = ({ conversations, onSelect, activeConversationId }: ChatListPro
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
-            {filteredConversations.map(conv => (
+            {filteredConversations.map((conv) => (
               <li key={conv.id}>
                 <Button
                   variant="ghost"
                   className={cn(
                     "w-full justify-start p-3 rounded-none transition-colors",
-                    activeConversationId === conv.id ? "bg-primary/5" : "hover:bg-gray-50",
+                    activeConversationId === conv.id
+                      ? "bg-primary/5"
+                      : "hover:bg-gray-50",
                     conv.unreadCount > 0 ? "bg-gray-50 font-medium" : ""
                   )}
                   onClick={() => onSelect(conv.id)}
@@ -101,7 +106,10 @@ const ChatList = ({ conversations, onSelect, activeConversationId }: ChatListPro
                     <div className="flex-shrink-0">
                       <Avatar className="h-12 w-12 border border-gray-100">
                         {conv.otherUser.avatar ? (
-                          <AvatarImage src={conv.otherUser.avatar} alt={conv.otherUser.name} />
+                          <AvatarImage
+                            src={conv.otherUser.avatar}
+                            alt={conv.otherUser.name}
+                          />
                         ) : (
                           <AvatarFallback className="bg-primary/10 text-primary font-medium">
                             {conv.otherUser.name.charAt(0).toUpperCase()}
@@ -109,26 +117,34 @@ const ChatList = ({ conversations, onSelect, activeConversationId }: ChatListPro
                         )}
                       </Avatar>
                     </div>
-                    
+
                     {/* Message content with improved styling */}
                     <div className="flex-1 min-w-0 text-left">
                       <div className="flex justify-between items-center">
-                        <p className="text-sm font-medium truncate text-foreground">{conv.otherUser.name}</p>
+                        <p className="text-sm font-medium truncate text-foreground">
+                          {conv.otherUser.name}
+                        </p>
                         <p className="text-xs text-muted-foreground whitespace-nowrap">
                           {formatTimeAgo(conv.lastMessage.timestamp)}
                         </p>
                       </div>
-                      
-                      <p className="text-xs text-gray-500 truncate mt-0.5">{conv.listingTitle}</p>
-                      
-                      <p className={cn(
-                        "text-sm truncate mt-1 leading-snug",
-                        !conv.lastMessage.isRead ? "text-foreground font-medium" : "text-muted-foreground"
-                      )}>
+
+                      <p className="text-xs text-gray-500 truncate mt-0.5">
+                        {conv.listingTitle}
+                      </p>
+
+                      <p
+                        className={cn(
+                          "text-sm truncate mt-1 leading-snug",
+                          !conv.lastMessage.isRead
+                            ? "text-foreground font-medium"
+                            : "text-muted-foreground"
+                        )}
+                      >
                         {conv.lastMessage.text}
                       </p>
                     </div>
-                    
+
                     {/* Unread indicator with improved styling */}
                     {conv.unreadCount > 0 && (
                       <div className="ml-1 self-start mt-1">

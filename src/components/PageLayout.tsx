@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Header from "@/components/Header";
@@ -24,12 +24,6 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const isSmallDesktop = useMediaQuery(
-    "(min-width: 1024px) and (max-width: 1180px)"
-  );
-  const isMediumDesktop = useMediaQuery(
-    "(min-width: 1120px) and (max-width: 1300px)"
-  );
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,19 +36,24 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
-  // Title bar width calculation
-  const getTitleBarWidth = () => {
-    if (isSmallDesktop) {
-      return `484px`; // Specific width for devices between 1024px and 1300px
-    }
-    if (isMediumDesktop) {
-      return `740px`; // Specific width for devices between 1024px and 1300px
-    } else if (fullWidth) {
-      return "100%";
-    } else {
-      return "min(100%, 48rem)"; // 48rem = 3xl (768px)
-    }
-  };
+  const [width, setWidth] = useState("768px");
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -90,7 +89,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                 <div
                   className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center"
                   style={{
-                    width: getTitleBarWidth(),
+                    width: width,
                     top: "67px" /* Header height */,
                   }}
                 >

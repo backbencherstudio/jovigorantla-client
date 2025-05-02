@@ -110,6 +110,21 @@ const USAListings = () => {
   const handleViewListing = (listingId: string) => {
     navigate(`/listing/${listingId}`);
   };
+  const handleDeleteListing = (id: string) => {
+    const listing = usaListings.find((item) => item.id === id);
+    if (listing) {
+      const updatedListing = {
+        ...listing,
+        decision: "deleted",
+        decisionBy: "admin@example.com",
+        decisionAt: new Date().toISOString(),
+      };
+
+      setUsaHistory([updatedListing, ...usaHistory]);
+      setUsaListings(usaListings.filter((listing) => listing.id !== id));
+      toast.success("Listing deleted successfully");
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -198,7 +213,7 @@ const USAListings = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleRejectUSAListing(listing.id);
+                      handleDeleteListing(listing.id);
                     }}
                   >
                     <Trash2 className="h-4 w-4 mr-1" />

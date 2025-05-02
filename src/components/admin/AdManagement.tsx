@@ -982,8 +982,8 @@ const AdManagement = () => {
                       {sidebarBottomPreview && (
                         <div className="mt-2 rounded p-2">
                           <img
-                            src={sidebarTopPreview}
-                            alt="Top Sidebar Ad"
+                            src={sidebarBottomPreview}
+                            alt="Bottom Sidebar Ad"
                             className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
                         </div>
