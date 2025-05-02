@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { toast } from "sonner";
+import AuthModal from "@/components/AuthModal";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,8 @@ const ListingDetailPage = () => {
   const navigate = useNavigate();
   const isMobile = !useMediaQuery("(min-width: 768px)");
   const [isSaved, setIsSaved] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
 
   // In a real app, you would fetch the listing details from an API
   // For now, we'll use mock data
@@ -70,6 +73,9 @@ const ListingDetailPage = () => {
   const [width, setWidth] = useState("500px");
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+
     // Function to update width based on screen size
     const updateWidth = () => {
       const screenWidth = window.innerWidth;
@@ -90,16 +96,20 @@ const ListingDetailPage = () => {
   const timeAgo = formatTime(new Date(listing.createdAt));
 
   const handleContact = () => {
-    // Find or create conversation for this listing
-    const conversationId = "1"; // In a real app, this would be fetched or created
+    if (user) {
+      // Find or create conversation for this listing
+      const conversationId = "1"; // In a real app, this would be fetched or created
 
-    // Redirect to the specific conversation
-    navigate(`/messages?conversation=${conversationId}`);
+      // Redirect to the specific conversation
+      navigate(`/messages?conversation=${conversationId}`);
+    } else {
+      setIsOpen(true);
+    }
   };
 
   const toggleSaveListing = () => {
     if (!user) {
-      window.location.href = "/auth";
+      setIsOpen(true);
       return;
     }
     setIsSaved(!isSaved);
@@ -159,6 +169,8 @@ const ListingDetailPage = () => {
   const handleBack = () => {
     navigate(-1);
   };
+
+  const closeModal = () => setIsOpen(false);
 
   if (loading) {
     return (
@@ -310,6 +322,11 @@ const ListingDetailPage = () => {
           </div>
         </div>
       )}
+      <AuthModal
+        open={isOpen}
+        onOpenChange={closeModal}
+        defaultTab={defaultTab as "login" | "signup"}
+      />
     </div>
   );
 };
