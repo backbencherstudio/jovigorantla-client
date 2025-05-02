@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export function useAuthModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [defaultTab, setDefaultTab] = useState("login");
+  const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
   const navigate = useNavigate();
 
   const openModal = useCallback((tab: "login" | "signup" = "login") => {
