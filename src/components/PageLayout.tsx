@@ -24,12 +24,6 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const isSmallDesktop = useMediaQuery(
-    "(min-width: 1024px) and (max-width: 1180px)"
-  );
-  const isMediumDesktop = useMediaQuery(
-    "(min-width: 1120px) and (max-width: 1300px)"
-  );
 
   const navigate = useNavigate();
   const location = useLocation();

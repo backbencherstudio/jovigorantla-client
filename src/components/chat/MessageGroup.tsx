@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Message } from '@/components/chat/types';
-import MessageBubble from '@/components/chat/MessageBubble';
+import React from "react";
+import { Message } from "@/components/chat/types";
+import MessageBubble from "@/components/chat/MessageBubble";
 
 interface MessageGroupProps {
   dateLabel: string;
@@ -16,7 +15,7 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
   messages,
   currentUserId,
   otherUserName,
-  otherUserAvatar
+  otherUserAvatar,
 }) => {
   return (
     <div className="space-y-2">
@@ -26,18 +25,21 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
           {dateLabel}
         </span>
       </div>
-      
+
       <div className="space-y-1">
         {messages.map((message, index) => {
           const isCurrentUser = message.senderId === currentUserId;
-          const showAvatar = !isCurrentUser && (index === 0 || 
-            messages[index - 1]?.senderId !== message.senderId);
-            
+          const showAvatar =
+            !isCurrentUser &&
+            (index === 0 || messages[index - 1]?.senderId !== message.senderId);
+
           // Determine if the message is the first or last in a group from the same sender
-          const isFirstInGroup = index === 0 || messages[index - 1]?.senderId !== message.senderId;
-          const isLastInGroup = index === messages.length - 1 || 
+          const isFirstInGroup =
+            index === 0 || messages[index - 1]?.senderId !== message.senderId;
+          const isLastInGroup =
+            index === messages.length - 1 ||
             messages[index + 1]?.senderId !== message.senderId;
-            
+
           return (
             <MessageBubble
               key={message.id}

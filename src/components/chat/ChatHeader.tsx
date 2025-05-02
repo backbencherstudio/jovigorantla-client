@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MoreVertical, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,34 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
       navigate(`/listing/${listingId}`);
     }
   };
+  const [width, setWidth] = useState("768px");
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else if (screenWidth <= 840 && screenWidth > 768) {
+        setWidth(`${screenWidth - 100}px`);
+      } else if (screenWidth < 768) {
+        setWidth(`${screenWidth - 10}px`);
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   return (
-    <div className="p-3 bg-white border-t flex items-center justify-between fixed  top-[66px] z-10 w-[100vw] sm:w-[768px] lg:w-[58vw] xl:w 2xl:w-[40vw]">
+    <div
+      style={{ width: width }}
+      className="p-3 bg-white border-t flex items-center justify-between fixed  top-[66px] z-10"
+    >
       <div className="flex items-center flex-1">
         <Button
           variant="ghost"
