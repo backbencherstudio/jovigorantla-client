@@ -138,7 +138,7 @@ const Index = () => {
         window.dispatchEvent(new Event("radiusUpdated"));
       });
     } else if (filter === "USA") {
-      updateRadius(3000).then(() => {
+      updateRadius(30).then(() => {
         window.dispatchEvent(new Event("radiusUpdated"));
       });
     }

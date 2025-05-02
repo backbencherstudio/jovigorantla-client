@@ -278,9 +278,9 @@ const Messages = () => {
     }
   };
 
-  // Handle back button
   const handleBack = () => {
     setActiveConversation(null);
+    navigate(-1);
   };
 
   // Handle listing title click

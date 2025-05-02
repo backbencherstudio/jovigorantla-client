@@ -35,7 +35,7 @@ import CustomModal from "./shared/CustomModal";
 import loadingImg from "@/assets/loading.png";
 import successImg from "@/assets/success.png";
 import { User } from "@supabase/supabase-js";
-
+import { MdWarningAmber } from "react-icons/md";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 60;
 
@@ -103,6 +103,7 @@ const ListingForm = ({
   const { locationString, radius, updateRadius } = useGeolocation();
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
+  const [isOpenError, setIsOpenError] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -225,11 +226,14 @@ const ListingForm = ({
 
   const handleSubmit = (values: FormValues) => {
     // Check if postToUSA is true, then show pending modal, else show success modal
+
     if (user) {
       if (values.postToUSA) {
         setIsOpenPending(true);
-      } else {
+      } else if (values.postToUSA === false) {
         setIsOpenSuccess(true);
+      } else {
+        setIsOpenError(true);
       }
     }
 
@@ -499,6 +503,7 @@ const ListingForm = ({
 
       {/* Success Modal - shown when postToUSA is false */}
       <CustomModal
+        type="success"
         open={isOpenSuccess}
         onOpenChange={setIsOpenSuccess}
         title={
@@ -515,6 +520,18 @@ const ListingForm = ({
         onOpenChange={setIsOpenPending}
         title="Your listing is under review and will be live within 24 hours."
         icon={<img className="" src={loadingImg} alt="loading" />}
+      />
+      <CustomModal
+        open={isOpenError}
+        onOpenChange={setIsOpenError}
+        type="error"
+        title={
+          <p className="text-center text-nowrap">
+            Oops! An Unexpected error has been
+            <br /> occurred ,Please refresh the page
+          </p>
+        }
+        icon={<MdWarningAmber size={100} className="text-[#e55f00]" />}
       />
     </div>
   );

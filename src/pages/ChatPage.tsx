@@ -240,7 +240,7 @@ const ChatPage = () => {
   };
 
   const handleBack = () => {
-    navigate("/messages");
+    navigate(-1);
   };
 
   if (!conversation) {
