@@ -141,7 +141,7 @@ const ListingsContainer = ({
             <img
               src={listImg}
               alt={listing.title}
-              className=" h-[124px] object-cover rounded-lg shadow-md mt-4 bg-[#e5ebee] w-full lg:w-[574px]"
+              className=" h-[124px]  rounded-lg shadow-md mt-4 bg-[#e5ebee] w-full lg:w-[574px]"
               onClick={() => handleListingClick(listing.id)}
             />
           )}

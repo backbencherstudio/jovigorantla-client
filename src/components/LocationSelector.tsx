@@ -26,7 +26,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     useGeolocation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [radiusValue, setRadiusValue] = useState(radius || 10);
+  const [radiusValue, setRadiusValue] = useState(radius || 40);
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayText, setDisplayText] = useState("");
 

@@ -42,7 +42,7 @@ const AuthModal = ({
   );
   const [signupEmail, setSignupEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [resendTimer, setResendTimer] = useState(0);
+  const [resendTimer, setResendTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState(false);
   useEffect(() => {
     if (!open) {

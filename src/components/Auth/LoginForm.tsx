@@ -41,7 +41,7 @@ const LoginForm = ({
                   </FormControl>
                 </div>
                 <div className="h-5">
-                  <FormMessage className="text-xs text-red-700 font-normal ml-3 -mt-[6.5px]" />
+                  <FormMessage className="text-xs text-[#b3261e] font-normal ml-3 -mt-[6.5px]" />
                 </div>
               </FormItem>
             )}
@@ -76,7 +76,7 @@ const LoginForm = ({
                   </button>
                 </div>
                 <div className="h-5">
-                  <FormMessage className="text-xs text-red-700 font-normal ml-3 -mt-[6.5px]" />
+                  <FormMessage className="text-xs text-[#b3261e] font-normal ml-3 -mt-[6.5px]" />
                 </div>
               </FormItem>
             )}

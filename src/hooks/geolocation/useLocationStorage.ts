@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 export const useLocationStorage = () => {
   const [locationString, setLocationString] = useState<string>('');
-  const [radius, setRadius] = useState<number>(10); // Default radius is 10 miles
+  const [radius, setRadius] = useState<number>(40); // Default radius is 10 miles
 
   useEffect(() => {
     // Load saved location and radius from localStorage

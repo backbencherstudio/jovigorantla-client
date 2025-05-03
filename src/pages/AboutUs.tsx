@@ -44,10 +44,23 @@ const AboutUs = () => {
             href="mailto:support@desieasy.com"
             className="text-brand hover:underline"
           >
-            desieasy.com@gmail.com
+            support@desieasy.com
           </a>
         </p>
       </section>
+      <div className="mt-10">
+        <div className="flex  gap-2">
+          <p className="text-xs text-gray-500 hover:underline cursor-pointer">
+            Privacy Policy
+          </p>
+          <p className="text-xs text-gray-500 hover:underline cursor-pointer">
+            User Agreement
+          </p>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Desieasy © 2025. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 };

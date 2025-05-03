@@ -54,7 +54,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       {/* Other user avatar */}
       {!isCurrentUser && showAvatar && (
-        <Avatar className="h-8 w-8 mt-auto">
+        <Avatar className="h-8 w-8 mb-5 mt-auto">
           <AvatarFallback className="bg-primary/10">
             <UserRound className="h-4 w-4" />
           </AvatarFallback>

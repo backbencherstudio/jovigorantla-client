@@ -35,7 +35,7 @@ interface USAListing {
   category: string;
   postedBy: string;
   postedAt: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "blocked";
   decision?: string;
   decisionBy?: string;
   decisionAt?: string;
@@ -82,8 +82,8 @@ const USAListings = () => {
     if (listing) {
       const updatedListing: USAListing = {
         ...listing,
-        status: "rejected" as const,
-        decision: "rejected",
+        status: "blocked" as const,
+        decision: "blocked",
         decisionBy: "admin@example.com",
         decisionAt: new Date().toISOString(),
       };
@@ -257,6 +257,8 @@ const USAListings = () => {
                         className={`px-2 py-1 rounded-full text-xs ${
                           item.decision === "approved"
                             ? "bg-green-100 text-green-800"
+                            : item.decision === "blocked"
+                            ? "bg-orange-100 text-orange-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
