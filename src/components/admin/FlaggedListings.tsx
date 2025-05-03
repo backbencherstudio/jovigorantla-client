@@ -209,56 +209,58 @@ const FlaggedListings = () => {
               <p className="text-gray-500">No decision history available</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Listing Title</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Reported By</TableHead>
-                  <TableHead>Decision</TableHead>
-                  <TableHead>Decision Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {flaggedHistory.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">
-                      {item.listingTitle}
-                    </TableCell>
-                    <TableCell>{item.category}</TableCell>
-                    <TableCell>{item.reportedBy}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          item.decision === "approved"
-                            ? "bg-green-100 text-green-800"
-                            : item.decision === "blocked"
-                            ? "bg-orange-100 text-orange-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {item.decision?.charAt(0).toUpperCase() +
-                          item.decision?.slice(1)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {item.decisionAt ? formatDate(item.decisionAt) : "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleViewListing(item.listingId)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto max-w-[90vw]">
+              <Table className="w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Listing Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Reported By</TableHead>
+                    <TableHead>Decision</TableHead>
+                    <TableHead>Decision Date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {flaggedHistory.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">
+                        {item.listingTitle}
+                      </TableCell>
+                      <TableCell>{item.category}</TableCell>
+                      <TableCell>{item.reportedBy}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            item.decision === "approved"
+                              ? "bg-green-100 text-green-800"
+                              : item.decision === "blocked"
+                              ? "bg-orange-100 text-orange-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {item.decision?.charAt(0).toUpperCase() +
+                            item.decision?.slice(1)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {item.decisionAt ? formatDate(item.decisionAt) : "-"}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleViewListing(item.listingId)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </>
       )}
