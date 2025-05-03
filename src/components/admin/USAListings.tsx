@@ -211,6 +211,7 @@ const USAListings = () => {
                   <Button
                     variant="destructive"
                     size="sm"
+                    className="bg-[#bc0117] text-white hover:bg-red-600"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteListing(listing.id);

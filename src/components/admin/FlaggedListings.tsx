@@ -184,6 +184,7 @@ const FlaggedListings = () => {
                   </Button>
                   <Button
                     variant="destructive"
+                    className="bg-[#bc0117] text-white hover:bg-red-600"
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
