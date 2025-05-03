@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -10,7 +10,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const location = useLocation();
   const { user } = useAuth();
-
+  const navigate = useNavigate();
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
   const isEmployee =
@@ -95,10 +95,18 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       </div>
       <div className="fixed bottom-5 left-4 hidden xl:block">
         <div className="flex  gap-2">
-          <p className="text-xs text-gray-500 hover:underline cursor-pointer">
+          <p
+            onClick={() => navigate("/privacy-policy")}
+            className="text-xs text-gray-500 hover:underline cursor-pointer"
+          >
             Privacy Policy
           </p>
-          <p className="text-xs text-gray-500 hover:underline cursor-pointer">
+          <p
+            onClick={() => {
+              navigate("/user-agreement");
+            }}
+            className="text-xs text-gray-500 hover:underline cursor-pointer"
+          >
             User Agreement
           </p>
         </div>
