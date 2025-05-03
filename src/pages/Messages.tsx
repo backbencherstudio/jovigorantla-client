@@ -262,6 +262,7 @@ const Messages = () => {
             return {
               ...conv,
               messages: [...conv.messages, message],
+
               lastMessage: {
                 text: content,
                 timestamp: new Date(),
@@ -309,6 +310,15 @@ const Messages = () => {
         return conv;
       })
     );
+
+    // Update total unread count in header
+    const updatedTotalUnread = conversations.reduce((total, conv) => {
+      if (conv.id === conversationId) return total;
+      return total + conv.unreadCount;
+    }, 0);
+    setUnreadMessages(updatedTotalUnread);
+
+    // Navigate to the conversation
     navigate(`/messages/${conversationId}`);
   };
 
