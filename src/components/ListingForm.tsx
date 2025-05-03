@@ -37,6 +37,7 @@ import successImg from "@/assets/success.svg";
 import errorImg from "@/assets/error.svg";
 import { User } from "@supabase/supabase-js";
 import { MdWarningAmber } from "react-icons/md";
+import AutoExpandingInput from "./ui/AutoExpandingInput";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 65;
 
@@ -178,7 +179,7 @@ const ListingForm = ({
     form.setValue("address", location);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setTitleLength(value.length);
     form.setValue("title", value);
@@ -322,16 +323,16 @@ const ListingForm = ({
               <FormItem className="relative">
                 <FormLabel className="text-black">Title</FormLabel>
                 <FormControl>
-                  <div className="space-y-1 ">
-                    <Input
-                      className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl w-full p-3 h-10"
+                  <div className="space-y-1">
+                    <AutoExpandingInput
+                      value={field.value}
+                      onChange={(e) => {
+                        handleTitleChange(e);
+                      }}
                       placeholder="Enter a descriptive title"
                       maxLength={MAX_TITLE_LENGTH}
-                      onChange={handleTitleChange}
-                      value={field.value}
                       onBlur={field.onBlur}
                       name={field.name}
-                      ref={field.ref}
                     />
                     <div className="flex justify-end">
                       <span className="text-xs text-gray-400">
@@ -402,12 +403,12 @@ const ListingForm = ({
                   </div>
                 ))}
 
-                {images.length < 3 && (
+                {images.length < 1 && (
                   <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
                     <input
                       type="file"
                       accept="image/*"
-                      multiple={images.length < 3}
+                      multiple={images.length < 1}
                       onChange={handleImageChange}
                       className="hidden"
                       disabled={isSubmitting}
