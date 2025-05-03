@@ -26,7 +26,7 @@ const PhotoGallery = ({ images, listingId }: PhotoGalleryProps) => {
   return (
     <Card className="mb-6 border-none shadow-none">
       <CardContent className="p-0">
-        <h2 className="text-xl font-bold mb-2">Photo</h2>
+        <h2 className="text-lg font-bold mb-2">Photo</h2>
 
         <div className="relative rounded-lg overflow-hidden">
           {images.length === 1 ? (

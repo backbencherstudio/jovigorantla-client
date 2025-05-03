@@ -16,6 +16,7 @@ import AuthSteps from "./Auth/AutoSteps";
 import SocialAuthButtons from "./Auth/SocialAuthButtons";
 import LoginForm from "./Auth/LoginForm";
 import SignupEmailForm from "./Auth/SignupEmailForm";
+import { useNavigate } from "react-router-dom";
 
 interface AuthModalProps {
   open: boolean;
@@ -35,14 +36,14 @@ const AuthModal = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "signup">(defaultTab);
   const isMobile = useIsMobile();
-
+  const navigate = useNavigate();
   // State for signup steps
   const [signupStep, setSignupStep] = useState<"email" | "verify" | "details">(
     "email"
   );
   const [signupEmail, setSignupEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [resendTimer, setResendTimer] = useState(0);
+  const [resendTimer, setResendTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState(false);
   useEffect(() => {
     if (!open) {
@@ -222,6 +223,8 @@ const AuthModal = ({
   ) => {
     setSignupStep("verify");
     setIsLoading(true);
+    setResendDisabled(true);
+    setResendTimer(60);
     try {
       const { error } = await resetPassword(values.email);
       if (error) {
@@ -307,13 +310,19 @@ const AuthModal = ({
           </h1>
           <p className="text-sm text-gray-600 mt-2 px-4">
             By continuing, you agree to our{" "}
-            <a href="#" className="text-blue-500 hover:underline">
+            <p
+              onClick={() => navigate("/user-agreement")}
+              className="text-blue-500 hover:underline inline cursor-pointer"
+            >
               User Agreement
-            </a>{" "}
+            </p>{" "}
             and acknowledge that you understand the{" "}
-            <a href="#" className="text-blue-500 hover:underline">
+            <p
+              onClick={() => navigate("/privacy-policy")}
+              className="text-blue-500 inline hover:underline cursor-pointer"
+            >
               Privacy Policy
-            </a>
+            </p>
             .
           </p>
         </div>

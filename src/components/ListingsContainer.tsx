@@ -138,12 +138,24 @@ const ListingsContainer = ({
             onToggleSave={toggleSaveListing}
           />
           {index === 5 && (
-            <img
-              src={listImg}
-              alt={listing.title}
-              className=" h-[124px] object-cover rounded-lg shadow-md mt-4 bg-[#e5ebee] w-full lg:w-[574px]"
-              onClick={() => handleListingClick(listing.id)}
-            />
+            <div className="w-full overflow-hidden">
+              {/* This container maintains the aspect ratio and appearance across all devices */}
+              <div
+                className="relative w-full  max-w-full rounded-lg shadow-md mt-4 bg-white"
+                style={{
+                  aspectRatio: "574/124",
+                  maxWidth: "574px",
+                }}
+                onClick={() => handleListingClick(listing.id)}
+              >
+                {/* The actual banner image that maintains its exact appearance */}
+                <img
+                  src={listImg}
+                  alt={listing.title}
+                  className="absolute inset-0 w-full h-full object-fill rounded-lg"
+                />
+              </div>
+            </div>
           )}
 
           {/* Insert ad card after every 15 listings */}

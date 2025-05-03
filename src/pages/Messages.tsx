@@ -262,6 +262,7 @@ const Messages = () => {
             return {
               ...conv,
               messages: [...conv.messages, message],
+
               lastMessage: {
                 text: content,
                 timestamp: new Date(),
@@ -309,6 +310,15 @@ const Messages = () => {
         return conv;
       })
     );
+
+    // Update total unread count in header
+    const updatedTotalUnread = conversations.reduce((total, conv) => {
+      if (conv.id === conversationId) return total;
+      return total + conv.unreadCount;
+    }, 0);
+    setUnreadMessages(updatedTotalUnread);
+
+    // Navigate to the conversation
     navigate(`/messages/${conversationId}`);
   };
 
@@ -363,7 +373,7 @@ const Messages = () => {
                             {formatMessageTime(conv.lastMessage.timestamp)}
                           </span>
                           {conv.unreadCount > 0 && (
-                            <span className="mt-1 text-xs bg-red-500 text-white rounded-full h-5 min-w-5 flex items-center justify-center px-1.5">
+                            <span className="mt-1 -pt-2  text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center ">
                               {conv.unreadCount}
                             </span>
                           )}

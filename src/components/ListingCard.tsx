@@ -122,7 +122,7 @@ const ListingCard = ({ listing, compact = false }: ListingCardProps) => {
           <img
             src={image}
             alt={title}
-            className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 ${
+            className={`absolute inset-0 w-full h-full  transition-transform duration-500 ease-out group-hover:scale-105 ${
               imageLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoad={() => setImageLoaded(true)}

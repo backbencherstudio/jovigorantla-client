@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 import {
   Table,
   TableBody,
@@ -28,7 +27,7 @@ interface UsaHistoryTableProps {
 
 const UsaHistoryTable: React.FC<UsaHistoryTableProps> = ({
   usaHistory,
-  formatDate
+  formatDate,
 }) => {
   if (usaHistory.length === 0) {
     return (
@@ -50,20 +49,28 @@ const UsaHistoryTable: React.FC<UsaHistoryTableProps> = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {usaHistory.map(item => (
+        {usaHistory.map((item) => (
           <TableRow key={item.id}>
             <TableCell className="font-medium">{item.title}</TableCell>
             <TableCell>{item.postedBy}</TableCell>
             <TableCell>{item.category}</TableCell>
             <TableCell>
-              <span className={`px-2 py-1 rounded-full text-xs ${
-                item.decision === 'approved' ? 'bg-green-100 text-green-800' :
-                'bg-red-100 text-red-800'
-              }`}>
-                {item.decision?.charAt(0).toUpperCase() + item.decision?.slice(1)}
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${
+                  item.decision === "approved"
+                    ? "bg-green-100 text-green-800"
+                    : item.decision === "blocked"
+                    ? "bg-orange-100 text-orange-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {item.decision?.charAt(0).toUpperCase() +
+                  item.decision?.slice(1)}
               </span>
             </TableCell>
-            <TableCell>{item.decisionAt ? formatDate(item.decisionAt) : '-'}</TableCell>
+            <TableCell>
+              {item.decisionAt ? formatDate(item.decisionAt) : "-"}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

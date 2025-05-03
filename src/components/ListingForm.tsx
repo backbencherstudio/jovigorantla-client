@@ -32,12 +32,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import CustomModal from "./shared/CustomModal";
-import loadingImg from "@/assets/loading.png";
-import successImg from "@/assets/success.png";
+import loadingImg from "@/assets/Loading.svg";
+import successImg from "@/assets/success.svg";
+import errorImg from "@/assets/error.svg";
 import { User } from "@supabase/supabase-js";
 import { MdWarningAmber } from "react-icons/md";
+import AutoExpandingInput from "./ui/AutoExpandingInput";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-const MAX_TITLE_LENGTH = 60;
+const MAX_TITLE_LENGTH = 65;
 
 const formSchema = z.object({
   title: z
@@ -177,7 +179,7 @@ const ListingForm = ({
     form.setValue("address", location);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setTitleLength(value.length);
     form.setValue("title", value);
@@ -280,7 +282,7 @@ const ListingForm = ({
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
                 </FormItem>
               )}
             />
@@ -308,7 +310,7 @@ const ListingForm = ({
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
                 </FormItem>
               )}
             />
@@ -321,16 +323,16 @@ const ListingForm = ({
               <FormItem className="relative">
                 <FormLabel className="text-black">Title</FormLabel>
                 <FormControl>
-                  <div className="space-y-1 ">
-                    <Input
-                      className="bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
+                  <div className="space-y-1">
+                    <AutoExpandingInput
+                      value={field.value}
+                      onChange={(e) => {
+                        handleTitleChange(e);
+                      }}
                       placeholder="Enter a descriptive title"
                       maxLength={MAX_TITLE_LENGTH}
-                      onChange={handleTitleChange}
-                      value={field.value}
                       onBlur={field.onBlur}
                       name={field.name}
-                      ref={field.ref}
                     />
                     <div className="flex justify-end">
                       <span className="text-xs text-gray-400">
@@ -339,7 +341,7 @@ const ListingForm = ({
                     </div>
                   </div>
                 </FormControl>
-                <FormMessage className="text-xs font-normal absolute -bottom-1 text-[#c01c1c]" />
+                <FormMessage className="text-xs font-normal absolute -bottom-1 text-[#b3261e]" />
               </FormItem>
             )}
           />
@@ -365,7 +367,7 @@ const ListingForm = ({
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
               </FormItem>
             )}
           />
@@ -377,7 +379,7 @@ const ListingForm = ({
                 <FormLabel className="text-black">
                   Upload Photo (optional)
                 </FormLabel>
-                <p className="text-xs text-gray-500">1 photo of 5MB</p>
+                <p className="text-xs text-gray-500">1 Photo of Max 5MB</p>
               </div>
 
               <div className="grid grid-cols-3 gap-4 mb-4">
@@ -401,12 +403,12 @@ const ListingForm = ({
                   </div>
                 ))}
 
-                {images.length < 3 && (
+                {images.length < 1 && (
                   <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
                     <input
                       type="file"
                       accept="image/*"
-                      multiple={images.length < 3}
+                      multiple={images.length < 1}
                       onChange={handleImageChange}
                       className="hidden"
                       disabled={isSubmitting}
@@ -433,7 +435,7 @@ const ListingForm = ({
                       className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
-                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#c01c1c]" />
+                  <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
                 </FormItem>
               )}
             />
@@ -506,32 +508,25 @@ const ListingForm = ({
         type="success"
         open={isOpenSuccess}
         onOpenChange={setIsOpenSuccess}
-        title={
-          <div>
-            Awesome! <br /> Your listing is successfully posted.{" "}
-          </div>
+        title={<div>Awesome! Your listing is successfully posted. </div>}
+        icon={
+          <img className="ml-10 h-40 w-40" src={successImg} alt="success" />
         }
-        icon={<img className="ml-10" src={successImg} alt="success" />}
       />
 
       {/* Pending Review Modal - shown when postToUSA is true */}
       <CustomModal
         open={isOpenPending}
         onOpenChange={setIsOpenPending}
-        title="Your listing is under review and will be live within 24 hours."
+        title="Your listing is under review and will be live if approved."
         icon={<img className="" src={loadingImg} alt="loading" />}
       />
       <CustomModal
         open={isOpenError}
         onOpenChange={setIsOpenError}
         type="error"
-        title={
-          <p className="text-center text-nowrap">
-            Oops! An Unexpected error has been
-            <br /> occurred ,Please refresh the page
-          </p>
-        }
-        icon={<MdWarningAmber size={100} className="text-[#e55f00]" />}
+        title=" Oops! An Unexpected error has been occurred, Please refresh the page"
+        icon={<img className="h-40 w-40" src={errorImg} alt="error" />}
       />
     </div>
   );

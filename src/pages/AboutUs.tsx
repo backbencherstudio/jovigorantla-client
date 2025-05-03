@@ -1,5 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const AboutUs = () => {
+  const navigate = useNavigate();
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 bg-white ">
       <section className="mb-8">
@@ -44,10 +46,29 @@ const AboutUs = () => {
             href="mailto:support@desieasy.com"
             className="text-brand hover:underline"
           >
-            desieasy.com@gmail.com
+            support@desieasy.com
           </a>
         </p>
       </section>
+      <div className="mt-10">
+        <div className="flex  gap-2">
+          <p
+            onClick={() => navigate("/privacy-policy")}
+            className="text-xs text-gray-500 hover:underline cursor-pointer"
+          >
+            Privacy Policy
+          </p>
+          <p
+            onClick={() => navigate("/user-agreement")}
+            className="text-xs text-gray-500 hover:underline cursor-pointer"
+          >
+            User Agreement
+          </p>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Desieasy © 2025. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 };

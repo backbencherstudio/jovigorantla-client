@@ -40,11 +40,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { AdGroup, Ad } from "@/types/ads";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 import adService from "@/services/adService";
+import DeleteConfirmationModal from "../shared/DeleteConfirmationModal";
 
 // Page options for assigning ad groups
 const PAGE_OPTIONS = [
@@ -175,6 +177,12 @@ const AdManagement = () => {
     groupId: null,
     isAddingToExistingGroup: false,
   });
+
+  const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
+  const [deleteAdInfo, setDeleteAdInfo] = useState<{
+    groupId: string;
+    adId: string;
+  } | null>(null);
 
   // Load data from localStorage on component mount
   useEffect(() => {
@@ -577,6 +585,7 @@ const AdManagement = () => {
   const handleDeleteAdGroup = (groupId: string) => {
     setAdGroups((groups) => groups.filter((group) => group.id !== groupId));
     toast.success("Ad group deleted successfully");
+    setDeleteGroupId(null); // Close the modal after deletion
   };
 
   const handleDeleteAd = (groupId: string, adId: string) => {
@@ -591,6 +600,7 @@ const AdManagement = () => {
       )
     );
     toast.success("Ad deleted successfully");
+    setDeleteAdInfo(null); // Close the modal after deletion
   };
 
   const handleEditAdGroup = (group: AdGroup) => {
@@ -703,7 +713,7 @@ const AdManagement = () => {
                               variant="ghost"
                               size="sm"
                               className="text-[#bc0117] hover:text-red-800 hover:bg-red-50"
-                              onClick={() => handleDeleteAdGroup(group.id)}
+                              onClick={() => setDeleteGroupId(group.id)} // Open the modal
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -813,8 +823,12 @@ const AdManagement = () => {
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0 text-[#bc0117] hover:text-red-800 hover:bg-red-50"
-                                            onClick={() =>
-                                              handleDeleteAd(group.id, ad.id)
+                                            onClick={
+                                              () =>
+                                                setDeleteAdInfo({
+                                                  groupId: group.id,
+                                                  adId: ad.id,
+                                                }) // Open the modal for ad deletion
                                             }
                                           >
                                             <Trash2 className="h-3.5 w-3.5" />
@@ -1404,6 +1418,26 @@ const AdManagement = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={!!deleteGroupId}
+        onClose={() => setDeleteGroupId(null)}
+        onConfirm={() => deleteGroupId && handleDeleteAdGroup(deleteGroupId)}
+        title="Delete Ad Group"
+        description="Are you sure you want to delete this ad group? This action cannot be undone."
+      />
+
+      <DeleteConfirmationModal
+        isOpen={!!deleteAdInfo}
+        onClose={() => setDeleteAdInfo(null)}
+        onConfirm={() =>
+          deleteAdInfo &&
+          handleDeleteAd(deleteAdInfo.groupId, deleteAdInfo.adId)
+        }
+        title="Delete Ad"
+        description="Are you sure you want to delete this ad? This action cannot be undone."
+      />
     </div>
   );
 };

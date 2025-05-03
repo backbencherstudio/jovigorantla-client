@@ -196,7 +196,7 @@ const ManageListings = () => {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={deleteListing}
-                className="bg-red-500 hover:bg-red-600"
+                className="bg-[#bc0117] hover:bg-[#bc0117]"
               >
                 Delete
               </AlertDialogAction>

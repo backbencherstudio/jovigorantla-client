@@ -32,12 +32,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
             {icon}
 
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-semibold">{title}</h2>
+              <h2 className="text-xl lg:text-xl font-semibold">{title}</h2>
             </div>
 
             {type === "error" ? (
               <Button
-                className="w-full bg-[#ff6b00] hover:bg-[#e55f00] text-white rounded-full py-6"
+                className="w-full bg-[#ff6b00] text-white rounded-full py-6"
                 onClick={() => {
                   window.location.reload();
                 }}
@@ -46,7 +46,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
               </Button>
             ) : (
               <Button
-                className="w-full bg-[#ff6b00] hover:bg-[#e55f00] text-white rounded-full py-6"
+                className="w-full bg-[#ff6b00] text-white rounded-full py-6"
                 onClick={() => {
                   onOpenChange(false);
                   navigate("/");

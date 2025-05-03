@@ -24,6 +24,8 @@ import AuthModal from "@/components/AuthModal";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import "./App.css";
 import ChatPage from "./pages/ChatPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import UserAgreement from "./pages/UserAgreement";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -185,6 +187,22 @@ function AppRoutes() {
           element={
             <PageLayout title="About Us">
               <AboutUs />
+            </PageLayout>
+          }
+        />
+        <Route
+          path="/privacy-policy"
+          element={
+            <PageLayout title="Privacy Policy">
+              <PrivacyPolicy />
+            </PageLayout>
+          }
+        />
+        <Route
+          path="/user-agreement"
+          element={
+            <PageLayout title="User Agreement">
+              <UserAgreement />
             </PageLayout>
           }
         />
