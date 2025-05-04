@@ -248,7 +248,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           variant={className ? "outline" : "ghost"}
           className={`flex items-center text-sm px-2 ${className}`}
         >
-          <MapPin className="h-4 w-4 mr-0.5 text-primary" />
+          <MapPin className="h-4 w-4 -mr-1 text-primary" />
           <span className="truncate">
             {displayText || "Select location"}
             {radius && ` • ${radius} mi`}
