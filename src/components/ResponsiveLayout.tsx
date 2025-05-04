@@ -135,7 +135,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
             )}
 
             {/* Filter tabs should be in a fixed position with z-index above main content */}
-            <div className="sticky top-[60px] z-10 bg-background border-b border-gray-100">
+            <div className="sticky top-[60px] z-10 border-b border-gray-100">
               {children}
             </div>
           </main>
