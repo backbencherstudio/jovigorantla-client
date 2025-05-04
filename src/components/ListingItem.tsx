@@ -40,7 +40,7 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
   return (
     <div
       key={listing.id}
-      className="bg-white max-w-[574px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleClick}
     >
       <div className="p-4">
