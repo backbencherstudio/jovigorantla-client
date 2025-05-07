@@ -37,6 +37,11 @@ const AutoExpandingInput = ({
       ref={textareaRef}
       value={value}
       onChange={onChange}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }}
       placeholder={placeholder}
       maxLength={maxLength}
       onBlur={onBlur}

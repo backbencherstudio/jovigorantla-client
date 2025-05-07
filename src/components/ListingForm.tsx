@@ -39,7 +39,7 @@ import { User } from "@supabase/supabase-js";
 import { MdWarningAmber } from "react-icons/md";
 import AutoExpandingInput from "./ui/AutoExpandingInput";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-const MAX_TITLE_LENGTH = 65;
+const MAX_TITLE_LENGTH = 55;
 
 const formSchema = z.object({
   title: z

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import ListingItem from "./ListingItem";
+import burger from "../assets/burger.jpg";
 import NoListingsFound from "./NoListingsFound";
 import LoadingSkeleton from "./LoadingSkeleton";
 import ListingsGrid from "./ListingsGrid";
@@ -10,6 +11,7 @@ import AdCard from "./AdCard";
 import { ListingType } from "@/types/listing";
 import adService from "@/services/adService";
 import listImg from "@/assets/listingImg.jpg";
+import img1 from "@/assets/add.jpg";
 
 interface ListingsContainerProps {
   listings: ListingType[];
@@ -143,16 +145,16 @@ const ListingsContainer = ({
               <div
                 className="relative w-full  max-w-full rounded-lg shadow-md mt-4 bg-white"
                 style={{
-                  aspectRatio: "574/124",
+                  aspectRatio: "574/300",
                   maxWidth: "574px",
                 }}
                 onClick={() => handleListingClick(listing.id)}
               >
                 {/* The actual banner image that maintains its exact appearance */}
                 <img
-                  src={listImg}
+                  src={img1}
                   alt={listing.title}
-                  className="absolute inset-0 w-full h-full object-fill rounded-lg"
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
                 />
               </div>
             </div>

@@ -21,9 +21,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [scrollY, setScrollY] = useState(0);
-  const [prevScrollY, setPrevScrollY] = useState(0);
-  const [headerVisibility, setHeaderVisibility] = useState(1); // Value between 0 and 1
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,49 +55,31 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
     }
   }, [location.search]);
 
-  // Scroll-synced animations for mobile header
   useEffect(() => {
-    if (!isMobile) return;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDifference = currentScrollY - prevScrollY;
-
-      // Calculate how much the header should be visible (value between 0 and 1)
-      // Implement scroll-synced animation based on scroll direction and magnitude
-      if (scrollDifference > 10) {
-        // Scrolling down, hide header gradually
-        const newVisibility = Math.max(
-          0,
-          headerVisibility - scrollDifference / 100
-        );
-        setHeaderVisibility(newVisibility);
+    const controlNavbar = () => {
+      if (window.scrollY > lastScrollY) {
+        // scrolling down
+        setIsVisible(false);
       } else {
-        // Scrolling up, show header gradually
-        const newVisibility = Math.min(
-          1,
-          headerVisibility - scrollDifference / 100
-        );
-        setHeaderVisibility(newVisibility);
+        // scrolling up
+        setIsVisible(true);
       }
-
-      setScrollY(currentScrollY);
-      setPrevScrollY(currentScrollY);
+      setLastScrollY(window.scrollY);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", controlNavbar);
+
+    // cleanup function
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", controlNavbar);
     };
-  }, [isMobile, prevScrollY, headerVisibility]);
+  }, [lastScrollY]);
 
-  // Calculate the left sidebar width based on device
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header */}
       <Header />
 
       <div className="flex flex-1">
@@ -153,7 +134,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
             )}
 
             {/* Filter tabs should be in a fixed position with z-index above main content */}
-            <div className="sticky top-[60px] z-10 bg-background border-b border-gray-100">
+            <div className="sticky top-[60px] z-10 border-b border-gray-100">
               {children}
             </div>
           </main>

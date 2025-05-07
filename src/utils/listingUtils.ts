@@ -118,7 +118,7 @@ export const generateMockListings = (category: string, count: number = 50) => {
           'Room available in 3BHK apartment',
           'IKEA furniture for sale',
           'Need ride to DFW airport on Friday',
-          'Hiring experienced chef'
+          '0123456789 0123456789 0123456789 0123456789 0123456789 '
         ];
     }
   };

@@ -40,21 +40,25 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
   return (
     <div
       key={listing.id}
-      className="bg-white max-w-[574px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleClick}
     >
-      <div className="p-4">
+      <div className="p-4 pb-2 lg:pb-4">
         <div className="flex items-center text-sm text-gray-500 mb-1">
           <span>{displayCategory}</span>
           <span className="mx-2">•</span>
           <span>{displayStatus}</span>
         </div>
 
-        <h3 className="text-lg font-medium text-gray-900 mb-2 text-nowrap overflow-hidden text-ellipsis">
-          {listing.title}
-        </h3>
+        <div
+          className={`${listing.title.length > 40 ? "mb-0" : "mb-7 sm:mb-0"}`}
+        >
+          <h3 className="text-lg font-medium text-gray-900 lg:text-nowrap line-clamp-2 ">
+            {listing.title}
+          </h3>
+        </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between ">
           <div className="flex items-center text-sm text-gray-500">
             <span>{listing.userName}</span>
             <span className="mx-2">•</span>

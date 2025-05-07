@@ -8,6 +8,8 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import burger from "../assets/burger.jpg";
+import listImg from "../assets/listingimg.jpg";
 
 interface PhotoGalleryProps {
   images: string[];
@@ -31,9 +33,15 @@ const PhotoGallery = ({ images, listingId }: PhotoGalleryProps) => {
         <div className="relative rounded-lg overflow-hidden">
           {images.length === 1 ? (
             // Single image display
-            <div className="w-full aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <div
+              style={{
+                aspectRatio: "736/414",
+                maxWidth: "736px",
+              }}
+              className="w-full object-cover aspect-video bg-gray-100 rounded-lg overflow-hidden"
+            >
               <img
-                src={images[0]}
+                src={burger}
                 alt={`Listing ${listingId}`}
                 className="w-full h-full object-cover"
               />
