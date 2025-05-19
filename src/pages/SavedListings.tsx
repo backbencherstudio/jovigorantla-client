@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { api } from "@/lib/axois";
 
 type ListingType = {
   id: string;
@@ -26,7 +27,7 @@ type ListingType = {
 const SavedListings = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [listings, setListings] = useState<ListingType[]>([]);
+  const [listings, setListings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Format time consistently as "2m ago", "2h ago", "2d ago"
@@ -140,24 +141,28 @@ const SavedListings = () => {
   ];
 
   // Function to get updated saved listings
-  const getSavedListings = useCallback(() => {
+  const getSavedListings = useCallback(async () => {
     if (!user) return [];
 
-    // Get saved listing IDs from localStorage
-    const savedListingsIds = JSON.parse(
-      localStorage.getItem(`savedListings_${user.id}`) || "[]"
-    );
+    // // Get saved listing IDs from localStorage
+    // const savedListingsIds = JSON.parse(
+    //   localStorage.getItem(`savedListings_${user.id}`) || "[]"
+    // );
 
-    // Get all listings that match the saved IDs from our mock data
-    const savedListings = allMockListings.filter((listing) =>
-      savedListingsIds.includes(listing.id)
-    );
+    const list = await api.get(`/favorites`);
+    const savedListings = list.data.data;
+    console.log(savedListings)
+
+    // // Get all listings that match the saved IDs from our mock data
+    // const savedListings = allMockListings.filter((listing) =>
+    //   savedListingsIds.includes(listing.id)
+    // );
 
     // Format time strings consistently
     return savedListings.map((listing) => ({
       ...listing,
       saved: true, // Ensure saved status is true for all saved listings
-      postedTime: formatTime(listing.postedTime),
+      postedTime: formatTime(listing.created_at),
     }));
   }, [user]);
 
@@ -168,9 +173,9 @@ const SavedListings = () => {
       return;
     }
 
-    const fetchSavedListings = () => {
+    const fetchSavedListings = async () => {
       setIsLoading(true);
-      const currentSavedListings = getSavedListings();
+      const currentSavedListings = await getSavedListings();
       setListings(currentSavedListings);
       setIsLoading(false);
     };
@@ -266,7 +271,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-gray-50 w-full">
+    <div className="bg-gray-50 py-5 w-full h-full">
       {isLoading ? (
         <div className="space-y-4 p-4">
           {[1, 2, 3].map((i) => (
@@ -294,7 +299,7 @@ const SavedListings = () => {
               {listings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  className="bg-white  rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => handleListingClick(listing.id)}
                 >
                   <div className="p-4">

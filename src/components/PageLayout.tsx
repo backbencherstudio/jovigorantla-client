@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AdBanner from "@/components/AdBanner";
+import SidebarAds from "./ui/Sidebar-Ads";
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -87,7 +88,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
             {title && (
               <div className="relative">
                 <div
-                  className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center"
+                  className="fixed z-20 bg-white  border-b border-gray-100 px-4 py-3 flex items-center"
                   style={{
                     width: width,
                     top: "67px" /* Header height */,
@@ -118,7 +119,8 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         {isDesktop && (
           <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
             <div className="sticky top-[70px] p-4 space-y-4">
-              <AdBanner position="right_top" className="mb-4" />
+              {/* <AdBanner position="right_top" className="mb-4" /> */}
+              <SidebarAds className="mb-4" />
             </div>
           </div>
         )}

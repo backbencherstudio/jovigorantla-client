@@ -29,7 +29,7 @@ const AuthModal = ({
   onOpenChange,
   defaultTab = "login",
 }: AuthModalProps) => {
-  const { signIn, signUp, signInWithProvider, resetPassword } = useAuth();
+  const { signIn, signUp,  signUpWithGoogle} = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +45,8 @@ const AuthModal = ({
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState(false);
+
+
   useEffect(() => {
     if (!open) {
       setSignupStep("email");
@@ -125,16 +127,23 @@ const AuthModal = ({
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      const { error } = await signIn(values.email, values.password);
-      if (error) {
-        toast.error("Login failed", { description: error.message });
+      const isSignIn = await signIn(values.email, values.password);
+      if (!isSignIn) {
+        toast.error("Login failed", {
+          description: "Please enter correct email and password",
+          className: "bg-red-700 text-white border-none",
+        });
       } else {
-        toast.success("Login successful");
+        // toast.success("Login successful");
+        toast.success('Login successful', {
+          className: 'bg-green-700 text-white border-none text-center',
+        });
         onOpenChange(false);
       }
     } catch (error) {
       toast.error("Login failed", {
-        description: "An unexpected error occurred",
+        description: "Username or Password May be Wrong",
+        className: "bg-red-700 text-white border-none",
       });
     } finally {
       setIsLoading(false);
@@ -181,13 +190,13 @@ const AuthModal = ({
   ) => {
     setIsLoading(true);
     try {
-      const { error } = await signUp(
+      const isSignUp = await signUp(
         signupEmail,
         values.password,
         values.username
       );
-      if (error) {
-        toast.error("Signup failed", { description: error.message });
+      if (isSignUp) {
+        toast.error("Signup failed", { description: "Signup failed" });
       } else {
         toast.success("Signup successful");
         onOpenChange(false);
@@ -203,18 +212,40 @@ const AuthModal = ({
 
   // Handle OAuth signin
   const handleOAuthSignIn = async (provider: "google" | "facebook") => {
+    // try {
+    //   const { error } = await signInWithProvider(provider);
+    //   if (error) {
+    //     toast.error(`${provider} sign-in failed`, {
+    //       description: error.message,
+    //     });
+    //   }
+    // } catch (error) {
+    //   toast.error(`${provider} sign-in failed`, {
+    //     description: "An unexpected error occurred",
+    //   });
+    // }
+
     try {
-      const { error } = await signInWithProvider(provider);
-      if (error) {
-        toast.error(`${provider} sign-in failed`, {
-          description: error.message,
-        });
+    
+
+      const isSignInOrSingUp = await signUpWithGoogle()
+      if (!isSignInOrSingUp) {
+        toast.error("Signup failed", { description: "Signup failed" });
+      } else {
+        toast.success("Signup successful");
+        onOpenChange(false);
       }
     } catch (error) {
-      toast.error(`${provider} sign-in failed`, {
-        description: "An unexpected error occurred",
+      toast.error(`${activeTab === 'login'? 'Login':  'Sign Up'} failed`, {
+        description: "Something went wrong",
       });
+    } finally {
+      setIsLoading(false);
     }
+
+
+
+
   };
 
   // Handle password reset
@@ -225,23 +256,23 @@ const AuthModal = ({
     setIsLoading(true);
     setResendDisabled(true);
     setResendTimer(60);
-    try {
-      const { error } = await resetPassword(values.email);
-      if (error) {
-        toast.error("Password reset failed", { description: error.message });
-      } else {
-        toast.success("Password reset email sent", {
-          description: "Check your email for a password reset link",
-        });
-        setForgotPassword(false);
-      }
-    } catch (error) {
-      toast.error("Password reset failed", {
-        description: "An unexpected error occurred",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // try {
+    //   const { error } = await resetPassword(values.email);
+    //   if (error) {
+    //     toast.error("Password reset failed", { description: error.message });
+    //   } else {
+    //     toast.success("Password reset email sent", {
+    //       description: "Check your email for a password reset link",
+    //     });
+    //     setForgotPassword(false);
+    //   }
+    // } catch (error) {
+    //   toast.error("Password reset failed", {
+    //     description: "An unexpected error occurred",
+    //   });
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   // Handle resend OTP
@@ -405,6 +436,7 @@ const AuthModal = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto p-3 bg-white">
+
         <DialogClose className="absolute right-4 top-4 z-10">
           <Button
             variant="ghost"

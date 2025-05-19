@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Mail, User } from "lucide-react";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateMe } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -46,20 +46,27 @@ const Profile = () => {
     setEmail(user.email || "");
 
     // Get name from localStorage or use the first part of email as a fallback
-    const storedName = localStorage.getItem(`userName_${user.id}`);
-    setName(storedName || user.email?.split("@")[0] || "");
+    // const storedName = localStorage.getItem(`userName_${user.id}`);
+    setName( user.name || "");
   }, [user, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Save name to localStorage (in a real app this would be saved to a database)
-      if (user) {
-        localStorage.setItem(`userName_${user.id}`, name);
-        toast.success("Profile updated successfully");
-      }
+        const isUpdated = await updateMe(name);
+        if (isUpdated) {
+          toast.success("Profile updated successfully", {
+            className: "bg-green-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
+          });
+        }else{
+          toast.error("Failed to update profile",{
+              className: "bg-red-500 text-white font-bold rounded-md px-4 py-2 shadow-md"
+             },
+          );
+        }
+     
     } catch (error) {
       toast.error("Failed to update profile");
       console.error(error);

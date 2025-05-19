@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 
 // Create a context to manage unread message count across components
 import React from "react";
+import { toast } from "sonner";
 
 export const UnreadMessagesContext = React.createContext<{
   unreadMessages: number;
@@ -110,8 +111,16 @@ const Header = () => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    const isLogout = await signOut();
     // Navigation happens in the signOut function now
+    if (isLogout) {
+      navigate("/");
+      toast.warning("Logout successful");
+    }else{
+      toast.error("Something went wrong", {
+        className: "bg-red-500 text-white border-none text-center",
+      });
+    }
   };
 
   // Mobile icon size - slightly larger for mobile

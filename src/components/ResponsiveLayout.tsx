@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
 import AdBanner from "@/components/AdBanner";
 import LocationSelector from "@/components/LocationSelector";
+import SidebarAds from "./ui/Sidebar-Ads";
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
@@ -144,7 +145,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
         {isDesktop && (
           <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
             <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
-              <AdBanner position="right_top" className="mb-4" />
+              {/* <AdBanner position="right_top" className="mb-4" /> */}
+              <SidebarAds className="mb-4" />
             </div>
           </div>
         )}

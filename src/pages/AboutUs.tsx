@@ -5,6 +5,7 @@ const AboutUs = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 bg-white ">
       <section className="mb-8">
+        <p className='bg-green-700 text-white border-none text-center'>Login Successfull</p>
         <h2 className="text-xl font-semibold mb-3">
           Connecting the South Asian Community Abroad
         </h2>

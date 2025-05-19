@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Upload } from "lucide-react";
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.jpg";
+import axois from "axios";
 interface AdBannerProps {
   position: string;
   className?: string;

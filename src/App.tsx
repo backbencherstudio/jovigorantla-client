@@ -4,7 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { Toaster } from "@/components/ui/sonner";
+// import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import PageLayout from "@/components/PageLayout";
@@ -215,7 +216,7 @@ function AppRoutes() {
           }
         />
       </Routes>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
