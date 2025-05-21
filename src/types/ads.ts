@@ -1,25 +1,26 @@
-
 export interface Ad {
   id: string;
   name: string;
-  imageUrl: string;
-  targetUrl: string;
-  order: number;
-  createdAt: Date;
+  target_url: string;
+  image: string;
+  image_url: string;
+  active: boolean;
+  ad_group_id: string;
   views: number;
   clicks: number;
-  active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AdGroup {
   id: string;
   name: string;
-  pages: string[]; // Home, Marketplace, etc.
-  ads: Ad[];
-  rotationMode: 'sequential' | 'random';
-  frequency: number; // Show ad after every X listing cards
-  startDate?: Date;
-  endDate?: Date;
+  frequency: number;
+  start_date: string | null;
+  end_date: string | null;
+  display_pages: string[];
   active: boolean;
-  createdAt: Date;
+  created_at: string;
+  updated_at: string;
+  ads: Ad[];
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, act } from "react";
+import { Form, useNavigate } from "react-router-dom";
 import {
   Trash2,
   Eye,
@@ -44,80 +44,87 @@ import {
 } from "@/components/ui/dialog";
 import { AdGroup, Ad } from "@/types/ads";
 import { v4 as uuidv4 } from "uuid";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import adService from "@/services/adService";
 import DeleteConfirmationModal from "../shared/DeleteConfirmationModal";
+import { api } from "@/lib/axois";
 
 // Page options for assigning ad groups
 const PAGE_OPTIONS = [
-  { id: "home", label: "Home" },
-  { id: "marketplace", label: "Marketplace" },
-  { id: "rides", label: "Rides" },
-  { id: "accommodations", label: "Accommodations" },
-  { id: "jobs", label: "Jobs" },
+  { id: "HOME", label: "HOME" },
+  { id: "MARKETPLACE", label: "MARKETPLACE" },
+  { id: "RIDES", label: "RIDES" },
+  { id: "ACCOMMODATIONS", label: "ACCOMMODATIONS" },
+  { id: "JOBS", label: "JOBS" },
 ];
 
 // Initial mock data for ad groups
-const initialAdGroups: AdGroup[] = [
-  {
-    id: "1",
-    name: "Featured Services",
-    pages: ["home", "marketplace"],
-    rotationMode: "sequential",
-    frequency: 15,
-    active: true,
-    createdAt: new Date("2023-08-15"),
-    ads: [
-      {
-        id: "1",
-        name: "Summer Discounts",
-        imageUrl: "https://via.placeholder.com/600x400?text=Summer+Sale",
-        targetUrl: "https://example.com/summer-sale",
-        order: 1,
-        createdAt: new Date("2023-08-15"),
-        views: 245,
-        clicks: 32,
-        active: true,
-      },
-      {
-        id: "2",
-        name: "Student Services",
-        imageUrl: "https://via.placeholder.com/600x400?text=Student+Services",
-        targetUrl: "https://example.com/student-services",
-        order: 2,
-        createdAt: new Date("2023-08-16"),
-        views: 189,
-        clicks: 27,
-        active: true,
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Local Businesses",
-    pages: ["marketplace", "jobs"],
-    rotationMode: "random",
-    frequency: 10,
-    active: false,
-    createdAt: new Date("2023-09-05"),
-    ads: [
-      {
-        id: "3",
-        name: "Joe's Coffee Shop",
-        imageUrl: "https://via.placeholder.com/600x400?text=Joes+Coffee",
-        targetUrl: "https://example.com/joes-coffee",
-        order: 1,
-        createdAt: new Date("2023-09-05"),
-        views: 120,
-        clicks: 18,
-        active: true,
-      },
-    ],
-  },
-];
+// const initialAdGroups: AdGroup[] = [
+//   {
+//     id: "1",
+//     name: "Featured Services",
+//     pages: ["home", "marketplace"],
+//     rotationMode: "sequential",
+//     frequency: 15,
+//     active: true,
+//     createdAt: new Date("2023-08-15"),
+//     ads: [
+//       {
+//         id: "1",
+//         name: "Summer Discounts",
+//         image_url: "https://via.placeholder.com/600x400?text=Summer+Sale",
+//         t: "https://example.com/summer-sale",
+//         order: 1,
+//         createdAt: new Date("2023-08-15"),
+//         views: 245,
+//         clicks: 32,
+//         active: true,
+//       },
+//       {
+//         id: "2",
+//         name: "Student Services",
+//         imageUrl: "https://via.placeholder.com/600x400?text=Student+Services",
+//         targetUrl: "https://example.com/student-services",
+//         order: 2,
+//         createdAt: new Date("2023-08-16"),
+//         views: 189,
+//         clicks: 27,
+//         active: true,
+//       },
+//     ],
+//   },
+//   {
+//     id: "2",
+//     name: "Local Businesses",
+//     pages: ["marketplace", "jobs"],
+//     rotationMode: "random",
+//     frequency: 10,
+//     active: false,
+//     createdAt: new Date("2023-09-05"),
+//     ads: [
+//       {
+//         id: "3",
+//         name: "Joe's Coffee Shop",
+//         imageUrl: "https://via.placeholder.com/600x400?text=Joes+Coffee",
+//         targetUrl: "https://example.com/joes-coffee",
+//         order: 1,
+//         createdAt: new Date("2023-09-05"),
+//         views: 120,
+//         clicks: 18,
+//         active: true,
+//       },
+//     ],
+//   },
+// ];
+
+interface sidebarAd {
+  image_url: string
+  target_url: string
+  active: boolean
+}
 
 const AdManagement = () => {
-  const [adGroups, setAdGroups] = useState<AdGroup[]>(initialAdGroups);
+  const [adGroups, setAdGroups] = useState<AdGroup[]>();
   const [createMode, setCreateMode] = useState(false);
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -146,23 +153,26 @@ const AdManagement = () => {
     "https://example.com"
   );
 
+  const [sidebarTopAds, setSidebarTopAds] = useState<sidebarAd>()
+  const [sidebarBottomAds, setSidebarBottomAds] = useState<sidebarAd>()
+
+
+
   const navigate = useNavigate();
 
   // Form state for new/editing ad group
   const [formState, setFormState] = useState<{
     name: string;
-    pages: string[];
-    rotationMode: "sequential" | "random";
+    display_pages: string[];
     frequency: number;
-    startDate?: string;
-    endDate?: string;
+    start_date?: string;
+    end_date?: string;
   }>({
     name: "",
-    pages: [],
-    rotationMode: "sequential",
-    frequency: 15,
-    startDate: "",
-    endDate: "",
+    display_pages: [],
+    frequency: 5,
+    start_date: "",
+    end_date: "",
   });
 
   // Form state for new ad
@@ -184,42 +194,92 @@ const AdManagement = () => {
     adId: string;
   } | null>(null);
 
+
+  const fetchSidebarTopAds = async () => {
+    try {
+      const { data: topAds } = await api.get('/admin/ads/sidebar-top')
+      if (topAds?.success) {
+        setSidebarTopAds({
+          image_url: topAds.data.image_url,
+          target_url: topAds.data.target_url,
+          active: topAds.data.active
+        })
+      }
+    } catch (error) {
+      toast.error("Error fetching sidebar top ads");
+    }
+  };
+
+  const fetchSidebarBottomAds = async () => {
+    try {
+      const { data: bottomAds } = await api.get('/admin/ads/sidebar-bottom')
+      if (bottomAds?.success) {
+        setSidebarBottomAds({
+          image_url: bottomAds.data.image_url,
+          target_url: bottomAds.data.target_url,
+          active: bottomAds.data.active
+        })
+      }
+    } catch (error) {
+      toast.error("Error fetching sidebar bottom ads");
+    }
+  };
+
+  const fetchAddGroups = async () => {
+    try {
+      const { data: groups } = await api.get('/admin/ads-group')
+      if (groups?.success) {
+        setAdGroups(groups.data)
+      }
+    } catch (error) {
+      console.log("error => ", error)
+      toast.error("Error fetching ad groups");
+    }
+  };
+
   // Load data from localStorage on component mount
   useEffect(() => {
-    const savedAdGroups = localStorage.getItem("adGroups");
-    if (savedAdGroups) {
-      try {
-        const parsedGroups = JSON.parse(savedAdGroups, (key, value) => {
-          if (key === "createdAt" || key === "startDate" || key === "endDate") {
-            return value ? new Date(value) : null;
-          }
-          return value;
-        });
-        setAdGroups(parsedGroups);
-      } catch (error) {
-        console.error("Error parsing ad groups from localStorage:", error);
-      }
-    }
+    // const savedAdGroups = localStorage.getItem("adGroups");
+    // if (savedAdGroups) {
+    //   try {
+    //     const parsedGroups = JSON.parse(savedAdGroups, (key, value) => {
+    //       if (key === "createdAt" || key === "startDate" || key === "endDate") {
+    //         return value ? new Date(value) : null;
+    //       }
+    //       return value;
+    //     });
+    //     setAdGroups(parsedGroups);
+    //   } catch (error) {
+    //     console.error("Error parsing ad groups from localStorage:", error);
+    //   }
+    // }
 
     // Initialize sidebar ad states from service
-    const topAd = adService.getSidebarAd("top");
-    const bottomAd = adService.getSidebarAd("bottom");
-
+    // const topAd = adService.getSidebarAd("top");
+    // const bottomAd = adService.getSidebarAd("bottom");
+    const topAd = sidebarTopAds
+    const bottomAd = sidebarBottomAds
     if (topAd) {
-      setSidebarTopUrl(topAd.targetUrl);
-      setSidebarTopPreview(topAd.imageUrl);
+      setSidebarTopUrl(topAd.target_url);
+      setSidebarTopPreview(topAd.image_url);
     }
 
     if (bottomAd) {
-      setSidebarBottomUrl(bottomAd.targetUrl);
-      setSidebarBottomPreview(bottomAd.imageUrl);
+      setSidebarBottomUrl(bottomAd.target_url);
+      setSidebarBottomPreview(bottomAd.image_url);
     }
+
+    // Fetch sidebar top and bottom ads from service
+    fetchSidebarTopAds();
+    fetchSidebarBottomAds();
+    fetchAddGroups();
+
   }, []);
 
   // Save data to localStorage when it changes
-  useEffect(() => {
-    localStorage.setItem("adGroups", JSON.stringify(adGroups));
-  }, [adGroups]);
+  // useEffect(() => {
+  //   localStorage.setItem("adGroups", JSON.stringify(adGroups));
+  // }, [adGroups]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -244,6 +304,7 @@ const AdManagement = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSidebarTopPreview(reader.result as string);
+
       };
       reader.readAsDataURL(file);
     }
@@ -267,11 +328,10 @@ const AdManagement = () => {
   const resetForm = () => {
     setFormState({
       name: "",
-      pages: [],
-      rotationMode: "sequential",
+      display_pages: [],
       frequency: 15,
-      startDate: "",
-      endDate: "",
+      start_date: "",
+      end_date: "",
     });
     setNewAdForm({
       name: "",
@@ -292,16 +352,29 @@ const AdManagement = () => {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
 
+  // const togglePageSelection = (pageId: string) => {
+  //   setFormState((prev) => {
+  //     const isSelected = prev.display_pages.includes(pageId);
+  //     if (isSelected) {
+  //       return { ...prev, pages: prev.display_pages.filter((id) => id !== pageId) };
+  //     } else {
+  //       return { ...prev, pages: [...prev.display_pages, pageId] };
+  //     }
+  //   });
+  // };
+
   const togglePageSelection = (pageId: string) => {
     setFormState((prev) => {
-      const isSelected = prev.pages.includes(pageId);
-      if (isSelected) {
-        return { ...prev, pages: prev.pages.filter((id) => id !== pageId) };
-      } else {
-        return { ...prev, pages: [...prev.pages, pageId] };
-      }
+      const isSelected = prev.display_pages.includes(pageId);
+      return {
+        ...prev,
+        display_pages: isSelected
+          ? prev.display_pages.filter((id) => id !== pageId)
+          : [...prev.display_pages, pageId],
+      };
     });
   };
+
 
   const previewAd = () => {
     if (newAdForm.isAddingToExistingGroup) {
@@ -333,198 +406,499 @@ const AdManagement = () => {
 
   const previewSidebarTopAd = () => {
     const imageUrl =
-      sidebarTopPreview ||
+      sidebarTopAds.image_url ||
       `https://via.placeholder.com/300x600?text=Top+Sidebar`;
     setPreviewAdData({
       name: "Sidebar Top Ad",
       imageUrl,
-      targetUrl: sidebarTopUrl,
+      targetUrl: sidebarTopAds.target_url,
     });
     setShowAdPreview(true);
   };
 
   const previewSidebarBottomAd = () => {
     const imageUrl =
-      sidebarBottomPreview ||
+      sidebarBottomAds?.image_url ||
       `https://via.placeholder.com/300x600?text=Bottom+Sidebar`;
     setPreviewAdData({
       name: "Sidebar Bottom Ad",
       imageUrl,
-      targetUrl: sidebarBottomUrl,
+      targetUrl: sidebarBottomAds?.target_url,
     });
     setShowAdPreview(true);
   };
 
-  const handleSaveAdGroup = () => {
+  // const handleSaveAdGroup = () => {
+  //   if (!formState.name.trim()) {
+  //     toast.error("Please enter a group name");
+  //     return;
+  //   }
+
+  //   if (formState.display_pages.length === 0) {
+  //     toast.error("Please select at least one page");
+  //     return;
+  //   }
+
+  //   if (formState.frequency <= 0) {
+  //     toast.error("Frequency must be greater than 0");
+  //     return;
+  //   }
+
+  //   console.log("formState => ", formState)
+
+
+
+  //   // if (editingGroupId) {
+  //   //   setAdGroups((groups) =>
+  //   //     groups.map((group) =>
+  //   //       group.id === editingGroupId
+  //   //         ? {
+  //   //           ...group,
+  //   //           name: formState.name,
+  //   //           pages: formState.display_pages,
+  //   //           frequency: formState.frequency,
+  //   //           start_date: formState.start_date
+  //   //             ? new Date(formState.start_date)
+  //   //             : undefined,
+  //   //           end_date: formState.end_date
+  //   //             ? new Date(formState.end_date)
+  //   //             : undefined,
+  //   //         }
+  //   //         : group
+  //   //     )
+  //   //   );
+  //   //   toast.success("Ad group updated successfully");
+  //   // } else {
+  //   //   const newGroup: AdGroup = {
+  //   //     id: uuidv4(),
+  //   //     name: formState.name,
+  //   //     display_pages: formState.display_pages,
+  //   //     frequency: formState.frequency,
+  //   //     start_date: formState.start_date
+  //   //       ? new Date(formState.start_date)
+  //   //       : undefined,
+  //   //     end_date: formState.end_date ? new Date(formState.end_date) : undefined,
+  //   //     active: true,
+  //   //     createdAt: new Date(),
+  //   //     ads: [],
+  //   //   };
+
+  //   //   if (
+  //   //     newAdForm.name &&
+  //   //     newAdForm.targetUrl &&
+  //   //     (selectedFile || adPreview)
+  //   //   ) {
+  //   //     const imageUrl =
+  //   //       adPreview ||
+  //   //       `https://via.placeholder.com/600x400?text=${encodeURIComponent(
+  //   //         newAdForm.name
+  //   //       )}`;
+
+  //   //     const newAd: Ad = {
+  //   //       id: uuidv4(),
+  //   //       name: newAdForm.name,
+  //   //       image_url,
+  //   //       target_url: newAdForm.targetUrl,
+  //   //       order: 1,
+  //   //       createdAt: new Date(),
+  //   //       views: 0,
+  //   //       clicks: 0,
+  //   //       active: true,
+  //   //     };
+
+  //   //     newGroup.ads.push(newAd);
+  //   //   }
+
+  //   //   setAdGroups((prev) => [...prev, newGroup]);
+  //   //   toast.success("Ad group created successfully");
+  //   // }
+
+  //   // resetForm();
+  // };
+
+
+  // const handleSaveAdGroup = async () => {
+  //   if (!formState.name.trim()) {
+  //     toast.error("Please enter a group name");
+  //     return;
+  //   }
+
+  //   if (formState.display_pages.length === 0) {
+  //     toast.error("Please select at least one page");
+  //     return;
+  //   }
+
+  //   if (formState.frequency <= 0) {
+  //     toast.error("Frequency must be greater than 0");
+  //     return;
+  //   }
+
+
+
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("name", formState.name.trim());
+  //     formData.append("frequency", String(formState.frequency));
+  //     formData.append("display_pages", JSON.stringify(formState.display_pages.map(p => p.toUpperCase())));
+
+  //     if (formState.start_date) formData.append("start_date", formState.start_date);
+  //     if (formState.end_date) formData.append("end_date", formState.end_date);
+  //     console.log("Form Data => ", formState)
+  //     const hasAd =
+  //       newAdForm.name.trim() &&
+  //       newAdForm.targetUrl.trim() &&
+  //       selectedFile; // Only accept actual File
+
+  //     if (hasAd) {
+  //       console.log("selected => ", selectedFile)
+  //       formData.append("ad_name", newAdForm.name.trim());
+  //       formData.append("target_url", newAdForm.targetUrl.trim());
+  //       formData.append("image", selectedFile); // ✅ NOT adPreview
+  //       console.log("form data inside function => ", formData)
+  //     }
+
+  //     console.log("formData => ", formData)
+
+  //     for (let pair of formData.entries()) {
+  //       console.log(`${pair[0]}:`, pair[1]);
+  //     }
+
+  //     const { data } = await api.post("/admin/ads-group", formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     if (data.success) {
+  //       toast.success("Ad group created successfully");
+
+  //       // 🔄 Refetch ad groups since response doesn't include the new one
+  //       fetchAddGroups();
+  //       resetForm();
+  //     } else {
+  //       toast.error("Failed to create ad group");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating ad group:", error);
+  //     toast.error("Something went wrong");
+  //   }
+  // };
+
+  const handleSaveAdGroup = async () => {
     if (!formState.name.trim()) {
       toast.error("Please enter a group name");
       return;
     }
 
-    if (formState.pages.length === 0) {
+    if (formState.display_pages.length === 0) {
       toast.error("Please select at least one page");
       return;
     }
 
-    if (editingGroupId) {
-      setAdGroups((groups) =>
-        groups.map((group) =>
-          group.id === editingGroupId
-            ? {
-                ...group,
-                name: formState.name,
-                pages: formState.pages,
-                rotationMode: formState.rotationMode,
-                frequency: formState.frequency,
-                startDate: formState.startDate
-                  ? new Date(formState.startDate)
-                  : undefined,
-                endDate: formState.endDate
-                  ? new Date(formState.endDate)
-                  : undefined,
-              }
-            : group
-        )
-      );
-      toast.success("Ad group updated successfully");
-    } else {
-      const newGroup: AdGroup = {
-        id: uuidv4(),
-        name: formState.name,
-        pages: formState.pages,
-        rotationMode: formState.rotationMode,
-        frequency: formState.frequency,
-        startDate: formState.startDate
-          ? new Date(formState.startDate)
-          : undefined,
-        endDate: formState.endDate ? new Date(formState.endDate) : undefined,
-        active: true,
-        createdAt: new Date(),
-        ads: [],
-      };
+    if (formState.frequency <= 0) {
+      toast.error("Frequency must be greater than 0");
+      return;
+    }
 
-      if (
-        newAdForm.name &&
-        newAdForm.targetUrl &&
-        (selectedFile || adPreview)
-      ) {
-        const imageUrl =
-          adPreview ||
-          `https://via.placeholder.com/600x400?text=${encodeURIComponent(
-            newAdForm.name
-          )}`;
+    const hasAd = newAdForm.name.trim() && newAdForm.targetUrl.trim() && selectedFile;
 
-        const newAd: Ad = {
-          id: uuidv4(),
-          name: newAdForm.name,
-          imageUrl,
-          targetUrl: newAdForm.targetUrl,
-          order: 1,
-          createdAt: new Date(),
-          views: 0,
-          clicks: 0,
-          active: true,
-        };
+    try {
+      const formData = new FormData();
+      formData.append("name", formState.name.trim());
+      formData.append("frequency", String(formState.frequency));
+      formData.append("display_pages", JSON.stringify(formState.display_pages.map(p => p.toUpperCase())));
 
-        newGroup.ads.push(newAd);
+      // if (formState.start_date?.trim()) formData.append("start_date", formState.start_date);
+      // if (formState.end_date?.trim()) formData.append("end_date", formState.end_date);
+
+      console.log("start date => ", formState.start_date || null)
+      console.log("end date => ", formState.end_date || null)
+
+      formData.append("start_date", formState.start_date || null);
+      formData.append("end_date", formState.end_date || null);
+
+      // If editing existing group
+      if (editingGroupId) {
+        // if (formState.start_date?.trim()) { 
+        //   formData.append("start_date", formState.start_date)
+        //  }else {
+        //   formData.append("start_date", null)
+        // }
+
+        // if (formState.end_date?.trim()) {
+        //   formData.append("end_date", formState.end_date)
+        // }else {
+        //   formData.append("end_date", null)
+        // }
+        const { data: updatedGroup } = await api.patch(`/admin/ads-group/${editingGroupId}`, formData);
+        console.log("updatedGroup => ", updatedGroup)
+        if (!updatedGroup.success) throw new Error("Failed to update ad group");
+
+        if (hasAd) {
+          const adForm = new FormData();
+          adForm.append("name", newAdForm.name.trim());
+          adForm.append("target_url", newAdForm.targetUrl.trim());
+          adForm.append("image", selectedFile);
+          adForm.append("ad_group_id", editingGroupId);
+
+          const { data: newAd } = await api.post("/admin/ads", adForm);
+          if (!newAd.success) throw new Error("Failed to save new ad");
+
+          setAdGroups(prev =>
+            prev.map(group =>
+              group.id === editingGroupId
+                ? { ...group, ...updatedGroup.data, ads: [...group.ads, newAd.data] }
+                : group
+            )
+          );
+
+          toast.success("Ad group and new ad updated");
+        } else {
+          setAdGroups(prev =>
+            prev.map(group =>
+              group.id === editingGroupId
+                ? { ...group, ...updatedGroup.data }
+                : group
+            )
+          );
+          toast.success("Ad group updated");
+        }
+      } else {
+        // Create new group with optional first ad
+        if (hasAd) {
+          formData.append("ad_name", newAdForm.name.trim());
+          formData.append("target_url", newAdForm.targetUrl.trim());
+          formData.append("image", selectedFile);
+        }
+
+        const { data: created } = await api.post("/admin/ads-group", formData);
+        if (!created.success) throw new Error("Failed to create ad group");
+
+        fetchAddGroups(); // optionally replace this with push to `setAdGroups`
+        toast.success("Ad group created successfully");
       }
 
-      setAdGroups((prev) => [...prev, newGroup]);
-      toast.success("Ad group created successfully");
+      resetForm();
+    } catch (error) {
+      console.error("Error creating/updating ad group:", error);
+      toast.error("Something went wrong");
     }
-
-    resetForm();
   };
 
-  const handleSaveAdToExistingGroup = () => {
-    if (!newAdForm.name.trim()) {
-      toast.error("Please enter an ad name");
-      return;
+
+
+
+  // const handleSaveAdToExistingGroup = async () => {
+
+  //   try {
+  //     if (!newAdForm.name.trim()) {
+  //       toast.error("Please enter an ad name");
+  //       return;
+  //     }
+
+  //     if (!newAdForm.targetUrl.trim()) {
+  //       toast.error("Please enter a target URL");
+  //       return;
+  //     }
+
+  //     if (!newAdForm.groupId) {
+  //       toast.error("Please select an ad group");
+  //       return;
+  //     }
+
+  //     if (!selectedFile && !adPreview) {
+  //       toast.error("Please select an image");
+  //       return;
+  //     }
+
+
+  //     const formData = new FormData();
+  //     formData.append("name", newAdForm.name);
+  //     formData.append("image", selectedFile || adPreview);
+  //     formData.append("target_url", newAdForm.targetUrl);
+  //     formData.append("ad_group_id", newAdForm.groupId);
+
+  //     const { data: ad } = await api.post('/admin/ads', formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     if (ad.success) {
+  //       toast.success("Ad saved successfully");
+  //       resetForm();
+  //       setAdGroups((prev) =>
+  //         prev.map((group) =>
+  //           group.id === newAdForm.groupId
+  //             ? {
+  //                 ...group,
+  //                 ads: [...group.ads, ad.data],
+  //               }
+  //             : group
+  //         )
+  //       );
+  //       console.log("ad => ", ad)
+  //     } else {
+  //       toast.error("Error saving ad");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving ad:", error);
+  //     toast.error("Error saving ad");
+  //   }
+
+
+
+  //   // const imageUrl =
+  //   //   adPreview ||
+  //   //   `https://via.placeholder.com/600x400?text=${encodeURIComponent(
+  //   //     newAdForm.name
+  //   //   )}`;
+
+  //   // const newAd: Ad = {
+  //   //   id: uuidv4(),
+  //   //   name: newAdForm.name,
+  //   //   image_url: imageUrl,
+  //   //   image: newAdForm.targetUrl,
+  //   //   order: 0,
+  //   //   createdAt: new Date(),
+  //   //   views: 0,
+  //   //   clicks: 0,
+  //   //   active: true,
+  //   // };
+
+  //   // setAdGroups((groups) =>
+  //   //   groups.map((group) => {
+  //   //     if (group.id === newAdForm.groupId) {
+  //   //       newAd.order = group.ads.length + 1;
+  //   //       return {
+  //   //         ...group,
+  //   //         ads: [...group.ads, newAd],
+  //   //       };
+  //   //     }
+  //   //     return group;
+  //   //   })
+  //   // );
+
+  //   // toast.success("Ad added successfully");
+
+  //   // setNewAdForm({
+  //   //   name: "",
+  //   //   targetUrl: "",
+  //   //   groupId: null,
+  //   //   isAddingToExistingGroup: false,
+  //   // });
+  //   // setSelectedFile(null);
+  //   // setAdPreview(null);
+  // };
+
+  const handleSaveAdToExistingGroup = async () => {
+    try {
+      if (!newAdForm.name.trim()) {
+        toast.error("Please enter an ad name");
+        return;
+      }
+
+      if (!newAdForm.targetUrl.trim()) {
+        toast.error("Please enter a target URL");
+        return;
+      }
+
+      if (!newAdForm.groupId) {
+        toast.error("Please select an ad group");
+        return;
+      }
+
+      if (!selectedFile) {
+        toast.error("Please select an image file");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", newAdForm.name.trim());
+      formData.append("image", selectedFile); // ✅ Only File allowed
+      formData.append("target_url", newAdForm.targetUrl.trim());
+      formData.append("ad_group_id", newAdForm.groupId);
+
+      const { data: ad } = await api.post("/admin/ads", formData); // ✅ NO headers
+
+      if (ad.success) {
+        toast.success("Ad saved successfully");
+        resetForm();
+        setAdGroups((prev) =>
+          prev.map((group) =>
+            group.id === newAdForm.groupId
+              ? {
+                ...group,
+                ads: [...group.ads, ad.data],
+              }
+              : group
+          )
+        );
+      } else {
+        toast.error("Error saving ad");
+      }
+    } catch (error) {
+      console.error("Error saving ad:", error);
+      toast.error("Error saving ad");
     }
-
-    if (!newAdForm.targetUrl.trim()) {
-      toast.error("Please enter a target URL");
-      return;
-    }
-
-    if (!newAdForm.groupId) {
-      toast.error("Please select an ad group");
-      return;
-    }
-
-    if (!selectedFile && !adPreview) {
-      toast.error("Please select an image");
-      return;
-    }
-
-    const imageUrl =
-      adPreview ||
-      `https://via.placeholder.com/600x400?text=${encodeURIComponent(
-        newAdForm.name
-      )}`;
-
-    const newAd: Ad = {
-      id: uuidv4(),
-      name: newAdForm.name,
-      imageUrl,
-      targetUrl: newAdForm.targetUrl,
-      order: 0,
-      createdAt: new Date(),
-      views: 0,
-      clicks: 0,
-      active: true,
-    };
-
-    setAdGroups((groups) =>
-      groups.map((group) => {
-        if (group.id === newAdForm.groupId) {
-          newAd.order = group.ads.length + 1;
-          return {
-            ...group,
-            ads: [...group.ads, newAd],
-          };
-        }
-        return group;
-      })
-    );
-
-    toast.success("Ad added successfully");
-
-    setNewAdForm({
-      name: "",
-      targetUrl: "",
-      groupId: null,
-      isAddingToExistingGroup: false,
-    });
-    setSelectedFile(null);
-    setAdPreview(null);
   };
 
-  const handleSaveSidebarTopAd = () => {
-    if (!sidebarTopUrl.trim()) {
-      toast.error("Please enter a target URL");
-      return;
-    }
+  const handleSaveSidebarTopAd = async () => {
+    try {
+      if (!sidebarTopFile || !sidebarTopAds?.target_url) {
+        toast.error("Please select an image and provide a target URL");
+        return;
+      }
 
-    const imageUrl =
-      sidebarTopPreview ||
-      `https://via.placeholder.com/300x600?text=Top+Sidebar`;
-    adService.updateSidebarAd("top", imageUrl, sidebarTopUrl);
-    toast.success("Top sidebar ad updated successfully");
+      const formData = new FormData();
+      formData.append("image", sidebarTopFile); // file input
+      formData.append("target_url", sidebarTopAds.target_url); // string input
+
+      const { data } = await api.post("/admin/ads/sidebar-top", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (data?.success) {
+        toast.success("Top sidebar ad updated successfully");
+        fetchSidebarTopAds(); // reload updated ad
+      } else {
+        toast.error("Failed to update top sidebar ad");
+      }
+    } catch (error) {
+      toast.error("Error uploading top sidebar ad");
+    }
   };
 
-  const handleSaveSidebarBottomAd = () => {
-    if (!sidebarBottomUrl.trim()) {
-      toast.error("Please enter a target URL");
-      return;
-    }
 
-    const imageUrl =
-      sidebarBottomPreview ||
-      `https://via.placeholder.com/300x600?text=Bottom+Sidebar`;
-    adService.updateSidebarAd("bottom", imageUrl, sidebarBottomUrl);
-    toast.success("Bottom sidebar ad updated successfully");
+  const handleSaveSidebarBottomAd = async () => {
+    try {
+      if (!sidebarBottomFile || !sidebarBottomAds?.target_url) {
+        toast.error("Please select an image and enter a target URL");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", sidebarBottomFile); // the actual file
+      formData.append("target_url", sidebarBottomAds.target_url); // user-entered URL
+
+      const { data } = await api.post("/admin/ads/sidebar-bottom", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (data?.success) {
+        toast.success("Bottom sidebar ad updated successfully");
+        fetchSidebarBottomAds(); // optional: refresh the ad preview
+      } else {
+        toast.error("Failed to update bottom sidebar ad");
+      }
+    } catch (error) {
+      toast.error("Error uploading bottom sidebar ad");
+    }
   };
+
 
   const handleToggleGroupActive = (groupId: string) => {
     setAdGroups((groups) =>
@@ -541,76 +915,116 @@ const AdManagement = () => {
     }
   };
 
-  const handleToggleAdActive = (groupId: string, adId: string) => {
-    setAdGroups((groups) =>
-      groups.map((group) =>
-        group.id === groupId
-          ? {
-              ...group,
-              ads: group.ads.map((ad) =>
-                ad.id === adId ? { ...ad, active: !ad.active } : ad
-              ),
-            }
-          : group
-      )
-    );
+  const handleToggleAdActive = async (active: boolean, groupId: string, adId: string) => {
+    try {
 
-    const group = adGroups.find((g) => g.id === groupId);
-    const ad = group?.ads.find((a) => a.id === adId);
-    if (ad) {
-      toast.success(
-        `Ad "${ad.name}" ${ad.active ? "deactivated" : "activated"}`
-      );
+      const { data } = await api.patch(`/admin/ads/${adId}`, {
+        active: !active,
+      })
+      if (data.success) {
+        setAdGroups((groups) =>
+          groups.map((group) =>
+            group.id === groupId
+              ? {
+                ...group,
+                ads: group.ads.map((ad) =>
+                  ad.id === adId ? { ...ad, active: !ad.active } : ad
+                ),
+              }
+              : group
+          )
+        );
+
+        const group = adGroups.find((g) => g.id === groupId);
+        const ad = group?.ads.find((a) => a.id === adId);
+        if (ad) {
+          if (!ad.active) {
+            toast.success(`Ad "${ad.name}" activated`);
+          } else {
+            toast.warning(`Ad "${ad.name}" deactivated`);
+          }
+          // toast.success(
+          //   `Ad "${ad.name}" ${ad.active ? "deactivated" : "activated"}`
+          // );
+        }
+      } else {
+        toast.error("Error toggling ad active state");
+      }
+    } catch (error) {
+      toast.error("Error toggling ad active state");
     }
   };
 
-  const handleToggleSidebarAdActive = (position: "top" | "bottom") => {
-    adService.toggleSidebarAdActive(position);
-    toast.success(
-      `${
-        position.charAt(0).toUpperCase() + position.slice(1)
-      } sidebar ad toggled`
-    );
-
-    const ad = adService.getSidebarAd(position);
-    if (position === "top") {
-      setSidebarTopPreview(ad?.imageUrl || null);
-      setSidebarTopUrl(ad?.targetUrl || "https://example.com");
-    } else {
-      setSidebarBottomPreview(ad?.imageUrl || null);
-      setSidebarBottomUrl(ad?.targetUrl || "https://example.com");
+  const handleToggleSidebarAdActive = async (position: "top" | "bottom") => {
+    try {
+      if (position === "top") {
+        await api.post("/admin/ads/sidebar-top", {
+          active: !sidebarTopAds.active,
+        })
+        setSidebarTopAds((prev) => ({ ...prev, active: !prev.active }));
+        if (!sidebarTopAds.active) {
+          toast.success("Top sidebar ad activated");
+        } else {
+          toast.warning("Top sidebar ad deactivated");
+        }
+      } else {
+        await api.post("/admin/ads/sidebar-bottom", {
+          active: !sidebarBottomAds.active,
+        })
+        setSidebarBottomAds((prev) => ({ ...prev, active: !prev.active }));
+        if (!sidebarBottomAds.active) {
+          toast.success("Bottom sidebar ad activated");
+        } else {
+          toast.warning("Bottom sidebar ad deactivated");
+        }
+      }
+    } catch (error) {
+      toast.error("Error toggling sidebar ad status");
     }
   };
 
-  const handleDeleteAdGroup = (groupId: string) => {
-    setAdGroups((groups) => groups.filter((group) => group.id !== groupId));
-    toast.success("Ad group deleted successfully");
-    setDeleteGroupId(null); // Close the modal after deletion
+  const handleDeleteAdGroup = async (groupId: string) => {
+    try {
+      const { data } = await api.delete(`/admin/ads-group/${groupId}`);
+      if (!data.success) {
+        toast.error("Error deleting ad group")
+        return;
+      }
+      setAdGroups((groups) => groups.filter((group) => group.id !== groupId));
+      toast.success("Ad group deleted successfully");
+      setDeleteGroupId(null); // Close the modal after deletion
+    } catch (error) {
+      toast.error("Error deleting ad group")
+    }
   };
 
-  const handleDeleteAd = (groupId: string, adId: string) => {
-    setAdGroups((groups) =>
-      groups.map((group) =>
-        group.id === groupId
-          ? {
+  const handleDeleteAd = async (groupId: string, adId: string) => {
+    try {
+      await api.delete(`/admin/ads/${adId}`);
+      setAdGroups((groups) =>
+        groups.map((group) =>
+          group.id === groupId
+            ? {
               ...group,
               ads: group.ads.filter((ad) => ad.id !== adId),
             }
-          : group
-      )
-    );
-    toast.success("Ad deleted successfully");
-    setDeleteAdInfo(null); // Close the modal after deletion
+            : group
+        )
+      );
+      toast.success("Ad deleted successfully");
+      setDeleteAdInfo(null); // Close the modal after deletion
+    } catch (error) {
+      toast.error("Error deleting ad");
+    }
   };
 
   const handleEditAdGroup = (group: AdGroup) => {
     setFormState({
       name: group.name,
-      pages: [...group.pages],
-      rotationMode: group.rotationMode,
+      display_pages: [...group.display_pages],
       frequency: group.frequency,
-      startDate: group.startDate ? format(group.startDate, "yyyy-MM-dd") : "",
-      endDate: group.endDate ? format(group.endDate, "yyyy-MM-dd") : "",
+      start_date: group.start_date ? format(group.start_date, "yyyy-MM-dd") : "",
+      end_date: group.end_date ? format(group.end_date, "yyyy-MM-dd") : "",
     });
     setEditingGroupId(group.id);
     setCreateMode(true);
@@ -624,6 +1038,7 @@ const AdManagement = () => {
       isAddingToExistingGroup: true,
     });
   };
+
 
   return (
     <div className="space-y-6">
@@ -654,7 +1069,7 @@ const AdManagement = () => {
                 </Button>
               </div>
 
-              {adGroups.length === 0 ? (
+              {adGroups?.length === 0 ? (
                 <div className="text-center py-8 bg-gray-50 rounded-lg">
                   <Image className="w-12 h-12 mx-auto text-gray-400 mb-2" />
                   <p className="text-gray-500">No ad groups created yet</p>
@@ -668,7 +1083,7 @@ const AdManagement = () => {
                 </div>
               ) : (
                 <div className="grid gap-6 md:grid-cols-2">
-                  {adGroups.map((group) => (
+                  {adGroups?.map((group) => (
                     <Card key={group.id} className="overflow-hidden">
                       <CardHeader className="bg-gray-50 pb-3">
                         <div className="flex justify-between items-start">
@@ -676,17 +1091,16 @@ const AdManagement = () => {
                             <CardTitle className="text-lg flex items-center">
                               {group.name}
                               <span
-                                className={`ml-2 px-2 py-0.5 text-xs rounded-full ${
-                                  group.active
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-gray-100 text-gray-800"
-                                }`}
+                                className={`ml-2 px-2 py-0.5 text-xs rounded-full ${group.active
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-800"
+                                  }`}
                               >
                                 {group.active ? "Active" : "Inactive"}
                               </span>
                             </CardTitle>
                             <CardDescription className="mt-1">
-                              {group.pages.map((pageId) => {
+                              {group.display_pages.map((pageId) => {
                                 const page = PAGE_OPTIONS.find(
                                   (p) => p.id === pageId
                                 );
@@ -723,32 +1137,32 @@ const AdManagement = () => {
 
                       <CardContent className="pt-4">
                         <div className="text-sm text-gray-500 grid grid-cols-2 gap-2 mb-3">
-                          <div>
+                          {/* <div>
                             <span className="font-medium text-gray-700">
                               Rotation:
                             </span>{" "}
                             {group.rotationMode}
-                          </div>
+                          </div> */}
                           <div>
                             <span className="font-medium text-gray-700">
                               Frequency:
                             </span>{" "}
                             Every {group.frequency} listings
                           </div>
-                          {group.startDate && (
+                          {group.start_date && (
                             <div>
                               <span className="font-medium text-gray-700">
                                 Start:
                               </span>{" "}
-                              {format(group.startDate, "MMM d, yyyy")}
+                              {format(group.start_date, "MMM d, yyyy")}
                             </div>
                           )}
-                          {group.endDate && (
+                          {group.end_date && (
                             <div>
                               <span className="font-medium text-gray-700">
                                 End:
                               </span>{" "}
-                              {format(group.endDate, "MMM d, yyyy")}
+                              {format(group.end_date, "MMM d, yyyy")}
                             </div>
                           )}
                         </div>
@@ -782,7 +1196,7 @@ const AdManagement = () => {
                                   <div className="flex items-start">
                                     <div className="w-20 h-20 flex-shrink-0">
                                       <img
-                                        src={ad.imageUrl}
+                                        src={ad.image_url}
                                         alt={ad.name}
                                         className="w-full h-full object-cover"
                                       />
@@ -792,11 +1206,10 @@ const AdManagement = () => {
                                         <h4 className="font-medium text-sm flex items-center">
                                           {ad.name}
                                           <span
-                                            className={`ml-2 px-1.5 py-0.5 text-xs rounded-full ${
-                                              ad.active
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-gray-100 text-gray-800"
-                                            }`}
+                                            className={`ml-2 px-1.5 py-0.5 text-xs rounded-full ${ad.active
+                                              ? "bg-green-100 text-green-800"
+                                              : "bg-gray-100 text-gray-800"
+                                              }`}
                                           >
                                             {ad.active ? "Active" : "Inactive"}
                                           </span>
@@ -808,6 +1221,7 @@ const AdManagement = () => {
                                             className="h-7 w-7 p-0"
                                             onClick={() =>
                                               handleToggleAdActive(
+                                                ad.active,
                                                 group.id,
                                                 ad.id
                                               )
@@ -826,6 +1240,7 @@ const AdManagement = () => {
                                             onClick={
                                               () =>
                                                 setDeleteAdInfo({
+
                                                   groupId: group.id,
                                                   adId: ad.id,
                                                 }) // Open the modal for ad deletion
@@ -836,7 +1251,7 @@ const AdManagement = () => {
                                         </div>
                                       </div>
                                       <p className="text-xs text-gray-500 mt-1 break-all">
-                                        {ad.targetUrl}
+                                        {ad.target_url}
                                       </p>
                                       <div className="flex justify-between text-xs text-gray-500 mt-1">
                                         <span>👁️ {ad.views}</span>
@@ -870,11 +1285,17 @@ const AdManagement = () => {
                     <div className="space-y-2">
                       <Label htmlFor="topAdUrl">Target URL</Label>
                       <Input
-                        id="topAdUrl"
-                        value={sidebarTopUrl}
-                        onChange={(e) => setSidebarTopUrl(e.target.value)}
+                        value={sidebarTopAds?.target_url || ""}
+                        onChange={(e) => {
+                          setSidebarTopAds((prev) => ({
+                            ...prev,
+                            target_url: e.target.value,
+                          }));
+
+                        }}
                         placeholder="https://example.com"
                       />
+
                     </div>
 
                     <div className="space-y-2">
@@ -898,16 +1319,17 @@ const AdManagement = () => {
                         </div>
                       </div>
 
-                      {sidebarTopPreview && (
+                      {(sidebarTopPreview || sidebarTopAds?.image_url) && (
                         <div className="mt-2 rounded p-2">
                           <img
-                            src={sidebarTopPreview}
+                            src={sidebarTopPreview || sidebarTopAds?.image_url}
                             alt="Top Sidebar Ad"
                             className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
                         </div>
                       )}
-                      {!sidebarTopPreview && (
+
+                      {/* {!sidebarTopPreview && (
                         <Button
                           variant="outline"
                           onClick={previewAd}
@@ -920,26 +1342,25 @@ const AdManagement = () => {
                           <Eye className="h-4 w-4 mr-2" />
                           Preview Ad
                         </Button>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="grid gap-2 grid-cols-3">
                       <Button
                         variant="outline"
-                        onClick={() => handleToggleSidebarAdActive("top")}
+                        onClick={() => handleToggleSidebarAdActive('top')}
                       >
-                        {adService.getSidebarAd("top")?.active ? (
+                        {sidebarTopAds?.active ? (
                           <>
-                            <Ban className="h-4 w-4 " />
-                            Deactivate
+                            <Ban className="h-4 w-4" /> Deactivate
                           </>
                         ) : (
                           <>
-                            <Check className="h-4 w-4 mr-1" />
-                            Activate
+                            <Check className="h-4 w-4" /> Activate
                           </>
                         )}
                       </Button>
+
                       <Button variant="outline" onClick={previewSidebarTopAd}>
                         <Eye className="h-4 w-4" />
                         Preview
@@ -965,11 +1386,16 @@ const AdManagement = () => {
                     <div className="space-y-2">
                       <Label htmlFor="bottomAdUrl">Target URL</Label>
                       <Input
-                        id="bottomAdUrl"
-                        value={sidebarBottomUrl}
-                        onChange={(e) => setSidebarBottomUrl(e.target.value)}
+                        value={sidebarBottomAds?.target_url || ""}
+                        onChange={(e) => {
+                          setSidebarBottomAds((prev) => ({
+                            ...prev,
+                            target_url: e.target.value,
+                          }));
+                        }}
                         placeholder="https://example.com"
                       />
+
                     </div>
 
                     <div className="space-y-2">
@@ -993,16 +1419,17 @@ const AdManagement = () => {
                         </div>
                       </div>
 
-                      {sidebarBottomPreview && (
+                      {(sidebarBottomPreview || sidebarBottomAds?.image_url) && (
                         <div className="mt-2 rounded p-2">
                           <img
-                            src={sidebarBottomPreview}
+                            src={sidebarBottomPreview || sidebarBottomAds?.image_url}
                             alt="Bottom Sidebar Ad"
                             className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
                         </div>
                       )}
-                      {!sidebarBottomPreview && (
+
+                      {/* {!sidebarBottomPreview && (
                         <Button
                           variant="outline"
                           onClick={previewAd}
@@ -1014,23 +1441,21 @@ const AdManagement = () => {
                           <Eye className="h-4 w-4 mr-2" />
                           Preview Ad
                         </Button>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <Button
                         variant="outline"
-                        onClick={() => handleToggleSidebarAdActive("bottom")}
+                        onClick={() => handleToggleSidebarAdActive('bottom')}
                       >
-                        {adService.getSidebarAd("bottom")?.active ? (
+                        {sidebarBottomAds?.active ? (
                           <>
-                            <Ban className="h-4 w-4" />
-                            Deactivate
+                            <Ban className="h-4 w-4" /> Deactivate
                           </>
                         ) : (
                           <>
-                            <Check className="h-4 w-4" />
-                            Activate
+                            <Check className="h-4 w-4" /> Activate
                           </>
                         )}
                       </Button>
@@ -1194,7 +1619,7 @@ const AdManagement = () => {
                       >
                         <Checkbox
                           id={`page-${page.id}`}
-                          checked={formState.pages.includes(page.id)}
+                          checked={formState.display_pages.includes(page.id)}
                           onCheckedChange={() => togglePageSelection(page.id)}
                         />
                         <Label
@@ -1208,8 +1633,8 @@ const AdManagement = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="grid gap-2">
+                {/* <div className="grid gap-4 md:grid-cols-2"> */}
+                {/* <div className="grid gap-2">
                     <Label htmlFor="rotationMode">Rotation Mode</Label>
                     <Select
                       value={formState.rotationMode}
@@ -1225,27 +1650,27 @@ const AdManagement = () => {
                         <SelectItem value="random">Random</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="frequency">
-                      Frequency (show every X listings)
-                    </Label>
-                    <Input
-                      className="bg-[#e5ebee]"
-                      id="frequency"
-                      type="number"
-                      min="1"
-                      value={formState.frequency}
-                      onChange={(e) =>
-                        updateFormField(
-                          "frequency",
-                          parseInt(e.target.value) || 1
-                        )
-                      }
-                    />
-                  </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="frequency">
+                    Frequency (show every X listings)
+                  </Label>
+                  <Input
+                    className="bg-[#e5ebee]"
+                    id="frequency"
+                    type="number"
+                    min="1"
+                    value={formState.frequency}
+                    onChange={(e) =>
+                      updateFormField(
+                        "frequency",
+                        parseInt(e.target.value) || 1
+                      )
+                    }
+                  />
                 </div>
+                {/* </div> */}
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="grid gap-2">
@@ -1254,9 +1679,9 @@ const AdManagement = () => {
                       className="bg-[#e5ebee]"
                       id="startDate"
                       type="date"
-                      value={formState.startDate}
+                      value={formState.start_date}
                       onChange={(e) =>
-                        updateFormField("startDate", e.target.value)
+                        updateFormField("start_date", e.target.value)
                       }
                     />
                   </div>
@@ -1267,9 +1692,9 @@ const AdManagement = () => {
                       className="bg-[#e5ebee]"
                       id="endDate"
                       type="date"
-                      value={formState.endDate}
+                      value={formState.end_date}
                       onChange={(e) =>
-                        updateFormField("endDate", e.target.value)
+                        updateFormField("end_date", e.target.value)
                       }
                     />
                   </div>

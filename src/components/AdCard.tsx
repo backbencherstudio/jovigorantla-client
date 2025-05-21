@@ -9,8 +9,8 @@ interface AdCardProps {
   ad: {
     id: string;
     name?: string;
-    imageUrl: string;
-    targetUrl: string;
+    image_url: string;
+    target_url: string;
     group?: string;
   };
   compact?: boolean;
@@ -22,14 +22,14 @@ const AdCard = memo(({ ad, compact = false }: AdCardProps) => {
 
   const handleClick = () => {
     // Record the ad click
-    adService.recordAdClick(ad.id);
+    // adService.recordAdClick(ad.id);
     
-    // Open in new tab if external URL, navigate if internal
-    if (ad.targetUrl.startsWith('http')) {
-      window.open(ad.targetUrl, '_blank', 'noopener,noreferrer');
-    } else {
-      navigate(ad.targetUrl);
-    }
+    // // Open in new tab if external URL, navigate if internal
+    // if (ad.targetUrl.startsWith('http')) {
+    //   window.open(ad.targetUrl, '_blank', 'noopener,noreferrer');
+    // } else {
+    //   navigate(ad.targetUrl);
+    // }
   };
 
   return (
@@ -45,7 +45,7 @@ const AdCard = memo(({ ad, compact = false }: AdCardProps) => {
             </div>
           )}
           <img
-            src={ad.imageUrl}
+            src={ad.image_url}
             alt={ad.name || "Advertisement"}
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'

@@ -11,6 +11,7 @@ import {
   getPageCategory,
 } from "@/utils/listingUtils";
 import { ListingType } from "@/types/listing";
+import { api } from "@/lib/axois";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -43,20 +44,20 @@ const Index = () => {
     // Simulate loading data
     setIsLoading(true);
 
-    // Generate listings based on current category
-    setTimeout(() => {
-      const mockData = generateMockListings(currentCategory, 50);
-      setListings(updateSavedStatus(mockData, user?.id));
+    // // Generate listings based on current category
+    // setTimeout(() => {
+    //   const mockData = generateMockListings(currentCategory, 50);
+    //   setListings(updateSavedStatus(mockData, user?.id));
 
-      // Set default filter based on category
-      if (currentCategory === "Home") {
-        setActiveFilter("Nearby");
-      } else {
-        setActiveFilter("All");
-      }
+    //   // Set default filter based on category
+    //   if (currentCategory === "Home") {
+    //     setActiveFilter("Nearby");
+    //   } else {
+    //     setActiveFilter("All");
+    //   }
 
-      setIsLoading(false);
-    }, 300);
+    //   setIsLoading(false);
+    // }, 300);
 
     // Listen for changes in saved listings and location/radius
     const handleSavedListingsUpdate = () => {
@@ -69,11 +70,11 @@ const Index = () => {
     const handleLocationUpdate = () => {
       // Refresh listings when location or radius changes
       setIsLoading(true);
-      setTimeout(() => {
-        const mockData = generateMockListings(currentCategory, 50);
-        setListings(updateSavedStatus(mockData, user?.id));
-        setIsLoading(false);
-      }, 300);
+      // setTimeout(() => {
+      //   const mockData = generateMockListings(currentCategory, 50);
+      //   setListings(updateSavedStatus(mockData, user?.id));
+      //   setIsLoading(false);
+      // }, 300);
     };
 
     window.addEventListener("storage", handleSavedListingsUpdate);
@@ -97,36 +98,36 @@ const Index = () => {
     setSearchQuery(value);
 
     // If search field is cleared, clear filters and show all listings
-    if (!value.trim() && location.search.includes("q=")) {
-      navigate(currentPath); // Navigate to the same page without query params
+    // if (!value.trim() && location.search.includes("q=")) {
+    //   navigate(currentPath); // Navigate to the same page without query params
 
-      // Refresh listings to show all results when search is cleared
-      setIsLoading(true);
-      setTimeout(() => {
-        const mockData = generateMockListings(currentCategory, 50);
-        setListings(updateSavedStatus(mockData, user?.id));
-        setIsLoading(false);
-      }, 300);
-    }
+    //   // Refresh listings to show all results when search is cleared
+    //   setIsLoading(true);
+    //   setTimeout(() => {
+    //     const mockData = generateMockListings(currentCategory, 50);
+    //     setListings(updateSavedStatus(mockData, user?.id));
+    //     setIsLoading(false);
+    //   }, 300);
+    // }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`${currentPath}?q=${encodeURIComponent(searchQuery)}`);
-    } else {
-      // If empty search, show all listings and remove query params
-      if (location.search) {
-        navigate(currentPath);
-      }
-      // Refresh listings to show all results
-      setIsLoading(true);
-      setTimeout(() => {
-        const mockData = generateMockListings(currentCategory, 50);
-        setListings(updateSavedStatus(mockData, user?.id));
-        setIsLoading(false);
-      }, 300);
-    }
+    // if (searchQuery.trim()) {
+    //   navigate(`${currentPath}?q=${encodeURIComponent(searchQuery)}`);
+    // } else {
+    //   // If empty search, show all listings and remove query params
+    //   if (location.search) {
+    //     navigate(currentPath);
+    //   }
+    //   // Refresh listings to show all results
+    //   setIsLoading(true);
+    //   setTimeout(() => {
+    //     const mockData = generateMockListings(currentCategory, 50);
+    //     setListings(updateSavedStatus(mockData, user?.id));
+    //     setIsLoading(false);
+    //   }, 300);
+    // }
   };
 
   const handleFilterClick = (filter: string) => {
@@ -144,6 +145,24 @@ const Index = () => {
     }
   };
 
+  const fetchListings = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await api.get(`/listings/nearby?lat=40.7128&lng=-74.0060&radius=20`);
+      console.log(data);
+
+      setListings(data.data);
+      } catch (error) {
+      console.error("Error fetching listings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };  
+
+  useEffect(() => {
+    fetchListings();
+  }, [])
+
   return (
     <div className="w-full pb-0">
       {/* Filter tabs */}
@@ -160,7 +179,7 @@ const Index = () => {
           isLoading={isLoading}
           searchQuery={searchQuery}
           activeFilter={activeFilter}
-          generateMockListings={generateMockListings}
+          // generateMockListings={generateMockListings}
           updateSavedStatus={(listings) =>
             updateSavedStatus(listings, user?.id)
           }

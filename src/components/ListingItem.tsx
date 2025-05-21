@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ListingType } from "@/types/listing";
 import ListingActions from "./ListingActions";
+import { getAddressFromCoordinates } from "@/hooks/getAddress";
+import { formatTime } from "@/lib/utils";
 
 interface ListingItemProps {
   listing: ListingType;
@@ -14,9 +16,9 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
   const formatCategoryStatus = (category: string, status: string) => {
     // Convert category to singular for display
     let displayCategory = category;
-    if (category === "Accommodations") displayCategory = "Accommodation";
-    if (category === "Rides") displayCategory = "Ride";
-    if (category === "Jobs") displayCategory = "Job";
+    if (category === "ACCOMMODATION") displayCategory = "Accommodation";
+    if (category === "RIDES") displayCategory = "Ride";
+    if (category === "JOBS") displayCategory = "Job";
 
     // For Marketplace, change the status to Item/Service
     let displayStatus = status;
@@ -30,7 +32,7 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
 
   const { displayCategory, displayStatus } = formatCategoryStatus(
     listing.category,
-    listing.status
+    listing.sub_category
   );
 
   const handleClick = () => {
@@ -45,13 +47,13 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
     >
       <div className="p-4 pb-2 lg:pb-4">
         <div className="flex items-center text-sm text-gray-500 mb-1">
-          <span>{displayCategory}</span>
+          <span>{displayCategory?.slice(0,1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
           <span className="mx-2">•</span>
-          <span>{displayStatus}</span>
+          <span>{displayStatus?.slice(0,1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
         </div>
 
         <div
-          className={`${listing.title.length > 40 ? "mb-0" : "mb-7 sm:mb-0"}`}
+          className={`${listing?.title?.length > 40 ? "mb-0" : "mb-7 sm:mb-0"}`}
         >
           <h3 className="text-lg font-medium text-gray-900 lg:text-nowrap line-clamp-2 ">
             {listing.title}
@@ -60,17 +62,19 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
 
         <div className="flex items-center justify-between ">
           <div className="flex items-center text-sm text-gray-500">
-            <span>{listing.userName}</span>
+            <span>{listing.user_name}</span>
             <span className="mx-2">•</span>
-            <span>{listing.postedTime}</span>
+            <span>{formatTime(listing?.created_at)}</span>
             <span className="mx-2">•</span>
-            <span>{listing.location}</span>
+            {/* <span>{getAddressFromCoordinates(listing.latitude, listing.longitude)}</span> */}
+            <span>Denton, TX</span>
           </div>
 
           <ListingActions
             listingId={listing.id}
             listingTitle={listing.title}
-            saved={listing.saved || false}
+            // saved={listing.saved || false}
+            saved={ false}
             onToggleSave={onToggleSave}
           />
         </div>

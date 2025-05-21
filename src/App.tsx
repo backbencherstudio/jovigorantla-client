@@ -4,8 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-// import { Toaster } from "@/components/ui/sonner";
-import { Toaster } from 'sonner';
+import { Toaster } from "@/components/ui/sonner";
+// import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import PageLayout from "@/components/PageLayout";

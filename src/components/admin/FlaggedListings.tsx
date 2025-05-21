@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { History, Flag, Eye, Ban, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -19,78 +19,137 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { mockFlaggedListings, mockFlaggedHistory } from "@/data/data";
+import { api } from "@/lib/axois";
+
+// interface FlaggedListingHisotry {
+//   id: string;
+//   listingId: string;
+//   listingTitle: string;
+//   category: string;
+//   reportedBy: string;
+//   reportedAt: string;
+//   decision?: string;
+//   decisionBy?: string;
+//   decisionAt?: string;
+// }
 
 interface FlaggedListing {
   id: string;
-  listingId: string;
-  listingTitle: string;
+  title: string;
+  description: string;
   category: string;
-  reportedBy: string;
-  reportedAt: string;
-  decision?: string;
-  decisionBy?: string;
-  decisionAt?: string;
+  sub_category: string;
+  slug: string | null;
+  image: string | null;
+  image_url: string | null;
+  latitude: number;
+  longitude: number;
+  post_to_usa: boolean;
+  usa_listing_status: string | null;
+  flagged_listing_status: string
+  created_at: string; // ISO 8601 string
+  updated_at: string; // ISO 8601 string
+  user_id: string;
+  user: {
+    name: string;
+    email: string;
+  };
 }
+
 
 const FlaggedListings = () => {
   const [flaggedListings, setFlaggedListings] =
-    useState<FlaggedListing[]>(mockFlaggedListings);
+    useState<FlaggedListing[]>();
   const [flaggedHistory, setFlaggedHistory] =
-    useState<FlaggedListing[]>(mockFlaggedHistory);
+    useState<FlaggedListing[]>();
   const [showFlaggedHistory, setShowFlaggedHistory] = useState(false);
   const navigate = useNavigate();
 
-  const handleDeleteListing = (id: string) => {
-    const listing = flaggedListings.find((item) => item.id === id);
-    if (listing) {
-      const updatedListing = {
-        ...listing,
-        decision: "deleted",
-        decisionBy: "admin@example.com",
-        decisionAt: new Date().toISOString(),
-      };
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
 
-      setFlaggedHistory([updatedListing, ...flaggedHistory]);
-      setFlaggedListings(
-        flaggedListings.filter((listing) => listing.id !== id)
-      );
-      toast.success("Listing deleted successfully");
+
+
+  const [historyCursor, setHistoryCursor] = useState<string | null>(null);
+  const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const [isFetchingHistory, setIsFetchingHistory] = useState(false);
+
+  // console.log(flaggedListings)
+
+  const handleDeleteListing = async (id: string) => {
+    try {
+      await api.patch(`/admin/listings/${id}`, {
+          flagged_listing_status: "DELETED",
+      });
+      const listing = flaggedListings.find((item) => item.id === id);
+      if (listing) {
+        const updatedListing = {
+          ...listing,
+          flagged_listing_status: "DELETED",
+          updated_at: new Date().toISOString(),
+        };
+
+        setFlaggedHistory([updatedListing, ...flaggedHistory]);
+        setFlaggedListings(
+          flaggedListings.filter((listing) => listing.id !== id)
+        );
+        toast.success("Listing deleted successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to delete listing");
     }
   };
 
-  const handleApproveListing = (id: string) => {
-    const listing = flaggedListings.find((item) => item.id === id);
-    if (listing) {
-      const updatedListing = {
-        ...listing,
-        decision: "approved",
-        decisionBy: "admin@example.com",
-        decisionAt: new Date().toISOString(),
-      };
+  const handleApproveListing = async (id: string) => {
+    try {
+      await api.patch(`/admin/listings/${id}`, {
+          flagged_listing_status: "APPROVED",
+      });
 
-      setFlaggedHistory([updatedListing, ...flaggedHistory]);
-      setFlaggedListings(
-        flaggedListings.filter((listing) => listing.id !== id)
-      );
-      toast.success("Listing approved and removed from flagged list");
+      const listing = flaggedListings.find((item) => item.id === id);
+      if (listing) {
+        const updatedListing = {
+          ...listing,
+          flagged_listing_status: "APPROVED",
+          updated_at: new Date().toISOString(),
+        };
+  
+        setFlaggedHistory([updatedListing, ...flaggedHistory]);
+        setFlaggedListings(
+          flaggedListings.filter((listing) => listing.id !== id)
+        );
+        toast.success("Listing approved and removed from flagged list");
+      }
+    } catch (error) {
+      console.error("Error approving listing:", error);
+      toast.error("Failed to approve listing");
     }
+   
   };
 
-  const handleBlockListing = (id: string) => {
-    const listing = flaggedListings.find((item) => item.id === id);
-    if (listing) {
-      const updatedListing = {
-        ...listing,
-        decision: "blocked",
-        decisionBy: "admin@example.com",
-        decisionAt: new Date().toISOString(),
-      };
+  const handleBlockListing = async(id: string) => {
+    try {
+      await api.patch(`/admin/listings/${id}`, {
+          flagged_listing_status: "BLOCKED",
+      });
+      const listing = flaggedListings.find((item) => item.id === id);
+      if (listing) {
+        const updatedListing = {
+          ...listing,
+          flagged_listing_status: "BLOCKED",
+          updated_at: new Date().toISOString(),
+        };
 
-      setFlaggedHistory([updatedListing, ...flaggedHistory]);
-      setFlaggedListings(
-        flaggedListings.filter((listing) => listing.id !== id)
-      );
-      toast.success("Listing blocked and removed from the platform");
+        setFlaggedHistory([updatedListing, ...flaggedHistory]);
+        setFlaggedListings(
+          flaggedListings.filter((listing) => listing.id !== id)
+        );
+        toast.success("Listing blocked and removed from the platform");
+      }
+      
+    } catch (error) {
+      toast.error("Failed to block listing");
     }
   };
 
@@ -109,6 +168,152 @@ const FlaggedListings = () => {
     }).format(date);
   };
 
+  const fetchFlaggedListings = useCallback(async (cursor?: string) => {
+    try {
+      let response: any;
+      if (cursor) {
+        const {data} = await api.get(`/admin/listings/flagged-listings?cursor=${cursor}`);
+        response = data;
+      } else {
+        const { data } = await api.get("/admin/listings/flagged-listings");
+        response = data;
+      }
+
+      if (response?.data) {
+        // setFlaggedListings((prev) => [...(prev || []), ...response.data]);
+
+        setFlaggedListings((prev) => {
+          const existingIds = new Set((prev || []).map(item => item.id));
+          const newItems = response.data.filter(item => !existingIds.has(item.id));
+          return [...(prev || []), ...newItems];
+        });
+        setHasNextPage(response.hasNextPage);
+        setNextCursor(response.nextCursor);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch flagged listings");
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
+
+  const fetchFlaggedHistory = useCallback(async (cursor?: string) => {
+    try {
+      let response: any;
+  
+      if (cursor) {
+        const { data } = await api.get(`/admin/listings/flagged-listings-history?cursor=${cursor}`);
+        response = data;
+      } else {
+        const { data } = await api.get("/admin/listings/flagged-listings-history");
+        response = data;
+      }
+  
+      if (response?.data) {
+        setFlaggedHistory((prev) => {
+          const existingIds = new Set((prev || []).map(item => item.id));
+          const newItems = response.data.filter(item => !existingIds.has(item.id));
+          return [...(prev || []), ...newItems];
+        });
+  
+        setHasMoreHistory(response.hasNextPage);
+        setHistoryCursor(response.nextCursor);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch flagged history");
+    } finally {
+      setIsFetchingHistory(false);
+    }
+  }, []);
+  
+  
+
+  useEffect(() => {
+    fetchFlaggedListings();
+    fetchFlaggedHistory();
+  }, []);
+
+
+  // // Set up Intersection Observer to trigger load when user scrolls to the bottom
+  // const observer = new IntersectionObserver(
+  //   (entries) => {
+  //     const entry = entries[0];
+  //     if (entry.isIntersecting && hasNextPage && !isFetching) {
+  //       setIsFetching(true);
+  //       fetchFlaggedListings(nextCursor).finally(() => setIsFetching(false));
+  //     }
+  //   },
+  //   {
+  //     rootMargin: "100px", // You can adjust this to trigger a bit earlier or later
+  //   }
+  // );
+
+  useEffect(() => {
+
+    
+    if (!hasNextPage) return; // If there's no next page, don't observe
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !isFetching) {
+          setIsFetching(true);
+          fetchFlaggedListings(nextCursor).finally(() => setIsFetching(false)); // Fetch the next page
+        }
+      },
+      {
+        rootMargin: "100px", // Trigger loading a bit before reaching the end
+      }
+    );
+  
+    const target = document.getElementById("load-more-trigger");
+    if (target) observer.observe(target);
+  
+    // Cleanup the observer when the component unmounts or nextCursor changes
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, [hasNextPage, nextCursor, isFetching]); // Re-run when nextCursor or hasNextPage changes
+  
+  useEffect(() => {
+    if (!showFlaggedHistory) return;
+  
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && hasMoreHistory && !isFetchingHistory) {
+          setIsFetchingHistory(true);
+          fetchFlaggedHistory(historyCursor).finally(() => {
+            setIsFetchingHistory(false);
+          });
+        }
+      },
+      {
+        rootMargin: "100px",
+      }
+    );
+  
+    const target = document.getElementById("load-more-history-trigger");
+    if (target) observer.observe(target);
+  
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [showFlaggedHistory, hasMoreHistory, historyCursor, isFetchingHistory, fetchFlaggedHistory]);
+
+  
+  // useEffect(() => {
+  //   const ids = flaggedListings?.map(i => i.id);
+  //   const unique = new Set(ids);
+  //   if (ids?.length !== unique?.size) {
+  //     console.warn("Duplicate IDs in listings:", ids);
+  //   }
+  // }, [flaggedListings]);
+
+
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center mb-4">
@@ -125,37 +330,37 @@ const FlaggedListings = () => {
 
       {!showFlaggedHistory && (
         <>
-          {flaggedListings.length === 0 ? (
+          {flaggedListings?.length === 0 ? (
             <div className="text-center py-8 bg-gray-50 rounded-lg">
               <Flag className="w-12 h-12 mx-auto text-gray-400 mb-2" />
               <p className="text-gray-500">No flagged listings to review</p>
             </div>
           ) : (
-            flaggedListings.map((listing) => (
+            flaggedListings?.map((listing) => (
               <Card
                 key={listing.id}
                 className="mb-4 cursor-pointer hover:shadow-md"
-                onClick={() => handleViewListing(listing.listingId)}
+                onClick={() => handleViewListing(listing.id)}
               >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-lg">
-                        {listing.listingTitle}
+                        {listing.title}
                       </CardTitle>
                       <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
                         {listing.category}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
-                      Reported {formatDate(listing.reportedAt)}
+                      Reported {formatDate(listing.created_at)}
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div>
                     <span className="font-medium text-sm">Reported by:</span>
-                    <p className="text-gray-700">{listing.reportedBy}</p>
+                    <p className="text-gray-700">{listing.user.email}</p>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-end space-x-2">
@@ -198,6 +403,13 @@ const FlaggedListings = () => {
               </Card>
             ))
           )}
+
+          {hasNextPage && !isFetching && (
+            <div id="load-more-trigger" className="h-4"></div> // This div will be observed
+          )}
+
+          {isFetching && <div className="text-center">Loading more...</div>}
+
         </>
       )}
 
@@ -226,32 +438,33 @@ const FlaggedListings = () => {
                   {flaggedHistory.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">
-                        {item.listingTitle}
+                        {item.title}
                       </TableCell>
-                      <TableCell>{item.category}</TableCell>
-                      <TableCell>{item.reportedBy}</TableCell>
-                      <TableCell>
+                      <TableCell className="break-all">{item.category}</TableCell>
+                      <TableCell
+                      className="break-all"
+                      >{item.user.email}</TableCell>
+                      <TableCell >
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            item.decision === "approved"
+                          className={`px-2 py-1 rounded-full text-xs ${item.flagged_listing_status === "APPROVED"
                               ? "bg-green-100 text-green-800"
-                              : item.decision === "blocked"
-                              ? "bg-orange-100 text-orange-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
+                              : item.flagged_listing_status === "BLOCKED"
+                                ? "bg-orange-100 text-orange-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
                         >
-                          {item.decision?.charAt(0).toUpperCase() +
-                            item.decision?.slice(1)}
+                          {item.flagged_listing_status?.charAt(0).toUpperCase() +
+                            item.flagged_listing_status?.slice(1)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        {item.decisionAt ? formatDate(item.decisionAt) : "-"}
+                        {item.updated_at ? formatDate(item.updated_at) : "-"}
                       </TableCell>
                       <TableCell>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleViewListing(item.listingId)}
+                          onClick={() => handleViewListing(item.id)}
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           View
@@ -263,6 +476,14 @@ const FlaggedListings = () => {
               </Table>
             </div>
           )}
+
+      {hasMoreHistory && (
+        <div id="load-more-history-trigger" className="h-6"></div>
+      )}
+
+      {isFetchingHistory && (
+        <div className="text-center py-4 text-gray-500 text-sm">Loading more history...</div>
+      )}
         </>
       )}
     </div>

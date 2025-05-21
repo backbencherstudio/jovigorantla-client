@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { mockListings } from "@/utils/mockData";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, set } from "date-fns";
 import PhotoGallery from "@/components/PhotoGallery";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -24,6 +24,8 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { toast } from "sonner";
 import AuthModal from "@/components/AuthModal";
+import { api } from "@/lib/axois";
+import { formatTime } from "@/lib/utils";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,42 +36,59 @@ const ListingDetailPage = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
+  const [listing, setListing] = useState<any>({});
 
   // In a real app, you would fetch the listing details from an API
   // For now, we'll use mock data
-  const listing = mockListings.find((l) => l.id === id) || mockListings[0];
+  // const listing = mockListings.find((l) => l.id === id) || mockListings[0];
 
-  // Format time consistently as "2m ago", "2h ago", "2d ago" to match listings
-  const formatTime = (date: Date) => {
-    const timeAgo = formatDistanceToNow(new Date(date), {
-      addSuffix: true,
-    });
+  const fetchListingsDetails = async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.get(`/listings/${id}`);
+      if(data?.success) {
+        setListing(data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    // Replace "about" with empty string
-    let formattedTime = timeAgo.replace("about ", "");
 
-    // Replace "less than a minute" with "1m"
-    formattedTime = formattedTime.replace("less than a minute ago", "1m ago");
 
-    // Replace "1 minute" with "1m"
-    formattedTime = formattedTime.replace("1 minute ago", "1m ago");
+  // // Format time consistently as "2m ago", "2h ago", "2d ago" to match listings
+  // const formatTime = (date: Date) => {
+  //   const timeAgo = formatDistanceToNow(new Date(date), {
+  //     addSuffix: true,
+  //   });
 
-    // Replace "X minutes" with "Xm"
-    formattedTime = formattedTime.replace(/(\d+) minutes? ago/, "$1m ago");
+  //   // Replace "about" with empty string
+  //   let formattedTime = timeAgo.replace("about ", "");
 
-    // Replace "1 hour" with "1h"
-    formattedTime = formattedTime.replace("1 hour ago", "1h ago");
+  //   // Replace "less than a minute" with "1m"
+  //   formattedTime = formattedTime.replace("less than a minute ago", "1m ago");
 
-    // Replace "X hours" with "Xh"
-    formattedTime = formattedTime.replace(/(\d+) hours? ago/, "$1h ago");
+  //   // Replace "1 minute" with "1m"
+  //   formattedTime = formattedTime.replace("1 minute ago", "1m ago");
 
-    // Replace "1 day" with "1d"
-    formattedTime = formattedTime.replace("1 day ago", "1d ago");
+  //   // Replace "X minutes" with "Xm"
+  //   formattedTime = formattedTime.replace(/(\d+) minutes? ago/, "$1m ago");
 
-    // Replace "X days" with "Xd"
-    formattedTime = formattedTime.replace(/(\d+) days? ago/, "$1d ago");
-    return formattedTime;
-  };
+  //   // Replace "1 hour" with "1h"
+  //   formattedTime = formattedTime.replace("1 hour ago", "1h ago");
+
+  //   // Replace "X hours" with "Xh"
+  //   formattedTime = formattedTime.replace(/(\d+) hours? ago/, "$1h ago");
+
+  //   // Replace "1 day" with "1d"
+  //   formattedTime = formattedTime.replace("1 day ago", "1d ago");
+
+  //   // Replace "X days" with "Xd"
+  //   formattedTime = formattedTime.replace(/(\d+) days? ago/, "$1d ago");
+  //   return formattedTime;
+  // };
   const [width, setWidth] = useState("500px");
 
   useEffect(() => {
@@ -89,11 +108,12 @@ const ListingDetailPage = () => {
     updateWidth();
     // Add event listener for window resize
     window.addEventListener("resize", updateWidth);
+    fetchListingsDetails()
     // Clean up event listener
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const timeAgo = formatTime(new Date(listing.createdAt));
+  // const timeAgo = formatTime(new Date(listing.created_at));
 
   const handleContact = () => {
     if (user) {
@@ -199,9 +219,10 @@ const ListingDetailPage = () => {
   );
 
   // Extract city and state from location
-  const locationParts = listing.location.address.split(",");
-  const city = locationParts[0]?.trim() || "";
-  const state = locationParts[1]?.trim() || "";
+  // const locationParts = listing.location.address.split(",");
+  // const locationParts = "location"
+  // const city = locationParts[0]?.trim() || "";
+  // const state = locationParts[1]?.trim() || "";
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -210,10 +231,10 @@ const ListingDetailPage = () => {
         {/* Category, status and action buttons */}
         <div className="px-4">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center text-gray-500 text-sm gap-2">
-              <span>{displayCategory}</span>
-              <span>•</span>
-              <span>{displayStatus}</span>
+            <div className="flex items-center text-gray-500 text-sm gap-1">
+            <span>{displayCategory?.slice(0,1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
+            <span className="mx-2">•</span>
+            <span>{displayStatus?.slice(0,1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
             </div>
             <div className="flex items-center gap-1">
               <Button
@@ -264,9 +285,9 @@ const ListingDetailPage = () => {
 
           {/* User info and metadata - updated format */}
           <div className="flex items-center text-sm text-gray-500 mb-4">
-            <span>Ramesh</span>
+            <span>{listing?.user?.name}</span>
             <span className="mx-2">•</span>
-            <span>12h ago</span>
+            <span>{formatTime(listing?.created_at)}</span>
             <span className="mx-2">•</span>
             <span>Denton, TX</span>
           </div>
@@ -285,7 +306,8 @@ const ListingDetailPage = () => {
 
           {/* Photo Gallery - only show if there are images and not for jobs/rides */}
           {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
-            <PhotoGallery images={[listing.image]} listingId={listing.id} />
+            // <PhotoGallery images={[listing.image]} listingId={listing.id} />
+            <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover" />
           )}
         </div>
         {/* Contact button - only show on desktop */}
