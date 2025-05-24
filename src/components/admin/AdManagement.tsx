@@ -151,7 +151,7 @@ const AdManagement = () => {
 
   const [selectedCities, setSelectedCities] = useState([]);
 
-const handleSelect = (options) => {
+  const handleSelect = (options) => {
     console.log("options => ", options)
     setSelectedCities(prev => [...prev, ...options]);
   };
@@ -854,7 +854,7 @@ const handleSelect = (options) => {
         });
       }
 
-      const { data: ad } = await api.post("/admin/ads", formData); 
+      const { data: ad } = await api.post("/admin/ads", formData);
 
       if (ad.success) {
         toast.success("Ad saved successfully");
@@ -1604,47 +1604,47 @@ const handleSelect = (options) => {
                 </div>
 
                 <div className="grid gap-2">
-      <label className="text-sm font-medium text-gray-700">Target Cities</label>
+                  <label className="text-sm font-medium text-gray-700">Target Cities</label>
 
-      <AsyncSelect
-        cacheOptions
-        isMulti
-        defaultOptions
-        loadOptions={loadCityOptions}
-        onChange={handleSelect}
-        value={[]}
-        placeholder="Search cities..."
-        className="text-sm"
-        styles={{
-          control: (base) => ({
-            ...base,
-            borderColor: "#e5ebee",
-            backgroundColor: "#f9fafb",
-            minHeight: "42px",
-          }),
-        }}
-      />
+                  <AsyncSelect
+                    cacheOptions
+                    isMulti
+                    defaultOptions
+                    loadOptions={loadCityOptions}
+                    onChange={handleSelect}
+                    value={[]}
+                    placeholder="Search cities..."
+                    className="text-sm"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        borderColor: "#e5ebee",
+                        backgroundColor: "#f9fafb",
+                        minHeight: "42px",
+                      }),
+                    }}
+                  />
 
-      {/* Selected Cities Below */}
-      {selectedCities.length > 0 && (
-        <div className="flex flex-col gap-2 mt-2">
-          {selectedCities.map((city) => (
-            <div
-              key={city.value}
-              className="flex flex-1 items-between bg-[#e5ebee] text-sm px-3 py-3 rounded-sm"
-            >
-              {city.label}
-              <button
-                onClick={() => handleRemove(city)}
-                className="ml-auto text-gray-500 hover:text-red-500"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+                  {/* Selected Cities Below */}
+                  {selectedCities.length > 0 && (
+                    <div className="flex flex-col gap-2 mt-2">
+                      {selectedCities.map((city) => (
+                        <div
+                          key={city.value}
+                          className="flex flex-1 items-between bg-[#e5ebee] text-sm px-3 py-3 rounded-sm"
+                        >
+                          {city.label}
+                          <button
+                            onClick={() => handleRemove(city)}
+                            className="ml-auto text-gray-500 hover:text-red-500"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
               </div>
             </CardContent>
