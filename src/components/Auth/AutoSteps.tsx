@@ -80,7 +80,6 @@ const AuthSteps = ({
             otp={otp}
             setOtp={setOtp}
             isLoading={isLoading}
-            handleVerifyOTP={handleVerifyOTP}
             resendTimer={resendTimer}
             resendDisabled={resendDisabled}
             handleResend={handleResend}

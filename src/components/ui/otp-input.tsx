@@ -7,10 +7,11 @@ interface OTPInputProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  hasError?: boolean;
 }
 
 const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
-  ({ length = 6, onComplete, value, onChange, disabled = false }, ref) => {
+  ({ length = 6, onComplete, value, onChange, disabled = false, hasError = false }, ref) => {
     const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
     const focusInput = (targetIndex: number) => {
@@ -77,7 +78,8 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             onPaste={handlePaste}
             className={cn(
               "w-12 h-12 text-center text-xl font-semibold rounded-xl border bg-[#e5ebee] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-              disabled && "opacity-50 cursor-not-allowed"
+              disabled && "opacity-50 cursor-not-allowed",
+              hasError && "border-red-500 focus:ring-red-500"
             )}
           />
         ))}

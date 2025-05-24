@@ -1,17 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { OTPInput } from "@/components/ui/otp-input";
+import { useAuth } from "@/context/AuthContext";
+
+interface EmailVerificationProps {
+  otp: string;
+  setOtp: (otp: string) => void;
+  isLoading: boolean;
+  resendTimer: number;
+  resendDisabled: boolean;
+  handleResend: () => void;
+  setSignupStep: (step: "email" | "verify" | "details") => void;
+}
 
 const EmailVerification = ({
   otp,
   setOtp,
   isLoading,
-  handleVerifyOTP,
   resendTimer,
   resendDisabled,
   handleResend,
   setSignupStep,
-}) => {
+}: EmailVerificationProps) => {
+  const { verifyOtp } = useAuth();
+  const signUpEmail = localStorage.getItem("signupEmail");
+  const [error, setError] = useState(false);
+
+  const handleVerifyOTP = async (completedOtp: string) => {
+    try {
+      const success = await verifyOtp(signUpEmail!, completedOtp);
+      if (success) {
+        setError(false);
+        setSignupStep("details");
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setError(true);
+    }
+  };
+
+  const isOtpComplete = otp.length === 6;
+
   return (
     <>
       <p className="text-sm text-gray-500 text-center">
@@ -23,10 +54,19 @@ const EmailVerification = ({
         <div>
           <OTPInput
             value={otp}
-            onChange={setOtp}
+            onChange={(value) => {
+              setOtp(value);
+              setError(false);
+            }}
             onComplete={handleVerifyOTP}
             disabled={isLoading}
+            hasError={error}
           />
+          {error && (
+            <p className="text-red-500 text-sm text-center mt-2">
+              Invalid verification code. Please try again.
+            </p>
+          )}
         </div>
         <div className="text-center space-y-4">
           <p className="text-sm text-gray-500 text-center mb-2 md:static absolute bottom-16 md:w-full w-[92%]">
@@ -45,9 +85,9 @@ const EmailVerification = ({
             )}
           </p>
           <Button
-            onClick={() => setSignupStep("details")}
+            onClick={() => handleVerifyOTP(otp)}
             className="w-[92%] md:w-full absolute md:static bottom-5 left-4 bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
-            disabled={isLoading}
+            disabled={isLoading || !isOtpComplete}
           >
             {isLoading ? "Verifying..." : "Verify"}
           </Button>
