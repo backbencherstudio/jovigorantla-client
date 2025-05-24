@@ -346,6 +346,7 @@ import {
 } from "@/components/ui/table";
 import { mockFlaggedListings, mockFlaggedHistory } from "@/data/data";
 import { api } from "@/lib/axois";
+import { formatCategory } from "@/lib/format";
 
 // interface FlaggedListingHisotry {
 //   id: string;
@@ -677,7 +678,7 @@ const USAListing = () => {
                         {listing.title}
                       </CardTitle>
                       <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
-                        {listing.category}
+                        {formatCategory(listing.category)}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
@@ -768,7 +769,7 @@ const USAListing = () => {
                       <TableCell className="font-medium">
                         {item.title}
                       </TableCell>
-                      <TableCell className="break-all">{item.category}</TableCell>
+                      <TableCell className="break-all">{formatCategory(item.category)}</TableCell>
                       <TableCell
                       className="break-all"
                       >{item.user.email}</TableCell>

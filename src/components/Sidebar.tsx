@@ -2,6 +2,32 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { Facebook, Youtube, Instagram } from 'lucide-react';
+
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M14.095479,10.316482L22.286354,1h-1.940718l-7.115352,8.087682L7.551414,1H1l8.589488,12.231093L1,23h1.940717l7.509372-8.542861L16.448587,23H23L14.095479,10.316482z M11.436522,13.338465l-0.871624-1.218704l-6.924311-9.68815h2.981339l5.58978,7.82155l0.867949,1.218704l7.26506,10.166271h-2.981339L11.436522,13.338465z" />
+  </svg>
+);
+
+
+
+const socialIcons = [
+  { icon: <XIcon className="w-4 h-4 text-white" />, link: 'https://x.com/desieasyteam' },
+  { icon: <Facebook className="w-4 h-4 text-white" />, link: 'https://www.facebook.com/desieasy' },
+  { icon: <Youtube className="w-4 h-4 text-white" />, link: 'https://www.youtube.com/@desieasy' },
+  { icon: <Instagram className="w-4 h-4 text-white" />, link: 'https://www.instagram.com/desieasyofficial/' },
+];
+
+
 
 interface SidebarProps {
   collapsed?: boolean;
@@ -94,6 +120,22 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
         </nav>
       </div>
       <div className="fixed bottom-5 left-4 hidden xl:block">
+
+        {/* icons for x, facebook, youtube instagram */}
+        <div className="flex justify-center gap-2 py-4">
+          {socialIcons.map((item, index) => (
+            <a
+              key={index}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300"
+            >
+              {item.icon}
+            </a>
+          ))}
+        </div>
+
         <div className="flex  gap-2">
           <p
             onClick={() => navigate("/privacy-policy")}

@@ -55,20 +55,20 @@ export const formatTime = (date: string) => {
 
   // Formatting the time
   if (years > 0) {
-    formattedTime = years === 1 ? "1 year ago" : `${years} years ago`;
+    formattedTime = years === 1 ? "1y ago" : `${years}y ago`;
   } else if (days < 1) {
     formattedTime = seconds < 1 ? "Just now" : `${seconds} seconds ago`;
   } else if (days < 30) {
-    formattedTime = days === 1 ? "1 day ago" : `${days} days ago`;
+    formattedTime = days === 1 ? "1d ago" : `${days}d ago`;
   } else if (days < 365) {
     const months = Math.floor(days / 30);
-    formattedTime = months === 1 ? "1 month ago" : `${months} months ago`;
+    formattedTime = months === 1 ? "1m ago" : `${months} m ago`;
   } else if (hours < 24) {
-    formattedTime = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
   } else if (minutes < 60) {
-    formattedTime = minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+    formattedTime = minutes === 1 ? "1m ago" : `${minutes}m ago`;
   } else {
-    formattedTime = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
   }
 
   return formattedTime;

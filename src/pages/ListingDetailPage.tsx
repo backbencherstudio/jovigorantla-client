@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import AuthModal from "@/components/AuthModal";
 import { api } from "@/lib/axois";
 import { formatTime } from "@/lib/utils";
+import { formatCategory, formatSubCategory } from "@/lib/format";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -201,22 +202,22 @@ const ListingDetailPage = () => {
   }
 
   // Format category and status for display, to match listing cards
-  const formatCategoryStatus = (category: string) => {
-    // Convert category to singular for display
-    let displayCategory = category;
-    if (category === "Accommodations") displayCategory = "Accommodation";
-    if (category === "Rides") displayCategory = "Ride";
-    if (category === "Jobs") displayCategory = "Job";
-    const displayStatus = "Looking";
-    return {
-      displayCategory,
-      displayStatus,
-    };
-  };
+  // const formatCategoryStatus = (category: string) => {
+  //   // Convert category to singular for display
+  //   let displayCategory = category;
+  //   if (category === "ACCOMMODATIONS") displayCategory = "Accommodation";
+  //   if (category === "Rides") displayCategory = "Ride";
+  //   if (category === "Jobs") displayCategory = "Job";
+  //   const displayStatus = "Looking";
+  //   return {
+  //     displayCategory,
+  //     displayStatus,
+  //   };
+  // };
 
-  const { displayCategory, displayStatus } = formatCategoryStatus(
-    listing.category
-  );
+  // const { displayCategory, displayStatus } = formatCategoryStatus(
+  //   listing.category
+  // );
 
   // Extract city and state from location
   // const locationParts = listing.location.address.split(",");
@@ -232,9 +233,9 @@ const ListingDetailPage = () => {
         <div className="px-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center text-gray-500 text-sm gap-1">
-            <span>{displayCategory?.slice(0,1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
+            <span>{formatCategory(listing.category)}</span>
             <span className="mx-2">•</span>
-            <span>{displayStatus?.slice(0,1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
+            <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
             </div>
             <div className="flex items-center gap-1">
               <Button
@@ -307,7 +308,7 @@ const ListingDetailPage = () => {
           {/* Photo Gallery - only show if there are images and not for jobs/rides */}
           {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
             // <PhotoGallery images={[listing.image]} listingId={listing.id} />
-            <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover" />
+            <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" />
           )}
         </div>
         {/* Contact button - only show on desktop */}

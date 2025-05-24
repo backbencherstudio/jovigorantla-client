@@ -14,14 +14,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-type ListingType = {
-  id: string;
-  title: string;
-  category: string;
-  status: string;
-  createdAt: string;
-  location: string;
-};
+import { api } from "@/lib/axois";
+import { ListingType } from "@/types/listing";
+import { formatCategory, formatSubCategory } from "@/lib/format";
+import { formatTime } from "@/lib/utils";
+// type ListingType = {
+//   id: string;
+//   title: string;
+//   category: string;
+//   status: string;
+//   createdAt: string;
+//   location: string;
+// };
 const ManageListings = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -48,31 +52,31 @@ const ManageListings = () => {
       location: "Denton, TX",
     },
   ];
-  useEffect(() => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-    setIsLoading(true);
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/auth");
+  //     return;
+  //   }
+  //   setIsLoading(true);
 
-    // In a real app, we would fetch the user's listings from the database
-    // For now, we'll use mock data
-    setTimeout(() => {
-      // Check if we have listings data stored in localStorage
-      const storedListings = localStorage.getItem(`userListings_${user.id}`);
-      if (storedListings) {
-        setListings(JSON.parse(storedListings));
-      } else {
-        // If no stored listings, use the mock data and save it to localStorage
-        setListings(mockUserListings);
-        localStorage.setItem(
-          `userListings_${user.id}`,
-          JSON.stringify(mockUserListings)
-        );
-      }
-      setIsLoading(false);
-    }, 1000);
-  }, [user, navigate]);
+  //   // In a real app, we would fetch the user's listings from the database
+  //   // For now, we'll use mock data
+  //   // setTimeout(() => {
+  //   //   // Check if we have listings data stored in localStorage
+  //   //   const storedListings = localStorage.getItem(`userListings_${user.id}`);
+  //   //   if (storedListings) {
+  //   //     setListings(JSON.parse(storedListings));
+  //   //   } else {
+  //   //     // If no stored listings, use the mock data and save it to localStorage
+  //   //     setListings();
+  //   //     localStorage.setItem(
+  //   //       `userListings_${user.id}`,
+  //   //       JSON.stringify()
+  //   //     );
+  //   //   }
+  //   //   setIsLoading(false);
+  //   // }, 1000);
+  // }, [user, navigate]);
   const handleEditListing = (id: string) => {
     navigate(`/create-listing?edit=${id}`);
   };
@@ -80,23 +84,45 @@ const ManageListings = () => {
     e.stopPropagation();
     setListingToDelete(id);
   };
-  const deleteListing = () => {
-    if (!listingToDelete) return;
-    const updatedListings = listings.filter(
-      (listing) => listing.id !== listingToDelete
-    );
-    setListings(updatedListings);
 
-    // Update localStorage
-    if (user) {
-      localStorage.setItem(
-        `userListings_${user.id}`,
-        JSON.stringify(updatedListings)
-      );
+
+  const deleteListing = async () => {
+    if (!listingToDelete) return;
+    try {
+      const { data: listing } = await api.delete(`/listings/${listingToDelete}`);
+      if (listing?.success) {
+        const updatedListings = listings.filter(
+          (listing) => listing.id !== listingToDelete
+        );
+        setListings(updatedListings);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setListingToDelete(null);
     }
-    toast.success("Listing deleted successfully", {});
-    setListingToDelete(null);
   };
+
+  const fetchMyListing = async () => {
+    try{
+      const {data: listing} = await api.get('/listings')
+      if (listing?.success) {
+        setListings(listing?.data)
+      }else{
+        throw new Error(listing?.message)
+      }
+    }catch(error){
+      console.error(error)
+    }finally{
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMyListing()
+  }, [])
+
+
   if (!user) return null;
   return (
     <div className="bg-gray-50">
@@ -141,16 +167,16 @@ const ManageListings = () => {
                         </h3>
                         <div className="flex flex-wrap text-sm text-gray-500 gap-x-4 gap-y-1">
                           <div className="flex items-center">
-                            <span>Category: {listing.category}</span>
+                            <span>Category: {formatCategory(listing?.category)}</span>
                           </div>
                           <div className="flex items-center">
-                            <span>Status: {listing.status}</span>
+                            <span>Status: {formatSubCategory(listing.category, listing.sub_category)}</span>
                           </div>
                           <div className="flex items-center">
-                            <span>Created: {listing.createdAt}</span>
+                            <span>Created: {formatTime(listing.created_at)}</span>
                           </div>
                           <div className="flex items-center">
-                            <span>Location: {listing.location}</span>
+                            <span>Location: Denton, TX</span>
                           </div>
                         </div>
                       </div>

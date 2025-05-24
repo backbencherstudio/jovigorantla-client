@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { mockFlaggedListings, mockFlaggedHistory } from "@/data/data";
 import { api } from "@/lib/axois";
+import { formatCategory } from "@/lib/format";
 
 // interface FlaggedListingHisotry {
 //   id: string;
@@ -57,6 +58,8 @@ interface FlaggedListing {
 }
 
 
+
+
 const FlaggedListings = () => {
   const [flaggedListings, setFlaggedListings] =
     useState<FlaggedListing[]>();
@@ -74,6 +77,9 @@ const FlaggedListings = () => {
   const [historyCursor, setHistoryCursor] = useState<string | null>(null);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [isFetchingHistory, setIsFetchingHistory] = useState(false);
+
+
+  
 
   // console.log(flaggedListings)
 
@@ -349,7 +355,7 @@ const FlaggedListings = () => {
                         {listing.title}
                       </CardTitle>
                       <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
-                        {listing.category}
+                        {formatCategory(listing.category)}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
@@ -440,7 +446,7 @@ const FlaggedListings = () => {
                       <TableCell className="font-medium">
                         {item.title}
                       </TableCell>
-                      <TableCell className="break-all">{item.category}</TableCell>
+                      <TableCell className="break-all">{formatCategory(item.category)}</TableCell>
                       <TableCell
                       className="break-all"
                       >{item.user.email}</TableCell>

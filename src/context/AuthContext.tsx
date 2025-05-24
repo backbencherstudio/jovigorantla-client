@@ -148,11 +148,14 @@ type User = {
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  favoritesListings: any[];
   signIn: (email: string, password: string) => Promise<boolean>;
   signUp: (email: string, password: string, name?: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   updateMe: (name?: string) => Promise<boolean>;
   signUpWithGoogle: () => Promise<boolean>;
+  addFavoritesListing: (listingId: string) => Promise<boolean>;
+  deleteFavoritesListing: (listingId: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -160,6 +163,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [favoritesListings, setFavoritesListings] = useState([]);
 
   const fetchUser = async () => {
     try {
@@ -178,6 +182,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     fetchUser();
+    fetchFavoritesListings()
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -253,9 +258,61 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const fetchFavoritesListings = async () => {
+    try {
+      // if (!user) {
+      //   setFavoritesListings([]);
+      //   return;
+      // }
+      const res = await api.get('/favorites');
+      if (res.data.success) {
+        setFavoritesListings(res.data.data);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  const deleteFavoritesListing = async (listingId: string) => {
+    try {
+      const res = await api.post('/favorites', { 
+        listing_id: listingId,
+       });
+      if (res.data.success) {
+        // go throw favoritesListings and remove the listing with the id of listingId
+        setFavoritesListings(favoritesListings.filter((listing: any) => listing.id !== listingId));
+        return true
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  const addFavoritesListing = async (listingId: string) => {
+    try {
+      const res = await api.post('/favorites', { 
+        listing_id: listingId,
+       });
+      if (res.data.success) {
+        fetchFavoritesListings()
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  // console.log(favoritesListings)
+
+
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, signIn, signUp, signOut, updateMe, signUpWithGoogle }}
+      value={{ user, loading, signIn, signUp, signOut, updateMe, signUpWithGoogle, favoritesListings, addFavoritesListing, deleteFavoritesListing }}
     >
       {children}
     </AuthContext.Provider>

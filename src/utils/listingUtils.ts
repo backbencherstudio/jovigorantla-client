@@ -2,41 +2,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { ListingType } from '@/types/listing';
 
-export const formatTime = (date: Date) => {
-  const timeAgo = formatDistanceToNow(date, { addSuffix: true });
-  
-  // Replace "about" with empty string
-  let formattedTime = timeAgo.replace('about ', '');
-  
-  // Replace "less than a minute" with "1m"
-  formattedTime = formattedTime.replace('less than a minute ago', '1m ago');
-  
-  // Replace "1 minute" with "1m"
-  formattedTime = formattedTime.replace('1 minute ago', '1m ago');
-  
-  // Replace "X minutes" with "Xm"
-  formattedTime = formattedTime.replace(/(\d+) minutes? ago/, '$1m ago');
-  
-  // Replace "1 hour" with "1h"
-  formattedTime = formattedTime.replace('1 hour ago', '1h ago');
-  
-  // Replace "X hours" with "Xh"
-  formattedTime = formattedTime.replace(/(\d+) hours? ago/, '$1h ago');
-  
-  // Replace "1 day" with "1d"
-  formattedTime = formattedTime.replace('1 day ago', '1d ago');
-  
-  // Replace "X days" with "Xd"
-  formattedTime = formattedTime.replace(/(\d+) days? ago/, '$1d ago');
-  
-  // Replace "yesterday" with "1d ago"
-  formattedTime = formattedTime.replace('yesterday', '1d ago');
-  
-  // Replace "today" with appropriate hours
-  formattedTime = formattedTime.replace('today', new Date().getHours() + 'h ago');
-  
-  return formattedTime;
-};
+
 
 export const generateMockListings = (category: string, count: number = 50) => {
   const statuses = category === 'Jobs' 

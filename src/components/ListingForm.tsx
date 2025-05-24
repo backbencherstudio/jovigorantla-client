@@ -25,6 +25,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import LocationSelector from "@/components/LocationSelector";
 import { Upload, X, ImageIcon, Info, CheckCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSearchParams } from 'react-router-dom';
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,7 @@ import errorImg from "@/assets/error.svg";
 import { User } from "@supabase/supabase-js";
 import { MdWarningAmber } from "react-icons/md";
 import AutoExpandingInput from "./ui/AutoExpandingInput";
+import { api } from "@/lib/axois";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 55;
 
@@ -66,7 +68,7 @@ interface ListingFormProps {
   initialValues?: Partial<FormValues & { images: File[]; radius: number }>;
   isEditing?: boolean;
   isSubmitting?: boolean;
-  user: User;
+  user: any;
 }
 
 // Define the main categories and their corresponding subcategories
@@ -107,6 +109,9 @@ const ListingForm = ({
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
 
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('edit'); // ?user=imran
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialValues || {
@@ -145,6 +150,47 @@ const ListingForm = ({
     // Reset postToUSA when category changes
     form.setValue("postToUSA", false);
   }, [selectedCategory, form]);
+
+  const fetchEditListing = async () => {
+    try {
+      const {data: listing} = await api.get(`/listings/${id}`);
+      if (listing?.success) {
+        const category = listing.data.category?.slice(0,1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
+        const subCategory = listing.data.sub_category?.slice(0,1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
+
+        console.log(category)
+        console.log(subCategory)
+  
+        form.setValue("title", listing.data.title);
+        form.setValue("description", listing.data.description);
+        form.setValue("category", category);
+        form.setValue("subCategory", subCategory);
+        form.setValue("postToUSA", listing.data.post_to_usa);
+        form.setValue("address", listing.data.address);
+  
+        setSelectedCategory(category);
+        setSelectedSubCategory(subCategory);
+  
+        // Update available subcategories based on category
+        const subcats = categoriesConfig[category as keyof typeof categoriesConfig] || [];
+        setAvailableSubCategories(subcats);
+
+        if (listing?.data?.image_url) {
+          setImagePreviewUrls([listing.data.image_url]);
+          setImages([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching listing:", error);
+    }
+  }
+  
+
+  useEffect(() => {
+    if (id) {
+      fetchEditListing()
+    }
+  }, [id, form]);
 
   useEffect(() => {
     const shouldShowUSAOption =
@@ -185,47 +231,68 @@ const ListingForm = ({
     form.setValue("title", value);
   };
 
+  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files;
+  //   if (!files || files.length === 0) return;
+
+  //   // Check if adding these files would exceed the limit of 3
+  //   const newFilesArray = [...images];
+  //   const newPreviewUrls = [...imagePreviewUrls];
+
+  //   for (let i = 0; i < files.length; i++) {
+  //     if (newFilesArray.length >= 3) break; // Stop if we already have 3 images
+
+  //     const file = files[i];
+
+  //     // Check file size
+  //     if (file.size > MAX_FILE_SIZE) {
+  //       alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+  //       continue;
+  //     }
+
+  //     newFilesArray.push(file);
+  //     newPreviewUrls.push(URL.createObjectURL(file));
+  //   }
+
+  //   setImages(newFilesArray);
+  //   setImagePreviewUrls(newPreviewUrls);
+  // };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    // Check if adding these files would exceed the limit of 3
-    const newFilesArray = [...images];
-    const newPreviewUrls = [...imagePreviewUrls];
-
-    for (let i = 0; i < files.length; i++) {
-      if (newFilesArray.length >= 3) break; // Stop if we already have 3 images
-
-      const file = files[i];
-
-      // Check file size
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`File ${file.name} is too large. Maximum size is 5MB.`);
-        continue;
-      }
-
-      newFilesArray.push(file);
-      newPreviewUrls.push(URL.createObjectURL(file));
+    const file = event.target.files?.[0];
+    if (!file) return;
+  
+    if (file.size > MAX_FILE_SIZE) {
+      alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+      return;
     }
-
-    setImages(newFilesArray);
-    setImagePreviewUrls(newPreviewUrls);
+  
+    setImages([file]);
+    setImagePreviewUrls([URL.createObjectURL(file)]);
   };
+  
+  // const removeImage = (index: number) => {
+  //   const newFiles = [...images];
+  //   const newPreviewUrls = [...imagePreviewUrls];
 
-  const removeImage = (index: number) => {
-    const newFiles = [...images];
-    const newPreviewUrls = [...imagePreviewUrls];
+  //   // Revoke the object URL to avoid memory leaks
+  //   URL.revokeObjectURL(newPreviewUrls[index]);
 
-    // Revoke the object URL to avoid memory leaks
-    URL.revokeObjectURL(newPreviewUrls[index]);
+  //   newFiles.splice(index, 1);
+  //   newPreviewUrls.splice(index, 1);
 
-    newFiles.splice(index, 1);
-    newPreviewUrls.splice(index, 1);
+  //   setImages(newFiles);
+  //   setImagePreviewUrls(newPreviewUrls);
+  // };
 
-    setImages(newFiles);
-    setImagePreviewUrls(newPreviewUrls);
+  const removeImage = () => {
+    if (imagePreviewUrls[0]) {
+      URL.revokeObjectURL(imagePreviewUrls[0]);
+    }
+    setImages([]);
+    setImagePreviewUrls([]);
   };
-
+  
   const handleSubmit = (values: FormValues) => {
     // Check if postToUSA is true, then show pending modal, else show success modal
 
@@ -265,10 +332,8 @@ const ListingForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-black">Category</FormLabel>
-                  <Select
-                    onValueChange={handleCategoryChange}
-                    defaultValue={field.value}
-                  >
+                  <Select value={field.value} onValueChange={handleCategoryChange}>
+
                     <FormControl className="bg-[#e5ebee] rounded-xl focus-within:ring-0">
                       <SelectTrigger className="focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                         <SelectValue placeholder="Select a category" />
@@ -293,10 +358,8 @@ const ListingForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-black">Sub-Category</FormLabel>
-                  <Select
-                    onValueChange={handleSubCategoryChange}
-                    defaultValue={field.value}
-                  >
+                  <Select value={field.value} onValueChange={handleSubCategoryChange}>
+
                     <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                       <SelectTrigger>
                         <SelectValue placeholder="Select a sub-category" />
@@ -395,7 +458,7 @@ const ListingForm = ({
                     />
                     <button
                       type="button"
-                      onClick={() => removeImage(index)}
+                      onClick={() => removeImage()}
                       className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1 text-white"
                     >
                       <X size={16} />
@@ -403,12 +466,12 @@ const ListingForm = ({
                   </div>
                 ))}
 
-                {images.length < 1 && (
+                {imagePreviewUrls.length < 1 && (
                   <label className="h-32 border-2 border-dashed bg-[#e5ebee] border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-gray-400">
                     <input
                       type="file"
                       accept="image/*"
-                      multiple={images.length < 1}
+                      multiple={false}
                       onChange={handleImageChange}
                       className="hidden"
                       disabled={isSubmitting}

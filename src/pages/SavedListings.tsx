@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/axois";
+import { formatTime } from "@/lib/utils";
+import { formatCategory, formatSubCategory } from "@/lib/format";
 
 type ListingType = {
   id: string;
@@ -25,50 +27,52 @@ type ListingType = {
 };
 
 const SavedListings = () => {
-  const { user } = useAuth();
+  const { user, favoritesListings, deleteFavoritesListing } = useAuth();
   const navigate = useNavigate();
-  const [listings, setListings] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [listings, setListings] = useState<any[]>(favoritesListings);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Format time consistently as "2m ago", "2h ago", "2d ago"
-  const formatTime = (timeString: string | Date) => {
-    if (timeString instanceof Date) {
-      // Convert date to string format like "2h ago"
-      const now = new Date();
-      const diff = now.getTime() - timeString.getTime();
-      const minutes = Math.floor(diff / 60000);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
+  // const formatTime = (timeString: string | Date) => {
+  //   if (timeString instanceof Date) {
+  //     // Convert date to string format like "2h ago"
+  //     const now = new Date();
+  //     const diff = now.getTime() - timeString.getTime();
+  //     const minutes = Math.floor(diff / 60000);
+  //     const hours = Math.floor(minutes / 60);
+  //     const days = Math.floor(hours / 24);
 
-      if (days > 0) return `${days}d ago`;
-      if (hours > 0) return `${hours}h ago`;
-      if (minutes > 0) return `${minutes}m ago`;
-      return "1m ago";
-    }
+  //     if (days > 0) return `${days}d ago`;
+  //     if (hours > 0) return `${hours}h ago`;
+  //     if (minutes > 0) return `${minutes}m ago`;
+  //     return "1m ago";
+  //   }
 
-    // Handle existing time strings
-    // Convert timestrings like "1h ago", "2h ago" to consistent format
-    if (timeString.match(/^\d+[mhd] ago$/)) return timeString;
+  //   // Handle existing time strings
+  //   // Convert timestrings like "1h ago", "2h ago" to consistent format
+  //   if (timeString.match(/^\d+[mhd] ago$/)) return timeString;
 
-    // Handle "X hours ago", "X minutes ago", etc.
-    if (typeof timeString === "string") {
-      if (timeString.includes("hour")) {
-        return timeString.replace(/(\d+) hours? ago/, "$1h ago");
-      }
-      if (timeString.includes("minute")) {
-        return timeString.replace(/(\d+) minutes? ago/, "$1m ago");
-      }
-      if (timeString.includes("day")) {
-        return timeString.replace(/(\d+) days? ago/, "$1d ago");
-      }
+  //   // Handle "X hours ago", "X minutes ago", etc.
+  //   if (typeof timeString === "string") {
+  //     if (timeString.includes("hour")) {
+  //       return timeString.replace(/(\d+) hours? ago/, "$1h ago");
+  //     }
+  //     if (timeString.includes("minute")) {
+  //       return timeString.replace(/(\d+) minutes? ago/, "$1m ago");
+  //     }
+  //     if (timeString.includes("day")) {
+  //       return timeString.replace(/(\d+) days? ago/, "$1d ago");
+  //     }
 
-      // Handle special cases
-      if (timeString === "yesterday") return "1d ago";
-      if (timeString === "today") return new Date().getHours() + "h ago";
-    }
+  //     // Handle special cases
+  //     if (timeString === "yesterday") return "1d ago";
+  //     if (timeString === "today") return new Date().getHours() + "h ago";
+  //   }
 
-    return String(timeString);
-  };
+  //   return String(timeString);
+  // };
+
+  console.log(favoritesListings)
 
   // Mock listings data - expanded for better test coverage
   const allMockListings = [
@@ -141,31 +145,56 @@ const SavedListings = () => {
   ];
 
   // Function to get updated saved listings
-  const getSavedListings = useCallback(async () => {
-    if (!user) return [];
+  // const getSavedListings = useCallback(async () => {
+  //   if (!user) return [];
 
-    // // Get saved listing IDs from localStorage
-    // const savedListingsIds = JSON.parse(
-    //   localStorage.getItem(`savedListings_${user.id}`) || "[]"
-    // );
+  //   // // Get saved listing IDs from localStorage
+  //   // const savedListingsIds = JSON.parse(
+  //   //   localStorage.getItem(`savedListings_${user.id}`) || "[]"
+  //   // );
 
-    const list = await api.get(`/favorites`);
-    const savedListings = list.data.data;
-    console.log(savedListings)
+  //   const list = await api.get(`/favorites`);
+  //   const savedListings = list.data.data;
+  //   console.log(savedListings)
 
-    // // Get all listings that match the saved IDs from our mock data
-    // const savedListings = allMockListings.filter((listing) =>
-    //   savedListingsIds.includes(listing.id)
-    // );
+  //   // // Get all listings that match the saved IDs from our mock data
+  //   // const savedListings = allMockListings.filter((listing) =>
+  //   //   savedListingsIds.includes(listing.id)
+  //   // );
 
-    // Format time strings consistently
-    return savedListings.map((listing) => ({
-      ...listing,
-      saved: true, // Ensure saved status is true for all saved listings
-      postedTime: formatTime(listing.created_at),
-    }));
-  }, [user]);
+  //   // Format time strings consistently
+  //   return savedListings.map((listing) => ({
+  //     ...listing,
+  //     saved: true, // Ensure saved status is true for all saved listings
+  //     postedTime: formatTime(listing.created_at),
+  //   }));
+  // }, [user]);
 
+
+  // const formatCategory = (category: string) => {
+  //   // Convert category to singular for display
+  //   let displayCategory = category;
+  //   if (category === "ACCOMMODATION") displayCategory = "Accommodation";
+  //   if (category === "RIDES") displayCategory = "Ride";
+  //   if (category === "JOBS") displayCategory = "Job";
+  //   displayCategory = displayCategory.slice(0, 1).toUpperCase() + displayCategory.slice(1).toLowerCase();
+  //   return displayCategory;
+  // };
+
+  // const formatSubCategory = (category: string, status: string) => {
+  //  // For Marketplace, change the status to Item/Service
+  //   let displayStatus = status;
+  //   if (category === "Marketplace") {
+  //     if (status === "Items") displayStatus = "Item";
+  //     if (status === "Services") displayStatus = "Service";
+  //   }
+  //   displayStatus = displayStatus.slice(0, 1).toUpperCase() + displayStatus.slice(1).toLowerCase();
+  //   return displayStatus;
+  // }
+
+
+
+ 
   // Custom event listener for real-time updates
   useEffect(() => {
     if (!user) {
@@ -173,31 +202,32 @@ const SavedListings = () => {
       return;
     }
 
-    const fetchSavedListings = async () => {
-      setIsLoading(true);
-      const currentSavedListings = await getSavedListings();
-      setListings(currentSavedListings);
-      setIsLoading(false);
-    };
 
-    fetchSavedListings();
+    // const fetchSavedListings = async () => {
+    //   setIsLoading(true);
+    //   const currentSavedListings = await getSavedListings();
+    //   setListings(currentSavedListings);
+    //   setIsLoading(false);
+    // };
+
+    // fetchSavedListings();
 
     // Set up event listener for storage changes
-    const handleStorageChange = () => {
-      console.log("Storage change detected in SavedListings");
-      fetchSavedListings();
-    };
+    // const handleStorageChange = () => {
+    //   console.log("Storage change detected in SavedListings");
+    //   fetchSavedListings();
+    // };
 
-    window.addEventListener("storage", handleStorageChange);
+    // window.addEventListener("storage", handleStorageChange);
 
-    // Custom event for immediate updates within the same session
-    window.addEventListener("savedListingsUpdated", handleStorageChange);
+    // // Custom event for immediate updates within the same session
+    // window.addEventListener("savedListingsUpdated", handleStorageChange);
 
     // Add direct visibility change handler to refresh on tab focus
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         console.log("Page became visible, refreshing saved listings");
-        fetchSavedListings();
+        // fetchSavedListings();
       }
     };
 
@@ -205,38 +235,44 @@ const SavedListings = () => {
 
     return () => {
       console.log("Removing saved listings event listeners");
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("savedListingsUpdated", handleStorageChange);
+      // window.removeEventListener("storage", handleStorageChange);
+      // window.removeEventListener("savedListingsUpdated", handleStorageChange);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user, navigate, getSavedListings]);
+  }, [user, navigate]);
+
+  // useEffect(()=> {
+  //   setIsLoading(false)
+  //   setListings(favoritesListings)
+  // }, [favoritesListings])
 
   const handleListingClick = (id: string) => {
     navigate(`/listing/${id}`);
   };
 
-  const toggleSaveListing = (e: React.MouseEvent, listingId: string) => {
+  const toggleSaveListing = async (e: React.MouseEvent, listingId: string) => {
     e.stopPropagation();
 
     // Remove the listing from the saved listings
-    const updatedListings = listings.filter(
-      (listing) => listing.id !== listingId
-    );
-    setListings(updatedListings);
+    // const updatedListings = listings.filter(
+    //   (listing) => listing.id !== listingId
+    // );
+    // setListings(updatedListings);
+
+    await deleteFavoritesListing(listingId);
+
 
     // Update localStorage with the new list of saved listing IDs
-    const savedListingsIds = updatedListings.map((listing) => listing.id);
-    localStorage.setItem(
-      `savedListings_${user.id}`,
-      JSON.stringify(savedListingsIds)
-    );
+    // const savedListingsIds = updatedListings.map((listing) => listing.id);
+    // localStorage.setItem(
+    //   `savedListings_${user.id}`,
+    //   JSON.stringify(savedListingsIds)
+    // );
 
     // Dispatch event for immediate updates
-    window.dispatchEvent(new Event("savedListingsUpdated"));
+    // window.dispatchEvent(new Event("savedListingsUpdated"));
 
-    toast.success("Listing removed from saved", {
-      description: "The listing has been removed from your Saved Listings",
-    });
+    
   };
 
   const handleListingAction = (
@@ -246,18 +282,26 @@ const SavedListings = () => {
   ) => {
     e.stopPropagation();
 
-    const listing = listings.find((l) => l.id === listingId);
+    const listing = favoritesListings.find((l) => l.id === listingId);
+    console.log("listing => ", listing)
     if (!listing) return;
 
     switch (action) {
       case "share":
-        toast.success(`Sharing link copied for "${listing.title}"`);
-        navigator.clipboard.writeText(
-          `${window.location.origin}/listing/${listingId}`
-        );
+          if (navigator.share) {
+            navigator.share({
+              title: listing.title,
+              text: `Check out this listing: ${listing.title}`,
+              url: `${window.location.origin}/listing/${listingId}`,
+            });
+          } else {
+            navigator.clipboard.writeText(
+              `${window.location.origin}/listing/${listingId}`
+          );
+          }
         break;
       case "hide":
-        toast.success(`Listing hidden: "${listing.title}"`);
+        // toast.success(`Listing hidden: "${listing.title}"`);
         setListings(listings.filter((l) => l.id !== listingId));
         break;
       case "report":
@@ -271,7 +315,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-gray-50 py-5 w-full h-full">
+    <div className="bg-gray-50 py-5 w-full h-full bg-white">
       {isLoading ? (
         <div className="space-y-4 p-4">
           {[1, 2, 3].map((i) => (
@@ -299,14 +343,14 @@ const SavedListings = () => {
               {listings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white  rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  className="bg-white  border-b border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => handleListingClick(listing.id)}
                 >
-                  <div className="p-4">
+                  <div className="pb-2 px-4">
                     <div className="flex items-center text-sm text-gray-500 mb-1">
-                      <span>{listing.category}</span>
-                      <span className="mx-2">•</span>
-                      <span>{listing.status}</span>
+                    <span>{formatCategory(listing.category)}</span>
+                    <span className="mx-2">•</span>
+                    <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
                     </div>
 
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -315,11 +359,12 @@ const SavedListings = () => {
 
                     <div className="flex justify-between items-center">
                       <div className="flex items-center text-sm text-gray-500">
-                        <span>{listing.userName}</span>
+                        <span>{listing.user.name}</span>
                         <span className="mx-2">•</span>
-                        <span>{listing.postedTime}</span>
+                        <span>{formatTime(listing.created_at)}</span>
                         <span className="mx-2">•</span>
-                        <span>{listing.location}</span>
+                        {/* <span>{listing.location}</span> */}
+                        <span>Denton, TX</span>
                       </div>
 
                       <div className="flex items-center">

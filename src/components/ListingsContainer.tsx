@@ -145,14 +145,14 @@ const ListingsContainer = ({
   return (
     <div className="space-y-4 overflow-visible">
       {filteredListings.map((listing, index) => (
-        <div key={`listing-container-${listing.id}`}>
+        <div key={`listing-container-${listing.id + index}`}>
          {listing?.type === 'listing' &&  <ListingItem
             key={listing.id}
             listing={listing}
             onToggleSave={toggleSaveListing}
           />}
 
-{/* {
+          {/* {
             listing?.type === 'ad' && <AdCard ad={{
               id: listing.id,
               image_url: listing?.image_url || '',
@@ -164,10 +164,10 @@ const ListingsContainer = ({
 
 
           {listing?.type === 'ad' && (
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden" key={listing.id + index}>
               {/* This container maintains the aspect ratio and appearance across all devices */}
               <div
-                className="relative w-full  max-w-full rounded-lg shadow-md mt-4 bg-white cursor-pointer"
+                className="relative w-full  max-w-full rounded-lg shadow-md bg-white cursor-pointer"
                 style={{
                   aspectRatio: "574/300",
                   maxWidth: "574px",

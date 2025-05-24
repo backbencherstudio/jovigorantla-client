@@ -48,6 +48,7 @@ import { format, set } from "date-fns";
 import adService from "@/services/adService";
 import DeleteConfirmationModal from "../shared/DeleteConfirmationModal";
 import { api } from "@/lib/axois";
+import { formatCategory } from "@/lib/format";
 
 // Page options for assigning ad groups
 const PAGE_OPTIONS = [
@@ -1107,9 +1108,9 @@ const AdManagement = () => {
                                 return page ? (
                                   <span
                                     key={pageId}
-                                    className="mr-2 inline-block bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded"
+                                    className="mr-2 mb-2 inline-block bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded"
                                   >
-                                    {page.label}
+                                    {formatCategory(page.label)}
                                   </span>
                                 ) : null;
                               })}

@@ -129,11 +129,11 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
         )}
 
         {image && (
-          <div className="my-4">
+          <div className="my-4 overflow-hidden rounded-[100px]">
             <img
               src={image}
               alt={title}
-              className="w-full rounded-lg"
+              className="w-full rounded-lg overflow-hidden"
               onLoad={() => setImageLoaded(true)}
             />
           </div>

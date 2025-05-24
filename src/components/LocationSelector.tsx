@@ -97,13 +97,16 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   };
 
   const handleUseCurrentLocation = () => {
+    console.log("Updating location...");
     if (navigator.geolocation) {
-      toast("Updating your location...");
+      // toast("Updating your location...");
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           const locationString = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+          console.log("Location updated:", locationString);
 
           updateLocation(locationString).then((success) => {
             if (success) {
