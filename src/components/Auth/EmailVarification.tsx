@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { OTPInput } from "@/components/ui/otp-input";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 interface EmailVerificationProps {
   otp: string;
@@ -22,7 +23,7 @@ const EmailVerification = ({
   handleResend,
   setSignupStep,
 }: EmailVerificationProps) => {
-  const { verifyOtp } = useAuth();
+  const { verifyOtp, sendOtp } = useAuth();
   const signUpEmail = localStorage.getItem("signupEmail");
   const [error, setError] = useState(false);
 
@@ -38,6 +39,21 @@ const EmailVerification = ({
     } catch (error) {
       console.error("Error verifying OTP:", error);
       setError(true);
+    }
+  };
+
+  const handleResendClick = async () => {
+    try {
+      const success = await sendOtp(signUpEmail!);
+      if (success) {
+        handleResend(); // This will handle the timer reset
+        toast.success("Verification code resent successfully");
+      } else {
+        toast.error("Failed to resend verification code");
+      }
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+      toast.error("Failed to resend verification code");
     }
   };
 
@@ -78,7 +94,7 @@ const EmailVerification = ({
             ) : (
               <span
                 className="text-[#3b82f6] hover:text-blue-600 cursor-pointer mx-3"
-                onClick={handleResend}
+                onClick={handleResendClick}
               >
                 Resend
               </span>
