@@ -31,6 +31,7 @@ const EmailVerification = ({
     try {
       const success = await verifyOtp(signUpEmail!, completedOtp);
       if (success) {
+        localStorage.setItem("otp", completedOtp);
         setError(false);
         setSignupStep("details");
       } else {

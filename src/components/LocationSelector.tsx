@@ -22,11 +22,18 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   className,
   compact = false,
 }) => {
-  const { locationString, updateLocation, loading, radius, updateRadius } =
-    useGeolocation();
+  const {
+    locationString,
+    updateLocation,
+    loading,
+    radius,
+    updateRadius,
+    updateCurrentLocation,
+  } = useGeolocation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [radiusValue, setRadiusValue] = useState(radius || 40);
+  const [isLocating, setIsLocating] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayText, setDisplayText] = useState("");
 
@@ -72,11 +79,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     await updateRadius(radiusValue);
 
     onChange?.(inputValue);
-
-    // Dispatch custom events for real-time updates
-    window.dispatchEvent(new Event("locationUpdated"));
-    window.dispatchEvent(new Event("radiusUpdated"));
-
+    setDisplayText(inputValue);
     setIsOpen(false);
   };
 
@@ -87,44 +90,23 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     }
   };
 
-  const handleRadiusChange = async (value: number[]) => {
+  const handleRadiusChange = (value: number[]) => {
     const newRadius = value[0];
     setRadiusValue(newRadius);
-
-    // Update radius immediately and dispatch event
-    await updateRadius(newRadius);
-    window.dispatchEvent(new Event("radiusUpdated"));
+    updateRadius(newRadius);
   };
 
-  const handleUseCurrentLocation = () => {
-    console.log("Updating location...");
-    if (navigator.geolocation) {
-      // toast("Updating your location...");
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const locationString = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
-          console.log("Location updated:", locationString);
-
-          updateLocation(locationString).then((success) => {
-            if (success) {
-              toast.success("Location updated successfully");
-              setInputValue(locationString);
-              setDisplayText(locationString);
-            } else {
-              toast.error("Failed to update location");
-            }
-          });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          toast.error("Could not get your location. Please try again.");
-        }
-      );
-    } else {
-      toast.error("Geolocation is not supported by your browser");
+  const handleUseCurrentLocation = async () => {
+    try {
+      setIsLocating(true);
+      const locationAddress = await updateCurrentLocation();
+      if (locationAddress) {
+        setInputValue(locationAddress);
+        setDisplayText(locationAddress);
+        onChange?.(locationAddress);
+      }
+    } finally {
+      setIsLocating(false);
     }
   };
 
@@ -147,9 +129,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <span className="truncate text-black">
                 {displayText || "Select location"}
               </span>
-              {radius && (
-                <span className=" text-black ml-1">• {radius} mi</span>
-              )}
+              {radius && <span className="text-black ml-1">• {radius} mi</span>}
             </div>
           </Button>
         </PopoverTrigger>
@@ -174,9 +154,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                 <button
                   type="button"
                   onClick={handleUseCurrentLocation}
-                  className="text-brand hover:text-brand/80"
+                  className="text-brand hover:text-brand/80 disabled:opacity-50"
+                  disabled={isLocating}
                 >
-                  <Locate className="h-4 w-4" />
+                  {isLocating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Locate className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -279,9 +264,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="text-brand hover:text-brand/80"
+                className="text-brand hover:text-brand/80 disabled:opacity-50"
+                disabled={isLocating}
               >
-                <Locate className="h-4 w-4" />
+                {isLocating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Locate className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>

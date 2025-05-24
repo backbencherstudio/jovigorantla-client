@@ -9,16 +9,70 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { UseFormReturn } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
+interface UserDetailsFormProps {
+  signupDetailsForm: UseFormReturn<{
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+    otp?: string;
+  }>;
+  isLoading: boolean;
+  showPassword: boolean;
+  setShowPassword: (show: boolean) => void;
+  showConfirmPassword: boolean;
+  setShowConfirmPassword: (show: boolean) => void;
+}
 
 const UserDetailsForm = ({
   signupDetailsForm,
-  handleDetailsSubmit,
   isLoading,
   showPassword,
   setShowPassword,
   showConfirmPassword,
   setShowConfirmPassword,
-}) => {
+}: UserDetailsFormProps) => {
+  const { signUp } = useAuth();
+
+  const otp = localStorage.getItem("otp");
+  const email = localStorage.getItem("signupEmail");
+  
+  const onSubmit = async (data: { username?: string; password?: string; confirmPassword?: string }) => {
+    if (!email || !otp) {
+      toast.error("Registration failed", {
+        description: "Email verification information not found. Please try again.",
+      });
+      return;
+    }
+
+    
+
+    try {
+      const success = await signUp(email, data.password!, data.username!, otp);
+      if (success) {
+        toast.success("Account created successfully!", {
+          description: "You can now start using your account.",
+        });
+        // Clear sensitive data from localStorage
+        localStorage.removeItem("otp");
+        localStorage.removeItem("signupEmail");
+      } else {
+        toast.error("Registration failed", {
+          description: "Please try again or contact support if the problem persists.",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+      toast.error("Registration failed", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+    }
+  };
+
   return (
     <>
       <p className="text-sm text-gray-500 text-center">
@@ -26,7 +80,7 @@ const UserDetailsForm = ({
       </p>
       <Form {...signupDetailsForm}>
         <form
-          onSubmit={signupDetailsForm.handleSubmit(handleDetailsSubmit)}
+          onSubmit={signupDetailsForm.handleSubmit(onSubmit)}
           className="space-y-4 h-full flex flex-col justify-between"
         >
           <div className="space-y-1">
@@ -44,7 +98,7 @@ const UserDetailsForm = ({
                         className="pl-3"
                       />
                     </FormControl>
-                    {field.value.length >= 3 && (
+                    {field.value?.length >= 3 && (
                       <div className="absolute right-3 top-4 text-green-600">
                         <Check className="h-5 w-5" />
                       </div>
@@ -72,7 +126,7 @@ const UserDetailsForm = ({
                         className="pl-3"
                       />
                     </FormControl>
-                    {field.value.length >= 6 && (
+                    {field.value?.length >= 6 && (
                       <div className="absolute right-10 top-4 text-green-600">
                         <Check className="h-5 w-5" />
                       </div>
@@ -112,7 +166,7 @@ const UserDetailsForm = ({
                         className="pl-3"
                       />
                     </FormControl>
-                    {field.value.length >= 6 &&
+                    {field.value?.length >= 6 &&
                       signupDetailsForm.watch("password") === field.value && (
                         <div className="absolute right-10 top-4 text-green-600">
                           <Check className="h-5 w-5" />
@@ -122,9 +176,7 @@ const UserDetailsForm = ({
                       type="button"
                       tabIndex={-1}
                       className="absolute right-3 top-4 text-gray-400 hover:text-gray-600"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-4 w-4" />
