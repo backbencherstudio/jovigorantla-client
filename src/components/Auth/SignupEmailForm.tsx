@@ -1,6 +1,6 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
+import { useAuth } from "@/context/AuthContext";
 import {
   Form,
   FormControl,
@@ -10,10 +10,26 @@ import {
 } from "@/components/ui/form";
 
 const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
+  const { sendOtp } = useAuth();
+
+  const onSubmit = async (values) => {
+    try {
+      const success = await sendOtp(values.email);
+      if (success) {
+        // Store email in localStorage after successful OTP sending
+        localStorage.setItem('signupEmail', values.email);
+        handleEmailSubmit(values);
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      throw error;
+    }
+  };
+
   return (
     <Form {...signupEmailForm}>
       <form
-        onSubmit={signupEmailForm.handleSubmit(handleEmailSubmit)}
+        onSubmit={signupEmailForm.handleSubmit(onSubmit)}
         className="h-full flex flex-col justify-between"
       >
         <FormField

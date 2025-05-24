@@ -156,6 +156,7 @@ type AuthContextType = {
   signUpWithGoogle: () => Promise<boolean>;
   addFavoritesListing: (listingId: string) => Promise<boolean>;
   deleteFavoritesListing: (listingId: string) => Promise<boolean>;
+  sendOtp: (email: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -310,13 +311,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
 
-  return (
-    <AuthContext.Provider
-      value={{ user, loading, signIn, signUp, signOut, updateMe, signUpWithGoogle, favoritesListings, addFavoritesListing, deleteFavoritesListing }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const sendOtp = async (email: string) => {
+    try {
+      const res = await api.post('/auth/send-otp', { email });
+      return res.data.success;
+    } catch {
+      return false;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    favoritesListings,
+    signIn,
+    signUp,
+    signOut,
+    updateMe,
+    signUpWithGoogle,
+    addFavoritesListing,
+    deleteFavoritesListing,
+    sendOtp
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
