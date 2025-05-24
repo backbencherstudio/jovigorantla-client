@@ -1,5 +1,7 @@
 import React, { useState, useEffect, act } from "react";
 import { Form, useNavigate } from "react-router-dom";
+import AsyncSelect from 'react-select/async';
+
 import {
   Trash2,
   Eye,
@@ -49,6 +51,7 @@ import adService from "@/services/adService";
 import DeleteConfirmationModal from "../shared/DeleteConfirmationModal";
 import { api } from "@/lib/axois";
 import { formatCategory } from "@/lib/format";
+import { loadCityOptions } from "@/hooks/load-city-options";
 
 // Page options for assigning ad groups
 const PAGE_OPTIONS = [
@@ -57,6 +60,14 @@ const PAGE_OPTIONS = [
   { id: "RIDES", label: "RIDES" },
   { id: "ACCOMMODATIONS", label: "ACCOMMODATIONS" },
   { id: "JOBS", label: "JOBS" },
+];
+
+const cityOptions = [
+  { value: "New York", label: "New York" },
+  { value: "Tokyo", label: "Tokyo" },
+  { value: "London", label: "London" },
+  { value: "Paris", label: "Paris" },
+  { value: "Dhaka", label: "Dhaka" },
 ];
 
 // Initial mock data for ad groups
@@ -137,6 +148,19 @@ const AdManagement = () => {
     targetUrl: string;
     compact?: boolean;
   } | null>(null);
+
+  const [selectedCities, setSelectedCities] = useState([]);
+
+const handleSelect = (options) => {
+    console.log("options => ", options)
+    setSelectedCities(prev => [...prev, ...options]);
+  };
+
+  const handleRemove = (cityToRemove) => {
+    setSelectedCities((prev) =>
+      prev.filter((city) => city.value !== cityToRemove.value)
+    );
+  };
 
   // State for sidebar ads
   const [sidebarTopFile, setSidebarTopFile] = useState<File | null>(null);
@@ -819,7 +843,18 @@ const AdManagement = () => {
       formData.append("target_url", newAdForm.targetUrl.trim());
       formData.append("ad_group_id", newAdForm.groupId);
 
-      const { data: ad } = await api.post("/admin/ads", formData); // ✅ NO headers
+      if (selectedCities.length > 0) {
+        // get the values from the selectedCities array
+        // const cities = selectedCities.map((city) => {
+        //   return city.value;
+        // });
+        // formData.append("cities", JSON.stringify(cities));
+        selectedCities.forEach((city) => {
+          formData.append("cities[]", city.value);
+        });
+      }
+
+      const { data: ad } = await api.post("/admin/ads", formData); 
 
       if (ad.success) {
         toast.success("Ad saved successfully");
@@ -1038,6 +1073,7 @@ const AdManagement = () => {
       groupId: groupId,
       isAddingToExistingGroup: true,
     });
+    setSelectedCities([]);
   };
 
 
@@ -1566,6 +1602,50 @@ const AdManagement = () => {
                     </div>
                   )}
                 </div>
+
+                <div className="grid gap-2">
+      <label className="text-sm font-medium text-gray-700">Target Cities</label>
+
+      <AsyncSelect
+        cacheOptions
+        isMulti
+        defaultOptions
+        loadOptions={loadCityOptions}
+        onChange={handleSelect}
+        value={[]}
+        placeholder="Search cities..."
+        className="text-sm"
+        styles={{
+          control: (base) => ({
+            ...base,
+            borderColor: "#e5ebee",
+            backgroundColor: "#f9fafb",
+            minHeight: "42px",
+          }),
+        }}
+      />
+
+      {/* Selected Cities Below */}
+      {selectedCities.length > 0 && (
+        <div className="flex flex-col gap-2 mt-2">
+          {selectedCities.map((city) => (
+            <div
+              key={city.value}
+              className="flex flex-1 items-between bg-[#e5ebee] text-sm px-3 py-3 rounded-sm"
+            >
+              {city.label}
+              <button
+                onClick={() => handleRemove(city)}
+                className="ml-auto text-gray-500 hover:text-red-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
