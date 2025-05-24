@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Eye, EyeOff } from "lucide-react";
@@ -18,11 +18,21 @@ const LoginForm = ({
   setShowPassword,
   setForgotPassword,
 }) => {
+  const loginButtonRef = useRef(null);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      loginButtonRef.current?.click();
+    }
+  };
+
   return (
     <Form {...loginForm}>
       <form
         onSubmit={loginForm.handleSubmit(handleLogin)}
         className="h-full flex flex-col justify-between"
+        onKeyDown={handleKeyPress}
       >
         <div className="space-y-1">
           <FormField
@@ -92,6 +102,7 @@ const LoginForm = ({
           </div>
         </div>
         <Button
+          ref={loginButtonRef}
           type="submit"
           className=" w-[92%] md:w-full absolute md:static bottom-5 py-5 bg-[#ff6b00] hover:bg-[#e55f00] rounded-full mt-1 "
           disabled={isLoading}
