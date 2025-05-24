@@ -202,12 +202,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithGoogle = async () => {
     try {
-      const res = await api.get('/auth/google');
-      console.log(res);
-      if (res.data.success) {
-        await fetchUser();
-        return true;
-      }
+
+      window.location.href = `${import.meta.env.VITE_BASE_URL}/auth/google`;
+      return true;
+      
+      // const res = await api.get('/auth/google');
+      // console.log(res);
+      // if (res.data.success) {
+      //   await fetchUser();
+      //   return true;
+      // }
       return false;
     } catch {
       return false;
