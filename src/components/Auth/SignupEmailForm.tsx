@@ -17,7 +17,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
       const success = await sendOtp(values.email);
       if (success) {
         // Store email in localStorage after successful OTP sending
-        localStorage.setItem('signupEmail', values.email);
+        localStorage.setItem("signupEmail", values.email);
         handleEmailSubmit(values);
       }
     } catch (error) {

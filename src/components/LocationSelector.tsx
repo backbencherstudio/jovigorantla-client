@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MapPin, X, Check, Loader2, Locate } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import AsyncSelect from 'react-select/async';
 import {
   Popover,
   PopoverContent,
@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/popover";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { Slider } from "@/components/ui/slider";
-import { toast } from "sonner";
+import { loadCityOptions } from "@/hooks/load-city-options";
+
+interface LocationOption {
+  value: string;
+  label: string;
+}
 
 interface LocationSelectorProps {
   onChange?: (location: string) => void;
@@ -22,23 +27,64 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   className,
   compact = false,
 }) => {
-  const { locationString, updateLocation, loading, radius, updateRadius } =
-    useGeolocation();
+  const {
+    locationString,
+    updateLocation,
+    loading,
+    radius,
+    updateRadius,
+    updateCurrentLocation,
+  } = useGeolocation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [radiusValue, setRadiusValue] = useState(radius || 40);
+  const [isLocating, setIsLocating] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayText, setDisplayText] = useState("");
 
+  const [selectedCities, setSelectedCities] = useState([]);
+
+  const handleSelect = (option: LocationOption | null) => {
+    if (option) {
+      setInputValue(option.value);
+      handleSubmit({ preventDefault: () => { } } as React.FormEvent);
+    }
+  };
+
+  const handleRemove = (cityToRemove) => {
+    setSelectedCities((prev) =>
+      prev.filter((city) => city.value !== cityToRemove.value)
+    );
+  };
+
+  // const handleAddAdToGroup = (groupId: string) => {
+  //   setNewAdForm({
+  //     name: "",
+  //     targetUrl: "",
+  //     groupId: groupId,
+  //     isAddingToExistingGroup: true,
+  //   });
+  //   setSelectedCities([]);
+  // };
+
+  // Add this effect after other useEffect hooks
   useEffect(() => {
-    if (locationString) {
-      setDisplayText(locationString);
-      setInputValue(locationString);
+    const storedLocation = localStorage.getItem('selectedLocation');
+    const storedRadius = localStorage.getItem('selectedRadius');
+
+    if (storedLocation) {
+      setInputValue(storedLocation);
+      setDisplayText(storedLocation);
     }
-    if (radius) {
-      setRadiusValue(radius);
+
+    if (storedRadius) {
+      const radius = parseInt(storedRadius, 10);
+      if (!isNaN(radius)) {
+        setRadiusValue(radius);
+        updateRadius(radius);
+      }
     }
-  }, [locationString, radius]);
+  }, []);
 
   // Listen for location and radius changes
   useEffect(() => {
@@ -71,12 +117,12 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     await updateLocation(inputValue);
     await updateRadius(radiusValue);
 
+    // Store location data in localStorage
+    localStorage.setItem('selectedLocation', inputValue);
+    localStorage.setItem('selectedRadius', radiusValue.toString());
+
     onChange?.(inputValue);
-
-    // Dispatch custom events for real-time updates
-    window.dispatchEvent(new Event("locationUpdated"));
-    window.dispatchEvent(new Event("radiusUpdated"));
-
+    setDisplayText(inputValue);
     setIsOpen(false);
   };
 
@@ -87,44 +133,23 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     }
   };
 
-  const handleRadiusChange = async (value: number[]) => {
+  const handleRadiusChange = (value: number[]) => {
     const newRadius = value[0];
     setRadiusValue(newRadius);
-
-    // Update radius immediately and dispatch event
-    await updateRadius(newRadius);
-    window.dispatchEvent(new Event("radiusUpdated"));
+    updateRadius(newRadius);
   };
 
-  const handleUseCurrentLocation = () => {
-    console.log("Updating location...");
-    if (navigator.geolocation) {
-      // toast("Updating your location...");
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const locationString = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
-          console.log("Location updated:", locationString);
-
-          updateLocation(locationString).then((success) => {
-            if (success) {
-              toast.success("Location updated successfully");
-              setInputValue(locationString);
-              setDisplayText(locationString);
-            } else {
-              toast.error("Failed to update location");
-            }
-          });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          toast.error("Could not get your location. Please try again.");
-        }
-      );
-    } else {
-      toast.error("Geolocation is not supported by your browser");
+  const handleUseCurrentLocation = async () => {
+    try {
+      setIsLocating(true);
+      const locationAddress = await updateCurrentLocation();
+      if (locationAddress) {
+        setInputValue(locationAddress);
+        setDisplayText(locationAddress);
+        onChange?.(locationAddress);
+      }
+    } finally {
+      setIsLocating(false);
     }
   };
 
@@ -147,36 +172,44 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
               <span className="truncate text-black">
                 {displayText || "Select location"}
               </span>
-              {radius && (
-                <span className=" text-black ml-1">• {radius} mi</span>
-              )}
+              {radius && <span className="text-black ml-1">• {radius} mi</span>}
             </div>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-3" align="end">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                ref={inputRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+              <AsyncSelect
+                cacheOptions
+                defaultOptions
+                loadOptions={loadCityOptions}
+                onChange={handleSelect}
+                value={inputValue ? { value: inputValue, label: inputValue } : null}
                 placeholder="City or zip code"
-                className="pl-9 pr-9"
-                autoFocus
+                className="text-sm"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    paddingLeft: '2rem',
+                    borderColor: "#e5ebee",
+                    backgroundColor: "#f9fafb",
+                    minHeight: "42px",
+                  }),
+                }}
               />
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center">
-                {inputValue && (
-                  <button type="button" onClick={handleClear} className="mr-1">
-                    <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={handleUseCurrentLocation}
-                  className="text-brand hover:text-brand/80"
+                  className="text-brand hover:text-brand/80 disabled:opacity-50"
+                  disabled={isLocating}
                 >
-                  <Locate className="h-4 w-4" />
+                  {isLocating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Locate className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -261,27 +294,37 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <PopoverContent className="w-64 p-3" align="start">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={loadCityOptions}
+              onChange={handleSelect}
+              value={inputValue ? { value: inputValue, label: inputValue } : null}
               placeholder="City or zip code"
-              className="pl-9 pr-9"
-              autoFocus
+              className="text-sm"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  paddingLeft: '2rem',
+                  borderColor: "#e5ebee",
+                  backgroundColor: "#f9fafb",
+                  minHeight: "42px",
+                }),
+              }}
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center">
-              {inputValue && (
-                <button type="button" onClick={handleClear} className="mr-1">
-                  <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                </button>
-              )}
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="text-brand hover:text-brand/80"
+                className="text-brand hover:text-brand/80 disabled:opacity-50"
+                disabled={isLocating}
               >
-                <Locate className="h-4 w-4" />
+                {isLocating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Locate className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>

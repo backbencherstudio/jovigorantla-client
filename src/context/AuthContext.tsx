@@ -150,7 +150,7 @@ type AuthContextType = {
   loading: boolean;
   favoritesListings: any[];
   signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (email: string, password: string, name?: string) => Promise<boolean>;
+  signUp: (email: string, password: string, name: string, otp: string) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   updateMe: (name?: string) => Promise<boolean>;
   signUpWithGoogle: () => Promise<boolean>;
@@ -219,12 +219,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
 
-  const signUp = async (email: string, password: string, name?: string) => {
+  const signUp = async (email: string, password: string, name: string, otp: string) => {
     try {
-      const res = await api.post('/auth/signup', {
+      // const otp = localStorage.getItem("otp");
+      const res = await api.post('/auth/register', {
         email,
         password,
         name,
+        otp,
       });
 
       if (res.data.success) {
@@ -352,7 +354,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -360,3 +361,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

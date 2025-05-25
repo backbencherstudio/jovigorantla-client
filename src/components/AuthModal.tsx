@@ -160,6 +160,7 @@ const AuthModal = ({
       setSignupStep("verify");
       // Start the resend timer
       setResendDisabled(true);
+      //TODO: opt setResendTimer(120);
       setResendTimer(120);
       toast.success("Verification code sent to your email");
     } catch (error) {
