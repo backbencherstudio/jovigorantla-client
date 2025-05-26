@@ -75,6 +75,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const response = await api.get('/listings');
+      console.log('Fetching listings:', response.data);
       if (response.data.success) {
         setListings(response.data.data);
       }
@@ -132,7 +133,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
         formData.append('lng', String(longitude));
       }
 
-      const response = await api.put(`/listings/${id}`, formData, {
+      const response = await api.patch(`/listings/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
