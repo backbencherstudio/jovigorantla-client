@@ -8,26 +8,87 @@ import mapboxgl from 'mapbox-gl';
 // mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGVzaWVhc3k5OTA5IiwiYSI6ImNtYWhsMG9mOTA2eWcycnE0czhwY2tvM3QifQ.J0e0jKaSnehPaoSKFlH-0g';
 
+// const loadCityOptions = async (inputValue: string) => {
+//   const res = await fetch(
+//     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+//       inputValue
+//     )}.json?access_token=${mapboxgl.accessToken}&types=place&limit=5`
+//   );
+//   const data = await res.json();
+
+//   return data.features.map((feature: any) => {
+//     const [longitude, latitude] = feature.center;
+//     const context = feature.context || [];
+//     const country = context.find((c: any) => c.id.includes('country'))?.text || 'Unknown';
+//     const state = context.find((c: any) => c.id.includes('region'))?.text || '';
+
+//     return {
+//       label: feature.place_name,
+//       value: {
+//         name: feature.text,
+//         slug: feature.text.toLowerCase().replace(/\s+/g, '-'),
+//         country,
+//         state,
+//         latitude,
+//         longitude,
+//         center: feature.center,
+//         id: feature.id
+//       },
+//     };
+//   });
+// };
+
+// const loadCityOptions = async (inputValue: string) => {
+//   const res = await fetch(
+//     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+//       inputValue
+//     )}.json?access_token=${mapboxgl.accessToken}&types=place&limit=5&country=us`
+//   );
+//   const data = await res.json();
+
+//   return data.features.map((feature: any) => {
+//     const [longitude, latitude] = feature.center;
+//     const context = feature.context || [];
+//     const countryCode = context.find((c: any) => c.id.includes('country'))?.short_code?.toUpperCase() || 'US';
+//     const state = context.find((c: any) => c.id.includes('region'))?.text || '';
+
+//     return {
+//       label: feature.place_name,
+//       value: {
+//         name: feature.text,
+//         slug: feature.text.toLowerCase().replace(/\s+/g, '-'),
+//         country: countryCode,
+//         state,
+//         latitude,
+//         longitude,
+//         center: feature.center,
+//         id: feature.id
+//       },
+//     };
+//   });
+// };
+
 const loadCityOptions = async (inputValue: string) => {
   const res = await fetch(
     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       inputValue
-    )}.json?access_token=${mapboxgl.accessToken}&types=place&limit=5`
+    )}.json?access_token=${mapboxgl.accessToken}&types=place&limit=5&country=us`
   );
   const data = await res.json();
 
   return data.features.map((feature: any) => {
     const [longitude, latitude] = feature.center;
     const context = feature.context || [];
-    const country = context.find((c: any) => c.id.includes('country'))?.text || 'Unknown';
     const state = context.find((c: any) => c.id.includes('region'))?.text || '';
 
+    const cityName = feature.text;
+
     return {
-      label: feature.place_name,
+      label: `${cityName}, ${state}, USA`, // 👈 hardcoded "USA"
       value: {
-        name: feature.text,
-        slug: feature.text.toLowerCase().replace(/\s+/g, '-'),
-        country,
+        name: cityName,
+        slug: cityName.toLowerCase().replace(/\s+/g, '-'),
+        country: 'USA', // 👈 also in the value
         state,
         latitude,
         longitude,
@@ -37,6 +98,8 @@ const loadCityOptions = async (inputValue: string) => {
     };
   });
 };
+
+
 
 const fetchCityBoundary = async (cityName: string) => {
   try {
