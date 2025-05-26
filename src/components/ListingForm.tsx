@@ -40,6 +40,8 @@ import { User } from "@supabase/supabase-js";
 import { MdWarningAmber } from "react-icons/md";
 import AutoExpandingInput from "./ui/AutoExpandingInput";
 import { api } from "@/lib/axois";
+import { useListing, Location } from "@/context/ListingContext";
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 55;
 
@@ -50,7 +52,7 @@ const formSchema = z.object({
     .max(MAX_TITLE_LENGTH, {
       message: `Title must not exceed ${MAX_TITLE_LENGTH} characters`,
     }),
-  description: z.string().optional(), // Make description optional
+  description: z.string().optional(),
   price: z.coerce
     .number()
     .positive({ message: "Price must be a positive number" })
@@ -64,11 +66,10 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface ListingFormProps {
-  onSubmit: (values: FormValues & { images: File[]; radius: number }) => void;
-  initialValues?: Partial<FormValues & { images: File[]; radius: number }>;
+  initialValues?: Partial<FormValues>;
   isEditing?: boolean;
   isSubmitting?: boolean;
-  user: any;
+  user: { id: string };
 }
 
 // Define the main categories and their corresponding subcategories
@@ -83,7 +84,6 @@ const categories = Object.keys(categoriesConfig);
 
 const ListingForm = ({
   user,
-  onSubmit,
   initialValues,
   isEditing = false,
   isSubmitting = false,
@@ -94,9 +94,7 @@ const ListingForm = ({
   const [selectedSubCategory, setSelectedSubCategory] = useState(
     initialValues?.subCategory || ""
   );
-  const [availableSubCategories, setAvailableSubCategories] = useState<
-    string[]
-  >([]);
+  const [availableSubCategories, setAvailableSubCategories] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [showUSAOption, setShowUSAOption] = useState(false);
@@ -104,13 +102,15 @@ const ListingForm = ({
     initialValues?.title?.length || 0
   );
   const navigate = useNavigate();
-  const { locationString, radius, updateRadius } = useGeolocation();
+  const { locationString } = useGeolocation();
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('edit'); // ?user=imran
+  const id = searchParams.get('edit');
+
+  const { createListing, updateListing, setSelectedLocation, selectedLocation } = useListing();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -125,17 +125,62 @@ const ListingForm = ({
     },
   });
 
+  const fetchEditListing = async () => {
+    try {
+      const {data: listing} = await api.get(`/listings/${id}`);
+      if (listing?.success) {
+        const category = listing.data.category?.slice(0,1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
+        const subCategory = listing.data.sub_category?.slice(0,1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
+  
+        form.setValue("title", listing.data.title);
+        form.setValue("description", listing.data.description || '');
+        form.setValue("category", category);
+        form.setValue("subCategory", subCategory);
+        form.setValue("postToUSA", listing.data.post_to_usa);
+        form.setValue("address", listing.data.address);
+  
+        setSelectedCategory(category);
+        setSelectedSubCategory(subCategory);
+  
+        // Set location data
+        if (listing.data.lat && listing.data.lng) {
+          setSelectedLocation({
+            lat: Number(listing.data.lat),
+            lng: Number(listing.data.lng),
+            address: listing.data.address
+          });
+        }
+  
+        // Update available subcategories based on category
+        const subcats = categoriesConfig[category as keyof typeof categoriesConfig] || [];
+        setAvailableSubCategories(subcats);
+
+        // Handle image data
+        if (listing.data.image_url) {
+          setImagePreviewUrls([listing.data.image_url]);
+          setImages([]);
+        } else {
+          setImagePreviewUrls([]);
+          setImages([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching listing:", error);
+      setIsOpenError(true);
+    }
+  };
+
   useEffect(() => {
-    if (
-      selectedCategory &&
-      categoriesConfig[selectedCategory as keyof typeof categoriesConfig]
-    ) {
-      const subcats =
-        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
-        [];
+    if (id) {
+      fetchEditListing();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
+      const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
       setAvailableSubCategories(subcats);
 
-      // Reset subcategory if the current one isn't valid for the new category
       const currentSubCat = form.getValues("subCategory");
       if (currentSubCat && !subcats.includes(currentSubCat)) {
         form.setValue("subCategory", subcats[0] || "");
@@ -147,55 +192,12 @@ const ListingForm = ({
       setSelectedSubCategory("");
     }
 
-    // Reset postToUSA when category changes
     form.setValue("postToUSA", false);
   }, [selectedCategory, form]);
 
-  const fetchEditListing = async () => {
-    try {
-      const {data: listing} = await api.get(`/listings/${id}`);
-      if (listing?.success) {
-        const category = listing.data.category?.slice(0,1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
-        const subCategory = listing.data.sub_category?.slice(0,1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
-
-        console.log(category)
-        console.log(subCategory)
-  
-        form.setValue("title", listing.data.title);
-        form.setValue("description", listing.data.description);
-        form.setValue("category", category);
-        form.setValue("subCategory", subCategory);
-        form.setValue("postToUSA", listing.data.post_to_usa);
-        form.setValue("address", listing.data.address);
-  
-        setSelectedCategory(category);
-        setSelectedSubCategory(subCategory);
-  
-        // Update available subcategories based on category
-        const subcats = categoriesConfig[category as keyof typeof categoriesConfig] || [];
-        setAvailableSubCategories(subcats);
-
-        if (listing?.data?.image_url) {
-          setImagePreviewUrls([listing.data.image_url]);
-          setImages([]);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching listing:", error);
-    }
-  }
-  
-
-  useEffect(() => {
-    if (id) {
-      fetchEditListing()
-    }
-  }, [id, form]);
-
   useEffect(() => {
     const shouldShowUSAOption =
-      (selectedCategory === "Marketplace" &&
-        selectedSubCategory === "Service") ||
+      (selectedCategory === "Marketplace" && selectedSubCategory === "Service") ||
       (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
 
     setShowUSAOption(shouldShowUSAOption);
@@ -221,8 +223,9 @@ const ListingForm = ({
     form.setValue("subCategory", value);
   };
 
-  const handleLocationChange = (location: string) => {
-    form.setValue("address", location);
+  const handleLocationChange = (location: Location) => {
+    form.setValue("address", location.address);
+    setSelectedLocation(location);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -230,33 +233,6 @@ const ListingForm = ({
     setTitleLength(value.length);
     form.setValue("title", value);
   };
-
-  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (!files || files.length === 0) return;
-
-  //   // Check if adding these files would exceed the limit of 3
-  //   const newFilesArray = [...images];
-  //   const newPreviewUrls = [...imagePreviewUrls];
-
-  //   for (let i = 0; i < files.length; i++) {
-  //     if (newFilesArray.length >= 3) break; // Stop if we already have 3 images
-
-  //     const file = files[i];
-
-  //     // Check file size
-  //     if (file.size > MAX_FILE_SIZE) {
-  //       alert(`File ${file.name} is too large. Maximum size is 5MB.`);
-  //       continue;
-  //     }
-
-  //     newFilesArray.push(file);
-  //     newPreviewUrls.push(URL.createObjectURL(file));
-  //   }
-
-  //   setImages(newFilesArray);
-  //   setImagePreviewUrls(newPreviewUrls);
-  // };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -270,20 +246,6 @@ const ListingForm = ({
     setImages([file]);
     setImagePreviewUrls([URL.createObjectURL(file)]);
   };
-  
-  // const removeImage = (index: number) => {
-  //   const newFiles = [...images];
-  //   const newPreviewUrls = [...imagePreviewUrls];
-
-  //   // Revoke the object URL to avoid memory leaks
-  //   URL.revokeObjectURL(newPreviewUrls[index]);
-
-  //   newFiles.splice(index, 1);
-  //   newPreviewUrls.splice(index, 1);
-
-  //   setImages(newFiles);
-  //   setImagePreviewUrls(newPreviewUrls);
-  // };
 
   const removeImage = () => {
     if (imagePreviewUrls[0]) {
@@ -293,23 +255,56 @@ const ListingForm = ({
     setImagePreviewUrls([]);
   };
   
-  const handleSubmit = (values: FormValues) => {
-    // Check if postToUSA is true, then show pending modal, else show success modal
+  const handleSubmit = async (values: FormValues) => {
+    try {
+      if (!selectedLocation) {
+        setIsOpenError(true);
+        return;
+      }
 
-    if (user) {
+      // Create FormData instance
+      const formData = new FormData();
+
+      // Append all form values
+      formData.append('title', values.title);
+      formData.append('description', values.description || ''); // Send empty string instead of null
+      formData.append('category', values.category.toUpperCase());
+      formData.append('sub_category', values.subCategory);
+      formData.append('post_to_usa', String(values.postToUSA || false));
+      // formData.append('user_id', user.id);
+      formData.append('address', values.address);
+
+      // Append coordinates with correct field names
+      formData.append('lat', String(selectedLocation.lat));
+      formData.append('lng', String(selectedLocation.lng));
+
+      // Handle image upload properly
+      if (images[0]) {
+        formData.append('image', images[0]);
+      } else if (imagePreviewUrls[0] && imagePreviewUrls[0].startsWith('http')) {
+        // If we have an existing image URL, send it back
+        formData.append('image_url', imagePreviewUrls[0]);
+      }
+
+      if (id) {
+        await updateListing(id, formData);
+      } else {
+        await createListing(formData);
+      }
+
       if (values.postToUSA) {
         setIsOpenPending(true);
-      } else if (values.postToUSA === false) {
-        setIsOpenSuccess(true);
       } else {
-        setIsOpenError(true);
+        setIsOpenSuccess(true);
       }
-    }
 
-    try {
-      onSubmit({ ...values, images, radius });
+      // Navigate after a short delay to allow the user to see the success message
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
+      setIsOpenError(true);
     }
   };
 

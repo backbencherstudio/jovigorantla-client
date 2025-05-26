@@ -134,7 +134,6 @@ const AuthModal = ({
           className: "bg-red-700 text-white border-none",
         });
       } else {
-        // toast.success("Login successful");
         toast.success('Login successful', {
           className: 'bg-green-700 text-white border-none text-center',
         });
