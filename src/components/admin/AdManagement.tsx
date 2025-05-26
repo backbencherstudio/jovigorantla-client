@@ -52,6 +52,7 @@ import DeleteConfirmationModal from "../shared/DeleteConfirmationModal";
 import { api } from "@/lib/axois";
 import { formatCategory } from "@/lib/format";
 import { loadCityOptions } from "@/hooks/load-city-options";
+import CitySelectorWithDetails from "../CitySelectorWithDetails";
 
 // Page options for assigning ad groups
 const PAGE_OPTIONS = [
@@ -133,6 +134,8 @@ interface sidebarAd {
   image_url: string
   target_url: string
   active: boolean
+  views: number
+  clicks: number
 }
 
 const AdManagement = () => {
@@ -150,6 +153,7 @@ const AdManagement = () => {
   } | null>(null);
 
   const [selectedCities, setSelectedCities] = useState([]);
+  const [cityData, setCityData] = useState<any[]>([]);
 
   const handleSelect = (options) => {
     console.log("options => ", options)
@@ -227,7 +231,9 @@ const AdManagement = () => {
         setSidebarTopAds({
           image_url: topAds.data.image_url,
           target_url: topAds.data.target_url,
-          active: topAds.data.active
+          active: topAds.data.active,
+          clicks: topAds.data.clicks,
+          views: topAds.data.views
         })
       }
     } catch (error) {
@@ -242,7 +248,9 @@ const AdManagement = () => {
         setSidebarBottomAds({
           image_url: bottomAds.data.image_url,
           target_url: bottomAds.data.target_url,
-          active: bottomAds.data.active
+          active: bottomAds.data.active,
+          clicks: bottomAds.data.clicks,
+          views: bottomAds.data.views
         })
       }
     } catch (error) {
@@ -815,57 +823,98 @@ const AdManagement = () => {
   //   // setAdPreview(null);
   // };
 
+  // const handleSaveAdToExistingGroup = async () => {
+  //   try {
+  //     if (!newAdForm.name.trim()) {
+  //       toast.error("Please enter an ad name");
+  //       return;
+  //     }
+
+  //     if (!newAdForm.targetUrl.trim()) {
+  //       toast.error("Please enter a target URL");
+  //       return;
+  //     }
+
+  //     if (!newAdForm.groupId) {
+  //       toast.error("Please select an ad group");
+  //       return;
+  //     }
+
+  //     if (!selectedFile) {
+  //       toast.error("Please select an image file");
+  //       return;
+  //     }
+
+  //     const formData = new FormData();
+  //     formData.append("name", newAdForm.name.trim());
+  //     formData.append("image", selectedFile); // ✅ Only File allowed
+  //     formData.append("target_url", newAdForm.targetUrl.trim());
+  //     formData.append("ad_group_id", newAdForm.groupId);
+
+  //     // if (selectedCities.length > 0) {
+  //     //   // get the values from the selectedCities array
+  //     //   // const cities = selectedCities.map((city) => {
+  //     //   //   return city.value;
+  //     //   // });
+  //     //   // formData.append("cities", JSON.stringify(cities));
+  //     //   selectedCities.forEach((city) => {
+  //     //     formData.append("cities[]", city.value);
+  //     //   });
+  //     // }
+
+
+
+  //     // const { data: ad } = await api.post("/admin/ads", formData);
+
+  //     // if (ad.success) {
+  //     //   toast.success("Ad saved successfully");
+  //     //   resetForm();
+  //     //   setAdGroups((prev) =>
+  //     //     prev.map((group) =>
+  //     //       group.id === newAdForm.groupId
+  //     //         ? {
+  //     //           ...group,
+  //     //           ads: [...group.ads, ad.data],
+  //     //         }
+  //     //         : group
+  //     //     )
+  //     //   );
+  //     // } else {
+  //     //   toast.error("Error saving ad");
+  //     // }
+  //   } catch (error) {
+  //     console.error("Error saving ad:", error);
+  //     toast.error("Error saving ad");
+  //   }
+  // };
+
   const handleSaveAdToExistingGroup = async () => {
     try {
-      if (!newAdForm.name.trim()) {
-        toast.error("Please enter an ad name");
-        return;
-      }
-
-      if (!newAdForm.targetUrl.trim()) {
-        toast.error("Please enter a target URL");
-        return;
-      }
-
-      if (!newAdForm.groupId) {
-        toast.error("Please select an ad group");
-        return;
-      }
-
-      if (!selectedFile) {
-        toast.error("Please select an image file");
-        return;
-      }
-
+      if (!newAdForm.name.trim()) return toast.error("Please enter an ad name");
+      if (!newAdForm.targetUrl.trim()) return toast.error("Please enter a target URL");
+      if (!newAdForm.groupId) return toast.error("Please select an ad group");
+      if (!selectedFile) return toast.error("Please select an image file");
+  
       const formData = new FormData();
       formData.append("name", newAdForm.name.trim());
-      formData.append("image", selectedFile); // ✅ Only File allowed
+      formData.append("image", selectedFile);
       formData.append("target_url", newAdForm.targetUrl.trim());
       formData.append("ad_group_id", newAdForm.groupId);
-
-      if (selectedCities.length > 0) {
-        // get the values from the selectedCities array
-        // const cities = selectedCities.map((city) => {
-        //   return city.value;
-        // });
-        // formData.append("cities", JSON.stringify(cities));
-        selectedCities.forEach((city) => {
-          formData.append("cities[]", city.value);
-        });
+  
+      // 👇 Append city metadata
+      if (cityData.length > 0) {
+        formData.append("cities", JSON.stringify(cityData));
       }
-
+  
       const { data: ad } = await api.post("/admin/ads", formData);
-
+  
       if (ad.success) {
         toast.success("Ad saved successfully");
         resetForm();
         setAdGroups((prev) =>
           prev.map((group) =>
             group.id === newAdForm.groupId
-              ? {
-                ...group,
-                ads: [...group.ads, ad.data],
-              }
+              ? { ...group, ads: [...group.ads, ad.data] }
               : group
           )
         );
@@ -877,10 +926,11 @@ const AdManagement = () => {
       toast.error("Error saving ad");
     }
   };
+  
 
   const handleSaveSidebarTopAd = async () => {
     try {
-      if (!sidebarTopFile || !sidebarTopAds?.target_url) {
+      if (!sidebarTopFile && !sidebarTopAds?.target_url) {
         toast.error("Please select an image and provide a target URL");
         return;
       }
@@ -909,7 +959,7 @@ const AdManagement = () => {
 
   const handleSaveSidebarBottomAd = async () => {
     try {
-      if (!sidebarBottomFile || !sidebarBottomAds?.target_url) {
+      if (!sidebarBottomFile && !sidebarBottomAds?.target_url) {
         toast.error("Please select an image and enter a target URL");
         return;
       }
@@ -1382,6 +1432,11 @@ const AdManagement = () => {
                       )} */}
                     </div>
 
+                    <div className="flex justify-between">
+                          <span>👁️ {sidebarTopAds?.views || 0}</span>
+                          <span>👆 {sidebarTopAds?.clicks || 0}</span>
+                    </div>
+
                     <div className="grid gap-2 grid-cols-3">
                       <Button
                         variant="outline"
@@ -1479,6 +1534,12 @@ const AdManagement = () => {
                           Preview Ad
                         </Button>
                       )} */}
+                    </div>
+
+
+                    <div className="flex justify-between">
+                          <span>👁️ {sidebarBottomAds?.views || 0}</span>
+                          <span>👆 {sidebarBottomAds?.clicks || 0}</span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
@@ -1603,48 +1664,11 @@ const AdManagement = () => {
                   )}
                 </div>
 
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium text-gray-700">Target Cities</label>
-
-                  <AsyncSelect
-                    cacheOptions
-                    isMulti
-                    defaultOptions
-                    loadOptions={loadCityOptions}
-                    onChange={handleSelect}
-                    value={[]}
-                    placeholder="Search cities..."
-                    className="text-sm"
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        borderColor: "#e5ebee",
-                        backgroundColor: "#f9fafb",
-                        minHeight: "42px",
-                      }),
-                    }}
-                  />
-
-                  {/* Selected Cities Below */}
-                  {selectedCities.length > 0 && (
-                    <div className="flex flex-col gap-2 mt-2">
-                      {selectedCities.map((city) => (
-                        <div
-                          key={city.value}
-                          className="flex flex-1 items-between bg-[#e5ebee] text-sm px-3 py-3 rounded-sm"
-                        >
-                          {city.label}
-                          <button
-                            onClick={() => handleRemove(city)}
-                            className="ml-auto text-gray-500 hover:text-red-500"
-                          >
-                            <X className="w-5 h-5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <CitySelectorWithDetails onSubmit={(cityDataArray) => {
+                  // console.log("Selected cities with boundaries:", cityDataArray);
+                  setCityData(cityDataArray);
+                  // You can store this in state and use it in formData.append("cities", JSON.stringify(cityDataArray))
+                }} />
 
               </div>
             </CardContent>
