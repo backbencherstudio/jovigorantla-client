@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useFilter } from "@/context/FilterContext";
 import { Facebook, Youtube, Instagram } from 'lucide-react';
 
 
@@ -36,6 +37,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const location = useLocation();
   const { user } = useAuth();
+  const { category, setCategory } = useFilter();
   const navigate = useNavigate();
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
@@ -59,6 +61,15 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       : []),
   ];
 
+  const handleCategoryClick = (path: string, label: string) => {
+    // Set category in context when clicking a menu item
+    if (path === '/') {
+      setCategory('');
+    } else {
+      setCategory(label);
+    }
+  };
+
   return (
     <aside className={`h-full ${collapsed ? "w-[70px]" : "w-[240px]"}`}>
       <div className="flex flex-col h-full py-4">
@@ -68,10 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             const Icon = item.icon;
 
             return (
-              <Link
+              <div
                 key={item.path}
-                to={item.path}
-                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
+                onClick={() => handleCategoryClick(item.path, item.label)}
+                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                   isActive
                     ? "bg-gray-100 text-black"
                     : "text-gray-700 hover:bg-gray-100"
@@ -83,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                   }`}
                 />
                 {!collapsed && <span className="ml-3">{item.label}</span>}
-              </Link>
+              </div>
             );
           })}
 
@@ -97,10 +108,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                 const Icon = item.icon;
 
                 return (
-                  <Link
+                  <div
                     key={item.path}
-                    to={item.path}
-                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
+                    onClick={() => handleCategoryClick(item.path, item.label)}
+                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                       isActive
                         ? "bg-gray-100 text-black"
                         : "text-gray-700 hover:bg-gray-100"
@@ -112,7 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                       }`}
                     />
                     {!collapsed && <span className="ml-3">{item.label}</span>}
-                  </Link>
+                  </div>
                 );
               })}
             </>
@@ -138,15 +149,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
 
         <div className="flex  gap-2">
           <p
-            onClick={() => navigate("/privacy-policy")}
+            onClick={() => handleCategoryClick("/privacy-policy", "Privacy Policy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
           >
             Privacy Policy
           </p>
           <p
-            onClick={() => {
-              navigate("/user-agreement");
-            }}
+            onClick={() => handleCategoryClick("/user-agreement", "User Agreement")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
           >
             User Agreement
