@@ -116,16 +116,50 @@ const ListingDetailPage = () => {
 
   // const timeAgo = formatTime(new Date(listing.created_at));
 
-  const handleContact = () => {
-    if (user) {
-      // Find or create conversation for this listing
-      const conversationId = "1"; // In a real app, this would be fetched or created
+  const handleContact = async() => {
+    try {
+      if (user) {
+        // console.log("user", user);
+        // console.log(listing)
 
-      // Redirect to the specific conversation
-      navigate(`/messages/${conversationId}`);
-    } else {
-      setIsOpen(true);
+        // console.log({
+        //   creator_id: user?.id,
+        //   participant_id: listing?.user?.id,
+        //   listing_id: listing?.id,
+        // })
+
+        const conversation = await api.post('/chat/conversation', {
+          creator_id: user?.id,
+          participant_id: listing?.user?.id,
+          listing_id: listing?.id,
+        })
+
+        // console.log("conversation", conversation);
+
+        if (conversation?.data?.success) {
+          // console.log("conversation", conversation?.data?.data.id);
+          navigate(`/messages/${conversation?.data?.data.id}`);
+          // navigate(`/messages/${1}`);
+        }
+
+
+        // Redirect to the specific conversation
+        // navigate(`/messages/${conversationId}`);
+      } else {
+        setIsOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
     }
+    // if (user) {
+    //   // Find or create conversation for this listing
+    //   const conversationId = "1"; // In a real app, this would be fetched or created
+
+    //   // Redirect to the specific conversation
+    //   navigate(`/messages/${conversationId}`);
+    // } else {
+    //   setIsOpen(true);
+    // }
   };
 
   const toggleSaveListing = () => {

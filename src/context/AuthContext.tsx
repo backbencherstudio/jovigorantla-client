@@ -187,6 +187,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchFavoritesListings()
   }, []);
 
+
+  
+
   const signIn = async (email: string, password: string) => {
     try {
       const res = await api.post('/auth/login', { email, password });

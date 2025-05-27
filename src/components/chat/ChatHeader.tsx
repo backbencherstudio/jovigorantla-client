@@ -105,12 +105,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           <DropdownMenuItem onClick={onBlockUser} className="cursor-pointer ">
             Block User
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={onReportConversation}
             className="cursor-pointer"
           >
             Report
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             onClick={onDeleteConversation}
             className="cursor-pointer text-[#bc0117]"

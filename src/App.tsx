@@ -28,6 +28,8 @@ import ChatPage from "./pages/ChatPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import UserAgreement from "./pages/UserAgreement";
 import { ListingProvider } from "./context/ListingContext";
+import { SocketProvider } from '@/context/SocketContext';
+import { MessageProvider } from "./context/MessageContext";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -233,7 +235,11 @@ function App() {
     <Router>
       <AuthProvider>
         <ListingProvider>
+        <SocketProvider>
+        <MessageProvider>
           <AppRoutes />
+        </MessageProvider>
+        </SocketProvider>
         </ListingProvider>
       </AuthProvider>
     </Router>

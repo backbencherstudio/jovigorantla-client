@@ -193,7 +193,7 @@ const AuthModal = ({
       const isSignUp = await signUp(
         signupEmail,
         values.password,
-        values.username
+        values.username,
       );
       if (isSignUp) {
         toast.error("Signup failed", { description: "Signup failed" });

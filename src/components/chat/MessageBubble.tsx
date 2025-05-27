@@ -81,10 +81,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               isCurrentUser ? "text-right pr-2" : "text-right pr-2"
             )}
           >
-            {message.timestamp.toLocaleTimeString([], {
+            {/* {message.timestamp.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-            })}
+            })} */}
+            date
           </div>
         )}
       </div>
