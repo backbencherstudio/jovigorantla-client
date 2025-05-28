@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useFilter } from "@/context/FilterContext";
 import { Facebook, Youtube, Instagram } from 'lucide-react';
 
-
 const XIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -19,16 +18,12 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-
-
 const socialIcons = [
   { icon: <XIcon className="w-4 h-4 text-white" />, link: 'https://x.com/desieasyteam' },
   { icon: <Facebook className="w-4 h-4 text-white" />, link: 'https://www.facebook.com/desieasy' },
   { icon: <Youtube className="w-4 h-4 text-white" />, link: 'https://www.youtube.com/@desieasy' },
   { icon: <Instagram className="w-4 h-4 text-white" />, link: 'https://www.instagram.com/desieasyofficial/' },
 ];
-
-
 
 interface SidebarProps {
   collapsed?: boolean;
@@ -37,12 +32,10 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const location = useLocation();
   const { user } = useAuth();
-  const { category, setCategory } = useFilter();
+  const { setCategory } = useFilter();
   const navigate = useNavigate();
-  // This is a placeholder for real authentication logic
-  // In a real app, you would check if the user has employee or admin role
-  const isEmployee =
-    user && (user.email?.includes("admin") || user.email?.includes("employee"));
+
+  const isEmployee = user && (user.email?.includes("admin") || user.email?.includes("employee"));
   const isAdmin = user && user.email?.includes("admin");
 
   const menuItems = [
@@ -53,12 +46,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
     { icon: Briefcase, label: "Jobs", path: "/jobs" },
   ];
 
-  // Admin/Employee menu items - only visible to employees or admins
   const adminMenuItems = [
     ...(isAdmin ? [{ icon: Users, label: "Admin Panel", path: "/admin" }] : []),
-    ...(isEmployee
-      ? [{ icon: Users, label: "Employee Panel", path: "/employee" }]
-      : []),
+    ...(isEmployee ? [{ icon: Users, label: "Employee Panel", path: "/employee" }] : []),
   ];
 
   const handleCategoryClick = (path: string, label: string) => {
@@ -68,6 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
     } else {
       setCategory(label);
     }
+    navigate(path);
   };
 
   return (
@@ -131,7 +122,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
         </nav>
       </div>
       <div className="fixed bottom-5 left-4 hidden xl:block">
-
         {/* icons for x, facebook, youtube instagram */}
         <div className="flex justify-center gap-2 py-4">
           {socialIcons.map((item, index) => (
@@ -147,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           ))}
         </div>
 
-        <div className="flex  gap-2">
+        <div className="flex gap-2">
           <p
             onClick={() => handleCategoryClick("/privacy-policy", "Privacy Policy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"

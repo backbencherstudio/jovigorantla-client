@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
@@ -17,6 +17,9 @@ import { api } from "@/lib/axois";
 interface ListingsContainerProps {
   listings: ListingType[];
   isLoading: boolean;
+  isLoadingMore?: boolean;
+  hasMore?: boolean;
+  loadMore?: () => Promise<void>;
   searchQuery: string;
   activeFilter: string;
   // generateMockListings: (category: string, count?: number) => ListingType[];
@@ -27,6 +30,9 @@ interface ListingsContainerProps {
 const ListingsContainer = ({
   listings,
   isLoading,
+  isLoadingMore = false,
+  hasMore = false,
+  loadMore,
   searchQuery,
   activeFilter,
   // generateMockListings,
@@ -37,6 +43,24 @@ const ListingsContainer = ({
   const location = useLocation();
   const { user } = useAuth();
   const [filteredListings, setFilteredListings] = useState<ListingType[]>([]);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastListingElementRef = useCallback((node: HTMLDivElement | null) => {
+    if (isLoading || isLoadingMore) return;
+    
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore && loadMore) {
+        loadMore();
+      }
+    }, {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0.1
+    });
+    
+    if (node) observer.current.observe(node);
+  }, [isLoading, isLoadingMore, hasMore, loadMore]);
 
   useEffect(() => {
     // Filter and sort listings
@@ -78,13 +102,13 @@ const ListingsContainer = ({
   // };
 
   const handleAdClick = async (id: string, target_url: string) => {
-    try{
-      await api.post(`ads/${id}/track-click`)
+    try {
+      await api.post(`ads/${id}/track-click`);
       window.open(target_url, "_blank");
-    }catch (error) {
+    } catch (error) {
       console.error("Error recording ad click:", error);
     }
-  }
+  };
 
   const toggleSaveListing = (e: React.MouseEvent, listingId: string) => {
     e.stopPropagation();
@@ -134,58 +158,61 @@ const ListingsContainer = ({
     // }
   };
 
-  if (isLoading) {
+  if (isLoading && !isLoadingMore) {
     return <LoadingSkeleton />;
   }
 
-  if (filteredListings.length === 0) {
-    return <NoListingsFound />;
+  if (!isLoading && filteredListings.length === 0) {
+    return (
+      <NoListingsFound
+        searchQuery={searchQuery}
+        activeFilter={activeFilter}
+        category={currentCategory}
+      />
+    );
   }
 
   return (
     <div className="space-y-4 overflow-visible">
-      {filteredListings.map((listing, index) => (
-        <div key={`listing-container-${listing.id + index}`}>
-         {listing?.type === 'listing' &&  <ListingItem
-            key={listing.id}
-            listing={listing}
-            onToggleSave={toggleSaveListing}
-          />}
+      {filteredListings.map((listing, index) => {
+        const isLastElement = index === filteredListings.length - 1;
+        
+        return (
+          <div 
+            key={`listing-container-${listing.id + index}`}
+            ref={isLastElement ? lastListingElementRef : null}
+          >
+            {listing?.type === 'listing' && <ListingItem
+              key={listing.id}
+              listing={listing}
+            />}
 
-          {/* {
-            listing?.type === 'ad' && <AdCard ad={{
-              id: listing.id,
-              image_url: listing?.image_url || '',
-              target_url: listing.target_url || '',
-              name: "test",
-              group: listing?.ad_group_id,
-            }} />
-          } */}
-
-
-          {listing?.type === 'ad' && (
-            <div className="w-full overflow-hidden" key={listing.id + index}>
-              {/* This container maintains the aspect ratio and appearance across all devices */}
-              <div
-                className="relative w-full  max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                style={{
-                  aspectRatio: "574/300",
-                  maxWidth: "574px",
-                }}
-                onClick={() => handleAdClick(listing.id, listing.target_url)}
-              >
-                {/* The actual banner image that maintains its exact appearance */}
-                <img
-                  src={listing.image_url || img1}
-                  alt={listing.title}
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                />
+            {listing?.type === 'ad' && (
+              <div className="w-full overflow-hidden" key={listing.id + index}>
+                <div
+                  className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                  style={{
+                    aspectRatio: "574/300",
+                    maxWidth: "574px",
+                  }}
+                  onClick={() => handleAdClick(listing.id, listing.target_url)}
+                >
+                  <img
+                    src={listing.image_url || img1}
+                    alt={listing.title}
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  />
+                </div>
               </div>
-            </div>
-          )}
-          
+            )}
+          </div>
+        );
+      })}
+      {isLoadingMore && (
+        <div className="w-full py-4">
+          <LoadingSkeleton />
         </div>
-      ))}
+      )}
     </div>
   );
 };

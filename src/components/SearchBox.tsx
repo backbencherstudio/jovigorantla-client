@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useFilter } from '@/context/FilterContext';
+import debounce from 'lodash/debounce';
 
 const SearchBox = () => {
   const { searchQuery, handleSearch } = useFilter();
   const [localSearch, setLocalSearch] = useState(searchQuery);
+
+  // Create a debounced version of handleSearch
+  const debouncedSearch = debounce((value: string) => {
+    handleSearch(value);
+  }, 300);
+
+  useEffect(() => {
+    // Update local search when searchQuery changes from outside
+    if (searchQuery !== localSearch) {
+      setLocalSearch(searchQuery);
+    }
+  }, [searchQuery]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,11 +28,16 @@ const SearchBox = () => {
     const value = e.target.value;
     setLocalSearch(value);
     
-    // If search is cleared, update filters immediately
-    if (!value.trim()) {
-      handleSearch('');
-    }
+    // Trigger debounced search
+    debouncedSearch(value);
   };
+
+  // Cleanup debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
