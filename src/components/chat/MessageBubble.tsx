@@ -37,12 +37,14 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         : "rounded-t-lg rounded-tl-none rounded-br-lg"
       : isLastInGroup
       ? isCurrentUser
-        ? "rounded-b-lg rounded-tr-none rounded-bl-lg"
-        : "rounded-b-lg rounded-tl-none rounded-br-lg"
+        ? "rounded-b-lg rounded-tr-none rounded-bl-lg rounded-tl-lg"
+        : "rounded-b-lg rounded-tl-none rounded-tr-lg rounded-br-lg"
       : isCurrentUser
       ? "rounded-l-lg"
       : "rounded-r-lg"
   );
+
+  console.log("message", message.content);
 
   return (
     <div
@@ -54,7 +56,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       {/* Other user avatar */}
       {!isCurrentUser && showAvatar && (
-        <Avatar className="h-8 w-8 mb-5 mt-auto">
+        <Avatar className="h-8 w-8">
           <AvatarFallback className="bg-primary/10">
             <UserRound className="h-4 w-4" />
           </AvatarFallback>
@@ -74,20 +76,34 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div className={messageBubbleStyle}>{message.content}</div>
 
         {/* WhatsApp style timestamp in bubble */}
-        {isLastInGroup && (
+        {/* {isLastInGroup && (
           <div
             className={cn(
               "text-[10px] text-gray-500 mt-0.5",
               isCurrentUser ? "text-right pr-2" : "text-right pr-2"
             )}
           >
-            {/* {message.timestamp.toLocaleTimeString([], {
+            {message.timestamp.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-            })} */}
-            date
+            })}
           </div>
-        )}
+        )} */}
+
+          {isLastInGroup && (
+            <div
+              className={cn(
+                "text-[10px] text-gray-500 mt-0.5",
+                isCurrentUser ? "text-right pr-2" : "text-right pr-2"
+              )}
+            >
+              {new Date(message.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </div>
+          )}
+
       </div>
     </div>
   );

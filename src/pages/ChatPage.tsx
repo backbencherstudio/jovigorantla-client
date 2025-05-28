@@ -515,6 +515,291 @@
 // export default ChatPage;
 
 
+// import { useState, useEffect } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import { useAuth } from "@/context/AuthContext";
+// import ChatConversation from "@/components/ChatConversation";
+// import { Message } from "@/components/chat/types";
+// import { useUnreadMessages } from "@/components/Header";
+// import { useMessages } from "@/context/MessageContext";
+// import { api } from "@/lib/axois";
+
+// // Conversation type definition
+// // interface Conversation {
+// //   id: string;
+// //   other: {
+// //     id: string;
+// //     name: string;
+// //   };
+// //   lastMessage: {
+// //     text: string;
+// //     timestamp: Date;
+// //     isRead: boolean;
+// //     sentByCurrentUser: boolean;
+// //   };
+// //   unreadCount: number;
+// //   listingTitle: string;
+// //   listingId: string;
+// //   messages: Message[];
+// // }
+
+// const ChatPage = () => {
+//   const { conversationId } = useParams();
+//   const navigate = useNavigate();
+//   const { user } = useAuth();
+//   const { setUnreadMessages } = useUnreadMessages();
+//   const [conversation, setConversation] = useState(null);
+//   const {conversations } = useMessages()
+
+//   // Mock data - in a real app, this would come from an API
+//   useEffect(() => {
+//     // Mock conversations data
+//     const mockConversations = [
+//       {
+//         id: "1",
+//         otherUser: {
+//           id: "user1",
+//           name: "John Smith",
+//         },
+//         lastMessage: {
+//           text: "Is this room still available?",
+//           timestamp: new Date(Date.now() - 3600000),
+//           isRead: true,
+//           sentByCurrentUser: false,
+//         },
+//         unreadCount: 0,
+//         listingTitle: "Room for rent in Downtown area",
+//         listingId: "101",
+//         messages: [
+//           {
+//             id: "1-1",
+//             senderId: "user1",
+//             content: "Hello, is this room still available?",
+//             timestamp: new Date(Date.now() - 3600000),
+//             read: true,
+//           },
+//           {
+//             id: "1-2",
+//             senderId: user?.id || "current-user",
+//             content:
+//               "Yes, it is still available. When would you like to see it?",
+//             timestamp: new Date(Date.now() - 3500000),
+//             read: true,
+//           },
+//         ],
+//       },
+//       {
+//         id: "2",
+//         otherUser: {
+//           id: "user2",
+//           name: "Sarah Johnson",
+//         },
+//         lastMessage: {
+//           text: "I can offer $150 for this.",
+//           timestamp: new Date(Date.now() - 86400000),
+//           isRead: false,
+//           sentByCurrentUser: false,
+//         },
+//         unreadCount: 2,
+//         listingTitle: "Used bicycle for sale",
+//         listingId: "102",
+//         messages: [
+//           {
+//             id: "2-1",
+//             senderId: user?.id || "current-user",
+//             content: "Hi, is the bicycle still available?",
+//             timestamp: new Date(Date.now() - 90000000),
+//             read: true,
+//           },
+//           {
+//             id: "2-2",
+//             senderId: "user2",
+//             content: "Yes it is. Are you interested?",
+//             timestamp: new Date(Date.now() - 89000000),
+//             read: true,
+//           },
+//           {
+//             id: "2-3",
+//             senderId: user?.id || "current-user",
+//             content: "How much are you asking for it?",
+//             timestamp: new Date(Date.now() - 88000000),
+//             read: true,
+//           },
+//           {
+//             id: "2-4",
+//             senderId: "user2",
+//             content: "I was asking for $200 but I can negotiate.",
+//             timestamp: new Date(Date.now() - 87000000),
+//             read: true,
+//           },
+//           {
+//             id: "2-5",
+//             senderId: user?.id || "current-user",
+//             content: "Would you take $130?",
+//             timestamp: new Date(Date.now() - 86500000),
+//             read: true,
+//           },
+//           {
+//             id: "2-6",
+//             senderId: "user2",
+//             content: "I can offer $150 for this.",
+//             timestamp: new Date(Date.now() - 86400000),
+//             read: false,
+//           },
+//           {
+//             id: "2-7",
+//             senderId: "user2",
+//             content: "Does that work for you?",
+//             timestamp: new Date(Date.now() - 86300000),
+//             read: false,
+//           },
+//         ],
+//       },
+//       {
+//         id: "3",
+//         otherUser: {
+//           id: "user3",
+//           name: "David Brown",
+//         },
+//         lastMessage: {
+//           text: "Can you tell me more about the job?",
+//           timestamp: new Date(Date.now() - 172800000),
+//           isRead: true,
+//           sentByCurrentUser: false,
+//         },
+//         unreadCount: 0,
+//         listingTitle: "Software Developer Job Opening",
+//         listingId: "103",
+//         // Mock listing ID
+//         messages: [
+//           {
+//             id: "3-1",
+//             senderId: user?.id || "current-user",
+//             content:
+//               "Hi, I saw your job posting and I have questions about the role.",
+//             timestamp: new Date(Date.now() - 180000000),
+//             read: true,
+//           },
+//           {
+//             id: "3-2",
+//             senderId: "user3",
+//             content: "Sure, what would you like to know?",
+//             timestamp: new Date(Date.now() - 179000000),
+//             read: true,
+//           },
+//           {
+//             id: "3-3",
+//             senderId: user?.id || "current-user",
+//             content: "Can you tell me more about the job?",
+//             timestamp: new Date(Date.now() - 172800000),
+//             read: true,
+//           },
+//         ],
+//       },
+//     ];
+
+//     // Find the conversation with the matching ID
+//     const foundConversation = conversations.find(
+//       (conv) => conv.id === conversationId
+//     );
+
+//     console.log(foundConversation)
+//     setConversation(foundConversation)
+  
+
+//     if (foundConversation) {
+//       // Mark all messages as read when opening the conversation
+//       const updatedConversation = {
+//         ...foundConversation,
+//         unreadCount: 0,
+//         lastMessage: {
+//           ...foundConversation.lastMessage,
+//           isRead: true,
+//         },
+//         messages: foundConversation.messages.map((msg) => ({
+//           ...msg,
+//           read: true,
+//         })),
+//       };
+//       setConversation(updatedConversation);
+
+//       // Update total unread count
+//       const totalUnread = mockConversations.reduce((total, conv) => {
+//         if (conv.id === conversationId) return total;
+//         return total + conv.unreadCount;
+//       }, 0);
+//       setUnreadMessages(totalUnread);
+//     } else {
+//       // If conversation not found, redirect back to messages list
+//       // navigate("/messages");
+//     }
+//   }, [conversationId, user?.id, navigate, setUnreadMessages]);
+
+//   const handleSendMessage = async(content: string) => {
+//     if (content.trim() && conversation) {
+
+//       const {data} = await api.post('chat/message', {
+//         conversation_id: conversationId,
+//         messagte: content,
+//         receiver_id: conversation.other.id,
+//       })
+
+//       console.log("chat => ", conversation.other.id, user?.id)
+
+//       console.log(data)
+//       // Create new message
+//       const message: Message = {
+//         id: Date.now().toString(),
+//         senderId: user?.id || "current-user",
+//         content: content,
+//         timestamp: new Date(),
+//         read: true, // Own messages are always read
+//       };
+
+//       // Update conversation state
+//       setConversation((prev) => {
+//         if (!prev) return null;
+//         return {
+//           ...prev,
+//           messages: [...prev.messages, message],
+//           lastMessage: {
+//             text: content,
+//             timestamp: new Date(),
+//             isRead: true,
+//             sentByCurrentUser: true,
+//           },
+//         };
+//       });
+//     }
+//   };
+
+//   const handleBack = () => {
+//     navigate(-1);
+//   };
+
+//   // if (!conversation) {
+//   //   return ;
+//   // }
+
+//   console.log(conversation)
+
+//   return (
+//     <ChatConversation
+//       conversationId={conversation.id}
+//       otherUserName={conversation?.other?.name}
+//       listingTitle={conversation.listing.title}
+//       listingId={conversation.listing.id}
+//       messages={conversation.messages}
+//       onSendMessage={handleSendMessage}
+//       onBack={handleBack}
+//     />
+//   );
+// };
+
+// export default ChatPage;
+
+
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -525,268 +810,142 @@ import { useMessages } from "@/context/MessageContext";
 import { api } from "@/lib/axois";
 
 // Conversation type definition
-// interface Conversation {
-//   id: string;
-//   other: {
-//     id: string;
-//     name: string;
-//   };
-//   lastMessage: {
-//     text: string;
-//     timestamp: Date;
-//     isRead: boolean;
-//     sentByCurrentUser: boolean;
-//   };
-//   unreadCount: number;
-//   listingTitle: string;
-//   listingId: string;
-//   messages: Message[];
-// }
+interface Conversation {
+  id: string;
+  other: {
+    id: string;
+    name: string;
+  };
+  lastMessage: {
+    text: string;
+    timestamp: Date;
+    isRead: boolean;
+    sentByCurrentUser: boolean;
+  };
+  listing: {
+    id: string;
+    title: string;
+  }
+  unreadCount: number;
+  listingTitle: string;
+  listingId: string;
+  messages: Message[];
+}
 
 const ChatPage = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { setUnreadMessages } = useUnreadMessages();
-  const [conversation, setConversation] = useState(null);
-  const {conversations } = useMessages()
+  const { conversations, setActiveConversation, activeConversation, addMessage } = useMessages();
+  // const [conversation, setConversation] = useState<Conversation | null>(null);
 
-  // Mock data - in a real app, this would come from an API
+  // useEffect(() => {
+  //   // Fetching conversation from state or API
+  //   const foundConversation = conversations.find(
+  //     (conv) => conv.id === conversationId
+  //   );
+
+  //   if (foundConversation) {
+  //     setConversation(foundConversation);
+  //     // Mark messages as read when the conversation is opened
+  //     const updatedConversation = {
+  //       ...foundConversation,
+  //       unreadCount: 0,
+  //       lastMessage: {
+  //         ...foundConversation.lastMessage,
+  //         isRead: true,
+  //       },
+  //       messages: foundConversation.messages.map((msg) => ({
+  //         ...msg,
+  //         read: true,
+  //       })),
+  //     };
+  //     setConversation(updatedConversation);
+
+  //     // Update the unread messages count globally
+  //     const totalUnread = conversations.reduce((total, conv) => {
+  //       if (conv.id === conversationId) return total;
+  //       return total + conv.unreadCount;
+  //     }, 0);
+  //     setUnreadMessages(totalUnread);
+  //   } else {
+  //     // If conversation not found, redirect to the messages list
+  //     navigate("/messages");
+  //   }
+  // }, [conversationId, conversations, user?.id, navigate, setUnreadMessages]);
+
   useEffect(() => {
-    // Mock conversations data
-    const mockConversations = [
-      {
-        id: "1",
-        otherUser: {
-          id: "user1",
-          name: "John Smith",
-        },
-        lastMessage: {
-          text: "Is this room still available?",
-          timestamp: new Date(Date.now() - 3600000),
-          isRead: true,
-          sentByCurrentUser: false,
-        },
-        unreadCount: 0,
-        listingTitle: "Room for rent in Downtown area",
-        listingId: "101",
-        messages: [
-          {
-            id: "1-1",
-            senderId: "user1",
-            content: "Hello, is this room still available?",
-            timestamp: new Date(Date.now() - 3600000),
-            read: true,
-          },
-          {
-            id: "1-2",
-            senderId: user?.id || "current-user",
-            content:
-              "Yes, it is still available. When would you like to see it?",
-            timestamp: new Date(Date.now() - 3500000),
-            read: true,
-          },
-        ],
-      },
-      {
-        id: "2",
-        otherUser: {
-          id: "user2",
-          name: "Sarah Johnson",
-        },
-        lastMessage: {
-          text: "I can offer $150 for this.",
-          timestamp: new Date(Date.now() - 86400000),
-          isRead: false,
-          sentByCurrentUser: false,
-        },
-        unreadCount: 2,
-        listingTitle: "Used bicycle for sale",
-        listingId: "102",
-        messages: [
-          {
-            id: "2-1",
-            senderId: user?.id || "current-user",
-            content: "Hi, is the bicycle still available?",
-            timestamp: new Date(Date.now() - 90000000),
-            read: true,
-          },
-          {
-            id: "2-2",
-            senderId: "user2",
-            content: "Yes it is. Are you interested?",
-            timestamp: new Date(Date.now() - 89000000),
-            read: true,
-          },
-          {
-            id: "2-3",
-            senderId: user?.id || "current-user",
-            content: "How much are you asking for it?",
-            timestamp: new Date(Date.now() - 88000000),
-            read: true,
-          },
-          {
-            id: "2-4",
-            senderId: "user2",
-            content: "I was asking for $200 but I can negotiate.",
-            timestamp: new Date(Date.now() - 87000000),
-            read: true,
-          },
-          {
-            id: "2-5",
-            senderId: user?.id || "current-user",
-            content: "Would you take $130?",
-            timestamp: new Date(Date.now() - 86500000),
-            read: true,
-          },
-          {
-            id: "2-6",
-            senderId: "user2",
-            content: "I can offer $150 for this.",
-            timestamp: new Date(Date.now() - 86400000),
-            read: false,
-          },
-          {
-            id: "2-7",
-            senderId: "user2",
-            content: "Does that work for you?",
-            timestamp: new Date(Date.now() - 86300000),
-            read: false,
-          },
-        ],
-      },
-      {
-        id: "3",
-        otherUser: {
-          id: "user3",
-          name: "David Brown",
-        },
-        lastMessage: {
-          text: "Can you tell me more about the job?",
-          timestamp: new Date(Date.now() - 172800000),
-          isRead: true,
-          sentByCurrentUser: false,
-        },
-        unreadCount: 0,
-        listingTitle: "Software Developer Job Opening",
-        listingId: "103",
-        // Mock listing ID
-        messages: [
-          {
-            id: "3-1",
-            senderId: user?.id || "current-user",
-            content:
-              "Hi, I saw your job posting and I have questions about the role.",
-            timestamp: new Date(Date.now() - 180000000),
-            read: true,
-          },
-          {
-            id: "3-2",
-            senderId: "user3",
-            content: "Sure, what would you like to know?",
-            timestamp: new Date(Date.now() - 179000000),
-            read: true,
-          },
-          {
-            id: "3-3",
-            senderId: user?.id || "current-user",
-            content: "Can you tell me more about the job?",
-            timestamp: new Date(Date.now() - 172800000),
-            read: true,
-          },
-        ],
-      },
-    ];
-
-    // Find the conversation with the matching ID
     const foundConversation = conversations.find(
       (conv) => conv.id === conversationId
     );
 
-    console.log(foundConversation)
-    setConversation(foundConversation)
-  
-
     if (foundConversation) {
-      // Mark all messages as read when opening the conversation
-      const updatedConversation = {
-        ...foundConversation,
-        unreadCount: 0,
-        lastMessage: {
-          ...foundConversation.lastMessage,
-          isRead: true,
-        },
-        messages: foundConversation.messages.map((msg) => ({
-          ...msg,
-          read: true,
-        })),
-      };
-      setConversation(updatedConversation);
-
-      // Update total unread count
-      const totalUnread = mockConversations.reduce((total, conv) => {
-        if (conv.id === conversationId) return total;
-        return total + conv.unreadCount;
-      }, 0);
-      setUnreadMessages(totalUnread);
+      // setConversation(foundConversation);
+      setActiveConversation(foundConversation)
     } else {
-      // If conversation not found, redirect back to messages list
-      // navigate("/messages");
+      // If conversation not found, redirect to the messages list
+      navigate("/messages");
     }
-  }, [conversationId, user?.id, navigate, setUnreadMessages]);
+  }, [conversationId, conversations, setActiveConversation, navigate]);
+  const handleSendMessage = async (content: string) => {
+    if (content.trim() && activeConversation) {
+      try {
+        // Make API call to send the message
+        const { data } = await api.post("/chat/message", {
+          conversation_id: conversationId,
+          message: content,
+          receiver_id: activeConversation.other.id,
+        });
 
-  const handleSendMessage = async(content: string) => {
-    if (content.trim() && conversation) {
-
-      const {data} = await api.post('chat/message', {
-        conversation_id: conversationId,
-        messagte: content,
-        receiver_id: conversation.other.id,
-      })
-
-      console.log(data)
-      // Create new message
-      const message: Message = {
-        id: Date.now().toString(),
-        senderId: user?.id || "current-user",
-        content: content,
-        timestamp: new Date(),
-        read: true, // Own messages are always read
-      };
-
-      // Update conversation state
-      setConversation((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          messages: [...prev.messages, message],
-          lastMessage: {
-            text: content,
-            timestamp: new Date(),
-            isRead: true,
-            sentByCurrentUser: true,
-          },
+        // Create a new message object
+        const newMessage: Message = {
+          id: Date.now().toString(),
+          senderId: user?.id || "current-user",
+          content: content,
+          timestamp: new Date(),
+          read: true, // Marking own messages as read
         };
-      });
+
+        // Add the new message to the conversation
+        addMessage(conversationId, newMessage);
+        
+
+        // Update conversation state with the new message
+        // setConversation((prev) => {
+        //   if (!prev) return null;
+        //   return {
+        //     ...prev,
+        //     messages: [...prev.messages, newMessage],
+        //     lastMessage: {
+        //       text: content,
+        //       timestamp: new Date(),
+        //       isRead: true,
+        //       sentByCurrentUser: true,
+        //     },
+        //   };
+        // });
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(-1); // Go back to the previous page
   };
 
-  if (!conversation) {
-    navigate('/messages')
-    return ;
+  if (!activeConversation) {
+    return <div>Loading...</div>; // Show a loading state until the conversation is available
   }
 
   return (
     <ChatConversation
-      conversationId={conversation.id}
-      otherUserName={conversation.other.name}
-      listingTitle={conversation.listing.title}
-      listingId={conversation.listing.id}
-      messages={conversation.messages}
+      conversationId={activeConversation.id}
+      otherUserName={activeConversation.other?.name}
+      listingTitle={activeConversation.listing.title}
+      listingId={activeConversation.listing.id}
+      messages={activeConversation.messages}
       onSendMessage={handleSendMessage}
       onBack={handleBack}
     />

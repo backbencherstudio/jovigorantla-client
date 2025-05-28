@@ -451,10 +451,26 @@ const Messages = () => {
                     <div className="flex justify-between items-start">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{conv.listing.title}</p>
-                        <p className="text-xs text-gray-500 mt-1">{conv.other.name}</p>
-                        <p className={`text-sm mt-1 truncate ${!conv.lastMessage?.read ? 'font-medium' : 'text-gray-600'}`}>
+                        <p className="text-xs text-gray-500 mt-1">{conv?.other?.name}</p>
+                        {/* <p className={`text-sm mt-1 truncate ${!conv.message?.read ? 'font-medium' : 'text-gray-600'}`}>
                           {conv.lastMessage?.senderId ? "You: " : ""}{conv.lastMessage?.content}
-                        </p>
+                        </p> */}
+                        {/* {!conv.lastMessage && (
+                          <span className="text-sm">
+                            No messages yet
+                          </span>
+                        )} */}
+                        {
+                          conv?.messages?.length > 0? (
+                            <span className="text-xs text-gray-500">
+                              {conv.messages[conv.messages.length - 1]?.senderId == user?.id? "You: " : ""}{conv.messages[conv.messages.length - 1]?.content}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-500">
+                              No messages yet
+                            </span>
+                          )
+                        }
                       </div>
                       <div className="flex flex-col items-end ml-2">
                         <span className="text-xs text-gray-500">{formatMessageTime(new Date(conv.lastMessage?.timestamp || Date.now()))}</span>

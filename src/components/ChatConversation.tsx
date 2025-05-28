@@ -68,6 +68,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
   const displayMessages = messages.length > 0 ? messages : mockMessages;
 
+  console.log("messages", messages)
+
   // Handle message sending
   const handleSendMessage = (content: string) => {
     if (onSendMessage) {
