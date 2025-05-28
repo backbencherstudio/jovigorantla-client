@@ -107,6 +107,7 @@ export const useGeolocation = () => {
   const updateCurrentLocation = async () => {
     try {
       const result = await getCurrentLocation();
+      console.log(result,"fdjlfjlkdfj result result")
       if (result?.address) {
         const success = await updateLocation(result.address);
         if (success) {
