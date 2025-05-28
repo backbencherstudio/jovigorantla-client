@@ -11,9 +11,13 @@ export const loadCityOptions = async (inputValue: string) => {
     
     // Construct URL with appropriate type filter
     const types = isZipCode ? 'postcode' : 'place,postcode';
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(inputValue)}.json?access_token=${MAPBOX_API_KEY}&types=${types}`;
+const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(inputValue)}.json?access_token=${MAPBOX_API_KEY}&types=place,postcode&country=US`;
+
+
     
     const response = await axios.get(url);
+
+    
     
     return response.data.features.map(feature => ({
       value: feature.place_name,

@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MapPin, X, Check, Loader2, Locate } from "lucide-react";
+import { MapPin, X, Check, Loader2, Locate, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AsyncSelect from 'react-select/async';
-import { StylesConfig, CSSObjectWithLabel } from 'react-select';
+import AsyncSelect from "react-select/async";
+import { StylesConfig, CSSObjectWithLabel } from "react-select";
+import { components } from "react-select";
 import {
   Popover,
   PopoverContent,
@@ -12,6 +13,8 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { Slider } from "@/components/ui/slider";
 import { loadCityOptions } from "@/hooks/load-city-options";
 import { Location } from "@/context/ListingContext";
+import stateAbbreviations from "./stateAbbreviations";
+import { set } from "date-fns";
 
 interface LocationOption {
   value: string;
@@ -61,31 +64,37 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const [isLocating, setIsLocating] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayText, setDisplayText] = useState("");
-
+  const [selectedState, setSelectedState] = useState("");
   const [selectedCities, setSelectedCities] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const handleSelect = (option: LocationOption | null) => {
     if (option) {
       const location: Location = {
         lat: option.coordinates[1],
         lng: option.coordinates[0],
-        address: option.value
+        address: option.value,
       };
-  
+
       // Console log the coordinates
-      console.log('Selected Location Coordinates:', option.coordinates);
-      console.log('Latitude:', option.coordinates[1]);
-      console.log('Longitude:', option.coordinates[0]);
-  
+      // console.log("Selected Location Coordinates:", option.coordinates);
+      // console.log("Latitude:", option.coordinates[1]);
+      // console.log("Longitude:", option.coordinates[0]);
+
       // Store complete location data
-      localStorage.setItem('selectedLocation', option.value);
-      localStorage.setItem('selectedCoordinates', JSON.stringify([option.coordinates[1], option.coordinates[0]]));
-      localStorage.setItem('selectedLocationType', option.type);
-  
+      localStorage.setItem("selectedLocation", option.value);
+      localStorage.setItem(
+        "selectedCoordinates",
+        JSON.stringify([option.coordinates[1], option.coordinates[0]])
+      );
+      localStorage.setItem("selectedLocationType", option.type);
+
+      setSelectedLocation(option);
       setInputValue(option.value);
-      setDisplayText(option.value);
+
+      // setDisplayText(option.value);
       onChange?.(location);
-      setIsOpen(false);
+      // setIsOpen(false);
     }
   };
 
@@ -93,28 +102,42 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const customStyles: StylesConfig<LocationOption, false> = {
     option: (provided: CSSObjectWithLabel) => ({
       ...provided,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      padding: '8px 12px',
+      display: "flex",
+      flexDirection: "column" as const,
+      padding: "8px 12px",
     }),
     control: (base: CSSObjectWithLabel) => ({
       ...base,
-      paddingLeft: '2rem',
+      paddingLeft: "2rem",
       borderColor: "#e5ebee",
       backgroundColor: "#f9fafb",
       minHeight: "42px",
-    })
+    }),
   };
 
-  const formatOptionLabel = (option: LocationOption) => (
-    <div>
-      <div className="font-medium">{option.value}</div>
-      <div className="text-xs text-gray-500">
-        {option.type === 'postcode' ? 'ZIP Code' : 'City'}
-      </div>
-    </div>
-  );
+  const formatOptionLabel = (option: LocationOption) => {
+    const [city, state] = option.label.split(",");
 
+    const stateAbbreviation =
+      stateAbbreviations[state?.trim()] || state?.trim();
+    const country = option.label.includes("United States") && "USA";
+
+    // Format the label
+    const formattedLabel = stateAbbreviation
+      ? `${city.trim()}, ${stateAbbreviation}`
+      : city.trim();
+
+    return (
+      <div>
+        <div className="font-medium">
+          {formattedLabel}, {country}
+        </div>
+        {/* <div className="text-xs text-gray-500">
+        {option.type === "postcode" ? "ZIP Code" : "City"}
+      </div> */}
+      </div>
+    );
+  };
   const handleRemove = (cityToRemove) => {
     setSelectedCities((prev) =>
       prev.filter((city) => city.value !== cityToRemove.value)
@@ -133,12 +156,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
   // Add this effect after other useEffect hooks
   useEffect(() => {
-    const storedLocation = localStorage.getItem('selectedLocation');
-    const storedRadius = localStorage.getItem('selectedRadius');
+    const storedLocation = localStorage.getItem("selectedLocation");
+    const storedRadius = localStorage.getItem("selectedRadius");
+
+    const formattedLabel = formatedInputValue(storedLocation);
 
     if (storedLocation) {
       setInputValue(storedLocation);
-      setDisplayText(storedLocation);
+      setDisplayText(formattedLabel);
     }
 
     if (storedRadius) {
@@ -161,7 +186,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
     const handleRadiusUpdate = () => {
       if (radius !== radiusValue) {
-        setRadiusValue(radius);
+        // setRadiusValue(radius);
       }
     };
 
@@ -174,6 +199,22 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     };
   }, [locationString, radius, radiusValue]);
 
+  const formatedInputValue = (inputValue) => {
+    const [city, state] = inputValue.split(",");
+    console.log(state.split(" ")[1]);
+
+    const zipMatch = state.match(/\d{5}/); // This will extract 5-digit numbers
+    const zipCode = zipMatch ? zipMatch[0] : null;
+
+    const cleanedState = state?.trim().replace(/\d+/g, "").trim();
+    const stateAbbreviation = stateAbbreviations[cleanedState] || state?.trim();
+
+    // Format the label
+    return stateAbbreviation
+      ? `${city.trim()}, ${stateAbbreviation}${zipCode ? ", " + zipCode : ""}`
+      : city.trim();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -182,44 +223,63 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     await updateRadius(radiusValue);
 
     // Store location data in localStorage
-    localStorage.setItem('selectedLocation', inputValue);
-    localStorage.setItem('selectedRadius', radiusValue.toString());
+    localStorage.setItem("selectedLocation", inputValue);
+    localStorage.setItem("selectedRadius", radiusValue.toString());
+
+    const formattedLabel = formatedInputValue(inputValue);
 
     // Create a Location object from the input value
     const location: Location = {
       address: inputValue,
       lat: 0, // These will be updated by the geocoding service
-      lng: 0
+      lng: 0,
     };
 
     onChange?.(location);
-    setDisplayText(inputValue);
+    setDisplayText(formattedLabel);
     setIsOpen(false);
   };
 
   const handleClear = () => {
     setInputValue("");
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+  };
+
+  const ClearIndicator = (props: any) => {
+    const {
+      clearValue,
+      selectProps: { isDisabled },
+    } = props;
+
+    return (
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          clearValue();
+        }}
+        className="pr-2 cursor-pointer text-muted-foreground hover:text-red-500"
+      >
+        <X className="h-4 w-4" />
+      </div>
+    );
   };
 
   const handleRadiusChange = (value: number[]) => {
     const newRadius = value[0];
     setRadiusValue(newRadius);
-    updateRadius(newRadius);
+    // updateRadius(newRadius);
   };
 
   const handleUseCurrentLocation = async () => {
     try {
       setIsLocating(true);
       const locationAddress = await updateCurrentLocation();
+
       if (locationAddress) {
         // Get coordinates from localStorage if available
-        const coordinates = localStorage.getItem('selectedCoordinates');
+        const coordinates = localStorage.getItem("selectedCoordinates");
         let lat = 0;
         let lng = 0;
-        
+
         if (coordinates) {
           const [latitude, longitude] = JSON.parse(coordinates); // Already stored in lat,lng order
           lat = latitude;
@@ -229,7 +289,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         const location: Location = {
           address: locationAddress,
           lat: Number(lat), // Ensure numbers
-          lng: Number(lng)  // Ensure numbers
+          lng: Number(lng), // Ensure numbers
         };
 
         setInputValue(locationAddress);
@@ -242,22 +302,32 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   };
 
   const renderSelect = () => (
-    <AsyncSelect
-      cacheOptions
-      defaultOptions
-      loadOptions={loadCityOptions}
-      onChange={handleSelect}
-      value={inputValue ? {
-        value: inputValue,
-        label: inputValue,
-        coordinates: [0, 0], // Default coordinates
-        type: 'custom',
-        context: []
-      } : null}
-      placeholder="City or zip code"
-      className="text-sm"
-      styles={customStyles}
-    />
+    <div>
+      <AsyncSelect
+        cacheOptions
+        defaultOptions
+        loadOptions={loadCityOptions}
+        onChange={handleSelect}
+        // value={inputValue ? {
+        //   value: inputValue,
+        //   label: inputValue,
+        //   coordinates: [0, 0], // Default coordinates
+        //   type: 'custom',
+        //   context: []
+        // } : null}
+        formatOptionLabel={formatOptionLabel}
+        value={selectedLocation ? selectedLocation : inputValue}
+        placeholder="City or zip code"
+        className="text-sm"
+        styles={customStyles}
+        components={{
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
+        }}
+      />
+
+      <div className="cursor-pointer absolute  top-0 translate-x-full right-5 translate-y-3" onClick={(e) => handleClear()}>X</div>
+    </div>
   );
 
   // Compact style for form input
@@ -363,7 +433,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     );
   }
 
-  // Original style for non-form context (e.g. header)
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger
@@ -384,7 +453,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       <PopoverContent className="w-64 p-3" align="start">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
             {renderSelect()}
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center">
               <button
@@ -396,7 +465,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                 {isLocating ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Locate className="h-4 w-4" />
+                  ""
+                  // <Locate className="h-4 w-4" />
                 )}
               </button>
             </div>
