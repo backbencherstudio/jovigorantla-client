@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MapPin, X, Check, Loader2, Locate, Search } from "lucide-react";
+import { MapPin, X, Check, Loader2, Locate, Search, MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AsyncSelect from "react-select/async";
 import { StylesConfig, CSSObjectWithLabel } from "react-select";
 import { components } from "react-select";
+
+import cities from "../data/cities.json";
+
 import {
   Popover,
   PopoverContent,
@@ -15,6 +18,7 @@ import { loadCityOptions } from "@/hooks/load-city-options";
 import { Location } from "@/context/ListingContext";
 import stateAbbreviations from "./stateAbbreviations";
 import { set } from "date-fns";
+import { filterUSLocationsWithinRadius } from "@/utils/filterWithinRadius";
 
 interface LocationOption {
   value: string;
@@ -68,34 +72,74 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const [selectedCities, setSelectedCities] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const handleSelect = (option: LocationOption | null) => {
-    if (option) {
-      const location: Location = {
-        lat: option.coordinates[1],
-        lng: option.coordinates[0],
-        address: option.value,
-      };
+  const handleSelect = async (option: LocationOption | null) => {
+    // if (!option) return;
 
-      // Console log the coordinates
-      // console.log("Selected Location Coordinates:", option.coordinates);
-      // console.log("Latitude:", option.coordinates[1]);
-      // console.log("Longitude:", option.coordinates[0]);
+    if (option?.value === "use-my-location") {
+      try {
+        setIsLocating(true);
+        const locationAddress = await updateCurrentLocation(); // this triggers Geolocation popup
 
-      // Store complete location data
-      localStorage.setItem("selectedLocation", option.value);
-      localStorage.setItem(
-        "selectedCoordinates",
-        JSON.stringify([option.coordinates[1], option.coordinates[0]])
-      );
-      localStorage.setItem("selectedLocationType", option.type);
+        if (locationAddress) {
+          const coordinates = localStorage.getItem("selectedCoordinates");
+          const [lat, lng] = coordinates ? JSON.parse(coordinates) : [0, 0];
 
-      setSelectedLocation(option);
-      setInputValue(option.value);
+          const location: Location = {
+            address: locationAddress,
+            lat,
+            lng,
+          };
 
-      // setDisplayText(option.value);
-      onChange?.(location);
-      // setIsOpen(false);
+          setSelectedLocation({
+            label: locationAddress,
+            value: locationAddress,
+            coordinates: [lng, lat],
+            type: "custom",
+            context: [],
+          });
+
+          setInputValue(locationAddress);
+          onChange?.(location);
+        }
+      } finally {
+        setIsLocating(false);
+      }
+      return;
     }
+
+    const location: Location = {
+      lat: option?.coordinates[1],
+      lng: option?.coordinates[0],
+      address: option?.value,
+    };
+    const allOptions = await cities;
+
+    const nearbyOptions = filterUSLocationsWithinRadius(
+      allOptions,
+      location?.lat,
+      location?.lng,
+      radiusValue // e.g., 50
+    );
+    console.log(nearbyOptions, "near optionssdfd");
+    // Console log the coordinates
+    // console.log("Selected Location Coordinates:", option.coordinates);
+    // console.log("Latitude:", option.coordinates[1]);
+    // console.log("Longitude:", option.coordinates[0]);
+
+    // Store complete location data
+    localStorage.setItem("selectedLocation", option.value);
+    localStorage.setItem(
+      "selectedCoordinates",
+      JSON.stringify([option.coordinates[1], option.coordinates[0]])
+    );
+    localStorage.setItem("selectedLocationType", option.type);
+
+    setSelectedLocation(option);
+    setInputValue(option.value);
+
+    // setDisplayText(option.value);
+    onChange?.(location);
+    // setIsOpen(false);
   };
 
   // Custom styles for AsyncSelect
@@ -126,6 +170,15 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     const formattedLabel = stateAbbreviation
       ? `${city.trim()}, ${stateAbbreviation}`
       : city.trim();
+
+    if (option.value === "use-my-location") {
+      return (
+        <div className="flex items-center gap-2 text-sm">
+          <MapPin className="w-4 h-4 text-orange-600" />
+          <span className="text-orange-600 text-base">Use my location</span>
+        </div>
+      );
+    }
 
     return (
       <div>
@@ -186,7 +239,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
     const handleRadiusUpdate = () => {
       if (radius !== radiusValue) {
-        // setRadiusValue(radius);
+        setRadiusValue(radius);
       }
     };
 
@@ -200,10 +253,11 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   }, [locationString, radius, radiusValue]);
 
   const formatedInputValue = (inputValue) => {
-    const [city, state] = inputValue.split(",");
-    console.log(state.split(" ")[1]);
+    const safeValue = typeof inputValue === "string" ? inputValue : "";
+    const [city, state] = safeValue.split(",");
+    // console.log(state?.split(" ")[1]);
 
-    const zipMatch = state.match(/\d{5}/); // This will extract 5-digit numbers
+    const zipMatch = state?.match(/\d{5}/); // This will extract 5-digit numbers
     const zipCode = zipMatch ? zipMatch[0] : null;
 
     const cleanedState = state?.trim().replace(/\d+/g, "").trim();
@@ -240,27 +294,15 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     setIsOpen(false);
   };
 
-  const handleClear = () => {
+  const selectRef = useRef(null);
+
+  const handleClear = (e) => {
+    e.preventDefault();
     setInputValue("");
-  };
-
-  const ClearIndicator = (props: any) => {
-    const {
-      clearValue,
-      selectProps: { isDisabled },
-    } = props;
-
-    return (
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          clearValue();
-        }}
-        className="pr-2 cursor-pointer text-muted-foreground hover:text-red-500"
-      >
-        <X className="h-4 w-4" />
-      </div>
-    );
+    setSelectedLocation(null);
+    if (selectRef?.current) {
+      selectRef?.current?.clearValue(); // Clear the select value
+    }
   };
 
   const handleRadiusChange = (value: number[]) => {
@@ -315,8 +357,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         //   type: 'custom',
         //   context: []
         // } : null}
+        ref={selectRef}
         formatOptionLabel={formatOptionLabel}
-        value={selectedLocation ? selectedLocation : inputValue}
         placeholder="City or zip code"
         className="text-sm"
         styles={customStyles}
@@ -326,7 +368,12 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         }}
       />
 
-      <div className="cursor-pointer absolute  top-0 translate-x-full right-5 translate-y-3" onClick={(e) => handleClear()}>X</div>
+      <div
+        className="cursor-pointer absolute  top-0 translate-x-full right-5 translate-y-3 hover:text-red-500"
+        onClick={(e) => handleClear(e)}
+      >
+        <X className="h-4 w-4" />
+      </div>
     </div>
   );
 
@@ -368,7 +415,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
                   {isLocating ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <Locate className="h-4 w-4" />
+                    ""
+                    // <Locate className="h-4 w-4" />
                   )}
                 </button>
               </div>
