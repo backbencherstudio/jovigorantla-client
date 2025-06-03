@@ -5,7 +5,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import locationsData from "../data/us_cities_with_zipcode.json";
+// import locationsData from "../data/us_cities_with_zipcode.json";
+import locationsData from "../data/uscitiesLocation.json";
 import { getLocationFromCoordinates } from "@/hooks/getLocationFromCoordinates ";
 
 
@@ -36,7 +37,7 @@ const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => 
 
 
 interface Location {
-    zip: number;
+    zip: number | [number];
     lat: number;
     lng: number;
     city: string;
@@ -341,14 +342,43 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         });
     };
 
+    // const getNearbyCities = (lat: number, lng: number, radiusInMiles: number) => {
+    //     const radiusInKm = milesToKilometers(radiusInMiles); // Convert radius to kilometers
+
+    //     const nearbyCities = (locationsData as Location[]).filter((location: Location) => {
+    //         const distance = getDistance(lat, lng, location.lat, location.lng);
+    //         return distance <= radiusInKm; // Check if the distance is within the radius in kilometers
+    //     });
+
+    //     return nearbyCities;
+    // };
+
     const getNearbyCities = (lat: number, lng: number, radiusInMiles: number) => {
-        const radiusInKm = milesToKilometers(radiusInMiles); // Convert radius to kilometers
-
-        const nearbyCities = (locationsData as Location[]).filter((location: Location) => {
-            const distance = getDistance(lat, lng, location.lat, location.lng);
-            return distance <= radiusInKm; // Check if the distance is within the radius in kilometers
+        // console.log(`Starting search at (${lat}, ${lng}) within ${radiusInMiles} miles`);
+        
+        const radiusInKm = milesToKilometers(radiusInMiles);
+        // console.log(`Converted radius: ${radiusInKm} km`);
+    
+        // Filter valid locations first
+        const validLocations = (locationsData as Location[]).filter(location => {
+            const valid = location.lat >= -90 && location.lat <= 90 && 
+                         location.lng >= -180 && location.lng <= 180;
+            if (!valid) {
+                console.warn(`Invalid coordinates for location:`, location);
+            }
+            return valid;
         });
-
+    
+        // console.log(`Checking ${validLocations.length} valid locations`);
+    
+        const nearbyCities = validLocations.filter((location: Location) => {
+            const distance = getDistance(lat, lng, location.lat, location.lng);
+            const isNearby = distance <= radiusInKm;
+            // console.log(`City at (${location.lat},${location.lng}) - Distance: ${distance.toFixed(2)} km - ${isNearby ? 'INCLUDED' : 'excluded'}`);
+            return isNearby;
+        });
+    
+        // console.log(`Found ${nearbyCities.length} nearby cities`);
         return nearbyCities;
     };
 
@@ -359,14 +389,14 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         const savedRadius = localStorage.getItem("selectedRadius");
 
         // If there's a saved location in localStorage, set it to the state
-        if (!notSetDefault && savedLocation) {
+        if ( savedLocation) {
             const location = JSON.parse(savedLocation);
             setSelectedOption(location);
             setDisplaySelectedOption(location); // Optionally display the selected location in your UI
         }
 
         // If there's a saved radius, set it
-        if (!notSetDefault && savedRadius) {
+        if (savedRadius) {
             const radiusValue = parseInt(savedRadius, 10);
             if (!isNaN(radiusValue)) {
                 setRadius(radiusValue);
@@ -412,8 +442,9 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             onChange={handleSelect}
                             onInputChange={handleSearchChange}
                             getOptionLabel={(option: Location) => option.search}
-                            getOptionValue={(option: Location) => option.zip.toString()}
-                            placeholder="Search by city, zip"
+                            getOptionValue={(option: Location) => option.search}
+                            // getOptionValue={(option: Location) => option.zip.toString()}
+                            placeholder="Search by city"
                             className="text-sm"
                             styles={{
                                 control: (base) => ({
@@ -434,13 +465,14 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             onClick={handleClear}
                         >
                             <X className="h-4 w-4" />
+                            
                         </button>
                     </div>
 
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full"
+                        // className="w-full"
                         onClick={getCurrentLocation}
                         disabled={locationLoading}
                     >
@@ -454,7 +486,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium">Search Radius</span>
+                            <span className="text-sm font-medium">{notSetDefault? "Select": "Search"} Radius</span>
                             {/* <Input
                 type="text"
                 value={displayRadius}

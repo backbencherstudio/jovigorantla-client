@@ -226,7 +226,7 @@ const Header = () => {
                       }`}
                     />
                   </Button>
-                  { unreadMessagesCount && (
+                  {(parseInt(unreadMessagesCount) > 0) && (
                     <Badge className="absolute top-1 right-1 h-4 min-w-4 p-0 flex items-center justify-center text-[9px] hover:bg-[#bf072c] bg-[#bf072c] border-white border">
                       {unreadMessagesCount}
                     </Badge>

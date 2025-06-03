@@ -298,7 +298,7 @@ const ListingForm = ({
         formData.append('image_url', imagePreviewUrls[0]);
       }
 
-      console.log(formData, cities)
+      console.log(cities)
 
       // if (id) {
       //   await updateListing(id, formData);
