@@ -41,6 +41,7 @@ import { MdWarningAmber } from "react-icons/md";
 import AutoExpandingInput from "./ui/AutoExpandingInput";
 import { api } from "@/lib/axois";
 import { useListing, Location } from "@/context/ListingContext";
+import LocationWithRadius from "./LocationWithRedius";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 55;
@@ -106,6 +107,7 @@ const ListingForm = ({
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
+  const [ cities, setCities ] = useState<string[]>([]);
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get('edit');
@@ -120,7 +122,7 @@ const ListingForm = ({
       price: undefined,
       category: "",
       subCategory: "",
-      address: locationString || "",
+      address: locationString || "this addres",
       postToUSA: false,
     },
   });
@@ -257,10 +259,10 @@ const ListingForm = ({
   
   const handleSubmit = async (values: FormValues) => {
     try {
-      if (!selectedLocation) {
-        setIsOpenError(true);
-        return;
-      }
+      // if (!selectedLocation) {
+      //   setIsOpenError(true);
+      //   return;
+      // }
 
       // Create FormData instance
       const formData = new FormData();
@@ -275,8 +277,18 @@ const ListingForm = ({
       formData.append('address', values.address);
 
       // Append coordinates with correct field names
-      formData.append('lat', String(selectedLocation.lat));
-      formData.append('lng', String(selectedLocation.lng));
+      // formData.append('lat', String(selectedLocation.lat));
+      // formData.append('lng', String(selectedLocation.lng));
+      const { title, description, category, subCategory, postToUSA} = values
+      console.log({
+        title,
+        description,
+        category,
+        subCategory,
+        postToUSA
+      })
+
+      console.log(cities)
 
       // Handle image upload properly
       if (images[0]) {
@@ -286,22 +298,24 @@ const ListingForm = ({
         formData.append('image_url', imagePreviewUrls[0]);
       }
 
-      if (id) {
-        await updateListing(id, formData);
-      } else {
-        await createListing(formData);
-      }
+      console.log(formData, cities)
 
-      if (values.postToUSA) {
-        setIsOpenPending(true);
-      } else {
-        setIsOpenSuccess(true);
-      }
+      // if (id) {
+      //   await updateListing(id, formData);
+      // } else {
+      //   await createListing(formData);
+      // }
+
+      // if (values.postToUSA) {
+      //   setIsOpenPending(true);
+      // } else {
+      //   setIsOpenSuccess(true);
+      // }
 
       // Navigate after a short delay to allow the user to see the success message
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      // setTimeout(() => {
+      //   navigate("/");
+      // }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
       setIsOpenError(true);
@@ -486,12 +500,20 @@ const ListingForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Location</FormLabel>
-                  <div className="mt-2">
-                    <LocationSelector
+                  <div className="mt-2 flex justify-end bg-[#E5EBEE] rounded-md">
+                   <div className="w-64">
+                       <LocationWithRadius 
+                       className="bg-transparent outline-0 border-0 hover:bg-transparent justify-end" 
+                       setCities={setCities}
+                       notSetDefault={true}
+                       />
+                   </div>
+                    {/* <LocationSelector
                       onChange={handleLocationChange}
+                      setCities={setCities}
                       compact
                       className="w-full flex h-10 items-center justify-between rounded-md border border-input bg-[#e5ebee] px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
+                    /> */}
                   </div>
                   <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
                 </FormItem>

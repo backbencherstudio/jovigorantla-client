@@ -316,6 +316,7 @@ import { Message } from '@/types/chat';
 type MessageContextType = {
   conversations: any[];
   activeConversation: any | null;
+  unreadMessages: UnReadMessages;
   setConversations: (convs: any[]) => void;
   setActiveConversation: (conv: any | null) => void;
   addMessage: (conversationId: string, message: any) => void;
@@ -329,12 +330,16 @@ export const useMessages = () => {
   return ctx;
 };
 
+type UnReadMessages = Record<string, number>;
+
+
 export const MessageProvider = ({ children }: { children: React.ReactNode }) => {
   const { socket } = useSocket();
   const { user } = useAuth(); // Using the existing AuthContext for user
 
   const [conversations, setConversations] = useState<any[]>([]);
   const [activeConversation, setActiveConversation] = useState<any | null>(null);
+  const [unreadMessages, setUnreadMessages] = useState<UnReadMessages>({});
 
   // const addMessage = (conversationId: string, message: any) => {
   //   setConversations((prev) =>
@@ -356,47 +361,85 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   //   }
   // };
 
+  // const addMessage = (conversationId: string, message: Message) => {
+  //   setConversations((prev) =>
+  //     prev.map((conv) => {
+  //       if (conv.id === conversationId) {
+  //         const updatedMessages = conv.messages ? [...conv.messages, message] : [message];
+  //         return {
+  //           ...conv,
+  //           messages: updatedMessages,
+  //           lastMessage: message,
+  //         };
+  //       }
+  //       return conv;
+  //     })
+  //   );
+
+  //   if (activeConversation?.id === conversationId) {
+  //     setActiveConversation((prev) =>
+  //       prev
+  //         ? {
+  //             ...prev,
+  //             messages: prev.messages ? [...prev.messages, message] : [message],
+  //           }
+  //         : null
+  //     );
+  //   }
+  // };
+
   const addMessage = (conversationId: string, message: Message) => {
-    setConversations((prev) =>
-      prev.map((conv) => {
-        if (conv.id === conversationId) {
-          const updatedMessages = conv.messages ? [...conv.messages, message] : [message];
-          return {
-            ...conv,
-            messages: updatedMessages,
-            lastMessage: message,
-          };
-        }
-        return conv;
-      })
-    );
-  
+    setConversations((prev) => {
+      // Find the conversation that matches the conversationId
+      const targetConversation = prev.find(conv => conv.id === conversationId);
+      if (!targetConversation) return prev;
+
+      // Remove the target conversation from the array
+      const otherConversations = prev.filter(conv => conv.id !== conversationId);
+
+      // Create updated conversation with new message
+      const updatedConversation = {
+        ...targetConversation,
+        messages: targetConversation.messages ? [...targetConversation.messages, message] : [message],
+        lastMessage: message,
+      };
+
+      // Return array with updated conversation at the beginning
+      return [updatedConversation, ...otherConversations];
+    });
+
     if (activeConversation?.id === conversationId) {
       setActiveConversation((prev) =>
         prev
           ? {
-              ...prev,
-              messages: prev.messages ? [...prev.messages, message] : [message],
-            }
+            ...prev,
+            messages: prev.messages ? [...prev.messages, message] : [message],
+          }
           : null
       );
+    } else {
+      setUnreadMessages((prev) => ({
+        ...prev,
+        [conversationId]: (prev[conversationId] || 0) + 1,
+      }));
+      
     }
   };
-  
 
-  const handleIncomingMessage = ({ from, data }: any) => {
+
+  const handleIncomingMessage = async ({ from, data }: any) => {
     console.log("socket message => ", data)
     data = data?.message
-    
+
     const newMessage: any = {
       id: data.id,
       senderId: from,
       content: data.body_text,
       receiver_id: data.receiver_id,
       timestamp: new Date(data.created_at),
-      read: false,
+      isRead: data.conversation_id === activeConversation?.id,
     };
-    console.log("newMessage => ", newMessage)
+    // console.log("newMessage => ", newMessage)
     addMessage(data.conversation_id, newMessage);
   };
 
@@ -421,11 +464,11 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       prev.map((conv) =>
         conv.id === conversationId
           ? {
-              ...conv,
-              messages: conv.messages.map((msg) =>
-                msg.id === messageId ? { ...msg, read: true } : msg
-              ),
-            }
+            ...conv,
+            messages: conv.messages.map((msg) =>
+              msg.id === messageId ? { ...msg, isRead: true } : msg
+            ),
+          }
           : conv
       )
     );
@@ -440,6 +483,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
 
       // Process the conversations
       const conversations = data?.data || [];
+      const unreadMap: UnReadMessages = {};
 
       // Update each conversation with the `other` user
       conversations.forEach((conv: any) => {
@@ -448,25 +492,115 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
         } else if (conv.participant.id !== user?.id) {
           conv.other = conv.participant;
         }
-      });
 
-      // format the messages
-      conversations.forEach((conv: any) => {
+        // format messages
         conv.messages.forEach((msg: any) => {
           msg['id'] = msg.id;
           msg['senderId'] = msg.sender_id;
           msg['receiverId'] = msg.receiver_id;
           msg['content'] = msg.message;
           msg['timestamp'] = new Date(msg.created_at);
+          msg['isRead'] = msg.is_read;
         });
+
+        const unreadCount = conv.messages.filter(
+          (msg: any) => !msg.isRead && msg.receiverId === user?.id
+        ).length;
+      
+        if (unreadCount > 0) {
+          unreadMap[conv.id] = unreadCount;
+        }
+
       });
 
-      console.log("conversations => ", conversations)
+      // console.log("unread messages => ", unreadMap)
+
+      setUnreadMessages(unreadMap);
+
+
+      // format the messages
+      // conversations.forEach((conv: any) => {
+
+      //   conv.messages.forEach((msg: any) => {
+      //     msg['id'] = msg.id;
+      //     msg['senderId'] = msg.sender_id;
+      //     msg['receiverId'] = msg.receiver_id;
+      //     msg['content'] = msg.message;
+      //     msg['timestamp'] = new Date(msg.created_at);
+      //     msg['isRead'] = msg.is_read;
+      //   });
+      // });
+
+      // console.log("conversations => ", conversations)
       setConversations(conversations);
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
     }
   }, [user?.id]); // Re-fetch if user changes
+
+
+  const fetchConversationData = useCallback(async () => {
+    try {
+      const { data } = await api.patch(
+        `chat/conversation/${activeConversation.id}/read`
+      ); // Adjust based on how your API works
+
+      if (data.success) {
+        // Make unread message count 0
+        setUnreadMessages((prev) => {
+          if (!prev) return {};
+          const { [activeConversation.id]: _, ...rest } = prev;
+          return rest;
+        });
+
+        // Check if activeConversation messages need updating
+        setActiveConversation((prev) =>
+          prev && prev.id === activeConversation.id
+            ? {
+              ...prev,
+              messages: prev.messages
+                ? prev.messages.map((msg: any) => ({
+                  ...msg,
+                  isRead: true,
+                }))
+                : [],
+            }
+            : prev
+        );
+
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === activeConversation.id
+             ? {
+               ...conv,
+                messages: conv.messages
+                 ? conv.messages.map((msg: any) => ({
+                   ...msg,
+                    isRead: true,
+                  }))
+                  : [],
+              }
+              : conv
+          )
+        );
+
+        setUnreadMessages((prev) => {
+          const { [activeConversation.id]: _, ...rest } = prev;
+          return rest;
+        });
+        
+      }
+    } catch (error) {
+      console.error('Error fetching conversation data:', error);
+    }
+  }, [activeConversation?.id])
+
+  useEffect(() => {
+    if (activeConversation !== null) {
+      fetchConversationData(); // Call the function to make the request
+    }
+  }, [activeConversation?.id]); // Dependency array ensures it only runs when activeConversation changes
+
 
   // Effect to subscribe to socket events
   useEffect(() => {
@@ -474,22 +608,28 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
 
     getExistingConversations();
 
+    // console.log("converstations => ", conversations)
+
     socket.on('message', handleIncomingMessage);
     socket.on('conversation', handleConversationCreated);
-    socket.on('message_read', handleMessageRead);
+    // socket.on('message_read', handleMessageRead);
 
     return () => {
       socket.off('message', handleIncomingMessage);
       socket.off('conversation', handleConversationCreated);
-      socket.off('message_read', handleMessageRead);
+      // socket.off('message_read', handleMessageRead);
     };
   }, [socket, user?.id, getExistingConversations]);
+
+
+
 
   return (
     <MessageContext.Provider
       value={{
         conversations,
         activeConversation,
+        unreadMessages,
         setConversations,
         setActiveConversation,
         addMessage,

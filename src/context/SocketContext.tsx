@@ -27,7 +27,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const socketInstance = connectSocket();
 
     socketInstance.on('connect', () => {
-      console.log('✅ Socket connected');
+      // console.log('✅ Socket connected');
       setIsConnected(true);
 
       // 🔥 Emit joinRoom with user id
@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socketInstance.on('disconnect', () => {
-      console.log('🔌 Socket disconnected');
+      // console.log('🔌 Socket disconnected');
       setIsConnected(false);
     });
 

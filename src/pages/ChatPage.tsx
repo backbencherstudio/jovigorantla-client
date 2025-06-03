@@ -805,7 +805,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import ChatConversation from "@/components/ChatConversation";
 import { Message } from "@/components/chat/types";
-import { useUnreadMessages } from "@/components/Header";
 import { useMessages } from "@/context/MessageContext";
 import { api } from "@/lib/axois";
 
@@ -836,7 +835,6 @@ const ChatPage = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { setUnreadMessages } = useUnreadMessages();
   const { conversations, setActiveConversation, activeConversation, addMessage } = useMessages();
   // const [conversation, setConversation] = useState<Conversation | null>(null);
 

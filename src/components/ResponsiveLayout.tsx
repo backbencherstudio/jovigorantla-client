@@ -10,6 +10,7 @@ import CategoryIcons from "@/components/CategoryIcons";
 import AdBanner from "@/components/AdBanner";
 import LocationSelector from "@/components/LocationSelector";
 import SidebarAds from "./ui/Sidebar-Ads";
+import LocationWithRadius from "./LocationWithRedius";
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
@@ -123,7 +124,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
 
                   {/* Mobile: Location display - no border or box */}
                   <div className="mt-2 flex items-center justify-end">
-                    <LocationSelector className="text-sm border-none shadow-none p-0" />
+                    {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
+                    <LocationWithRadius />
                   </div>
                 </div>
 

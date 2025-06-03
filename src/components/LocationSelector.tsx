@@ -35,6 +35,7 @@ interface LocationOption {
 
 interface LocationSelectorProps {
   onChange?: (location: Location) => void;
+  setCities?: (cities: any[]) => void;
   className?: string;
   compact?: boolean;
 }
@@ -51,6 +52,7 @@ interface StylesProps {
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
   onChange,
+  setCities,
   className,
   compact = false,
 }) => {
@@ -71,6 +73,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const [selectedState, setSelectedState] = useState("");
   const [selectedCities, setSelectedCities] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [nearByData, setNearByData] = useState([]);
 
   const handleSelect = async (option: LocationOption | null) => {
     // if (!option) return;
@@ -114,13 +118,34 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     };
     const allOptions = await cities;
 
+    let central = {};
+
+    // console.log(allOptions, "option");
+    // find location using lat, lng
+    (allOptions as any[]).find((city) => {
+      if (
+        city.lat === option?.coordinates[1] &&
+        city.lng === option?.coordinates[0]
+      ) {
+        central = city;
+      }
+    })
+
+    console.log("location => ", location?.lat,
+      location?.lng,)
+
+
     const nearbyOptions = filterUSLocationsWithinRadius(
       allOptions,
       location?.lat,
       location?.lng,
       radiusValue // e.g., 50
     );
-    console.log(nearbyOptions, "near optionssdfd");
+ 
+    setCities?.([central, ...nearbyOptions]);
+
+    setNearByData([central, ...nearbyOptions]);
+    // console.log(nearbyOptions, "near optionssdfd");
     // Console log the coordinates
     // console.log("Selected Location Coordinates:", option.coordinates);
     // console.log("Latitude:", option.coordinates[1]);
@@ -158,6 +183,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       minHeight: "42px",
     }),
   };
+
+  // 32.781339 -96.799759
 
   const formatOptionLabel = (option: LocationOption) => {
     const [city, state] = option.label.split(",");
@@ -278,9 +305,17 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
     // Store location data in localStorage
     localStorage.setItem("selectedLocation", inputValue);
+    console.log(inputValue, "input value")
     localStorage.setItem("selectedRadius", radiusValue.toString());
 
     const formattedLabel = formatedInputValue(inputValue);
+
+    console.log("nearby => ",  nearByData)
+    onChange?.({
+      address: formattedLabel,
+      lat: 0,
+      lng: 0,
+    });
 
     // Create a Location object from the input value
     const location: Location = {

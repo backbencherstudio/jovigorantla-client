@@ -33,16 +33,29 @@ import { Badge } from "@/components/ui/badge";
 // Create a context to manage unread message count across components
 import React from "react";
 import { toast } from "sonner";
+import { useMessages } from "@/context/MessageContext";
+import LocationWithRedius from "./LocationWithRedius";
 
-export const UnreadMessagesContext = React.createContext<{
-  unreadMessages: number;
-  setUnreadMessages: React.Dispatch<React.SetStateAction<number>>;
-}>({
-  unreadMessages: 0,
-  setUnreadMessages: () => {},
-});
+// export const UnreadMessagesContext = React.createContext<{
+//   unreadMessages: number;
+//   setUnreadMessages: React.Dispatch<React.SetStateAction<number>>;
+// }>({
+//   unreadMessages: 0,
+//   setUnreadMessages: () => {},
+// });
 
-export const useUnreadMessages = () => React.useContext(UnreadMessagesContext);
+// export const useUnreadMessages = () => React.useContext(UnreadMessagesContext);
+function sumRecord(record: Record<string, number>): string {
+  let sum = 0;
+  for (const value of Object.values(record)) {
+    sum += value;
+    if (sum > 9) {
+      return `${9}+`; // Stop looping once the sum is 9 or more
+    }
+  }
+  return String(sum);
+}
+
 
 const Header = () => {
   const navigate = useNavigate();
@@ -53,6 +66,8 @@ const Header = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+
+  const { unreadMessages } = useMessages();
 
   // Check if user is employee or admin
   const isEmployee =
@@ -69,8 +84,10 @@ const Header = () => {
     return emailName.charAt(0).toUpperCase() + emailName.slice(1);
   };
 
-  // Track unread messages
-  const [unreadMessages, setUnreadMessages] = useState(2); // For demo, defaulting to 2
+
+  const unreadMessagesCount = sumRecord(unreadMessages);
+  
+
 
   useEffect(() => {
     // Extract search query from URL if present
@@ -127,9 +144,7 @@ const Header = () => {
   const mobileIconSize = isMobile ? 6 : 5.5;
 
   return (
-    <UnreadMessagesContext.Provider
-      value={{ unreadMessages, setUnreadMessages }}
-    >
+    <>
       <header className="bg-white px-4 md:px-6 border-b sticky top-0 z-20 shadow-sm py-[13px]">
         <div className="max-w-full mx-auto flex justify-between">
           {/* Logo */}
@@ -155,11 +170,15 @@ const Header = () => {
             </form>
           )}
 
+          {/* <LocationWithRedius /> */}
+          
+
           <div className="flex items-center justify-end gap-2">
             {/* Location - Only on Tablet and Desktop */}
             {!isMobile && (
               <div className="hidden md:flex items-center mr-4">
-                <LocationSelector />
+                {/* <LocationSelector /> */}
+                <LocationWithRedius />
               </div>
             )}
 
@@ -207,9 +226,9 @@ const Header = () => {
                       }`}
                     />
                   </Button>
-                  {unreadMessages > 0 && (
+                  { unreadMessagesCount && (
                     <Badge className="absolute top-1 right-1 h-4 min-w-4 p-0 flex items-center justify-center text-[9px] hover:bg-[#bf072c] bg-[#bf072c] border-white border">
-                      {unreadMessages}
+                      {unreadMessagesCount}
                     </Badge>
                   )}
                 </div>
@@ -313,7 +332,7 @@ const Header = () => {
         onOpenChange={closeModal}
         defaultTab={defaultTab}
       />
-    </UnreadMessagesContext.Provider>
+      </>
   );
 };
 

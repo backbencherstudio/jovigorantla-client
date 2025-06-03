@@ -66,7 +66,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
     },
   ];
 
-  const displayMessages = messages.length > 0 ? messages : mockMessages;
+  // const displayMessages = messages.length > 0 ? messages : mockMessages;
+  const displayMessages = messages;
 
   console.log("messages", messages)
 

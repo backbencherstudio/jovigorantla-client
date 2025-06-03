@@ -123,7 +123,7 @@ const CreateListing = () => {
     <div className="pb-6">
       <ListingForm
         user={user}
-        onSubmit={handleSubmit}
+        // onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />
       <AuthModal

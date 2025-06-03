@@ -414,20 +414,23 @@ import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatTime } from '@/lib/utils';
 
 const Messages = () => {
-  const { conversations, setActiveConversation } = useMessages();
+  const { conversations, setActiveConversation, unreadMessages } = useMessages();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  console.log('conversations', conversations);
-  
-  // Format time in a brief, readable format
-  const formatMessageTime = (date: Date) => {
-    return formatDistanceToNow(date, { addSuffix: true });
-  };
+  // console.log('conversations', conversations);
+  // console.log(unreadMessages)
 
-  
+  // // Format time in a brief, readable format
+  // const formatMessageTime = (date: Date) => {
+  //   return formatDistanceToNow(date, { addSuffix: true });
+  // };
+
+
+
 
   const handleConversationSelect = (conversationId: string) => {
     setActiveConversation(conversations.find(conv => conv.id === conversationId) || null);
@@ -447,6 +450,7 @@ const Messages = () => {
             <ul className="divide-y divide-gray-100">
               {conversations.map((conv) => (
                 <li key={conv.id} className="cursor-pointer" onClick={() => handleConversationSelect(conv.id)}>
+                  {/* <div className={`p-3 hover:bg-gray-50 ${unreadMessages?.[conv?.id] > 0 && 'bg-blue-200 hover:bg-blue-100'}`}> */}
                   <div className="p-3 hover:bg-gray-50">
                     <div className="flex justify-between items-start">
                       <div className="flex-1 min-w-0">
@@ -461,9 +465,9 @@ const Messages = () => {
                           </span>
                         )} */}
                         {
-                          conv?.messages?.length > 0? (
-                            <span className="text-xs text-gray-500">
-                              {conv.messages[conv.messages.length - 1]?.senderId == user?.id? "You: " : ""}{conv.messages[conv.messages.length - 1]?.content}
+                          conv?.messages?.length > 0 ? (
+                            <span className={`text-xs ${(conv.messages[conv.messages.length - 1]?.isRead || conv.messages[conv.messages.length - 1]?.senderId == user.id) ? 'text-gray-' : 'text-black font-bold'}`}>
+                              {conv.messages[conv.messages.length - 1]?.senderId == user?.id ? "You: " : ""}{conv.messages[conv.messages.length - 1]?.content}
                             </span>
                           ) : (
                             <span className="text-xs text-gray-500">
@@ -473,12 +477,28 @@ const Messages = () => {
                         }
                       </div>
                       <div className="flex flex-col items-end ml-2">
-                        <span className="text-xs text-gray-500">{formatMessageTime(new Date(conv.lastMessage?.timestamp || Date.now()))}</span>
-                        {conv.unreadCount > 0 && (
+                        {
+                          conv?.messages?.length > 0 ? (
+                            <span className="text-xs text-gray-500 flex justify-center items-center">{formatTime(new Date(conv?.messages?.[conv?.messages?.length - 1]?.timestamp).toISOString())}</span>
+                          ) : (
+                            // <span className="text-xs text-gray-500">
+                            // </span>
+                            ''
+                          )
+                        }
+
+                        {unreadMessages?.[conv?.id] > 0 && (
+                          <span className="mt-1 text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center">
+                            {unreadMessages[conv.id] < 10 ? unreadMessages[conv.id] : '9+'}
+                            
+                          </span>
+                        )}
+
+                        {/* {conv.unreadCount > 0 && (
                           <span className="mt-1 pt-2 text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center ">
                             {conv.unreadCount}
                           </span>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>

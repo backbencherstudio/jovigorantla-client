@@ -70,6 +70,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  
 
   const fetchListings = async () => {
     try {

@@ -39,36 +39,69 @@ export function cn(...inputs: ClassValue[]) {
 // };
 
 
+// export const formatTime = (date: string) => {
+//   const now = new Date();
+//   const targetDate = new Date(date);
+//   const differenceInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
+
+//   // Calculate the difference in years, days, hours, minutes, and seconds
+//   const seconds = differenceInSeconds;
+//   const minutes = Math.floor(differenceInSeconds / 60);
+//   const hours = Math.floor(differenceInSeconds / 3600);
+//   const days = Math.floor(differenceInSeconds / 86400);
+//   const years = Math.floor(differenceInSeconds / (3600 * 24 * 365)); // Seconds in a year
+
+//   let formattedTime = '';
+
+//   // Formatting the time
+//   if (years > 0) {
+//     formattedTime = years === 1 ? "1y ago" : `${years}y ago`;
+//   } else if (days < 1) {
+//     formattedTime = seconds < 1 ? "Just now" : `${seconds} seconds ago`;
+//   } else if (days < 30) {
+//     formattedTime = days === 1 ? "1d ago" : `${days}d ago`;
+//   } else if (days < 365) {
+//     const months = Math.floor(days / 30);
+//     formattedTime = months === 1 ? "1m ago" : `${months} m ago`;
+//   } else if (hours < 24) {
+//     formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
+//   } else if (minutes < 60) {
+//     formattedTime = minutes === 1 ? "1m ago" : `${minutes}m ago`;
+//   } else {
+//     formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
+//   }
+
+//   return formattedTime;
+// };
+
 export const formatTime = (date: string) => {
   const now = new Date();
   const targetDate = new Date(date);
   const differenceInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
 
-  // Calculate the difference in years, days, hours, minutes, and seconds
+  // Calculate the difference in years, months, days, hours, minutes, and seconds
   const seconds = differenceInSeconds;
   const minutes = Math.floor(differenceInSeconds / 60);
   const hours = Math.floor(differenceInSeconds / 3600);
   const days = Math.floor(differenceInSeconds / 86400);
-  const years = Math.floor(differenceInSeconds / (3600 * 24 * 365)); // Seconds in a year
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
 
   let formattedTime = '';
 
   // Formatting the time
   if (years > 0) {
     formattedTime = years === 1 ? "1y ago" : `${years}y ago`;
-  } else if (days < 1) {
-    formattedTime = seconds < 1 ? "Just now" : `${seconds} seconds ago`;
-  } else if (days < 30) {
+  } else if (months > 0) {
+    formattedTime = months === 1 ? "1m ago" : `${months}m ago`;
+  } else if (days > 0) {
     formattedTime = days === 1 ? "1d ago" : `${days}d ago`;
-  } else if (days < 365) {
-    const months = Math.floor(days / 30);
-    formattedTime = months === 1 ? "1m ago" : `${months} m ago`;
-  } else if (hours < 24) {
+  } else if (hours > 0) {
     formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
-  } else if (minutes < 60) {
+  } else if (minutes > 0) {
     formattedTime = minutes === 1 ? "1m ago" : `${minutes}m ago`;
   } else {
-    formattedTime = hours === 1 ? "1h ago" : `${hours}h ago`;
+    formattedTime = seconds === 1 ? "1s ago" : `${seconds}s ago`;
   }
 
   return formattedTime;
