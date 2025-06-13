@@ -196,10 +196,12 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     const params: Record<string, string | boolean> = {};
     if (subCategory === 'Services') params.sub_category = 'Service'; // Normalize subCategory
     else if (subCategory === 'Items') params.sub_category = 'Item'; // Normalize subCategory
-    else params.sub_category = subCategory;
+    else if (subCategory) params.sub_category = subCategory;
+
 
     if (category) params.category = category;
     if (isUsa) params.is_usa = isUsa;
+    console.log("data => ", params);
     return params;
   }
   useEffect(() => {
@@ -214,7 +216,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
             // is_usa: isUsa,
             lat: 40.7831,
             lng: -73.9712,
-            radius: 20, // Default radius, can be adjusted
+            radius: 100, // Default radius, can be adjusted
           },
         });
         console.log('Fetched listings:', response.data);
