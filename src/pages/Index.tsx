@@ -12,25 +12,61 @@ import {
 } from "@/utils/listingUtils";
 import { ListingType } from "@/types/listing";
 import { api } from "@/lib/axois";
+import { useListing } from "@/context/ListingContext";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("Nearby");
-  const [listings, setListings] = useState<ListingType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchParams] = useSearchParams();
+  // const currentCategory = getPageCategory(location.pathname);
+  // const initialFilter = currentCategory === "Home" ? "Nearby" : "All";
+  // const [activeFilter, setActiveFilter] = useState(initialFilter);
+
+  // const [activeFilter, setActiveFilter] = useState("Nearby");
+  // const [listings, setListings] = useState<ListingType[]>([]);
+  // const [isLoading, setIsLoading] = useState(true);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { setIsUsa, setSubCategory, loading, listings } = useListing();
 
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const initialFilter = currentPath === "/" ? "Nearby" : "All";
+
+  console.log("Current path:", currentPath);
+  console.log("Initial filter:", initialFilter);
+  const [activeFilter, setActiveFilter] = useState(initialFilter);
+
   const { locationString, radius, updateRadius } = useGeolocation();
 
   // Get current category based on path
   const currentCategory = getPageCategory(currentPath);
 
+
   // Get filter tabs based on current category
   const filterTabs = getFilterTabs(currentCategory);
+
+  // useEffect(() => {
+  //   const defaultFilter = currentPath === "/" ? "Nearby" : "All";
+  //   setSubCategory('');
+  //   setActiveFilter(defaultFilter);
+  // }, [currentPath, setSubCategory]);
+
+  useEffect(() => {
+    const subParam = searchParams.get("sub");
+
+    if (subParam) {
+      setSubCategory(subParam);
+      setActiveFilter(subParam); // Optional: reflect in UI tab
+    } else {
+      setSubCategory('');
+      setActiveFilter(currentPath === "/" ? "Nearby" : "All");
+    }
+  }, [searchParams, currentPath, setSubCategory]);
+
+
+
 
   useEffect(() => {
     // Get query param if it exists
@@ -42,7 +78,7 @@ const Index = () => {
     }
 
     // Simulate loading data
-    setIsLoading(true);
+    // setIsLoading(true);
 
     // // Generate listings based on current category
     // setTimeout(() => {
@@ -62,14 +98,14 @@ const Index = () => {
     // Listen for changes in saved listings and location/radius
     const handleSavedListingsUpdate = () => {
       console.log("Saved listings updated event received in Index");
-      setListings((prevListings) =>
-        updateSavedStatus([...prevListings], user?.id)
-      );
+      // setListings((prevListings) =>
+      //   updateSavedStatus([...prevListings], user?.id)
+      // );
     };
 
     const handleLocationUpdate = () => {
       // Refresh listings when location or radius changes
-      setIsLoading(true);
+      // setIsLoading(true);
       // setTimeout(() => {
       //   const mockData = generateMockListings(currentCategory, 50);
       //   setListings(updateSavedStatus(mockData, user?.id));
@@ -130,38 +166,76 @@ const Index = () => {
     // }
   };
 
+
+  // const handleFilterClick = (filter: string) => {
+  //   setActiveFilter(filter);
+
+  //   if (filter === 'USA') {
+  //     setSubCategory('')
+  //     setIsUsa(true);
+  //   } else {
+  //     if (filter === 'All') {
+  //       setSubCategory('');
+  //     } else if (filter !== 'Nearby') {
+  //       setSubCategory(filter);
+  //     }
+  //     setIsUsa(false);
+  //   }
+
+
+
+
+  //   // If filter is related to location, update the radius
+  //   // if (filter === "Nearby") {
+  //   //   updateRadius(10).then(() => {
+  //   //     window.dispatchEvent(new Event("radiusUpdated"));
+  //   //   });
+  //   // } else if (filter === "USA") {
+  //   //   updateRadius(30).then(() => {
+  //   //     window.dispatchEvent(new Event("radiusUpdated"));
+  //   //   });
+  //   // }
+  // };
+
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
 
-    // If filter is related to location, update the radius
-    if (filter === "Nearby") {
-      updateRadius(10).then(() => {
-        window.dispatchEvent(new Event("radiusUpdated"));
-      });
-    } else if (filter === "USA") {
-      updateRadius(30).then(() => {
-        window.dispatchEvent(new Event("radiusUpdated"));
-      });
+    if (filter === 'USA') {
+      setSubCategory('');
+      searchParams.delete('sub'); // Remove subcategory if going to USA
+      setIsUsa(true);
+    } else {
+      setIsUsa(false);
+
+      if (filter === 'All' || filter === 'Nearby') {
+        setSubCategory('');
+        searchParams.delete('sub');
+      } else {
+        setSubCategory(filter);
+        searchParams.set('sub', filter); // ✅ Store subCategory in URL
+      }
     }
+
+    setSearchParams(searchParams); // ✅ Update the URL
   };
 
-  const fetchListings = async () => {
-    try {
-      setIsLoading(true);
-      const { data } = await api.get(`/listings/nearby?lat=40.7128&lng=-74.0060&radius=20`);
-      console.log(data);
+  // const fetchListings = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const { data } = await api.get(`/listings/nearby?lat=40.7128&lng=-74.0060&radius=20`);
+  //     console.log(data);
 
-      setListings(data.data);
-      } catch (error) {
-      console.error("Error fetching listings:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };  
+  //     setListings(data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching listings:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchListings();
-  }, [])
+  // useEffect(() => {
+  //   fetchListings();
+  // }, [])
 
   return (
     <div className="w-full pb-0">
@@ -176,7 +250,7 @@ const Index = () => {
       <div className="px-4 pt-2">
         <ListingsContainer
           listings={listings}
-          isLoading={isLoading}
+          isLoading={loading}
           searchQuery={searchQuery}
           activeFilter={activeFilter}
           // generateMockListings={generateMockListings}

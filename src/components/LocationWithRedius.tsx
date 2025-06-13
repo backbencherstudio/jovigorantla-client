@@ -355,29 +355,29 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
     const getNearbyCities = (lat: number, lng: number, radiusInMiles: number) => {
         // console.log(`Starting search at (${lat}, ${lng}) within ${radiusInMiles} miles`);
-        
+
         const radiusInKm = milesToKilometers(radiusInMiles);
         // console.log(`Converted radius: ${radiusInKm} km`);
-    
+
         // Filter valid locations first
         const validLocations = (locationsData as Location[]).filter(location => {
-            const valid = location.lat >= -90 && location.lat <= 90 && 
-                         location.lng >= -180 && location.lng <= 180;
+            const valid = location.lat >= -90 && location.lat <= 90 &&
+                location.lng >= -180 && location.lng <= 180;
             if (!valid) {
                 console.warn(`Invalid coordinates for location:`, location);
             }
             return valid;
         });
-    
+
         // console.log(`Checking ${validLocations.length} valid locations`);
-    
+
         const nearbyCities = validLocations.filter((location: Location) => {
             const distance = getDistance(lat, lng, location.lat, location.lng);
             const isNearby = distance <= radiusInKm;
             // console.log(`City at (${location.lat},${location.lng}) - Distance: ${distance.toFixed(2)} km - ${isNearby ? 'INCLUDED' : 'excluded'}`);
             return isNearby;
         });
-    
+
         // console.log(`Found ${nearbyCities.length} nearby cities`);
         return nearbyCities;
     };
@@ -389,11 +389,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         const savedRadius = localStorage.getItem("selectedRadius");
 
         // If there's a saved location in localStorage, set it to the state
-        if ( savedLocation) {
+        if (savedLocation) {
             const location = JSON.parse(savedLocation);
             setSelectedOption(location);
             setDisplaySelectedOption(location); // Optionally display the selected location in your UI
         }
+
+
 
         // If there's a saved radius, set it
         if (savedRadius) {
@@ -403,13 +405,78 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 setDisplayRadius(radiusValue.toString());
             }
         }
+
+
+        // Fallback: If neither savedLocation nor savedRadius exists
+        if (!savedLocation && !savedRadius) {
+            getLocationFromIP()
+                .then(data => {
+                    // console.log("IP Geolocation Data:", data);
+
+                    const ipLocation: Location = {
+                        zip: 12345, // Fallback ZIP
+                        lat: data.lat,
+                        lng: data.lng,
+                        city: data.city || "Unknown City",
+                        state_id: data.state || "Unknown State",
+                        state_name: data.state || "Unknown State",
+                        search: `${data.city}, ${data.state}, ${data.country}`,
+                    };
+
+                    // Set the location state
+                    setSelectedOption(ipLocation);
+                    setDisplaySelectedOption(ipLocation);
+
+                    // Save the location to localStorage
+                    localStorage.setItem("selectedLocation", JSON.stringify(ipLocation));
+
+                    // Set radius to 50 and update state
+                    setRadius(20);
+                    setDisplayRadius("20");
+
+                    // Save the radius to localStorage
+                    localStorage.setItem("selectedRadius", "20");
+
+                })
+                .catch(error => {
+                    console.error("Error fetching IP geolocation data:", error);
+
+                    // Fallback to Dallas, TX if IP geolocation fails
+                    const fallbackLocation: Location = {
+                        zip: 75201, // Dallas ZIP code
+                        lat: 32.7767, // Latitude for Dallas
+                        lng: -96.7970, // Longitude for Dallas
+                        city: "Dallas",
+                        state_id: "TX",
+                        state_name: "Texas",
+                        search: "Dallas, TX, USA", // Fallback to Dallas, TX
+                    };
+
+                    // Set the location state
+                    setSelectedOption(fallbackLocation);
+                    setDisplaySelectedOption(fallbackLocation);
+
+                    // Save the fallback location to localStorage
+                    localStorage.setItem("selectedLocation", JSON.stringify(fallbackLocation));
+
+                    // Set radius to 50 and update state
+                    setRadius(20);
+                    setDisplayRadius("20");
+
+                    // Save the radius to localStorage
+                    localStorage.setItem("selectedRadius", "20");
+                });
+        }
+
+        // console.log("Selected Location:", savedLocation);
+        // console.log("Selected Radius:", savedRadius);
     }, []);
 
     useEffect(() => {
         if (setCities && selectedOption && radius) {
             setCities(getNearbyCities(selectedOption.lat, selectedOption.lng, radius));
         }
-    }, [selectedOption, radius]);
+    }, [selectedOption, radius, setCities]);
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -460,16 +527,49 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                                 IndicatorSeparator: () => null,
                             }}
                         />
-                        <button
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-1"
+                        {/* <button
+                            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white p-1"
                             onClick={handleClear}
                         >
                             <X className="h-4 w-4" />
-                            
+
                         </button>
+
+                        <button
+                            className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-white p-1"
+                            onClick={getCurrentLocation}
+                            disabled={locationLoading}
+                        >
+                            {locationLoading ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                                <Navigation className="h-4 w-4 mr-2 text-[#FF7A19]" />
+                            )}
+                        </button> */}
+                        {/* Clear Button */}
+                        <button
+                            className="absolute right-8 top-1/2 -translate-y-1/2 bg-white p-1 rounded hover:bg-gray-100"
+                            onClick={handleClear}
+                        >
+                            <X className="h-4 w-4 text-gray-600" />
+                        </button>
+
+                        {/* Location Button */}
+                        <button
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded hover:bg-gray-100"
+                            onClick={getCurrentLocation}
+                            disabled={locationLoading}
+                        >
+                            {locationLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin text-gray-600" />
+                            ) : (
+                                <Navigation className="h-4 w-4 text-[#FF7A19]" />
+                            )}
+                        </button>
+
                     </div>
 
-                    <Button
+                    {/* <Button
                         type="button"
                         variant="outline"
                         // className="w-full"
@@ -482,11 +582,11 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             <Navigation className="h-4 w-4 mr-2 text-[#FF7A19]" />
                         )}
                         Use my location
-                    </Button>
+                    </Button> */}
 
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium">{notSetDefault? "Select": "Search"} Radius</span>
+                            <span className="text-sm font-medium">{notSetDefault ? "Select" : "Search"} Radius</span>
                             {/* <Input
                 type="text"
                 value={displayRadius}

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Facebook, Youtube, Instagram } from 'lucide-react';
+import { useListing } from "@/context/ListingContext";
 
 
 const XIcon = ({ className }: { className?: string }) => (
@@ -36,6 +37,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const location = useLocation();
   const { user } = useAuth();
+  const { setCategory } = useListing();
   const navigate = useNavigate();
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
@@ -51,6 +53,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
     { icon: Briefcase, label: "Jobs", path: "/jobs" },
   ];
 
+  const handleSetCategory = (menu: string) => {
+    if (menu === "Marketplace") {
+      setCategory("MARKETPLACE");
+    } else if (menu === "Rides") {
+      setCategory("RIDES");
+    } else if (menu === "Accommodations") {
+      setCategory("ACCOMMODATIONS");
+    }
+    else if (menu === "Jobs") {
+      setCategory("JOBS");
+    } else {
+      setCategory("");
+    }
+  }
+
   // Admin/Employee menu items - only visible to employees or admins
   const adminMenuItems = [
     ...(isAdmin ? [{ icon: Users, label: "Admin Panel", path: "/admin" }] : []),
@@ -58,6 +75,23 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       ? [{ icon: Users, label: "Employee Panel", path: "/employee" }]
       : []),
   ];
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    if (currentPath.includes("/marketplace")) {
+      setCategory("MARKETPLACE");
+    } else if (currentPath.includes("/rides")) {
+      setCategory("RIDES");
+    } else if (currentPath.includes("/accommodations")) {
+      setCategory("ACCOMMODATIONS");
+    } else if (currentPath.includes("/jobs")) {
+      setCategory("JOBS");
+    } else {
+      setCategory("");
+    }
+  }, [location.pathname, setCategory]);
+
 
   return (
     <aside className={`h-full ${collapsed ? "w-[70px]" : "w-[240px]"}`}>
@@ -71,16 +105,15 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                  isActive
-                    ? "bg-gray-100 text-black"
-                    : "text-gray-700 hover:bg-gray-100"
-                } ${collapsed ? "justify-center" : ""}`}
+                onClick={() => handleSetCategory(item.label)}
+                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${isActive
+                  ? "bg-gray-100 text-black"
+                  : "text-gray-700 hover:bg-gray-100"
+                  } ${collapsed ? "justify-center" : ""}`}
               >
                 <Icon
-                  className={`h-5 w-5 ${
-                    isActive ? "text-brand" : "text-gray-500"
-                  }`}
+                  className={`h-5 w-5 ${isActive ? "text-brand" : "text-gray-500"
+                    }`}
                 />
                 {!collapsed && <span className="ml-3">{item.label}</span>}
               </Link>
@@ -100,16 +133,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                      isActive
-                        ? "bg-gray-100 text-black"
-                        : "text-gray-700 hover:bg-gray-100"
-                    } ${collapsed ? "justify-center" : ""}`}
+                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${isActive
+                      ? "bg-gray-100 text-black"
+                      : "text-gray-700 hover:bg-gray-100"
+                      } ${collapsed ? "justify-center" : ""}`}
                   >
                     <Icon
-                      className={`h-5 w-5 ${
-                        isActive ? "text-brand" : "text-gray-500"
-                      }`}
+                      className={`h-5 w-5 ${isActive ? "text-brand" : "text-gray-500"
+                        }`}
                     />
                     {!collapsed && <span className="ml-3">{item.label}</span>}
                   </Link>

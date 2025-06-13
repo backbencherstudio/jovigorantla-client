@@ -14,15 +14,15 @@ import listImg from "@/assets/listingImg.jpg";
 import img1 from "@/assets/add.jpg";
 import { api } from "@/lib/axois";
 
-interface ListingsContainerProps {
-  listings: ListingType[];
-  isLoading: boolean;
-  searchQuery: string;
-  activeFilter: string;
-  // generateMockListings: (category: string, count?: number) => ListingType[];
-  updateSavedStatus: (listings: ListingType[]) => ListingType[];
-  currentCategory: string;
-}
+// interface ListingsContainerProps {
+//   listings: unknown[]; // Use any[] for now, can be replaced with ListingType[]
+//   isLoading: boolean;
+//   searchQuery: string;
+//   activeFilter: string;
+//   // generateMockListings: (category: string, count?: number) => ListingType[];
+//   updateSavedStatus: (listings: unknown[]) => unknown[];
+//   currentCategory: string;
+// }
 
 const ListingsContainer = ({
   listings,
@@ -32,7 +32,7 @@ const ListingsContainer = ({
   // generateMockListings,
   updateSavedStatus,
   currentCategory,
-}: ListingsContainerProps) => {
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -78,10 +78,10 @@ const ListingsContainer = ({
   // };
 
   const handleAdClick = async (id: string, target_url: string) => {
-    try{
+    try {
       await api.post(`ads/${id}/track-click`)
       window.open(target_url, "_blank");
-    }catch (error) {
+    } catch (error) {
       console.error("Error recording ad click:", error);
     }
   }
@@ -146,7 +146,7 @@ const ListingsContainer = ({
     <div className="space-y-4 overflow-visible">
       {filteredListings.map((listing, index) => (
         <div key={`listing-container-${listing.id + index}`}>
-         {listing?.type === 'listing' &&  <ListingItem
+          {listing?.type === 'listing' && <ListingItem
             key={listing.id}
             listing={listing}
             onToggleSave={toggleSaveListing}
@@ -183,7 +183,7 @@ const ListingsContainer = ({
               </div>
             </div>
           )}
-          
+
         </div>
       ))}
     </div>

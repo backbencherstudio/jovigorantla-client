@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { api } from '@/lib/axois';
 
 // Types
@@ -61,6 +61,10 @@ interface ListingContextType {
   deleteListing: (id: string) => Promise<void>;
   fetchListings: () => Promise<void>;
   setSelectedLocation: (location: Location | null) => void;
+
+  setCategory: (category: string | null) => void;
+  setSubCategory: (sub: string | null) => void;
+  setIsUsa: (isUsa: boolean) => void;
 }
 
 const ListingContext = createContext<ListingContextType | undefined>(undefined);
@@ -70,7 +74,11 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  
+
+  const [category, setCategory] = useState<string>("");
+  const [subCategory, setSubCategory] = useState<string>("");
+  const [isUsa, setIsUsa] = useState<boolean>(false);
+
 
   const fetchListings = async () => {
     try {
@@ -139,7 +147,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       if (response.data.success) {
         await fetchListings();
       }
@@ -156,7 +164,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const response = await api.delete(`/listings/${id}`);
-      
+
       if (response.data.success) {
         await fetchListings();
       }
@@ -178,8 +186,52 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     updateListing,
     deleteListing,
     fetchListings,
-    setSelectedLocation
+    setSelectedLocation,
+    setCategory,
+    setSubCategory,
+    setIsUsa,
   };
+
+  const getParamsForUrl = () => {
+    const params: Record<string, string | boolean> = {};
+    if (subCategory === 'Services') params.sub_category = 'Service'; // Normalize subCategory
+    else if (subCategory === 'Items') params.sub_category = 'Item'; // Normalize subCategory
+    else params.sub_category = subCategory;
+
+    if (category) params.category = category;
+    if (isUsa) params.is_usa = isUsa;
+    return params;
+  }
+  useEffect(() => {
+    console.log('ListingProvider mounted', category, subCategory, isUsa);
+    const fetchData = async () => {
+
+      try {
+        setLoading(true);
+        const response = await api.get('/listings/nearby', {
+          params: {
+            ...getParamsForUrl(),
+            // is_usa: isUsa,
+            lat: 40.7831,
+            lng: -73.9712,
+            radius: 20, // Default radius, can be adjusted
+          },
+        });
+        console.log('Fetched listings:', response.data);
+        if (response.data.success) {
+          setListings(response.data.data.listings);
+        }
+      } catch (err) {
+        setError('Failed to fetch listings');
+        console.error('Error fetching listings:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [category, subCategory, isUsa]);
+
+
 
   return (
     <ListingContext.Provider value={value}>

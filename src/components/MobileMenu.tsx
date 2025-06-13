@@ -1,15 +1,17 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Building2, Briefcase, Store, Car, LogOut, User, Info } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { useListing } from '@/context/ListingContext';
 
 const MobileMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { setCategory } = useListing(); // Assuming setCategory is available in AuthContext
 
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -23,6 +25,36 @@ const MobileMenu: React.FC = () => {
     await signOut();
     navigate('/auth');
   };
+
+  const handleSetCategory = (menu: string) => {
+    if (menu === "Marketplace") {
+      setCategory("MARKETPLACE");
+    } else if (menu === "Rides") {
+      setCategory("RIDES");
+    } else if (menu === "Accommodations") {
+      setCategory("ACCOMMODATIONS");
+    }
+    else if (menu === "Jobs") {
+      setCategory("JOBS");
+    } else {
+      setCategory("");
+    }
+  }
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (currentPath.includes("/marketplace")) {
+      setCategory("MARKETPLACE");
+    } else if (currentPath.includes("/rides")) {
+      setCategory("RIDES");
+    } else if (currentPath.includes("/accommodations")) {
+      setCategory("ACCOMMODATIONS");
+    } else if (currentPath.includes("/jobs")) {
+      setCategory("JOBS");
+    } else {
+      setCategory("");
+    }
+  }, [location.pathname, setCategory]);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-white">
@@ -47,7 +79,7 @@ const MobileMenu: React.FC = () => {
           <div className="p-4 bg-gray-50 rounded-lg mb-4">
             <h3 className="font-medium text-gray-900">Not signed in</h3>
             <p className="text-sm text-gray-600 mb-3">Sign in to access all features</p>
-            <Button 
+            <Button
               onClick={() => navigate('/auth')}
               className="w-full bg-brand hover:bg-brand/90"
             >
@@ -60,16 +92,16 @@ const MobileMenu: React.FC = () => {
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
-            
+
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${
-                  isActive
-                    ? 'bg-brand/10 text-brand'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
+                onClick={() => handleSetCategory(item.label)}
+                className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${isActive
+                  ? 'bg-brand/10 text-brand'
+                  : 'text-gray-700 hover:bg-gray-100'
+                  }`}
               >
                 <Icon className={`h-5 w-5 ${isActive ? 'text-brand' : 'text-gray-500'}`} />
                 <span className="ml-3">{item.label}</span>
@@ -88,11 +120,10 @@ const MobileMenu: React.FC = () => {
               <nav className="mt-2 space-y-1">
                 <Link
                   to="/profile"
-                  className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${
-                    location.pathname === '/profile'
-                      ? 'bg-brand/10 text-brand'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${location.pathname === '/profile'
+                    ? 'bg-brand/10 text-brand'
+                    : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                 >
                   <User className={`h-5 w-5 ${location.pathname === '/profile' ? 'text-brand' : 'text-gray-500'}`} />
                   <span className="ml-3">Profile</span>
@@ -100,11 +131,10 @@ const MobileMenu: React.FC = () => {
 
                 <Link
                   to="/about-us"
-                  className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${
-                    location.pathname === '/about-us'
-                      ? 'bg-brand/10 text-brand'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center px-3 py-3 text-base font-medium rounded-md transition-colors ${location.pathname === '/about-us'
+                    ? 'bg-brand/10 text-brand'
+                    : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                 >
                   <Info className={`h-5 w-5 ${location.pathname === '/about-us' ? 'text-brand' : 'text-gray-500'}`} />
                   <span className="ml-3">About Us</span>
