@@ -60,7 +60,7 @@ const formSchema = z.object({
     .optional(),
   category: z.string().min(1, { message: "Please select a category" }),
   subCategory: z.string().min(1, { message: "Please select a subcategory" }),
-  address: z.string().min(5, { message: "Please provide a valid address" }),
+  address: z.string().optional(),
   postToUSA: z.boolean().optional(),
 });
 
@@ -107,7 +107,8 @@ const ListingForm = ({
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
-  const [ cities, setCities ] = useState<string[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
+  const [radius, setRadius] = useState(0);
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get('edit');
@@ -129,21 +130,27 @@ const ListingForm = ({
 
   const fetchEditListing = async () => {
     try {
-      const {data: listing} = await api.get(`/listings/${id}`);
+      const { data: listing } = await api.get(`/listings/${id}`);
       if (listing?.success) {
-        const category = listing.data.category?.slice(0,1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
-        const subCategory = listing.data.sub_category?.slice(0,1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
-  
+        const category = listing.data.category?.slice(0, 1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
+        const subCategory = listing.data.sub_category?.slice(0, 1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
+
         form.setValue("title", listing.data.title);
         form.setValue("description", listing.data.description || '');
         form.setValue("category", category);
         form.setValue("subCategory", subCategory);
         form.setValue("postToUSA", listing.data.post_to_usa);
         form.setValue("address", listing.data.address);
-  
+        console.log(listing)
+        setCities(listing.cities)
+        console.log("listing radius => ", listing.data.radius)
+        setRadius(listing.data.radius)
+        console.log(radius)
+        
+
         setSelectedCategory(category);
         setSelectedSubCategory(subCategory);
-  
+
         // Set location data
         if (listing.data.lat && listing.data.lng) {
           setSelectedLocation({
@@ -152,7 +159,7 @@ const ListingForm = ({
             address: listing.data.address
           });
         }
-  
+
         // Update available subcategories based on category
         const subcats = categoriesConfig[category as keyof typeof categoriesConfig] || [];
         setAvailableSubCategories(subcats);
@@ -178,24 +185,69 @@ const ListingForm = ({
     }
   }, [id]);
 
+  // useEffect(() => {
+  //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
+  //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+  //     setAvailableSubCategories(subcats);
+
+  //     const currentSubCat = form.getValues("subCategory");
+  //     if (currentSubCat && !subcats.includes(currentSubCat)) {
+  //       form.setValue("subCategory", subcats[0] || "");
+  //       setSelectedSubCategory(subcats[0] || "");
+  //     }
+  //   } else {
+  //     setAvailableSubCategories([]);
+  //     form.setValue("subCategory", "");
+  //     setSelectedSubCategory("");
+  //   }
+
+  //   form.setValue("postToUSA", false);
+  // }, [selectedCategory, form]);
+
+  // useEffect(() => {
+  //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
+  //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+  //     setAvailableSubCategories(subcats);
+  
+  //     const currentSubCat = form.getValues("subCategory");
+  //     if (currentSubCat && !subcats.includes(currentSubCat)) {
+  //       form.setValue("subCategory", subcats[0] || "");
+  //       setSelectedSubCategory(subcats[0] || "");
+  //     }
+  //     // Only reset postToUSA when category changes
+  //     form.setValue("postToUSA", false);
+  //   } else {
+  //     setAvailableSubCategories([]);
+  //     form.setValue("subCategory", "");
+  //     setSelectedSubCategory("");
+  //     form.setValue("postToUSA", false);
+  //   }
+  // }, [selectedCategory]); // Removed form from dependencies
+
   useEffect(() => {
-    if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
+    const shouldResetSubCategory = 
+      selectedCategory && 
+      categoriesConfig[selectedCategory as keyof typeof categoriesConfig] && 
+      !categoriesConfig[selectedCategory as keyof typeof categoriesConfig].includes(form.getValues("subCategory"));
+  
+    const shouldClearSubCategory = !selectedCategory;
+  
+    if (shouldResetSubCategory) {
       const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+      form.setValue("subCategory", subcats[0] || "");
       setAvailableSubCategories(subcats);
-
-      const currentSubCat = form.getValues("subCategory");
-      if (currentSubCat && !subcats.includes(currentSubCat)) {
-        form.setValue("subCategory", subcats[0] || "");
-        setSelectedSubCategory(subcats[0] || "");
-      }
-    } else {
-      setAvailableSubCategories([]);
+    } else if (shouldClearSubCategory) {
       form.setValue("subCategory", "");
-      setSelectedSubCategory("");
+      setAvailableSubCategories([]);
+    } else if (selectedCategory) {
+      // Just update available options without resetting value
+      setAvailableSubCategories(
+        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || []
+      );
     }
-
-    form.setValue("postToUSA", false);
   }, [selectedCategory, form]);
+  
+  
 
   useEffect(() => {
     const shouldShowUSAOption =
@@ -239,12 +291,12 @@ const ListingForm = ({
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-  
+
     if (file.size > MAX_FILE_SIZE) {
       alert(`File ${file.name} is too large. Maximum size is 5MB.`);
       return;
     }
-  
+
     setImages([file]);
     setImagePreviewUrls([URL.createObjectURL(file)]);
   };
@@ -256,7 +308,14 @@ const ListingForm = ({
     setImages([]);
     setImagePreviewUrls([]);
   };
-  
+
+  // useEffect(()=>{
+  //   if (selectedLocation) {
+  //     form.setValue("address", selectedLocation.address);
+
+  //   }
+  // },[])
+
   const handleSubmit = async (values: FormValues) => {
     try {
       // if (!selectedLocation) {
@@ -273,13 +332,31 @@ const ListingForm = ({
       formData.append('category', values.category.toUpperCase());
       formData.append('sub_category', values.subCategory);
       formData.append('post_to_usa', String(values.postToUSA || false));
+      console.log('While submitting => ',  radius)
+      formData.append('radius', String(radius));
+      // Append images
+      // if (images.length > 0) {
+      //   formData.append('image', images[0]);
+      // }
+
+      // restructure the  cities array { address, lat, lng}
+      const fomatedCities = cities?.map((location: any) => ({
+        address: location.search,
+        latitude: location.lat,
+        longitude: location.lng,
+      }));
+
+      // console.log(cities)
+
+      // Append the cities array as a JSON string
+      formData.append('cities', JSON.stringify([{ "latitude": 40.7831, "longitude": -73.9712, "address": "Manhattan" }, { "latitude": 40.6782, "longitude": -73.9442, "address": "Brooklyn" }, { "latitude": 40.7178, "longitude": -74.0431, "address": "Jersey City" }, { "latitude": 40.7357, "longitude": -74.1724, "address": "Newark" }, { "latitude": 40.743, "longitude": -74.0324, "address": "Hoboken" }, { "latitude": 40.7795, "longitude": -74.0238, "address": "Union City" }, { "latitude": 40.6687, "longitude": -74.1143, "address": "Bayonne" }, { "latitude": 40.8509, "longitude": -73.9701, "address": "Fort Lee" }]));
       // formData.append('user_id', user.id);
-      formData.append('address', values.address);
+      // formData.append('address', values.address);
 
       // Append coordinates with correct field names
       // formData.append('lat', String(selectedLocation.lat));
       // formData.append('lng', String(selectedLocation.lng));
-      const { title, description, category, subCategory, postToUSA} = values
+      const { title, description, category, subCategory, postToUSA } = values
       console.log({
         title,
         description,
@@ -288,7 +365,10 @@ const ListingForm = ({
         postToUSA
       })
 
-      console.log(cities)
+      // console.log(cities)
+      // console.log(radius)
+      // console.log("formated cities: ", fomatedCities)
+
 
       // Handle image upload properly
       if (images[0]) {
@@ -298,19 +378,18 @@ const ListingForm = ({
         formData.append('image_url', imagePreviewUrls[0]);
       }
 
-      console.log(cities)
 
-      // if (id) {
-      //   await updateListing(id, formData);
-      // } else {
-      //   await createListing(formData);
-      // }
+      if (id) {
+        await updateListing(id, formData);
+      } else {
+        await createListing(formData);
+      }
 
-      // if (values.postToUSA) {
-      //   setIsOpenPending(true);
-      // } else {
-      //   setIsOpenSuccess(true);
-      // }
+      if (values.postToUSA) {
+        setIsOpenPending(true);
+      } else {
+        setIsOpenSuccess(true);
+      }
 
       // Navigate after a short delay to allow the user to see the success message
       // setTimeout(() => {
@@ -501,13 +580,14 @@ const ListingForm = ({
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <div className="mt-2 flex justify-end bg-[#E5EBEE] rounded-md">
-                   <div className="w-64">
-                       <LocationWithRadius 
-                       className="bg-transparent outline-0 border-0 hover:bg-transparent justify-end" 
-                       setCities={setCities}
-                       notSetDefault={true}
-                       />
-                   </div>
+                    <div className="w-64">
+                      <LocationWithRadius
+                        className="bg-transparent outline-0 border-0 hover:bg-transparent justify-end"
+                        setCities={setCities}
+                        notSetDefault={true}
+                        setNearByRadius={setRadius}
+                      />
+                    </div>
                     {/* <LocationSelector
                       onChange={handleLocationChange}
                       setCities={setCities}
@@ -576,8 +656,8 @@ const ListingForm = ({
               {isSubmitting
                 ? "Saving..."
                 : isEditing
-                ? "Update Listing"
-                : "Post Listing"}
+                  ? "Update Listing"
+                  : "Post Listing"}
             </Button>
           </div>
         </form>

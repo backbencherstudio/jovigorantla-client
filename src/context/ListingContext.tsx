@@ -101,14 +101,14 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
 
       // Convert latitude/longitude to lat/lng if they exist
-      const latitude = formData.get('latitude');
-      const longitude = formData.get('longitude');
-      if (latitude && longitude) {
-        formData.delete('latitude');
-        formData.delete('longitude');
-        formData.append('lat', String(latitude));
-        formData.append('lng', String(longitude));
-      }
+      // const latitude = formData.get('latitude');
+      // const longitude = formData.get('longitude');
+      // if (latitude && longitude) {
+      //   formData.delete('latitude');
+      //   formData.delete('longitude');
+      //   formData.append('lat', String(latitude));
+      //   formData.append('lng', String(longitude));
+      // }
 
       const response = await api.post('/listings', formData, {
         headers: {

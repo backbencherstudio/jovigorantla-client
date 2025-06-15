@@ -34,6 +34,8 @@ import { MessageProvider } from "./context/MessageContext";
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  
+
 
   // If still loading auth state, don't redirect yet
   if (loading) {
@@ -51,6 +53,9 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+  const searchParams = new URLSearchParams(window.location.search);
+  const editId = searchParams.get("edit");
+  const isEditing = Boolean(editId);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,7 +108,7 @@ function AppRoutes() {
         <Route
           path="/create-listing"
           element={
-            <PageLayout title="Create Listing">
+            <PageLayout title={ isEditing? "Editing Listing": "Create Listing"}>
               <CreateListing />
             </PageLayout>
           }

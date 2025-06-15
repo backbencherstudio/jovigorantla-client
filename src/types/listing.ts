@@ -40,5 +40,10 @@ export interface ListingType {
   image?: string;
   image_url?: string;
   ad_group_id?: string;
+  address?: string;
+  user: {
+    id: string;
+    name: string;
+  }
 }
 

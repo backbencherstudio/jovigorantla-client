@@ -132,17 +132,30 @@ interface AdData {
     return (
       <div>
         {ads?.map((ad) => (
-          <Card
-            key={ad.id}
-            className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
-            onClick={() => handleClick(ad)}
-          >
-            <img
-              src={ad.image_url}
-              alt={ad.name || 'Advertisement'}
-              className="w-full h-full object-cover"
-            />
-          </Card>
+          <a href={ad.target_url} key={ad.id} target="_blank">
+            <Card
+              key={ad.id}
+              className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
+              onClick={() => handleClick(ad)}
+            >
+              <img
+                src={ad.image_url}
+                alt={ad.name || 'Advertisement'}
+                className="w-full h-full object-cover"
+              />
+            </Card>
+          </a>
+          // <Card
+          //   key={ad.id}
+          //   className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
+          //   onClick={() => handleClick(ad)}
+          // >
+          //   <img
+          //     src={ad.image_url}
+          //     alt={ad.name || 'Advertisement'}
+          //     className="w-full h-full object-cover"
+          //   />
+          // </Card>
         ))}
       </div>
     );

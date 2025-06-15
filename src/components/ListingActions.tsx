@@ -65,7 +65,7 @@ const ListingActions = ({
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center  ">
       <Button
         variant="ghost"
         size="sm"

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ListingType } from "@/types/listing";
 import ListingActions from "./ListingActions";
 import { getAddressFromCoordinates } from "@/hooks/getAddress";
@@ -40,16 +40,17 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
   };
 
   return (
-    <div
+    <Link
+      to={`/listing/${listing.id}`}
       key={listing.id}
-      className="bg-white max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-      onClick={handleClick}
+      className="bg-white flex max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+    // onClick={handleClick}
     >
-      <div className="p-4 pb-2 lg:pb-4">
+      <div className="p-4 pb-2 lg:pb-4 flex flex-col flex-1 text-sm text-gray-500">
         <div className="flex items-center text-sm text-gray-500 mb-1">
-          <span>{displayCategory?.slice(0,1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
+          <span>{displayCategory?.slice(0, 1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
           <span className="mx-2">•</span>
-          <span>{displayStatus?.slice(0,1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
+          <span>{displayStatus?.slice(0, 1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
         </div>
 
         <div
@@ -60,26 +61,38 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
           </h3>
         </div>
 
-        <div className="flex items-center justify-between ">
-          <div className="flex items-center text-sm text-gray-500">
-            <span>{listing.user_name}</span>
-            <span className="mx-2">•</span>
-            <span>{formatTime(listing?.created_at)}</span>
-            <span className="mx-2">•</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <span>{listing.user.name}</span>
+            {listing?.created_at && (
+              <>
+                <span className="mx-2">•</span>
+                <span>{formatTime(listing?.created_at)}</span>
+              </>
+            )}
             {/* <span>{getAddressFromCoordinates(listing.latitude, listing.longitude)}</span> */}
-            <span>Denton, TX</span>
+            {listing?.address && (
+              <>
+                <span className="mx-2">•</span>
+                <div className="flex items-center">
+                  <span>
+                    {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           <ListingActions
             listingId={listing.id}
             listingTitle={listing.title}
             // saved={listing.saved || false}
-            saved={ false}
+            saved={false}
             onToggleSave={onToggleSave}
           />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

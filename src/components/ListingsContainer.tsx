@@ -164,7 +164,7 @@ const ListingsContainer = ({
 
 
           {listing?.type === 'ad' && (
-            <div className="w-full overflow-hidden" key={listing.id + index}>
+            <a href={listing.target_url} target="_blank" className="w-full overflow-hidden" key={listing.id + index}>
               {/* This container maintains the aspect ratio and appearance across all devices */}
               <div
                 className="relative w-full  max-w-full rounded-lg shadow-md bg-white cursor-pointer"
@@ -181,7 +181,7 @@ const ListingsContainer = ({
                   className="absolute inset-0 w-full h-full object-cover rounded-lg"
                 />
               </div>
-            </div>
+            </a>
           )}
 
         </div>

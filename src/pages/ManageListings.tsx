@@ -175,9 +175,14 @@ const ManageListings = () => {
                           <div className="flex items-center">
                             <span>Created: {formatTime(listing.created_at)}</span>
                           </div>
-                          <div className="flex items-center">
-                            <span>Location: Denton, TX</span>
-                          </div>
+                          {listing?.address && (
+                              <div className="flex items-center">
+                                <span>
+                                  Location: {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                                </span>
+                              </div>
+                            )}
+
                         </div>
                       </div>
                       <div className="flex space-x-2">
