@@ -6,17 +6,18 @@ import { formatTime } from "@/lib/utils";
 
 interface ListingItemProps {
   listing: ListingType;
+  isUsa: boolean;
   onToggleSave: (e: React.MouseEvent, id: string) => void;
 }
 
-const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
+const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
   const navigate = useNavigate();
 
   // Format category and status for display
   const formatCategoryStatus = (category: string, status: string) => {
     // Convert category to singular for display
     let displayCategory = category;
-    if (category === "ACCOMMODATION") displayCategory = "Accommodation";
+    if (category === "ACCOMMODATIONS") displayCategory = "Accommodation";
     if (category === "RIDES") displayCategory = "Ride";
     if (category === "JOBS") displayCategory = "Job";
 
@@ -41,7 +42,7 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
 
   return (
     <Link
-      to={`/listing/${listing.id}`}
+      to={`/listing/${listing.slug}`}
       key={listing.id}
       className="bg-white flex max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
     // onClick={handleClick}
@@ -86,9 +87,15 @@ const ListingItem = ({ listing, onToggleSave }: ListingItemProps) => {
           <ListingActions
             listingId={listing.id}
             listingTitle={listing.title}
+            isUsa={isUsa}
             // saved={listing.saved || false}
-            saved={false}
-            onToggleSave={onToggleSave}
+            // saved={false}
+            // onToggleSave={onToggleSave}
+            onToggleSave={(e) => {
+              e.preventDefault(); // ✅ prevent default link navigation
+              e.stopPropagation(); // ✅ stop event bubbling
+              onToggleSave(e, listing.id);
+            }}
           />
         </div>
       </div>

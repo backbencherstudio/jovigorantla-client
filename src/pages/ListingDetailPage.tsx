@@ -27,6 +27,7 @@ import AuthModal from "@/components/AuthModal";
 import { api } from "@/lib/axois";
 import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
+import ListingActions from "@/components/ListingActions";
 
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -272,7 +273,7 @@ const ListingDetailPage = () => {
             <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 onClick={toggleSaveListing}
@@ -311,7 +312,18 @@ const ListingDetailPage = () => {
                     <span>Report</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
+               <ListingActions
+                listingId={listing.id}
+                listingTitle={listing.title}
+                // saved={listing.saved || false}
+                // saved={false}
+                // onToggleSave={onToggleSave}
+                onToggleSave={(e) => {
+                  e.preventDefault(); // ✅ prevent default link navigation
+                  e.stopPropagation(); // ✅ stop event bubbling
+                }}
+          />
             </div>
           </div>
 
@@ -323,8 +335,16 @@ const ListingDetailPage = () => {
             <span>{listing?.user?.name}</span>
             <span className="mx-2">•</span>
             <span>{formatTime(listing?.created_at)}</span>
-            <span className="mx-2">•</span>
-            <span>Denton, TX</span>
+            {listing?.address && (
+              <>
+                <span className="mx-2">•</span>
+                <div className="flex items-center">
+                  <span>
+                    {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Description - only show if it exists */}

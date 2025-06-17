@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -27,18 +27,19 @@ const Index = () => {
   // const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setIsUsa, setSubCategory, loading, listings } = useListing();
+  const { isUsa, setIsUsa, setSubCategory, loading, listings, handleScroll, hasMore, fetchNearByListings } = useListing();
 
   const location = useLocation();
   const currentPath = location.pathname;
 
   const initialFilter = currentPath === "/" ? "Nearby" : "All";
 
-  console.log("Current path:", currentPath);
-  console.log("Initial filter:", initialFilter);
+  // console.log("Current path:", currentPath);
+  // console.log("Initial filter:", initialFilter);
   const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   const { locationString, radius, updateRadius } = useGeolocation();
+  const loadingRef = useRef(null); // Reference to the loading element
 
   // Get current category based on path
   const currentCategory = getPageCategory(currentPath);
@@ -237,6 +238,54 @@ const Index = () => {
   //   fetchListings();
   // }, [])
 
+  // Infinite scroll logic
+  // useEffect(() => {
+  //   // Listen for scroll event
+  //   window.addEventListener("scroll", handleScroll);
+
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [hasMore]);
+
+    // Intersection Observer for infinite scroll
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && hasMore && !loading) {
+              console.log("Loading element is in view. Fetching more listings...");
+              fetchNearByListings(); // Fetch more listings when the loading element is in view
+            }
+          });
+        },
+        {
+          rootMargin: "100px", // Trigger when the loading element is 100px from the bottom
+          threshold: 1.0, // Ensure that the entire element is in view before triggering
+        }
+      );
+  
+      if (loadingRef.current) {
+        observer.observe(loadingRef.current); // Start observing the loading element
+      }
+  
+      return () => {
+        if (loadingRef.current) {
+          observer.unobserve(loadingRef.current); // Clean up observer on unmount
+        }
+      };
+    }, [hasMore, loading]);
+  
+    // useEffect(() => {
+    //   fetchNearByListings(); // Fetch initial listings on mount
+    // }, []);
+
+  // useEffect(() => {
+  //   // Fetch initial listings on mount
+  //   // fetchNearByListings();
+  // }, []);
+
+
   return (
     <div className="w-full pb-0">
       {/* Filter tabs */}
@@ -253,12 +302,16 @@ const Index = () => {
           isLoading={loading}
           searchQuery={searchQuery}
           activeFilter={activeFilter}
+          isUsa={isUsa}
           // generateMockListings={generateMockListings}
           updateSavedStatus={(listings) =>
             updateSavedStatus(listings, user?.id)
           }
           currentCategory={currentCategory}
         />
+          <div ref={loadingRef} style={{ height: '50px'}}>
+        {/* This element will trigger the observer when in view */}
+      </div>
       </div>
     </div>
   );

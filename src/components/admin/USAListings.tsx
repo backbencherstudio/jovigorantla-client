@@ -682,13 +682,13 @@ const USAListing = () => {
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
-                      Reported {formatDate(listing.created_at)}
+                    Submit on {formatDate(listing.created_at)}
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div>
-                    <span className="font-medium text-sm">Reported by:</span>
+                    <span className="font-medium text-sm">Submitted by:</span>
                     <p className="text-gray-700">{listing.user.email}</p>
                   </div>
                 </CardContent>
@@ -775,15 +775,15 @@ const USAListing = () => {
                       >{item.user.email}</TableCell>
                       <TableCell >
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${item.flagged_listing_status === "APPROVED"
+                          className={`px-2 py-1 rounded-full text-xs ${item.usa_listing_status === "APPROVED"
                               ? "bg-green-100 text-green-800"
-                              : item.flagged_listing_status === "BLOCKED"
+                              : item.usa_listing_status === "BLOCKED"
                                 ? "bg-orange-100 text-orange-800"
                                 : "bg-red-100 text-red-800"
                             }`}
                         >
-                          {item.flagged_listing_status?.charAt(0).toUpperCase() +
-                            item.flagged_listing_status?.slice(1)}
+                          {item.usa_listing_status?.charAt(0).toUpperCase() +
+                            item.usa_listing_status?.slice(1)}
                         </span>
                       </TableCell>
                       <TableCell>

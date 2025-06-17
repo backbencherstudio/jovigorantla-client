@@ -7,7 +7,7 @@ import { useListing } from '@/context/ListingContext';
 const CategoryIcons: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setCategory } = useListing(); // Assuming setCategory is available in ListingContext
+  const { setCategory, setIsUsa, setSubCategory} = useListing(); // Assuming setCategory is available in ListingContext
 
   const categories = [
     { icon: Home, label: 'Home', path: '/' },
@@ -21,15 +21,25 @@ const CategoryIcons: React.FC = () => {
   const handleSetCategory = (menu: string) => {
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
+      setIsUsa(false)
+      setSubCategory("")
     } else if (menu === "Rides") {
       setCategory("RIDES");
+      setIsUsa(false)
+      setSubCategory("")
     } else if (menu === "Accommodations") {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false)
+      setSubCategory("")
     }
     else if (menu === "Jobs") {
       setCategory("JOBS");
+      setIsUsa(false)
+      setSubCategory("")
     } else {
       setCategory("");
+      setIsUsa(false)
+      setSubCategory("")
     }
   }
 
@@ -37,14 +47,24 @@ const CategoryIcons: React.FC = () => {
     const currentPath = location.pathname;
     if (currentPath.includes("/marketplace")) {
       setCategory("MARKETPLACE");
+      setIsUsa(false)
+      setSubCategory("")
     } else if (currentPath.includes("/rides")) {
       setCategory("RIDES");
+      setIsUsa(false)
+      setSubCategory("")
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false)
+      setSubCategory("")
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
+      setIsUsa(false)
+      setSubCategory("")
     } else {
       setCategory("");
+      setIsUsa(false)
+      setSubCategory("")
     }
   }, [location.pathname, setCategory]);
 

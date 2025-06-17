@@ -36,26 +36,35 @@ import { formatCategory } from "@/lib/format";
 
 interface FlaggedListing {
   id: string;
-  title: string;
-  description: string;
-  category: string;
-  sub_category: string;
-  slug: string | null;
-  image: string | null;
-  image_url: string | null;
-  latitude: number;
-  longitude: number;
-  post_to_usa: boolean;
-  usa_listing_status: string | null;
-  flagged_listing_status: string
-  created_at: string; // ISO 8601 string
-  updated_at: string; // ISO 8601 string
-  user_id: string;
-  user: {
+  reason: string | null;  // Reason can be null
+  message: string | null;  // Message can be null
+  report_type: string;
+  is_usa_report: boolean;
+  created_at: string;  // ISO 8601 string
+  updated_at: string;  // ISO 8601 string
+  reported_by: {
     name: string;
     email: string;
   };
+  status: string;
+  listing: {
+    id: string;
+    title: string;
+    category: string;
+    sub_category: string;
+    image_url: string | null;  // Image URL can be null
+    post_to_usa: boolean;
+    usa_listing_status: string | null;  // Can be null
+    status: string;
+    created_at: string;  // ISO 8601 string
+    user: {
+      name: string;
+      email: string;
+    };
+  };
 }
+
+
 
 
 
@@ -342,31 +351,31 @@ const FlaggedListings = () => {
               <p className="text-gray-500">No flagged listings to review</p>
             </div>
           ) : (
-            flaggedListings?.map((listing) => (
+            flaggedListings?.map((report) => (
               <Card
-                key={listing.id}
+                key={report.id}
                 className="mb-4 cursor-pointer hover:shadow-md"
-                onClick={() => handleViewListing(listing.id)}
+                onClick={() => handleViewListing(report.id)}
               >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-lg">
-                        {listing.title}
+                        {report.listing.title}
                       </CardTitle>
                       <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded mt-1">
-                        {formatCategory(listing.category)}
+                        {formatCategory(report.listing.category)}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
-                      Reported {formatDate(listing.created_at)}
+                      Reported {formatDate(report.created_at)}
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div>
                     <span className="font-medium text-sm">Reported by:</span>
-                    <p className="text-gray-700">{listing.user.email}</p>
+                    <p className="text-gray-700">{report.reported_by.email}</p>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-end space-x-2">
@@ -375,7 +384,7 @@ const FlaggedListings = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleApproveListing(listing.id);
+                      handleApproveListing(report.id);
                     }}
                   >
                     <Eye className="h-4 w-4 mr-1" />
@@ -387,7 +396,7 @@ const FlaggedListings = () => {
                     className="text-[#bc0117] border-red-200 hover:bg-red-50"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBlockListing(listing.id);
+                      handleBlockListing(report.id);
                     }}
                   >
                     <Ban className="h-4 w-4 mr-1" />
@@ -399,7 +408,7 @@ const FlaggedListings = () => {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteListing(listing.id);
+                      handleDeleteListing(report.id);
                     }}
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
@@ -441,36 +450,36 @@ const FlaggedListings = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {flaggedHistory.map((item) => (
-                    <TableRow key={item.id}>
+                  {flaggedHistory.map((report) => (
+                    <TableRow key={report.id}>
                       <TableCell className="font-medium">
-                        {item.title}
+                        {report.listing.title}
                       </TableCell>
-                      <TableCell className="break-all">{formatCategory(item.category)}</TableCell>
+                      <TableCell className="break-all">{formatCategory(report.listing.category)}</TableCell>
                       <TableCell
                       className="break-all"
-                      >{item.user.email}</TableCell>
+                      >{report.reported_by.email}</TableCell>
                       <TableCell >
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${item.flagged_listing_status === "APPROVED"
+                          className={`px-2 py-1 rounded-full text-xs ${report.status === "APPROVED"
                               ? "bg-green-100 text-green-800"
-                              : item.flagged_listing_status === "BLOCKED"
+                              : report.status === "BLOCKED"
                                 ? "bg-orange-100 text-orange-800"
                                 : "bg-red-100 text-red-800"
                             }`}
                         >
-                          {item.flagged_listing_status?.charAt(0).toUpperCase() +
-                            item.flagged_listing_status?.slice(1)}
+                          {report.status?.charAt(0).toUpperCase() +
+                            report.status?.slice(1)}
                         </span>
                       </TableCell>
                       <TableCell>
-                        {item.updated_at ? formatDate(item.updated_at) : "-"}
+                        {report.updated_at ? formatDate(report.updated_at) : "-"}
                       </TableCell>
                       <TableCell>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleViewListing(item.id)}
+                          onClick={() => handleViewListing(report.listing.id)}
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           View

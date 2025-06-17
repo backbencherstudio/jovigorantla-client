@@ -29,6 +29,7 @@ const ListingsContainer = ({
   isLoading,
   searchQuery,
   activeFilter,
+  isUsa,
   // generateMockListings,
   updateSavedStatus,
   currentCategory,
@@ -150,6 +151,7 @@ const ListingsContainer = ({
             key={listing.id}
             listing={listing}
             onToggleSave={toggleSaveListing}
+            isUsa={isUsa}
           />}
 
           {/* {

@@ -11,7 +11,7 @@ const MobileMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { setCategory } = useListing(); // Assuming setCategory is available in AuthContext
+  const { setCategory, setIsUsa, setSubCategory } = useListing(); // Assuming setCategory is available in AuthContext
 
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -27,34 +27,56 @@ const MobileMenu: React.FC = () => {
   };
 
   const handleSetCategory = (menu: string) => {
+    console.log("menu => ",menu)
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (menu === "Rides") {
       setCategory("RIDES");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (menu === "Accommodations") {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false);
+      setSubCategory("");
     }
     else if (menu === "Jobs") {
       setCategory("JOBS");
+      setIsUsa(false);
+      setSubCategory("");
     } else {
       setCategory("");
+      setIsUsa(false);
+      setSubCategory("");
     }
   }
 
   useEffect(() => {
     const currentPath = location.pathname;
+
     if (currentPath.includes("/marketplace")) {
       setCategory("MARKETPLACE");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/rides")) {
       setCategory("RIDES");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
+      setIsUsa(false);
+      setSubCategory("");
     } else {
       setCategory("");
+      setIsUsa(false);
+      setSubCategory("");
     }
-  }, [location.pathname, setCategory]);
+  }, [location.pathname, setCategory, setSubCategory, setIsUsa]);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-white">

@@ -37,7 +37,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const location = useLocation();
   const { user } = useAuth();
-  const { setCategory } = useListing();
+  const { setCategory, setIsUsa, setSubCategory} = useListing();
   const navigate = useNavigate();
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
@@ -54,18 +54,32 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   ];
 
   const handleSetCategory = (menu: string) => {
+
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
+      setIsUsa(false);
+      setSubCategory("");
+
     } else if (menu === "Rides") {
       setCategory("RIDES");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (menu === "Accommodations") {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false);
+      setSubCategory("");
     }
     else if (menu === "Jobs") {
       setCategory("JOBS");
+      setIsUsa(false);
+      setSubCategory("");
     } else {
-      setCategory("");
+      setCategory("/");
+      setIsUsa(false);
+      setSubCategory("");
     }
+
+    
   }
 
   // Admin/Employee menu items - only visible to employees or admins
@@ -81,16 +95,26 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
 
     if (currentPath.includes("/marketplace")) {
       setCategory("MARKETPLACE");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/rides")) {
       setCategory("RIDES");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
+      setIsUsa(false);
+      setSubCategory("");
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
+      setIsUsa(false);
+      setSubCategory("");
     } else {
       setCategory("");
+      setIsUsa(false);
+      setSubCategory("");
     }
-  }, [location.pathname, setCategory]);
+  }, [location.pathname, setCategory, setIsUsa, setSubCategory]);
 
 
   return (

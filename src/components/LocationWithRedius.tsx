@@ -52,17 +52,22 @@ interface LocationWithRadiusProps {
     setCities?: (any) => void
     notSetDefault?: boolean
     setNearByRadius?: (any) => void
+    initialRadius?: number
+    initialLocation?: Location
+
 }
 
-const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius }) => {
-    const [selectedOption, setSelectedOption] = useState<Location | null>(null);
+const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation }) => {
+    const [selectedOption, setSelectedOption] = useState<Location | null>( null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
     const [radius, setRadius] = useState(20);
-    const [displayRadius, setDisplayRadius] = useState("20");
+    const [displayRadius, setDisplayRadius] = useState( "20");
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
+
+    // console.log("default data => ", initialLocation, initialRadius)
 
     const selectRef = useRef(null);
 
@@ -97,6 +102,20 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             selectRef.current.clearValue();
         }
     };
+
+
+    useEffect(() => {
+        if (initialLocation) {
+          setSelectedOption(initialLocation);
+          setDisplaySelectedOption(initialLocation);
+        }
+      
+        if (initialRadius) {
+          setRadius(initialRadius);
+          setDisplayRadius(initialRadius.toString());
+        }
+      }, [initialLocation, initialRadius]);
+      
 
     //   const getCurrentLocation = () => {
     //     setLocationLoading(true); // Start loading indicator
@@ -391,7 +410,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         const savedRadius = localStorage.getItem("selectedRadius");
 
         // If there's a saved location in localStorage, set it to the state
-        if (savedLocation) {
+        if (!initialLocation && savedLocation) {
             const location = JSON.parse(savedLocation);
             setSelectedOption(location);
             setDisplaySelectedOption(location); // Optionally display the selected location in your UI
@@ -400,7 +419,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
 
         // If there's a saved radius, set it
-        if (savedRadius) {
+        if (!initialRadius && savedRadius) {
             const radiusValue = parseInt(savedRadius, 10);
             if (!isNaN(radiusValue)) {
                 setRadius(radiusValue);
@@ -515,14 +534,15 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             getOptionValue={(option: Location) => option.search}
                             // getOptionValue={(option: Location) => option.zip.toString()}
                             placeholder="Search by city"
-                            className="text-sm"
+                            className="text-sm foucs:red-500 focus:outline-none hover:outline-none border-0"
                             styles={{
-                                control: (base) => ({
+                                control: (base, state) => ({
                                     ...base,
                                     paddingLeft: '2rem',
-                                    borderColor: '#e5e7eb',
-                                    minHeight: '42px'
-                                })
+                                    // borderColor: state.isFocused ? 'red' : '#d1d5db', // Change border color on focus
+                                    minHeight: '42px',
+                                    transition: 'border-color 0.3s ease', // Optional transition for smooth effect
+                                  }),
                             }}
 
                             components={{
