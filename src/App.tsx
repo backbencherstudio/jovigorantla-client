@@ -109,7 +109,7 @@ function AppRoutes() {
           path="/create-listing"
           element={
             <PageLayout title={ isEditing? "Editing Listing": "Create Listing"}>
-              <CreateListing />
+              <CreateListing isEditing={isEditing} />
             </PageLayout>
           }
         />

@@ -136,7 +136,7 @@ const ListingsContainer = ({
   };
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return null;
   }
 
   if (filteredListings.length === 0) {
@@ -146,7 +146,7 @@ const ListingsContainer = ({
   return (
     <div className="space-y-4 overflow-visible">
       {filteredListings.map((listing, index) => (
-        <div key={`listing-container-${listing.id + index}`}>
+        <div key={`${listing.id}`}>
           {listing?.type === 'listing' && <ListingItem
             key={listing.id}
             listing={listing}

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react';
 import { api } from '@/lib/axois';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useLayoutEffect } from 'react';
 
 // Types
 export interface Location {
@@ -59,6 +60,8 @@ interface ListingContextType {
   selectedLocation: Location | null;
   isUsa: boolean;
   hasMore: boolean;
+  isInitialMount: any;
+
   fetchNearByListings: () => void;
   createListing: (formData: FormData) => Promise<void>;
   updateListing: (id: string, formData: FormData) => Promise<void>;
@@ -71,10 +74,11 @@ interface ListingContextType {
   setIsUsa: (isUsa: boolean) => void;
   hideListing: (id: string) => void;
   handleScroll: () => void;
-  setNumberOfShownListings: (number: number) => void;
+  // setNumberOfShownListings: (number: number) => void;
   setSearchQuery: (query: string) => void;
   setListings: (listings: Listing[]) => void;
-  setListingCutoffTime: (time: string) => void;
+
+  // setListingCutoffTime: (time: string) => void;
 }
 
 const ListingContext = createContext<ListingContextType | undefined>(undefined);
@@ -90,10 +94,13 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
   const [isUsa, setIsUsa] = useState<boolean>(false);
 
   const [hasMore, setHasMore] = useState(true);
-  const [numberOfShownListings, setNumberOfShownListings] = useState(0);
-  const [listingCutoffTime, setListingCutoffTime] = useState(""); // Initial cutoff time
+  // const [numberOfShownListings, setNumberOfShownListings] = useState(0);
+  // const [listingCutoffTime, setListingCutoffTime] = useState(""); // Initial cutoff time
+  const numberOfShownListings = useRef(0);
+  const listingCutoffTime = useRef("");
   const [searchQuery, setSearchQuery] = useState("");
   const isInitialMount = useRef(true);
+  const navigate = useNavigate()
 
 
   const location = useLocation();
@@ -222,18 +229,20 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     else if (subCategory) params.sub_category = subCategory;
     if (category) params.category = category;
     if(category == '/') params.category = ''
+    console.log("category => ",  category)
     if (isUsa) params.is_usa = isUsa;
 
-    if (listingCutoffTime) params.listing_cutoff_time = listingCutoffTime;
+    if (listingCutoffTime.current) params.listing_cutoff_time = listingCutoffTime.current;
     if (searchQuery) params.search_query = searchQuery;
-    if (numberOfShownListings) params.numberOfShownListings = String(numberOfShownListings);
+    if (numberOfShownListings.current) params.numberOfShownListings = numberOfShownListings.current.toString();
 
     console.log("data => ", params);
     return params;
   }
 
   const fetchNearByListings = async () => {
-    if (loading) return; // Prevent fetching if already loading
+    console.log("fetching nearby listings", !isInitialMount);
+    if (loading || !isInitialMount) return; // Prevent fetching if already loading
 
     try {
       setLoading(true);
@@ -253,7 +262,11 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
 
       if (data.listings && data.listings.length > 0) {
         setListings((prevListings) => [...prevListings, ...data.listings]); // Append new listings
-        setListingCutoffTime(data.listing_cutoff_time); // Set new cutoff time
+        if (data.listing_cutoff_time &&  listingCutoffTime.current) {
+          
+        }
+        listingCutoffTime.current = data.listing_cutoff_time; // Set new cutoff time
+        numberOfShownListings.current = data.numberOfShownListings
         setHasMore(data.hasMore); // More listings available
       } else {
         setHasMore(false); // No more listings available
@@ -277,37 +290,30 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
       isInitialMount.current = false;
       return;
     }
-    setListingCutoffTime("")
-    setNumberOfShownListings(0)
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    setTimeout(() => {
+      listingCutoffTime.current = ""
+      numberOfShownListings.current = 0
+      setListings([])
+      fetchNearByListings();
+    }, 100);
+
+    console.log("fetching nearby listings", listingCutoffTime.current, numberOfShownListings.current, );
+    listingCutoffTime.current = ""
+    numberOfShownListings.current = 0
     setListings([])
     fetchNearByListings();
   }, [category, subCategory, isUsa]);
 
+  // useEffect(() => {
+  //   isInitialMount.current = false;
+  //   fetchNearByListings();
+  // }, [])
 
+  
 
-  const value = {
-    listings,
-    loading,
-    error,
-    selectedLocation,
-    isUsa,
-    hasMore,
-    fetchNearByListings,
-    createListing,
-    updateListing,
-    deleteListing,
-    fetchListings,
-    setSelectedLocation,
-    setCategory,
-    setSubCategory,
-    setIsUsa,
-    hideListing,
-    handleScroll,
-    setNumberOfShownListings,
-    setSearchQuery,
-    setListings,
-    setListingCutoffTime,
-  };
 
 
   // Expose to components
@@ -345,44 +351,100 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
   //   fetchData();
   // }, [category, subCategory, isUsa]);
 
-  useEffect(() => {
-    if(!listings.length) {
-      setListingCutoffTime("");
-      setNumberOfShownListings(0)
-    }
-  }, [listings])
+  // useEffect(() => {
+  //   if(!listings.length) {
+  //     listingCutoffTime.current = ""
+  //     numberOfShownListings.current = 0
+  //   }
+  // }, [listings])
 
   useEffect(() => {
     setListings([]);
     const currentPath = location.pathname;
+    // navigate('/')
     if (currentPath.includes("/marketplace")) {
       setCategory("MARKETPLACE");
       setIsUsa(false);
       setSubCategory("");
     } else if (currentPath.includes("/rides")) {
+
       setCategory("RIDES");
       setIsUsa(false);
       setSubCategory("");
+
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
       setIsUsa(false);
       setSubCategory("");
+
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
       setIsUsa(false);
       setSubCategory("");
+
     } else {
       setCategory("");
       setIsUsa(false);
       setSubCategory("");
+      setListings([]);
     }
+    
     console.log('path => ', currentPath)
-  }, [])
+  }, [setCategory, setIsUsa, setSubCategory, location]);
+
+  // useLayoutEffect(() => {
+  //   const currentPath = location.pathname;
+  //   if (currentPath.includes("/marketplace")) {
+  //     setCategory("MARKETPLACE");
+  //     setIsUsa(false);
+  //     setSubCategory("");
+  //   } else if (currentPath.includes("/rides")) {
+  //     setCategory("RIDES");
+  //     setIsUsa(false);
+  //     setSubCategory("");
+  //   } else if (currentPath.includes("/accommodations")) {
+  //     setCategory("ACCOMMODATIONS");
+  //     setIsUsa(false);
+  //     setSubCategory("");
+  //   } else if (currentPath.includes("/jobs")) {
+  //     setCategory("JOBS");
+  //     setIsUsa(false);
+  //     setSubCategory("");
+  //   } else {
+  //     setCategory("");
+  //     setIsUsa(false);
+  //     setSubCategory("");
+  //     setListings([]);
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   console.log("isUsa => ", isUsa)
   // }, [isUsa])
 
+
+  const value = {
+    listings,
+    loading,
+    error,
+    selectedLocation,
+    isUsa,
+    hasMore,
+    isInitialMount,
+    fetchNearByListings,
+    createListing,
+    updateListing,
+    deleteListing,
+    fetchListings,
+    setSelectedLocation,
+    setCategory,
+    setSubCategory,
+    setIsUsa,
+    hideListing,
+    handleScroll,
+    setSearchQuery,
+    setListings,
+  };
 
   return (
     <ListingContext.Provider value={value}>

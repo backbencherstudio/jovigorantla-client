@@ -27,7 +27,7 @@ const Index = () => {
   // const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const { isUsa, setIsUsa, setSubCategory, loading, listings, handleScroll, hasMore, fetchNearByListings } = useListing();
+  const { isUsa, setIsUsa, setSubCategory, loading, listings, handleScroll, hasMore, fetchNearByListings, isInitialMount } = useListing();
 
   const location = useLocation();
   const currentPath = location.pathname;
@@ -274,7 +274,7 @@ const Index = () => {
           observer.unobserve(loadingRef.current); // Clean up observer on unmount
         }
       };
-    }, [hasMore, loading]);
+    }, [hasMore, loading, isInitialMount]);
   
     // useEffect(() => {
     //   fetchNearByListings(); // Fetch initial listings on mount

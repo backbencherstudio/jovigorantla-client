@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import ListingForm from "@/components/ListingForm";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import AuthModal from "@/components/AuthModal";
 import { api } from "@/lib/axois";
+import ListingEditForm from "@/components/ListingEditForm";
 
 interface ListingFormData {
   title?: string;
@@ -19,12 +20,15 @@ interface ListingFormData {
   radius: number;
 }
 
-const CreateListing = () => {
+const CreateListing = ({ isEditing }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const [pendingFormData, setPendingFormData] = useState<ListingFormData | null>(null);
+  const [initialValues, setInitialValues] = useState<any>({});
+
 
   // Effect to handle post-login listing creation
   useEffect(() => {
@@ -119,13 +123,57 @@ const CreateListing = () => {
     }
   };
 
+  const fetchEditListing = async (id: string) => {
+    try {
+      const { data: response } = await api.get(`/listings/${id}`);
+      const listing = response.data
+
+      const categoryStr = listing.category?.toLowerCase();
+      const formData = {
+        title: listing.title,
+        description: listing.description,
+        price: listing.price,
+        category: categoryStr?.slice(0, 1).toUpperCase() + categoryStr?.slice(1),
+        subCategory: listing.sub_category,
+        address: listing.address,
+        postToUSA: listing.post_to_usa,
+        radius: listing.radius,
+        images: listing.image,
+      };
+
+      setInitialValues(formData);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching listing:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (isEditing) {
+      const id = searchParams.get('edit');
+      console.log(id);
+      fetchEditListing(id);
+    }
+  }, [isEditing]);
+
   return (
     <div className="pb-6">
-      <ListingForm
+      {/* {isEditing ? <ListingEditForm user={user} isSubmitting={isSubmitting} />: <ListingForm
         user={user}
         // onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
+      />} */}
+
+      <ListingForm
+        user={user}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        initialValues={initialValues}
       />
+
+      
       <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
