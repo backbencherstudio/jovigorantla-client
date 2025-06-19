@@ -60,7 +60,7 @@ interface ListingContextType {
   selectedLocation: Location | null;
   isUsa: boolean;
   hasMore: boolean;
-  isInitialMount: any;
+  isInitialMount: React.RefObject<boolean>;
 
   fetchNearByListings: () => void;
   createListing: (formData: FormData) => Promise<void>;
@@ -214,8 +214,8 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     const bottom =
       window.innerHeight + document.documentElement.scrollTop ===
       document.documentElement.offsetHeight;
-      
-      console.log("bottom => ", bottom);
+
+    console.log("bottom => ", bottom);
 
     if (bottom && hasMore) {
       fetchListings(); // Fetch more listings when scrolled to bottom
@@ -228,8 +228,8 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
     else if (subCategory === 'Items') params.sub_category = 'Item'; // Normalize subCategory
     else if (subCategory) params.sub_category = subCategory;
     if (category) params.category = category;
-    if(category == '/') params.category = ''
-    console.log("category => ",  category)
+    if (category == '/') params.category = ''
+    console.log("category => ", category)
     if (isUsa) params.is_usa = isUsa;
 
     if (listingCutoffTime.current) params.listing_cutoff_time = listingCutoffTime.current;
@@ -262,11 +262,10 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
 
       if (data.listings && data.listings.length > 0) {
         setListings((prevListings) => [...prevListings, ...data.listings]); // Append new listings
-        if (data.listing_cutoff_time &&  listingCutoffTime.current) {
-          
+        if (data.listing_cutoff_time && listingCutoffTime.current) {
+          listingCutoffTime.current = data.listing_cutoff_time; // Set new cutoff time
+          numberOfShownListings.current = data.numberOfShownListings
         }
-        listingCutoffTime.current = data.listing_cutoff_time; // Set new cutoff time
-        numberOfShownListings.current = data.numberOfShownListings
         setHasMore(data.hasMore); // More listings available
       } else {
         setHasMore(false); // No more listings available
@@ -300,7 +299,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
       fetchNearByListings();
     }, 100);
 
-    console.log("fetching nearby listings", listingCutoffTime.current, numberOfShownListings.current, );
+    console.log("fetching nearby listings", listingCutoffTime.current, numberOfShownListings.current,);
     listingCutoffTime.current = ""
     numberOfShownListings.current = 0
     setListings([])
@@ -312,7 +311,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
   //   fetchNearByListings();
   // }, [])
 
-  
+
 
 
 
@@ -388,7 +387,7 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
       setSubCategory("");
       setListings([]);
     }
-    
+
     console.log('path => ', currentPath)
   }, [setCategory, setIsUsa, setSubCategory, location]);
 

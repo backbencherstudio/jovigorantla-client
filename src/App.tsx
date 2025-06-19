@@ -30,11 +30,12 @@ import UserAgreement from "./pages/UserAgreement";
 import { ListingProvider } from "./context/ListingContext";
 import { SocketProvider } from '@/context/SocketContext';
 import { MessageProvider } from "./context/MessageContext";
+import PostListingForm from "./components/PostListingForm";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  
+
 
 
   // If still loading auth state, don't redirect yet
@@ -108,11 +109,20 @@ function AppRoutes() {
         <Route
           path="/create-listing"
           element={
-            <PageLayout title={ isEditing? "Editing Listing": "Create Listing"}>
+            <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
               <CreateListing isEditing={isEditing} />
             </PageLayout>
           }
         />
+
+        <Route
+          path='listing/create'
+          element={
+            <PageLayout title="Post Create Listing">
+              <PostListingForm />
+            </PageLayout>
+          } />
+
         <Route
           path="/listing/:id"
           element={
@@ -240,11 +250,11 @@ function App() {
     <Router>
       <AuthProvider>
         <ListingProvider>
-        <SocketProvider>
-        <MessageProvider>
-          <AppRoutes />
-        </MessageProvider>
-        </SocketProvider>
+          <SocketProvider>
+            <MessageProvider>
+              <AppRoutes />
+            </MessageProvider>
+          </SocketProvider>
         </ListingProvider>
       </AuthProvider>
     </Router>

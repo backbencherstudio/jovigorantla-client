@@ -48,13 +48,13 @@ const CreateListing = ({ isEditing }) => {
           apiFormData.append("address", pendingFormData.address || "");
           apiFormData.append("post_to_usa", (pendingFormData.postToUSA || false).toString());
           apiFormData.append("radius", pendingFormData.radius.toString());
-          
+
           if (pendingFormData.images.length > 0) {
             apiFormData.append("image", pendingFormData.images[0]);
           }
 
           const response = await api.post("/listings", apiFormData);
-          
+
           if (response.data.success) {
             toast.success("Listing created successfully");
             navigate("/");
@@ -81,7 +81,7 @@ const CreateListing = ({ isEditing }) => {
       // Store form data and show login modal
       setPendingFormData(formData);
       console.log("Form data stored for later submission", formData);
-      
+
       openModal("login");
       return;
     }
@@ -100,13 +100,13 @@ const CreateListing = ({ isEditing }) => {
       apiFormData.append("address", formData.address || "");
       apiFormData.append("post_to_usa", (formData.postToUSA || false).toString());
       apiFormData.append("radius", formData.radius.toString());
-      
+
       if (formData.images.length > 0) {
         apiFormData.append("image", formData.images[0]);
       }
 
       const response = await api.post("/listings", apiFormData);
-      
+
       if (response.data.success) {
         toast.success("Listing created successfully");
         navigate("/");
@@ -153,27 +153,27 @@ const CreateListing = ({ isEditing }) => {
   useEffect(() => {
     if (isEditing) {
       const id = searchParams.get('edit');
-      console.log(id);
+      // console.log(id);
       fetchEditListing(id);
     }
   }, [isEditing]);
 
   return (
     <div className="pb-6">
-      {/* {isEditing ? <ListingEditForm user={user} isSubmitting={isSubmitting} />: <ListingForm
+      {isEditing ? <ListingEditForm user={user} isSubmitting={isSubmitting} /> : <ListingForm
         user={user}
         // onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
-      />} */}
+      />}
 
-      <ListingForm
+      {/* <ListingForm
         user={user}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
         initialValues={initialValues}
-      />
+      /> */}
 
-      
+
       <AuthModal
         open={isOpen}
         onOpenChange={closeModal}

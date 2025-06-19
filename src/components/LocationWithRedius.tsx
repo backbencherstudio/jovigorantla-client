@@ -58,11 +58,11 @@ interface LocationWithRadiusProps {
 }
 
 const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation }) => {
-    const [selectedOption, setSelectedOption] = useState<Location | null>( null);
+    const [selectedOption, setSelectedOption] = useState<Location | null>(null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
     const [radius, setRadius] = useState(20);
-    const [displayRadius, setDisplayRadius] = useState( "20");
+    const [displayRadius, setDisplayRadius] = useState("20");
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
@@ -106,16 +106,16 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
     useEffect(() => {
         if (initialLocation) {
-          setSelectedOption(initialLocation);
-          setDisplaySelectedOption(initialLocation);
+            setSelectedOption(initialLocation);
+            setDisplaySelectedOption(initialLocation);
         }
-      
+
         if (initialRadius) {
-          setRadius(initialRadius);
-          setDisplayRadius(initialRadius.toString());
+            setRadius(initialRadius);
+            setDisplayRadius(initialRadius.toString());
         }
-      }, [initialLocation, initialRadius]);
-      
+    }, [initialLocation, initialRadius]);
+
 
     //   const getCurrentLocation = () => {
     //     setLocationLoading(true); // Start loading indicator
@@ -505,13 +505,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className={`flex items-center justify-between w-full hover:bg-transparent bg-transparent outline-0 border-0 justify-end ${className} `}
+                    className={`flex items-center  w-full hover:bg-transparent bg-transparent outline-0 border-0 justify-end ${className} `}
                 >
                     <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-primary" />
                         <span className="truncate">
                             {dispalySelectedOption
-                                ? `${dispalySelectedOption.search.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
+                                ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
                                 : "Select location"}
                         </span>
                     </div>
@@ -542,7 +542,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                                     // borderColor: state.isFocused ? 'red' : '#d1d5db', // Change border color on focus
                                     minHeight: '42px',
                                     transition: 'border-color 0.3s ease', // Optional transition for smooth effect
-                                  }),
+                                }),
                             }}
 
                             components={{

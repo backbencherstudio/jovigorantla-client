@@ -559,7 +559,7 @@ const categoriesConfig = {
 };
 
 const categories = Object.keys(categoriesConfig);
- 
+
 const ListingForm = ({
   onSubmit,
   user,
@@ -608,27 +608,11 @@ const ListingForm = ({
     },
   });
 
-  useEffect(()=> {
-    if(initialValues){
-      form.reset({
-        title: initialValues?.title || "",
-        description: initialValues?.description || "",
-        price: initialValues?.price || undefined,
-        category: initialValues?.category || "",
-        subCategory: initialValues?.subCategory || "",
-        address: locationString || "this address",
-        postToUSA: initialValues?.postToUsa ?? false
-      })
 
-      setAvailableSubCategories(categoriesConfig[initialValues?.category as keyof typeof categoriesConfig] || [])
-      setSelectedCategory(initialValues?.category || "")
-      setSelectedSubCategory(initialValues?.subCategory || "")
-    }
-  }, [initialValues])
 
   // useEffect(() => {
   //   // Update the available subcategories based on the selected category
-   
+
 
   //   if (initialValues?.category) {
   //     const subCategories = categoriesConfig[initialValues?.category as keyof typeof categoriesConfig] || [];
@@ -656,7 +640,7 @@ const ListingForm = ({
   //       console.log("listing radius => ", listing.data.radius)
   //       setRadius(listing.data.radius)
   //       console.log(radius)
-        
+
 
   //       setSelectedCategory(category);
   //       setSelectedSubCategory(subCategory);
@@ -695,30 +679,30 @@ const ListingForm = ({
   //   }
   // }, [id]);
 
+  useEffect(() => {
+    if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
+      const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+      setAvailableSubCategories(subcats);
+
+      const currentSubCat = form.getValues("subCategory");
+      if (currentSubCat && !subcats.includes(currentSubCat)) {
+        form.setValue("subCategory", subcats[0] || "");
+        setSelectedSubCategory(subcats[0] || "");
+      }
+    } else {
+      setAvailableSubCategories([]);
+      form.setValue("subCategory", "");
+      setSelectedSubCategory("");
+    }
+
+    form.setValue("postToUSA", false);
+  }, [selectedCategory, form]);
+
   // useEffect(() => {
   //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
   //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
   //     setAvailableSubCategories(subcats);
 
-  //     const currentSubCat = form.getValues("subCategory");
-  //     if (currentSubCat && !subcats.includes(currentSubCat)) {
-  //       form.setValue("subCategory", subcats[0] || "");
-  //       setSelectedSubCategory(subcats[0] || "");
-  //     }
-  //   } else {
-  //     setAvailableSubCategories([]);
-  //     form.setValue("subCategory", "");
-  //     setSelectedSubCategory("");
-  //   }
-
-  //   form.setValue("postToUSA", false);
-  // }, [selectedCategory, form]);
-
-  // useEffect(() => {
-  //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
-  //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
-  //     setAvailableSubCategories(subcats);
-  
   //     const currentSubCat = form.getValues("subCategory");
   //     if (currentSubCat && !subcats.includes(currentSubCat)) {
   //       form.setValue("subCategory", subcats[0] || "");
@@ -739,9 +723,9 @@ const ListingForm = ({
   //     selectedCategory && 
   //     categoriesConfig[selectedCategory as keyof typeof categoriesConfig] && 
   //     !categoriesConfig[selectedCategory as keyof typeof categoriesConfig].includes(form.getValues("subCategory"));
-  
+
   //   const shouldClearSubCategory = !selectedCategory;
-  
+
   //   if (shouldResetSubCategory) {
   //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
   //     // console.log("Sub_category => ", subcats[0], subcats)
@@ -757,8 +741,8 @@ const ListingForm = ({
   //     );
   //   }
   // }, [selectedCategory, form]);
-  
-  
+
+
 
   useEffect(() => {
     const shouldShowUSAOption =
@@ -843,7 +827,7 @@ const ListingForm = ({
       formData.append('category', values.category.toUpperCase());
       formData.append('sub_category', values.subCategory);
       formData.append('post_to_usa', String(values.postToUSA || false));
-      console.log('While submitting => ',  radius)
+      console.log('While submitting => ', radius)
       formData.append('radius', String(radius));
       // Append images
       // if (images.length > 0) {
@@ -888,6 +872,12 @@ const ListingForm = ({
         // If we have an existing image URL, send it back
         formData.append('image_url', imagePreviewUrls[0]);
       }
+
+      await createListing(formData);
+      setImages([]);
+      setImagePreviewUrls([]);
+      form.reset(); // Reset the form after successful submission
+      setIsOpenSuccess(true);
 
 
       // if (id) {
@@ -960,7 +950,7 @@ const ListingForm = ({
                   <FormItem>
                     <FormLabel className="text-black">Sub-Category</FormLabel>
                     <Select value={field.value} onValueChange={handleSubCategoryChange}>
-  
+
                       <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                         <SelectTrigger>
                           <SelectValue placeholder="Select a sub-category" />
