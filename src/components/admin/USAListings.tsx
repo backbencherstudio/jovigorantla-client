@@ -406,9 +406,12 @@ const USAListing = () => {
 
   const handleDeleteListing = async (id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-        usa_listing_status: "DELETED",
-      });
+      const response = await api.patch(`/admin/listings/usa-listings/${id}/deleted`);
+
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
+
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
         const updatedListing = {
@@ -430,9 +433,11 @@ const USAListing = () => {
 
   const handleApproveListing = async (id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-        usa_listing_status: "APPROVED",
-      });
+      const response = await api.patch(`/admin/listings/usa-listings/${id}/approved`);
+
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
 
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
@@ -457,9 +462,11 @@ const USAListing = () => {
 
   const handleBlockListing = async(id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-        usa_listing_status: "BLOCKED",
-      });
+      const response = await api.patch(`/admin/listings/usa-listings/${id}/blocked`);
+
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
         const updatedListing = {

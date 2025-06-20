@@ -78,7 +78,7 @@ const ManageListings = () => {
   //   // }, 1000);
   // }, [user, navigate]);
   const handleEditListing = (id: string) => {
-    navigate(`/create-listing?edit=${id}`);
+    navigate(`/create-listing?id=${id}`);
   };
   const openDeleteDialog = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();

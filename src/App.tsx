@@ -110,18 +110,19 @@ function AppRoutes() {
           path="/create-listing"
           element={
             <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
-              <CreateListing isEditing={isEditing} />
+              {/* <CreateListing isEditing={isEditing} /> */}
+              <PostListingForm />
             </PageLayout>
           }
         />
 
-        <Route
+        {/* <Route
           path='listing/create'
           element={
             <PageLayout title="Post Create Listing">
-              <PostListingForm />
+              
             </PageLayout>
-          } />
+          } /> */}
 
         <Route
           path="/listing/:id"

@@ -94,13 +94,16 @@ const FlaggedListings = () => {
 
   const handleDeleteListing = async (id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-          flagged_listing_status: "DELETED",
-      });
+      const response = await api.patch(`/admin/listings/flagged-listings/${id}/deleted`);
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
+
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
         const updatedListing = {
           ...listing,
+          status: "DELETED",
           flagged_listing_status: "DELETED",
           updated_at: new Date().toISOString(),
         };
@@ -118,14 +121,18 @@ const FlaggedListings = () => {
 
   const handleApproveListing = async (id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-          flagged_listing_status: "APPROVED",
-      });
+      const response = await api.patch(`/admin/listings/flagged-listings/${id}/approved`);
+
+
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
 
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
         const updatedListing = {
           ...listing,
+          status: "APPROVED",
           flagged_listing_status: "APPROVED",
           updated_at: new Date().toISOString(),
         };
@@ -145,13 +152,16 @@ const FlaggedListings = () => {
 
   const handleBlockListing = async(id: string) => {
     try {
-      await api.patch(`/admin/listings/${id}`, {
-          flagged_listing_status: "BLOCKED",
-      });
+      const response = await api.patch(`/admin/listings/flagged-listings/${id}/blocked`);
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
+
       const listing = flaggedListings.find((item) => item.id === id);
       if (listing) {
         const updatedListing = {
           ...listing,
+          status: "BLOCKED",
           flagged_listing_status: "BLOCKED",
           updated_at: new Date().toISOString(),
         };

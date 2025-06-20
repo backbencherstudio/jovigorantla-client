@@ -34,6 +34,132 @@ const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => 
     return R * c; // Distance in kilometers
 };
 
+function isInUSA(lat, lng) {
+    // Approximate geographic boundaries of the contiguous USA
+    const MIN_LAT = 24.396308;  // Southernmost point (Florida)
+    const MAX_LAT = 49.384358;   // Northernmost point (Washington)
+    const MIN_LNG = -125.000000; // Westernmost point (Washington)
+    const MAX_LNG = -66.934570;   // Easternmost point (Maine)
+    
+    // For Alaska and Hawaii you would need additional checks
+    // This is a simplified version for contiguous USA only
+    
+    return (
+        lat >= MIN_LAT &&
+        lat <= MAX_LAT &&
+        lng >= MIN_LNG &&
+        lng <= MAX_LNG
+    );
+}
+
+const DALLAS_FALLBACK: Location = {
+    city: "Dallas",
+    state_id: "TX",
+    state_name: "Texas",
+    lat: 32.7935,
+    lng: -96.7667,
+    search: "Dallas, TX, USA",
+    zip: null
+};
+
+// const isValidCoordinate = (lat: number, lng: number) => {
+//     return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+// };
+
+// const findNearestCity = (lat: number, lng: number): Location => {
+//     // Validate coordinates first
+//     if (!isValidCoordinate(lat, lng)) {
+//         console.warn("Invalid coordinates provided, falling back to Dallas");
+//         return DALLAS_FALLBACK;
+//     }
+
+//     try {
+//         if (!(locationsData as Location[])?.length) {
+//             console.warn("No location data available, falling back to Dallas");
+//             return DALLAS_FALLBACK;
+//         }
+
+//         let nearestCity = locationsData[0];
+//         let minDistance = getDistance(lat, lng, nearestCity.lat, nearestCity.lng);
+
+//         for (const city of locationsData as Location[]) {
+//             const distance = getDistance(lat, lng, city.lat, city.lng);
+//             if (distance < minDistance) {
+//                 minDistance = distance;
+//                 nearestCity = city;
+//             }
+//         }
+
+//         return nearestCity;
+//     } catch (error) {
+//         console.error("Error finding nearest city:", error);
+//         return DALLAS_FALLBACK;
+//     }
+// };
+
+const isValidCoordinate = (lat: number, lng: number) => {
+    // Additional type checking and NaN protection
+    return (
+        typeof lat === 'number' && 
+        typeof lng === 'number' &&
+        !isNaN(lat) && 
+        !isNaN(lng) &&
+        lat >= -90 && 
+        lat <= 90 && 
+        lng >= -180 && 
+        lng <= 180
+    );
+};
+
+const findNearestCity = (lat: number, lng: number): Location => {
+    // Validate coordinates first
+    if (!isValidCoordinate(lat, lng)) {
+        console.warn(`Invalid coordinates provided (${lat}, ${lng}), falling back to Dallas`);
+        return DALLAS_FALLBACK;
+    }
+
+    try {
+        // More defensive check for locationsData
+        if (!Array.isArray(locationsData) || locationsData.length === 0) {
+            console.warn("Invalid or empty location data, falling back to Dallas");
+            return DALLAS_FALLBACK;
+        }
+
+        let nearestCity = locationsData[0];
+        
+        // Validate the first city's coordinates before using as initial comparison
+        if (!isValidCoordinate(nearestCity.lat, nearestCity.lng)) {
+            console.warn("First city in dataset has invalid coordinates");
+            return DALLAS_FALLBACK;
+        }
+
+        let minDistance = getDistance(lat, lng, nearestCity.lat, nearestCity.lng);
+
+        for (const city of locationsData) {
+            // Skip cities with invalid coordinates
+            if (!isValidCoordinate(city.lat, city.lng)) {
+                console.warn(`Skipping city with invalid coordinates: ${city.city}`);
+                continue;
+            }
+
+            const distance = getDistance(lat, lng, city.lat, city.lng);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestCity = city;
+            }
+        }
+
+        console.log("nearestCity => ", nearestCity)
+
+        return nearestCity;
+    } catch (error) {
+        console.error("Error finding nearest city:", error);
+        return DALLAS_FALLBACK;
+    }
+};
+
+
+
 
 
 interface Location {
@@ -68,6 +194,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     const [locationLoading, setLocationLoading] = useState(false);
 
     // console.log("default data => ", initialLocation, initialRadius)
+
+    
 
     const selectRef = useRef(null);
 
@@ -165,123 +293,338 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     //     }
     //   };
 
+    // const getCurrentLocation = () => {
+    //     setLocationLoading(true); // Start loading indicator
+
+    //     if ("geolocation" in navigator) {
+    //         // Use browser geolocation API
+    //         navigator.geolocation.getCurrentPosition(
+    //             async (position) => {
+    //                 const { latitude, longitude } = position.coords;
+
+    //                 // Make an API request to Mapbox reverse geocoding to get city, state, and country
+    //                 try {
+    //                     const locationData = await getLocationFromCoordinates(latitude, longitude);
+
+    //                     const currentLocation: Location = {
+    //                         zip: 12345, // Mock ZIP, can be left as a default or updated via geocoding if available
+    //                         lat: latitude,
+    //                         lng: longitude,
+    //                         city: locationData.city || "Unknown City",
+    //                         state_id: locationData.state || "Unknown State",
+    //                         state_name: locationData.state || "Unknown State",
+    //                         search: `${locationData.city}, ${locationData.state}, ${locationData.country}`,
+    //                     };
+
+    //                     // Set the location in state
+    //                     setSelectedOption(currentLocation);
+
+    //                     // Notify parent component about the new location
+    //                     if (onChange) {
+    //                         onChange(currentLocation);
+    //                     }
+
+    //                 } catch (error) {
+    //                     console.error("Error in reverse geocoding:", error);
+    //                 }
+
+    //                 setLocationLoading(false); // Stop loading indicator
+    //             },
+    //             async (error) => {
+    //                 console.error("Error getting location:", error);
+
+    //                 // Fallback to IP-based geolocation if permission is denied or error occurs
+    //                 await handleIPGeolocation(); // Fallback function to handle IP geolocation
+
+    //                 setLocationLoading(false); // Stop loading on error
+    //             }
+    //         );
+    //     } else {
+    //         console.error("Geolocation is not supported by this browser.");
+
+    //         // Fallback to IP-based geolocation if geolocation is not available
+    //         handleIPGeolocation();
+    //         setLocationLoading(false); // Stop loading if geolocation is not available
+    //     }
+    // };
+
+    // const getCurrentLocation = () => {
+    //     setLocationLoading(true);
+    
+    //     if ("geolocation" in navigator) {
+    //         navigator.geolocation.getCurrentPosition(
+    //             (position) => {
+    //                 const { latitude, longitude } = position.coords;
+    //                 const nearestCity = findNearestCity(latitude, longitude);
+                    
+    //                 setSelectedOption(nearestCity);
+    //                 if (onChange) onChange(nearestCity);
+    //                 setLocationLoading(false);
+    //             },
+    //             (error) => {
+    //                 console.error("Geolocation error:", error);
+    //                 setSelectedOption(DALLAS_FALLBACK);
+    //                 if (onChange) onChange(DALLAS_FALLBACK);
+    //                 setLocationLoading(false);
+    //             }
+    //         );
+    //     } else {
+    //         console.warn("Geolocation not supported");
+    //         setSelectedOption(DALLAS_FALLBACK);
+    //         if (onChange) onChange(DALLAS_FALLBACK);
+    //         setLocationLoading(false);
+    //     }
+    // };
+
     const getCurrentLocation = () => {
-        setLocationLoading(true); // Start loading indicator
-
+        setLocationLoading(true);
+    
         if ("geolocation" in navigator) {
-            // Use browser geolocation API
             navigator.geolocation.getCurrentPosition(
-                async (position) => {
+                (position) => {
                     const { latitude, longitude } = position.coords;
-
-                    // Make an API request to Mapbox reverse geocoding to get city, state, and country
-                    try {
-                        const locationData = await getLocationFromCoordinates(latitude, longitude);
-
-                        const currentLocation: Location = {
-                            zip: 12345, // Mock ZIP, can be left as a default or updated via geocoding if available
-                            lat: latitude,
-                            lng: longitude,
-                            city: locationData.city || "Unknown City",
-                            state_id: locationData.state || "Unknown State",
-                            state_name: locationData.state || "Unknown State",
-                            search: `${locationData.city}, ${locationData.state}, ${locationData.country}`,
-                        };
-
-                        // Set the location in state
-                        setSelectedOption(currentLocation);
-
-                        // Notify parent component about the new location
-                        if (onChange) {
-                            onChange(currentLocation);
-                        }
-
-                    } catch (error) {
-                        console.error("Error in reverse geocoding:", error);
+                    
+                    // First check if coordinates are within USA bounds
+                    if (isInUSA(latitude, longitude)) {
+                        const nearestCity = findNearestCity(latitude, longitude);
+                        setSelectedOption(nearestCity);
+                        if (onChange) onChange(nearestCity);
+                    } else {
+                        // Outside USA - use fallback
+                        setSelectedOption(DALLAS_FALLBACK);
+                        if (onChange) onChange(DALLAS_FALLBACK);
                     }
-
-                    setLocationLoading(false); // Stop loading indicator
+                    setLocationLoading(false);
                 },
-                async (error) => {
-                    console.error("Error getting location:", error);
-
-                    // Fallback to IP-based geolocation if permission is denied or error occurs
-                    await handleIPGeolocation(); // Fallback function to handle IP geolocation
-
-                    setLocationLoading(false); // Stop loading on error
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    setSelectedOption(DALLAS_FALLBACK);
+                    if (onChange) onChange(DALLAS_FALLBACK);
+                    setLocationLoading(false);
                 }
             );
         } else {
-            console.error("Geolocation is not supported by this browser.");
-
-            // Fallback to IP-based geolocation if geolocation is not available
-            handleIPGeolocation();
-            setLocationLoading(false); // Stop loading if geolocation is not available
+            console.warn("Geolocation not supported");
+            setSelectedOption(DALLAS_FALLBACK);
+            if (onChange) onChange(DALLAS_FALLBACK);
+            setLocationLoading(false);
         }
     };
+    
+
 
     // Fallback to IP Geolocation (if browser geolocation fails)
+    // const handleIPGeolocation = async () => {
+    //     try {
+    //         // Try getting location from IP using ipinfo.io API (or another IP geolocation service)
+    //         const locationData = await getLocationFromIP(); // Function to get location from IP
+
+    //         // If successful, update with the fetched data
+    //         const ipLocation: Location = {
+    //             zip: 12345, // You might not get a ZIP from IP-based geolocation
+    //             lat: locationData.lat,
+    //             lng: locationData.lng,
+    //             city: locationData.city || "Unknown City",
+    //             state_id: locationData.state || "Unknown State",
+    //             state_name: locationData.state || "Unknown State",
+    //             search: `${locationData.city}, ${locationData.state}, ${locationData.country}`,
+    //         };
+
+    //         setSelectedOption(ipLocation);
+
+    //         // Notify parent component about the new location
+    //         if (onChange) {
+    //             onChange(ipLocation);
+    //         }
+
+    //     } catch (error) {
+    //         console.error("Error in IP geolocation:", error);
+
+    //         // Fallback to Dallas, TX if IP geolocation fails
+    //         const fallbackLocation: Location = {
+    //             zip: 75201, // Dallas ZIP code
+    //             lat: 32.7767, // Latitude for Dallas
+    //             lng: -96.7970, // Longitude for Dallas
+    //             city: "Dallas",
+    //             state_id: "TX",
+    //             state_name: "Texas",
+    //             search: "Dallas, TX, USA", // Fallback to Dallas, TX
+    //         };
+
+    //         setSelectedOption(fallbackLocation);
+
+    //         // Notify parent component about the fallback location
+    //         if (onChange) {
+    //             onChange(fallbackLocation);
+    //         }
+    //     }
+    // };
+
     const handleIPGeolocation = async () => {
         try {
-            // Try getting location from IP using ipinfo.io API (or another IP geolocation service)
-            const locationData = await getLocationFromIP(); // Function to get location from IP
+            const response = await fetch("https://ipinfo.io/json");
+            if (!response.ok) throw new Error("IP info failed");
+            
+            const data = await response.json();
+            if (!data.loc) throw new Error("No location data");
 
-            // If successful, update with the fetched data
-            const ipLocation: Location = {
-                zip: 12345, // You might not get a ZIP from IP-based geolocation
-                lat: locationData.lat,
-                lng: locationData.lng,
-                city: locationData.city || "Unknown City",
-                state_id: locationData.state || "Unknown State",
-                state_name: locationData.state || "Unknown State",
-                search: `${locationData.city}, ${locationData.state}, ${locationData.country}`,
-            };
-
-            setSelectedOption(ipLocation);
-
-            // Notify parent component about the new location
-            if (onChange) {
-                onChange(ipLocation);
+             if (data.country && data.country !== "US") {
+                throw new Error("Non-US location detected");
             }
-
+            
+            const [lat, lng] = data.loc.split(',').map(Number);
+            const nearestCity = findNearestCity(lat, lng);
+            
+            setSelectedOption(nearestCity);
+            if (onChange) onChange(nearestCity);
+            
+            // Save to localStorage if initial load
+            if (!localStorage.getItem("selectedLocation")) {
+                localStorage.setItem("selectedLocation", JSON.stringify(nearestCity));
+            }
         } catch (error) {
-            console.error("Error in IP geolocation:", error);
-
-            // Fallback to Dallas, TX if IP geolocation fails
-            const fallbackLocation: Location = {
-                zip: 75201, // Dallas ZIP code
-                lat: 32.7767, // Latitude for Dallas
-                lng: -96.7970, // Longitude for Dallas
-                city: "Dallas",
-                state_id: "TX",
-                state_name: "Texas",
-                search: "Dallas, TX, USA", // Fallback to Dallas, TX
-            };
-
-            setSelectedOption(fallbackLocation);
-
-            // Notify parent component about the fallback location
-            if (onChange) {
-                onChange(fallbackLocation);
+            console.error("IP geolocation failed:", error);
+            setSelectedOption(DALLAS_FALLBACK);
+            if (onChange) onChange(DALLAS_FALLBACK);
+            
+            if (!localStorage.getItem("selectedLocation")) {
+                localStorage.setItem("selectedLocation", JSON.stringify(DALLAS_FALLBACK));
             }
         }
     };
 
 
     // Function to get location from IP address
-    const getLocationFromIP = async () => {
-        const response = await fetch("https://ipinfo.io/json");
-        const data = await response.json();
+    // const getLocationFromIP = async () => {
+    //     const response = await fetch("https://ipinfo.io/json");
+    //     const data = await response.json();
 
-        const [lat, lng] = data.loc.split(",");
+    //     const [lat, lng] = data.loc.split(",");
 
-        return {
-            city: data.city || "Unknown City",
-            state: data.region || "Unknown State",
-            country: data.country || "Unknown Country",
-            lat: parseFloat(lat),
-            lng: parseFloat(lng),
-        };
+    //     return {
+    //         city: data.city || "Unknown City",
+    //         state: data.region || "Unknown State",
+    //         country: data.country || "Unknown Country",
+    //         lat: parseFloat(lat),
+    //         lng: parseFloat(lng),
+    //     };
+    // };
+
+
+    // const getLocationFromIP = async (): Promise<Location> => {
+    //     try {
+    //         // 1. Fetch IP location data
+    //         const response = await fetch("https://ipinfo.io/json");
+    //         if (!response.ok) throw new Error(`IP geolocation failed with status ${response.status}`);
+            
+    //         const data = await response.json();
+    //         if (!data.loc) throw new Error("No location data in response");
+    
+    //         // 2. Parse coordinates
+    //         const [lat, lng] = data.loc.split(',').map(Number);
+    //         if (!isValidCoordinate(lat, lng)) throw new Error("Invalid coordinates from IP");
+
+    //         console.log("data from closest city => ", data)
+    
+    //         // 3. Find nearest city in your dataset
+    //         const nearestCity = findNearestCity(lat, lng);
+
+    //         console.log("nearest city => ", nearestCity)
+            
+    //         // 4. Return enriched location data
+    //         return {
+    //             ...nearestCity,
+    //             search: `${data.city || nearestCity.city}, ${data.region || nearestCity.state_id}, ${data.country || 'USA'}`,
+    //             lat: nearestCity.lat, 
+    //             lng: nearestCity.lng
+    //         };
+            
+    //     } catch (error) {
+    //         console.error("Error in getLocationFromIP:", error);
+    //         // Return Dallas fallback with proper typing
+    //         return {
+    //             ...DALLAS_FALLBACK,
+    //             search: "Dallas, TX, USA"
+    //         };
+    //     }
+    // };
+
+    // const getLocationFromIP = async (): Promise<Location> => {
+    // try {
+    //     // 1. Fetch IP location data
+    //     const response = await fetch("https://ipinfo.io/json");
+    //     if (!response.ok) throw new Error(`IP geolocation failed with status ${response.status}`);
+        
+    //     const data = await response.json();
+    //     if (!data.loc) throw new Error("No location data in response");
+
+    //     // 2. Check if country is not USA
+    //     if (data.country && data.country !== "US") {
+    //         throw new Error("Non-US location detected");
+    //     }
+
+    //     // 3. Parse coordinates
+    //     const [lat, lng] = data.loc.split(',').map(Number);
+    //     if (!isValidCoordinate(lat, lng)) throw new Error("Invalid coordinates from IP");
+
+    //     // 4. Find nearest city in your dataset
+    //     const nearestCity = findNearestCity(lat, lng);
+        
+    //     // 5. Return enriched location data
+    //     return {
+    //         ...nearestCity,
+    //         search: `${data.city || nearestCity.city}, ${data.region || nearestCity.state_id}, USA`,
+    //         lat: nearestCity.lat, 
+    //         lng: nearestCity.lng
+    //     };
+        
+    // } catch (error) {
+    //     console.error("Error in getLocationFromIP:", error);
+    //     // Return Dallas fallback with proper typing
+    //     return {
+    //         ...DALLAS_FALLBACK,
+    //         search: "Dallas, TX, USA"
+    //     };
+    // }
+    // };
+
+    const getLocationFromIP = async (): Promise<Location> => {
+        try {
+            // 1. Fetch IP location data
+            const response = await fetch("https://ipinfo.io/json");
+            if (!response.ok) throw new Error(`IP geolocation failed with status ${response.status}`);
+            
+            const data = await response.json();
+            if (!data.loc) throw new Error("No location data in response");
+    
+            // 2. Check if country is not USA
+            if (data.country && data.country !== "US") {
+                throw new Error("Non-US location detected");
+            }
+    
+            // 3. Parse coordinates
+            const [lat, lng] = data.loc.split(',').map(Number);
+            if (!isValidCoordinate(lat, lng)) throw new Error("Invalid coordinates from IP");
+    
+            // 4. Find nearest city in your dataset
+            const nearestCity = findNearestCity(lat, lng);
+            
+            // 5. Return enriched location data
+            return {
+                ...nearestCity,
+                search: `${data.city || nearestCity.city}, ${data.region || nearestCity.state_id}, USA`,
+                lat: nearestCity.lat, 
+                lng: nearestCity.lng
+            };
+            
+        } catch (error) {
+            console.error("Error in getLocationFromIP:", error);
+            // Return Dallas fallback with proper typing
+            return {
+                ...DALLAS_FALLBACK,
+                search: "Dallas, TX, USA"
+            };
+        }
     };
 
 
@@ -405,51 +748,135 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
 
     // Load the selected location from localStorage when the component mounts
+    // useEffect(() => {
+    //     const savedLocation = localStorage.getItem("selectedLocation");
+    //     const savedRadius = localStorage.getItem("selectedRadius");
+
+    //     // If there's a saved location in localStorage, set it to the state
+    //     if (!initialLocation && savedLocation) {
+    //         const location = JSON.parse(savedLocation);
+    //         setSelectedOption(location);
+    //         setDisplaySelectedOption(location); // Optionally display the selected location in your UI
+    //     }
+
+
+
+    //     // If there's a saved radius, set it
+    //     if (!initialRadius && savedRadius) {
+    //         const radiusValue = parseInt(savedRadius, 10);
+    //         if (!isNaN(radiusValue)) {
+    //             setRadius(radiusValue);
+    //             setDisplayRadius(radiusValue.toString());
+    //         }
+    //     }
+
+
+    //     // Fallback: If neither savedLocation nor savedRadius exists
+    //     if (!savedLocation && !savedRadius) {
+    //         getLocationFromIP()
+    //             .then(data => {
+    //                 // console.log("IP Geolocation Data:", data);
+
+    //                 const ipLocation: Location = {
+    //                     zip: 12345, // Fallback ZIP
+    //                     lat: data.lat,
+    //                     lng: data.lng,
+    //                     city: data.city || "Unknown City",
+    //                     state_id: data.state || "Unknown State",
+    //                     state_name: data.state || "Unknown State",
+    //                     search: `${data.city}, ${data.state}, ${data.country}`,
+    //                 };
+
+    //                 // Set the location state
+    //                 setSelectedOption(ipLocation);
+    //                 setDisplaySelectedOption(ipLocation);
+
+    //                 // Save the location to localStorage
+    //                 localStorage.setItem("selectedLocation", JSON.stringify(ipLocation));
+
+    //                 // Set radius to 50 and update state
+    //                 setRadius(20);
+    //                 setDisplayRadius("20");
+
+    //                 // Save the radius to localStorage
+    //                 localStorage.setItem("selectedRadius", "20");
+
+    //             })
+    //             .catch(error => {
+    //                 console.error("Error fetching IP geolocation data:", error);
+
+    //                 // Fallback to Dallas, TX if IP geolocation fails
+    //                 const fallbackLocation: Location = {
+    //                     zip: 75201, // Dallas ZIP code
+    //                     lat: 32.7767, // Latitude for Dallas
+    //                     lng: -96.7970, // Longitude for Dallas
+    //                     city: "Dallas",
+    //                     state_id: "TX",
+    //                     state_name: "Texas",
+    //                     search: "Dallas, TX, USA", // Fallback to Dallas, TX
+    //                 };
+
+    //                 // Set the location state
+    //                 setSelectedOption(fallbackLocation);
+    //                 setDisplaySelectedOption(fallbackLocation);
+
+    //                 // Save the fallback location to localStorage
+    //                 localStorage.setItem("selectedLocation", JSON.stringify(fallbackLocation));
+
+    //                 // Set radius to 50 and update state
+    //                 setRadius(20);
+    //                 setDisplayRadius("20");
+
+    //                 // Save the radius to localStorage
+    //                 localStorage.setItem("selectedRadius", "20");
+    //             });
+    //     }
+
+    //     // console.log("Selected Location:", savedLocation);
+    //     // console.log("Selected Radius:", savedRadius);
+    // }, []);
+
     useEffect(() => {
         const savedLocation = localStorage.getItem("selectedLocation");
         const savedRadius = localStorage.getItem("selectedRadius");
-
-        // If there's a saved location in localStorage, set it to the state
+    
         if (!initialLocation && savedLocation) {
-            const location = JSON.parse(savedLocation);
-            setSelectedOption(location);
-            setDisplaySelectedOption(location); // Optionally display the selected location in your UI
+            try {
+                const location = JSON.parse(savedLocation);
+                setSelectedOption(location);
+                setDisplaySelectedOption(location);
+            } catch (error) {
+                console.error("Error parsing saved location:", error);
+                setSelectedOption(DALLAS_FALLBACK);
+                setDisplaySelectedOption(DALLAS_FALLBACK);
+            }
+        } else if (!initialLocation) {
+            handleIPGeolocation();
         }
-
-
-
-        // If there's a saved radius, set it
+    
         if (!initialRadius && savedRadius) {
             const radiusValue = parseInt(savedRadius, 10);
             if (!isNaN(radiusValue)) {
                 setRadius(radiusValue);
                 setDisplayRadius(radiusValue.toString());
+            } else {
+                setRadius(20);
+                setDisplayRadius("20");
             }
         }
 
 
-        // Fallback: If neither savedLocation nor savedRadius exists
+              // Fallback: If neither savedLocation nor savedRadius exists
         if (!savedLocation && !savedRadius) {
             getLocationFromIP()
                 .then(data => {
-                    // console.log("IP Geolocation Data:", data);
-
-                    const ipLocation: Location = {
-                        zip: 12345, // Fallback ZIP
-                        lat: data.lat,
-                        lng: data.lng,
-                        city: data.city || "Unknown City",
-                        state_id: data.state || "Unknown State",
-                        state_name: data.state || "Unknown State",
-                        search: `${data.city}, ${data.state}, ${data.country}`,
-                    };
 
                     // Set the location state
-                    setSelectedOption(ipLocation);
-                    setDisplaySelectedOption(ipLocation);
+                    setSelectedOption(data);
+                    setDisplaySelectedOption(data);
 
                     // Save the location to localStorage
-                    localStorage.setItem("selectedLocation", JSON.stringify(ipLocation));
+                    localStorage.setItem("selectedLocation", JSON.stringify(data));
 
                     // Set radius to 50 and update state
                     setRadius(20);
@@ -463,15 +890,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     console.error("Error fetching IP geolocation data:", error);
 
                     // Fallback to Dallas, TX if IP geolocation fails
-                    const fallbackLocation: Location = {
-                        zip: 75201, // Dallas ZIP code
-                        lat: 32.7767, // Latitude for Dallas
-                        lng: -96.7970, // Longitude for Dallas
-                        city: "Dallas",
-                        state_id: "TX",
-                        state_name: "Texas",
-                        search: "Dallas, TX, USA", // Fallback to Dallas, TX
-                    };
+                    const fallbackLocation: Location = DALLAS_FALLBACK
 
                     // Set the location state
                     setSelectedOption(fallbackLocation);
@@ -488,9 +907,6 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     localStorage.setItem("selectedRadius", "20");
                 });
         }
-
-        // console.log("Selected Location:", savedLocation);
-        // console.log("Selected Radius:", savedRadius);
     }, []);
 
     useEffect(() => {
@@ -534,7 +950,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             getOptionValue={(option: Location) => option.search}
                             // getOptionValue={(option: Location) => option.zip.toString()}
                             placeholder="Search by city"
-                            className="text-sm foucs:red-500 focus:outline-none hover:outline-none border-0"
+                            className="text-sm foucs:red-500 focus:outline-none hover:outline-none border-none"
                             styles={{
                                 control: (base, state) => ({
                                     ...base,

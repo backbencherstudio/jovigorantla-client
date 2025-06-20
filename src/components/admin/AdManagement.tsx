@@ -649,6 +649,15 @@ const AdManagement = () => {
 
       formData.append("start_date", formState.start_date || null);
       formData.append("end_date", formState.end_date || null);
+      // format the cities
+      const fornatedCities = cityData.map(city =>{
+        return {
+          address: city.name,
+          latitude: city.latitude,
+          longitude: city.longitude,
+        }
+      })
+      formData.append("cities", JSON.stringify(fornatedCities))
 
       // If editing existing group
       if (editingGroupId) {
@@ -706,6 +715,7 @@ const AdManagement = () => {
 
         const { data: created } = await api.post("/admin/ads-group", formData);
         if (!created.success) throw new Error("Failed to create ad group");
+        setCityData([])
 
         fetchAddGroups(); // optionally replace this with push to `setAdGroups`
         toast.success("Ad group created successfully");
@@ -903,7 +913,12 @@ const AdManagement = () => {
   
       // 👇 Append city metadata
       if (cityData.length > 0) {
-        formData.append("cities", JSON.stringify(cityData));
+        const formattedCities = cityData.map(city => ({
+          address: city.name,
+          latitude: city.latitude,
+          longitude: city.longitude,
+        }));
+        formData.append("cities", JSON.stringify(formattedCities));
       }
   
       const { data: ad } = await api.post("/admin/ads", formData);
@@ -1896,6 +1911,12 @@ const AdManagement = () => {
                           </Button>
                         )}
                       </div>
+
+                      <CitySelectorWithDetails onSubmit={(cityDataArray) => {
+                        // console.log("Selected cities with boundaries:", cityDataArray);
+                        setCityData(cityDataArray);
+                        // You can store this in state and use it in formData.append("cities", JSON.stringify(cityDataArray))
+                      }} />
                     </div>
                   </div>
                 )}
