@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 // import locationsData from "../data/us_cities_with_zipcode.json";
 import locationsData from "../data/uscitiesLocation.json";
 import { getLocationFromCoordinates } from "@/hooks/getLocationFromCoordinates ";
+import { useLocationContext } from "@/context/LocationContext";
 
 
 const toRadians = (degree: number) => {
@@ -192,6 +193,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
+    const { setLatLngRadius } = useLocationContext()
 
     // console.log("default data => ", initialLocation, initialRadius)
 
@@ -477,6 +479,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             
             setSelectedOption(nearestCity);
             if (onChange) onChange(nearestCity);
+
+            setLatLngRadius(nearestCity.lat, nearestCity.lng, 20)
             
             // Save to localStorage if initial load
             if (!localStorage.getItem("selectedLocation")) {
@@ -490,6 +494,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             if (!localStorage.getItem("selectedLocation")) {
                 localStorage.setItem("selectedLocation", JSON.stringify(DALLAS_FALLBACK));
             }
+
+            setLatLngRadius(DALLAS_FALLBACK.lat, DALLAS_FALLBACK.lng, 20)
         }
     };
 
@@ -629,11 +635,16 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
 
     const handleUpdate = () => {
+        
+        let lat: number, lng: number, r: number;
+
         if (selectedOption) {
             setDisplaySelectedOption(selectedOption);
             // check the current path if it create-listing if it's not then only set the selected location
             if (!notSetDefault) {
                 localStorage.setItem('selectedLocation', JSON.stringify(selectedOption));
+                lat = selectedOption.lat;
+                lng = selectedOption.lng;
             }
             // localStorage.setItem('selectedLocation', JSON.stringify(selectedOption));
         }
@@ -641,8 +652,16 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             setDisplayRadius(radius.toString());
             if (!notSetDefault) {
                 localStorage.setItem('selectedRadius', radius.toString());
+                r = radius;
             }
             // localStorage.setItem('selectedRadius', radius.toString());
+        }
+
+        console.log("inside with radius => ",lat, lng, radius)
+
+        if (lat && lng && r) {
+           
+            setLatLngRadius(lat, lng, r);
         }
 
         setIsOpen(false);
@@ -839,16 +858,22 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     useEffect(() => {
         const savedLocation = localStorage.getItem("selectedLocation");
         const savedRadius = localStorage.getItem("selectedRadius");
+
+        let lat: number, lng: number, radius: number;
     
         if (!initialLocation && savedLocation) {
             try {
                 const location = JSON.parse(savedLocation);
                 setSelectedOption(location);
                 setDisplaySelectedOption(location);
+                lat = location.lat;
+                lng = location.lng;
             } catch (error) {
                 console.error("Error parsing saved location:", error);
                 setSelectedOption(DALLAS_FALLBACK);
                 setDisplaySelectedOption(DALLAS_FALLBACK);
+                lat = DALLAS_FALLBACK.lat;
+                lng = DALLAS_FALLBACK.lng;
             }
         } else if (!initialLocation) {
             handleIPGeolocation();
@@ -859,9 +884,11 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             if (!isNaN(radiusValue)) {
                 setRadius(radiusValue);
                 setDisplayRadius(radiusValue.toString());
+                radius = radiusValue;
             } else {
                 setRadius(20);
                 setDisplayRadius("20");
+                radius = 20;
             }
         }
 
@@ -885,6 +912,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     // Save the radius to localStorage
                     localStorage.setItem("selectedRadius", "20");
 
+                    setLatLngRadius(data.lat, data.lng, 20)
+
                 })
                 .catch(error => {
                     console.error("Error fetching IP geolocation data:", error);
@@ -905,6 +934,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
                     // Save the radius to localStorage
                     localStorage.setItem("selectedRadius", "20");
+                    setLatLngRadius(fallbackLocation.lat, fallbackLocation.lng, 20)
                 });
         }
     }, []);
@@ -950,13 +980,19 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             getOptionValue={(option: Location) => option.search}
                             // getOptionValue={(option: Location) => option.zip.toString()}
                             placeholder="Search by city"
-                            className="text-sm foucs:red-500 focus:outline-none hover:outline-none border-none"
+                            className="text-sm "
                             styles={{
                                 control: (base, state) => ({
-                                    ...base,
-                                    paddingLeft: '2rem',
-                                    // borderColor: state.isFocused ? 'red' : '#d1d5db', // Change border color on focus
+                                    // ...base,
+                                    paddingLeft: '1.6rem',
+                                    border: state.isFocused ? '2px solid #ff7a19' : '2px solid #d1d5db', // Change border color on focus
+                                    borderRadius: '0.375rem',
                                     minHeight: '42px',
+                                    backgroundColor: '#fff',
+                                    // border: '1px solid #f1db0e !important', // Default border color
+                                    display:"flex",
+                                    alignItems:"center",
+
                                     transition: 'border-color 0.3s ease', // Optional transition for smooth effect
                                 }),
                             }}

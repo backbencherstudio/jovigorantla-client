@@ -261,6 +261,8 @@ const SavedListings = () => {
 
     await deleteFavoritesListing(listingId);
 
+    setListings(listings.filter((l) => l.id !== listingId));
+
 
     // Update localStorage with the new list of saved listing IDs
     // const savedListingsIds = updatedListings.map((listing) => listing.id);
@@ -340,7 +342,7 @@ const SavedListings = () => {
             </div>
           ) : (
             <div className="space-y-4 thin-scrollbar max-h-[calc(100vh-200px)] overflow-y-auto md:thin-scrollbar">
-              {listings.map((listing) => (
+              {favoritesListings.map((listing) => (
                 <div
                   key={listing.id}
                   className="bg-white  border-b border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"

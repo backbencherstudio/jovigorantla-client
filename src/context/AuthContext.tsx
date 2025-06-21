@@ -291,6 +291,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await api.post('/favorites', { 
         listing_id: listingId,
        });
+
+       console.log("from => ",res.data);
       if (res.data.success) {
         // go throw favoritesListings and remove the listing with the id of listingId
         setFavoritesListings(favoritesListings.filter((listing: any) => listing.id !== listingId));

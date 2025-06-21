@@ -11,7 +11,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
 
   return (
     <div className="filter-tabs-container border-b border-gray-100">
-      <div className="flex gap-2 px-4 overflow-x-auto thin-scrollbar py-2 bg-background">
+      <div className="flex gap-2 px-4 overflow-x-auto thin-scrollbar py-3 bg-background">
         {tabs.map((tab) => (
           <div
             key={tab}

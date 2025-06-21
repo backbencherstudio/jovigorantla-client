@@ -56,15 +56,22 @@ function sumRecord(record: Record<string, number>): string {
   return String(sum);
 }
 
+interface HeaderProps {
+  searchInput?: string;
+  onSearchInputChange?: (value: string) => void;
+  onSearchSubmit?: (value: string) => void;
+}
 
-const Header = () => {
+const Header = ({  searchInput,
+  onSearchInputChange,
+  onSearchSubmit }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
 
   const { unreadMessages } = useMessages();
@@ -86,17 +93,17 @@ const Header = () => {
 
 
   const unreadMessagesCount = sumRecord(unreadMessages);
-  
 
 
-  useEffect(() => {
-    // Extract search query from URL if present
-    const params = new URLSearchParams(location.search);
-    const queryParam = params.get("q");
-    if (queryParam) {
-      setSearchQuery(queryParam);
-    }
-  }, [location.search]);
+
+  // useEffect(() => {
+  //   // Extract search query from URL if present
+  //   const params = new URLSearchParams(location.search);
+  //   const queryParam = params.get("q");
+  //   if (queryParam) {
+  //     setSearchQuery(queryParam);
+  //   }
+  // }, [location.search]);
 
   const handlePostAd = () => {
     navigate("/create-listing");
@@ -107,25 +114,96 @@ const Header = () => {
     // }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/?q=${encodeURIComponent(searchQuery)}`);
-    } else {
-      // If search is empty, navigate to home without query params
-      navigate("/");
-    }
-  };
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (searchQuery.trim()) {
+  //     navigate(`/?q=${encodeURIComponent(searchQuery)}`);
+  //   } else {
+  //     // If search is empty, navigate to home without query params
+  //     navigate("/");
+  //   }
+  // };
+
+
+
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (searchQuery.trim()) {
+  //     navigate(`${location.pathname}?q=${encodeURIComponent(searchQuery)}`);
+  //   } else {
+  //     // If search is empty, navigate to current path without query params
+  //     navigate(location.pathname);
+  //   }
+  // };
+
+  //   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const value = e.target.value;
+  //     setSearchQuery(value);
+
+  //     // If search field is cleared, navigate to home without query
+  //     if (!value.trim() && location.search.includes("q=")) {
+  //       navigate("/");
+  //     }
+  //   };
+
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   const currentPath = location.pathname;
+
+  //   if (searchQuery.trim()) {
+  //     navigate(`${currentPath}?query=${encodeURIComponent(searchQuery.trim())}`);
+  //     handleSetSearchQuery?.(searchQuery.trim());
+  //   } else {
+  //     // If empty, clear the query from current path
+  //     navigate(currentPath);
+  //     handleSetSearchQuery?.("");
+  //   }
+  // };
+
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   setSearchQuery(value);
+
+  //   // Optional: Auto-reset if user clears input and URL has a query
+  //   if (!value.trim() && location.search.includes("query=")) {
+  //     navigate(location.pathname);
+  //     handleSetSearchQuery?.("");
+
+  //   }
+  // };
+
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   onSearchChange(value);
+
+  //   if (!value.trim()) {
+  //     navigate(location.pathname);
+  //   }
+  // };
+
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const trimmed = searchQuery.trim();
+  //   if (trimmed) {
+  //     navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
+  //   } else {
+  //     navigate(location.pathname);
+  //   }
+  // };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-
-    // If search field is cleared, navigate to home without query
-    if (!value.trim() && location.search.includes("q=")) {
-      navigate("/");
+    onSearchInputChange(e.target.value);
+    if (!e.target.value.trim()) {
+      navigate(location.pathname);
     }
   };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearchSubmit(searchInput);
+  };
+
 
   const handleSignOut = async () => {
     const isLogout = await signOut();
@@ -133,7 +211,7 @@ const Header = () => {
     if (isLogout) {
       navigate("/");
       toast.warning("Logout successful");
-    }else{
+    } else {
       toast.error("Something went wrong", {
         className: "bg-red-500 text-white border-none text-center",
       });
@@ -163,7 +241,7 @@ const Header = () => {
               <Input
                 type="text"
                 placeholder="Search"
-                value={searchQuery}
+                value={searchInput}
                 onChange={handleSearchChange}
                 className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               />
@@ -171,7 +249,7 @@ const Header = () => {
           )}
 
           {/* <LocationWithRedius /> */}
-          
+
 
           <div className="flex items-center justify-end gap-2">
             {/* Location - Only on Tablet and Desktop */}
@@ -193,9 +271,8 @@ const Header = () => {
                   className="rounded-full h-9 w-9"
                 >
                   <Users
-                    className={`text-brand ${
-                      isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                    }`}
+                    className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                      }`}
                   />
                 </Button>
               )}
@@ -221,9 +298,8 @@ const Header = () => {
                     className="rounded-full h-9 w-9 bg-[#f1f5f9]"
                   >
                     <MessageCircle
-                      className={`text-brand ${
-                        isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                      }`}
+                      className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                        }`}
                     />
                   </Button>
                   {(parseInt(unreadMessagesCount) > 0) && (
@@ -332,7 +408,7 @@ const Header = () => {
         onOpenChange={closeModal}
         defaultTab={defaultTab}
       />
-      </>
+    </>
   );
 };
 
