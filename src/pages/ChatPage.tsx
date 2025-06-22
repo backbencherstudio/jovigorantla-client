@@ -835,7 +835,7 @@ const ChatPage = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { conversations, setActiveConversation, activeConversation, addMessage } = useMessages();
+  const { conversations, setActiveConversation, activeConversation, addMessage,handleSetUnreadMessages } = useMessages();
   // const [conversation, setConversation] = useState<Conversation | null>(null);
 
   // useEffect(() => {
@@ -886,6 +886,7 @@ const ChatPage = () => {
       navigate("/messages");
     }
   }, [conversationId, conversations, setActiveConversation, navigate]);
+
   const handleSendMessage = async (content: string) => {
     if (content.trim() && activeConversation) {
       try {
@@ -930,6 +931,8 @@ const ChatPage = () => {
   };
 
   const handleBack = () => {
+    handleSetUnreadMessages(conversationId, 0)
+    setActiveConversation(null)
     navigate(-1); // Go back to the previous page
   };
 

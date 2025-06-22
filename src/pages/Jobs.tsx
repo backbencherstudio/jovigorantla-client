@@ -18,7 +18,7 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import ListingSkeleton from "@/components/ListingSkeleton";
 
-export default function Accommodations() {
+export default function Jobs() {
     const isMobile = useIsMobile();
     const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
     const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -57,7 +57,6 @@ export default function Accommodations() {
         }
     };
 
-    // console.log("lat => ", lat, lng, radius)
 
     const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -86,7 +85,7 @@ export default function Accommodations() {
 
             const { data: listingResponse } = await api.get("/listings/nearby", {
                 params: {
-                    category: "ACCOMMODATIONS",
+                    category: "JOBS",
                     sub_category,
                     search: query,
                     limit: 10,
@@ -218,7 +217,7 @@ export default function Accommodations() {
                         )}
 
                         <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
-                            <FilterTabs tabs={["All", "Available", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+                            <FilterTabs tabs={["All", "Hiring", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
                         </div>
 
                       

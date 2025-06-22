@@ -18,7 +18,7 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import ListingSkeleton from "@/components/ListingSkeleton";
 
-export default function Accommodations() {
+export default function Home() {
     const isMobile = useIsMobile();
     const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
     const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -38,7 +38,7 @@ export default function Accommodations() {
     const numberOfShownListings = useRef(0);
     const listingCutoffTime = useRef("");
     const isFetchingRef = useRef(false);
-    const [activeFilter, setActiveFilter] = useState("All");
+    const [activeFilter, setActiveFilter] = useState("Nearby");
     const [oldFilter, setOldFilter] = useState("");
     const {lat, lng, radius} = useLocationContext()
 
@@ -57,7 +57,6 @@ export default function Accommodations() {
         }
     };
 
-    // console.log("lat => ", lat, lng, radius)
 
     const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -82,13 +81,12 @@ export default function Accommodations() {
             setLoading(true);
             const shownCount = numberOfShownListings.current || 0;
 
-            const sub_category = filter !== "All" ? filter : null;
+            const isUsa = filter === "USA";
 
             const { data: listingResponse } = await api.get("/listings/nearby", {
                 params: {
-                    category: "ACCOMMODATIONS",
-                    sub_category,
                     search: query,
+                    is_usa: isUsa,
                     limit: 10,
                     numberOfShownListings: shownCount,
                     lat: lat,
@@ -218,7 +216,7 @@ export default function Accommodations() {
                         )}
 
                         <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
-                            <FilterTabs tabs={["All", "Available", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+                            <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
                         </div>
 
                       

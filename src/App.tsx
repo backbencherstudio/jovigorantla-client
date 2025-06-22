@@ -35,6 +35,8 @@ import Marketplace from "./pages/Marketplace";
 import Rides from "./pages/Rides";
 import { LocationProvider } from "./context/LocationContext";
 import Accommodations from "./pages/Accommodations";
+import Jobs from "./pages/Jobs";
+import Home from "./pages/Home";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -71,9 +73,10 @@ function AppRoutes() {
         <Route
           path="/"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Home />
           }
         />
         <Route
@@ -88,9 +91,10 @@ function AppRoutes() {
         <Route
           path="/jobs"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Jobs />
           }
         />
         <Route
