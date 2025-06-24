@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
-import { X } from "lucide-react";
+import { TrendingUpIcon, X } from "lucide-react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -17,6 +17,7 @@ import SocialAuthButtons from "./Auth/SocialAuthButtons";
 import LoginForm from "./Auth/LoginForm";
 import SignupEmailForm from "./Auth/SignupEmailForm";
 import { useNavigate } from "react-router-dom";
+import ResetPasswordWithOTPForm from "./Auth/ResetPasswordWithOTPForm";
 
 interface AuthModalProps {
   open: boolean;
@@ -29,7 +30,7 @@ const AuthModal = ({
   onOpenChange,
   defaultTab = "login",
 }: AuthModalProps) => {
-  const { signIn, signUp,  signUpWithGoogle} = useAuth();
+  const { signIn, signUp,  signUpWithGoogle, resetPassword, forgotPassword: handleForgotPassword} = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +46,8 @@ const AuthModal = ({
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState<number>(60);
   const [resendDisabled, setResendDisabled] = useState(false);
+  const [openResetPassword, setOpenResetPassword] = useState(false)
+  const [resetEmail, setResetEmail] = useState("");
 
 
   useEffect(() => {
@@ -102,6 +105,22 @@ const AuthModal = ({
     email: z.string().email({ message: "Please enter a valid email address" }),
   });
 
+
+
+const resetPasswordWithOtpSchema = z
+  .object({
+    otp: z.string().min(6, "OTP must be at least 4 characters"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
+
+
   // Create forms
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -122,6 +141,17 @@ const AuthModal = ({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { email: "" },
   });
+
+  const resetForm = useForm<z.infer<typeof resetPasswordWithOtpSchema>>({
+    resolver: zodResolver(resetPasswordWithOtpSchema),
+    defaultValues: {
+      otp: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+
 
   // Login handler
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
@@ -256,30 +286,43 @@ const AuthModal = ({
     setIsLoading(true);
     setResendDisabled(true);
     setResendTimer(60);
-    // try {
-    //   const { error } = await resetPassword(values.email);
-    //   if (error) {
-    //     toast.error("Password reset failed", { description: error.message });
-    //   } else {
-    //     toast.success("Password reset email sent", {
-    //       description: "Check your email for a password reset link",
-    //     });
-    //     setForgotPassword(false);
-    //   }
-    // } catch (error) {
-    //   toast.error("Password reset failed", {
-    //     description: "An unexpected error occurred",
-    //   });
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    try {
+      await handleForgotPassword(values.email);
+      setForgotPassword(false);
+    } catch (error) {
+      toast.error("Password reset failed", {
+        description: "An unexpected error occurred",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const handleOpenResetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
+   try {
+    setOpenResetPassword(true);
+    setForgotPassword(false);
+    setResetEmail(values.email);
+    await handleForgotPassword(values.email);
+   } catch (error) {
+    console.log(error)
+   }
+  }
 
   // Handle resend OTP
   const handleResend = () => {
     setResendDisabled(true);
     setResendTimer(60);
     toast.success("Verification code resent to your email");
+  };
+
+  const handleReset = async (values: z.infer<typeof resetPasswordWithOtpSchema>) => {
+    try {
+      // API call to reset password with values.otp, values.password
+      console.log(values);
+    } catch (err) {
+      console.error("Reset failed", err);
+    }
   };
 
   // Timer effect for resend button
@@ -297,6 +340,16 @@ const AuthModal = ({
   }, [resendTimer, resendDisabled]);
 
   const renderMainContent = () => {
+
+    // Show Reset Password form
+    if (openResetPassword) {
+      return <ResetPasswordWithOTPForm 
+        resetForm={resetForm}
+        handleReset={handleReset}
+        isLoading={isLoading}
+        setBackToEmailForm={setOpenResetPassword}
+      />
+    }
     // Show forgot password form
     if (forgotPassword) {
       return (

@@ -681,31 +681,31 @@ export const ListingProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setLoading(true);
-      const { data: listingResponse } = await api.get('/listings/nearby', {
-        params: {
-          ...getParamsForUrl(),
-          limit: 10,
-          lat: 40.7831,
-          lng: -73.9712,
-          radius: 100000000000000,
-        },
-      });
+      // const { data: listingResponse } = await api.get('/listings/nearby', {
+      //   params: {
+      //     ...getParamsForUrl(),
+      //     limit: 10,
+      //     lat: 40.7831,
+      //     lng: -73.9712,
+      //     radius: 100000000000000,
+      //   },
+      // });
 
-      const data = listingResponse.data;
+      // const data = listingResponse.data;
 
-      if (data.listings && data.listings.length > 0) {
-        if (numberOfShownListings.current === 0) {
-          setListings(data.listings);
-          listingCutoffTime.current = data.listing_cutoff_time;
-          numberOfShownListings.current = data.numberOfShownListings;
-        } else {
-          setListings(prev => [...prev, ...data.listings]);
-          numberOfShownListings.current += data.listings.length;
-        }
-        setHasMore(data.hasMore);
-      } else {
-        setHasMore(false);
-      }
+      // if (data.listings && data.listings.length > 0) {
+      //   if (numberOfShownListings.current === 0) {
+      //     setListings(data.listings);
+      //     listingCutoffTime.current = data.listing_cutoff_time;
+      //     numberOfShownListings.current = data.numberOfShownListings;
+      //   } else {
+      //     setListings(prev => [...prev, ...data.listings]);
+      //     numberOfShownListings.current += data.listings.length;
+      //   }
+      //   setHasMore(data.hasMore);
+      // } else {
+      //   setHasMore(false);
+      // }
     } catch (err) {
       setError('Failed to fetch listings');
       console.error('Error:', err);

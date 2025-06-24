@@ -44,7 +44,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       : "rounded-r-lg"
   );
 
-  console.log("message", message.content);
+  // console.log("message", message.content);
 
   return (
     <div

@@ -181,10 +181,10 @@ interface LocationWithRadiusProps {
     setNearByRadius?: (any) => void
     initialRadius?: number
     initialLocation?: Location
-
+    setCurrentLocation? : (any) => void
 }
 
-const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation }) => {
+const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation, setCurrentLocation }) => {
     const [selectedOption, setSelectedOption] = useState<Location | null>(null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
@@ -675,6 +675,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             // console.log(nearbyCities)
             setCities(getNearbyCities(selectedOption.lat, selectedOption.lng, radius));
             setNearByRadius(radius);
+            setCurrentLocation(selectedOption)
         }
     };
 
@@ -943,6 +944,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         if (setCities && selectedOption && radius) {
             setCities(getNearbyCities(selectedOption.lat, selectedOption.lng, radius));
             setNearByRadius(radius);
+            setCurrentLocation(selectedOption)
         }
     }, [selectedOption, radius, setCities]);
 

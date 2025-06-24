@@ -24,6 +24,7 @@ const ResetPasswordForm = ({
         onClick={() => setForgotPassword(false)}
         className="text-gray-800 hover:text-gray-700 rounded-full absolute left-4 top-4 text-xl"
       >
+        
         <ArrowLeft />
       </Button>
       <div className="w-full max-w-md space-y-6 mt-10">

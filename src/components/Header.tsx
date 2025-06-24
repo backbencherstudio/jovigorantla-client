@@ -76,7 +76,7 @@ const Header = ({  searchInput,
 
   const { unreadMessages } = useMessages();
 
-  console.log(unreadMessages)
+  // console.log(unreadMessages)
 
   // Check if user is employee or admin
   const isEmployee =

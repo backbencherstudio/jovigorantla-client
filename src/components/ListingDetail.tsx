@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   ArrowLeft,
   MessageSquare,
@@ -25,6 +25,28 @@ interface ListingDetailProps {
   onBack: () => void;
   onContact?: () => void;
 }
+
+
+const renderDescriptionWithPhoneLinks = (text: string) => {
+  const phoneRegex = /(\b\d{10}\b)/g;
+  const parts = text.split(phoneRegex);
+
+  return parts.map((part, index) => {
+    if (phoneRegex.test(part)) {
+      return (
+        <a
+          key={index}
+          href={`tel:${part}`}
+          className="text-blue-600 underline hover:text-blue-800"
+        >
+          {part}
+        </a>
+      );
+    }
+    return <React.Fragment key={index}>{part}</React.Fragment>;
+  });
+};
+
 
 const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -108,7 +130,10 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold mb-4">{title}</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          {/* {title} */}
+          ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVW
+          </h1>
 
         {/* User info and metadata - using the same format as listings */}
         <div className="flex items-center text-sm text-gray-500 mb-4">
@@ -119,14 +144,25 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
           <span>{timeAgo}</span>
         </div>
 
-        {description && (
+        {/* {description && (
           <Card className="mb-4 border-none shadow-none">
             <CardContent className="p-0">
               <h2 className="text-lg font-bold mb-2">Description</h2>
               <p className="text-gray-700">{description}</p>
             </CardContent>
           </Card>
-        )}
+        )} */}
+
+      {description && (
+        <Card className="mb-4 border-none shadow-none">
+          <CardContent className="p-0">
+            <h2 className="text-lg font-bold mb-2">Description</h2>
+            <p className="text-gray-700">
+              {renderDescriptionWithPhoneLinks(description)}
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
         {image && (
           <div className="my-4 overflow-hidden rounded-[100px]">

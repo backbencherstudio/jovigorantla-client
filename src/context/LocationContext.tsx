@@ -15,9 +15,9 @@ interface LocationProviderProps {
 }
 
 export const LocationProvider = ({ children }: LocationProviderProps) => {
-  const [lat, setLat] = useState(40.7831);
-  const [lng, setLng] = useState(-73.9712);
-  const [radius, setRadius] = useState(100000);
+  const [lat, setLat] = useState(localStorage.getItem('selectedLocation') ? JSON.parse(localStorage.getItem('selectedLocation')).lat : 40.7128);
+  const [lng, setLng] = useState(localStorage.getItem('selectedLocation')? JSON.parse(localStorage.getItem('selectedLocation')).lng : -74.0060);
+  const [radius, setRadius] = useState(localStorage.getItem('selectedRadius')? JSON.parse(localStorage.getItem('selectedRadius')) : 1000);
 
   const setLatLngRadius = (lat: number, lng: number, radius: number) => {
     setLat(lat);
@@ -25,13 +25,13 @@ export const LocationProvider = ({ children }: LocationProviderProps) => {
     setRadius(radius);
   };
 
-  useEffect(() => {
-    const selectedLocation = JSON.parse(localStorage.getItem('selectedLocation'))
-    const selectedRadius = JSON.parse(localStorage.getItem('selectedRadius'))
-    if (selectedLocation && selectedRadius) {
-      setLatLngRadius(selectedLocation.lat, selectedLocation.lng, selectedRadius)
-    }
-  }, []);
+  // useEffect(() => {
+  //   const selectedLocation = JSON.parse(localStorage.getItem('selectedLocation'))
+  //   const selectedRadius = JSON.parse(localStorage.getItem('selectedRadius'))
+  //   if (selectedLocation && selectedRadius) {
+  //     setLatLngRadius(selectedLocation.lat, selectedLocation.lng, selectedRadius)
+  //   }
+  // }, []);
 
   return (
     <LocationContext.Provider value={{ lat, lng, radius, setLatLngRadius }}>

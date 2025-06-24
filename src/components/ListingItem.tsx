@@ -3,6 +3,7 @@ import { ListingType } from "@/types/listing";
 import ListingActions from "./ListingActions";
 import { getAddressFromCoordinates } from "@/hooks/getAddress";
 import { formatTime } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface ListingItemProps {
   listing: ListingType;
@@ -12,6 +13,9 @@ interface ListingItemProps {
 
 const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
   const navigate = useNavigate();
+
+
+
 
   // Format category and status for display
   const formatCategoryStatus = (category: string, status: string) => {
@@ -47,7 +51,7 @@ const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
       className="bg-white flex max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
     // onClick={handleClick}
     >
-      <div className="p-4 pb-2 lg:pb-4 flex flex-col flex-1 text-sm text-gray-500">
+      <div className="p-4 pb-2 lg:pb-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
         <div className="flex items-center text-sm text-gray-500 mb-1">
           <span>{displayCategory?.slice(0, 1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
           <span className="mx-2">•</span>
@@ -55,10 +59,12 @@ const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
         </div>
 
         <div
-          className={`${listing?.title?.length > 40 ? "mb-0" : "mb-7 sm:mb-0"}`}
+          className={`${listing?.title?.length > 40 ? "mb-0" : "mb-1 sm:mb-0"}`}
         >
-          <h3 className="text-lg font-medium text-gray-900 lg:text-nowrap line-clamp-2 ">
+          <h3 className="text-lg font-medium text-gray-900  line-clamp-2 mr-2 break-all">
+            {/* {listing.slug === 'test-1'? 'Ride Looking for a Driver': 'Looking for a Ride this is a long title that should be truncated this is one '} */}
             {listing.title}
+            {/* ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVW */}
           </h3>
         </div>
 

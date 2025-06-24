@@ -225,7 +225,7 @@ export default function Home() {
                             {listings.map((listing, index) => (
                                 <div key={`${listing.id}-${index}`}>
                                     {listing?.type === "listing" && (
-                                        <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} />
+                                        <ListingItem listing={listing} onToggleSave={() => { }} isUsa={activeFilter === "USA"} />
                                     )}
                                     {listing?.type === "ad" && (
                                         <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">

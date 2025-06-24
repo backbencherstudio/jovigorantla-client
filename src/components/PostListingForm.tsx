@@ -507,6 +507,9 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import LocationWithRadius from "./LocationWithRedius";
 import CustomModal from "./shared/CustomModal";
+import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/hooks/useAuthModal";
+import AuthModal from "./AuthModal";
 
 const categoriesConfig = {
   Marketplace: ["Item", "Service"],
@@ -565,6 +568,10 @@ function PostListingForm() {
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+  const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+
+  const { setFormData, user } = useAuth()
 
 
 
@@ -670,11 +677,16 @@ function PostListingForm() {
         formData.append('image_url', imagePreview);
       }
 
-      formData.append('category', data.category);
-      formData.append('sub_category', data.subCategory);
+      formData.append('category', data.category.toUpperCase());
+      formData.append('sub_category', data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase());
       formData.append('title', data.title);
       formData.append('description', data.description || '');
       formData.append('post_to_usa', data.isUSA ? 'true' : 'false');
+
+      // Location fields
+      formData.append('address', currentLocation?.search);
+      formData.append('latitude', String(currentLocation?.lat));
+      formData.append('longitude', String(currentLocation?.lng));
 
       const fomatedCities = cities?.map((location: any) => ({
         address: location.search,
@@ -693,6 +705,12 @@ function PostListingForm() {
       // console.log("form data => ", data)
       // console.log("cities => ", cities)
       // console.log("radius => ", radius)
+
+      if (!user) {
+        // setFormData(formData)
+        openModal('login')
+        return
+      }
 
       if (isEditMode) {
         const response = await api.patch(`/listings/${listingId}`, formData);
@@ -1010,10 +1028,16 @@ function PostListingForm() {
             control={control}
             render={({ field }) => (
               <textarea
+                // maxLength={}
                 {...field}
                 id="description"
                 placeholder="Describe your listing in detail"
                 className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none rounded-xl w-full p-2 ring-1 ring-transparent focus:ring-orange-500"
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = "auto";
+                  target.style.height = `${target.scrollHeight}px`;
+                }}
               />
             )}
           />
@@ -1065,18 +1089,21 @@ function PostListingForm() {
           <label htmlFor="location" className="block font-medium text-sm">
             Location
           </label>
-          <div className="mt-2 bg-[#E5EBEE] rounded-md border border-gray-300">
-            <LocationWithRadius
-              // setCities={setCities}
-              // notSetDefault={true}
-              // setNearByRadius={setRadius}
-              setCities={setCities}
-              notSetDefault={true}
-              setNearByRadius={setRadius}
-              initialLocation={defaultLocation}
-              initialRadius={defaultRadius}
-              className="w-full bg-transparent outline-0 border-0 hover:bg-transparent"
-            />
+          <div className="mt-2 bg-[#E5EBEE] rounded-md border border-gray-300 flex justify">
+            <div className="w-64 ml-auto">
+              <LocationWithRadius
+                // setCities={setCities}
+                // notSetDefault={true}
+                // setNearByRadius={setRadius}
+                setCities={setCities}
+                notSetDefault={true}
+                setNearByRadius={setRadius}
+                setCurrentLocation={setCurrentLocation}
+                initialLocation={defaultLocation}
+                initialRadius={defaultRadius}
+                className="w-full bg-transparent outline-0 border-0 hover:bg-transparent"
+              />
+            </div>
           </div>
         </div>
 
@@ -1153,6 +1180,12 @@ function PostListingForm() {
         type="error"
         title=" Oops! An Unexpected error has been occurred, Please refresh the page"
         icon={<img className="h-40 w-40" src={errorImg} alt="error" />}
+      />
+
+      <AuthModal
+        open={isOpen}
+        onOpenChange={closeModal}
+        defaultTab={defaultTab as "login" | "signup"}
       />
 
     </>

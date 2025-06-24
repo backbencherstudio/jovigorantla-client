@@ -15,10 +15,12 @@ interface ChatHeaderProps {
   listingTitle: string;
   listingId?: string;
   otherUserAvatar?: string;
+  isBlocked?: boolean;
   onBack?: () => void;
   onBlockUser?: () => void;
   onReportConversation?: () => void;
   onDeleteConversation?: () => void;
+  onUnblockUser?: () => void;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -26,10 +28,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   listingTitle,
   listingId,
   otherUserAvatar,
+  isBlocked,
   onBack,
   onBlockUser,
   onReportConversation,
   onDeleteConversation,
+  onUnblockUser,
 }) => {
   const navigate = useNavigate();
 
@@ -102,9 +106,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem onClick={onBlockUser} className="cursor-pointer ">
+         {!isBlocked ? <DropdownMenuItem onClick={onBlockUser} className="cursor-pointer ">
             Block User
-          </DropdownMenuItem>
+          </DropdownMenuItem>: <DropdownMenuItem onClick={onUnblockUser} className="cursor-pointer ">
+            Unblock
+          </DropdownMenuItem>}
           {/* <DropdownMenuItem
             onClick={onReportConversation}
             className="cursor-pointer"

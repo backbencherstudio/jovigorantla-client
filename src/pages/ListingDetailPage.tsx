@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   MessageSquare,
@@ -29,6 +29,27 @@ import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
 
+
+const renderDescriptionWithPhoneLinks = (text: string) => {
+  const phoneRegex = /(\b\d{10,}\b)/g;
+  const parts = text.split(phoneRegex);
+
+  return parts.map((part, index) => {
+    if (phoneRegex.test(part)) {
+      return (
+        <a
+          key={index}
+          href={`tel:${part}`}
+          className="text-blue-600 underline hover:text-blue-800"
+        >
+          {part}
+        </a>
+      );
+    }
+    return <React.Fragment key={index}>{part}</React.Fragment>;
+  });
+};
+
 const ListingDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -57,6 +78,8 @@ const ListingDetailPage = () => {
       setLoading(false);
     }
   }
+
+  console.log(listing)
 
 
 
@@ -316,6 +339,7 @@ const ListingDetailPage = () => {
                <ListingActions
                 listingId={listing.id}
                 listingTitle={listing.title}
+                isUsa={false}
                 // saved={listing.saved || false}
                 // saved={false}
                 // onToggleSave={onToggleSave}
@@ -328,7 +352,10 @@ const ListingDetailPage = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-bold mb-4">{listing.title}</h1>
+          <h1 className="text-2xl font-bold mb-4  line-2" style={{ lineHeight: 1.4}}>
+            {listing.title}
+            {/* Private accommodation available in Irving from August 1st for 2 males in 2bed 2bath */}
+            </h1>
 
           {/* User info and metadata - updated format */}
           <div className="flex items-center text-sm text-gray-500 mb-4">
@@ -353,11 +380,75 @@ const ListingDetailPage = () => {
               <CardContent className="p-0">
                 <h2 className="text-lg font-bold mb-2">Description</h2>
                 <p className="text-gray-700 whitespace-pre-line">
-                  {listing.description}
+                  {renderDescriptionWithPhoneLinks(listing.description)}
                 </p>
               </CardContent>
             </Card>
           )}
+
+
+          {/* <Card className="mb-6 border-none shadow-none">
+              <CardContent className="p-0">
+                <h2 className="text-lg font-bold mb-2">Description</h2>
+                <p className="text-gray-700 whitespace-pre-line">
+                🏠 Private Accommodation Available in Irving – 2BHK for 2 Males from August 1st
+
+Looking for comfortable and private living in a great neighborhood? We’re offering a 2 bedroom, 2 bathroom apartment in Irving, Texas, available for 2 males starting August 1st. Whether you're a working professional or a student, this spacious and well-maintained home offers the privacy, convenience, and amenities you need for a comfortable stay.
+
+Located in a peaceful and secure community, this apartment is ideal for individuals who value a clean and quiet living environment with easy access to major highways, public transportation, grocery stores, and restaurants.
+
+🏡 Apartment Details:
+
+– Type: 2 Bedroom | 2 Bathroom
+– Availability: From August 1st
+– Ideal for: 2 Males
+– Rent: Competitive and affordable (Contact for details)
+– Lease Type: Flexible (short-term/long-term options)
+
+🛏️ Room Features:
+
+– Private bedroom with closet space
+– Attached and shared bathroom options
+– Semi-furnished with essentials
+– Natural lighting and good ventilation
+– Carpeted/wood floors (based on unit)
+– High-speed internet and utilities available
+
+🍽️ Common Areas:
+
+– Spacious living room with seating and TV setup
+– Dining area for shared meals
+– Fully-equipped kitchen with refrigerator, microwave, stove, and utensils
+– Washer & Dryer in-unit or in-building
+
+🌳 Community Amenities (Varies by complex):
+
+– Swimming pool and gym access
+– 24/7 maintenance and security patrol
+– Designated parking spots
+– Pet-friendly policy (check for details)
+– Clubhouse and recreational areas
+
+📍 Prime Location in Irving:
+
+– Walking distance to Walmart, Indian groceries, and restaurants
+– Quick access to DART station and bus lines
+– Close to Las Colinas, DFW Airport, and major corporate hubs
+– Peaceful neighborhood with parks and green spaces nearby
+
+This accommodation is perfect for roommates, offering equal privacy in a shared 2BHK setup. Both bedrooms are designed to offer comfort and personal space, and bathrooms are conveniently located for easy access.
+
+We’re looking for clean, respectful, and responsible individuals to occupy this space. Whether you're new to the city or simply looking for a better living option, this is a great opportunity to move into a welcoming and convenient environment.
+
+📞 Contact Information:
+
+If you’re interested or have any questions, please reach out for pictures, rent details, or to schedule a visit. Early applications are encouraged as availability may be limited.
+                </p>
+              </CardContent>
+          </Card> */}
+
+
+          
 
           {/* Photo Gallery - only show if there are images and not for jobs/rides */}
           {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
