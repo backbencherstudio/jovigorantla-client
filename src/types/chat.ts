@@ -3,7 +3,9 @@ export type Message = {
     senderId: string;
     content: string;
     timestamp: Date;
-    read: boolean;
+    read?: boolean;
+    receiver_id: string;
+    isRead?: boolean;
   };
   
 //   export type Conversation = {

@@ -45,13 +45,15 @@ const EmailVerification = ({
 
   const handleResendClick = async () => {
     try {
-      const success = await sendOtp(signUpEmail!);
-      if (success) {
-        handleResend(); // This will handle the timer reset
-        toast.success("Verification code resent successfully");
-      } else {
-        toast.error("Failed to resend verification code");
-      }
+      await handleResend();
+      setOtp("")
+      // const success = await sendOtp(signUpEmail!);
+      // if (success) {
+      //   handleResend(); // This will handle the timer reset
+      //   toast.success("Verification code resent successfully");
+      // } else {
+      //   toast.error("Failed to resend verification code");
+      // }
     } catch (error) {
       console.error("Error resending OTP:", error);
       toast.error("Failed to resend verification code");

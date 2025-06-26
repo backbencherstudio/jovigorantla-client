@@ -31,6 +31,12 @@ import { ListingProvider } from "./context/ListingContext";
 import { SocketProvider } from '@/context/SocketContext';
 import { MessageProvider } from "./context/MessageContext";
 import PostListingForm from "./components/PostListingForm";
+import Marketplace from "./pages/Marketplace";
+import Rides from "./pages/Rides";
+import { LocationProvider } from "./context/LocationContext";
+import Accommodations from "./pages/Accommodations";
+import Jobs from "./pages/Jobs";
+import Home from "./pages/Home";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -67,41 +73,52 @@ function AppRoutes() {
         <Route
           path="/"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Home />
           }
         />
         <Route
           path="/accommodations"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Accommodations />
           }
         />
         <Route
           path="/jobs"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Jobs />
           }
         />
         <Route
           path="/marketplace"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Marketplace />
           }
         />
+        {/* <Route
+          path="/services"
+          element={
+            <Marketplace />
+          }
+        /> */}
         <Route
           path="/rides"
           element={
-            <ResponsiveLayout>
-              <Index />
-            </ResponsiveLayout>
+            // <ResponsiveLayout>
+            //   <Index />
+            // </ResponsiveLayout>
+            <Rides />
           }
         />
 
@@ -251,11 +268,13 @@ function App() {
     <Router>
       <AuthProvider>
         <ListingProvider>
-          <SocketProvider>
-            <MessageProvider>
-              <AppRoutes />
-            </MessageProvider>
-          </SocketProvider>
+          <LocationProvider>
+            <SocketProvider>
+              <MessageProvider>
+                <AppRoutes />
+              </MessageProvider>
+            </SocketProvider>
+          </LocationProvider>
         </ListingProvider>
       </AuthProvider>
     </Router>

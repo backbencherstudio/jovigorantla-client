@@ -15,10 +15,17 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
   const onSubmit = async (values) => {
     try {
       const success = await sendOtp(values.email);
+
+      // console.log("success", success)
       if (success) {
         // Store email in localStorage after successful OTP sending
         localStorage.setItem("signupEmail", values.email);
         handleEmailSubmit(values);
+      }else{
+        signupEmailForm.setError("email", {
+          type: "manual",
+          message: "Email already exists",
+        });
       }
     } catch (error) {
       console.error("Error sending OTP:", error);

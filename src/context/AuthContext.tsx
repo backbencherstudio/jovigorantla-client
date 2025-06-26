@@ -158,6 +158,9 @@ type AuthContextType = {
   deleteFavoritesListing: (listingId: string) => Promise<boolean>;
   sendOtp: (email: string) => Promise<boolean>;
   verifyOtp: (email: string, otp: string) => Promise<boolean>;
+  setFormData: (formData: any) => void;
+  forgotPassword: (email: string) => Promise<boolean>;
+  resetPassword: (email: string, password: string, token: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -166,6 +169,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [favoritesListings, setFavoritesListings] = useState([]);
+  const [formData, setFormData] = useState(null)
 
   const fetchUser = async () => {
     try {
@@ -232,6 +236,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         otp,
       });
 
+      console.log("from sign up=> ",res.data)
+
       if (res.data.success) {
         await fetchUser();
         return true;
@@ -291,6 +297,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await api.post('/favorites', { 
         listing_id: listingId,
        });
+
+       console.log("from => ",res.data);
       if (res.data.success) {
         // go throw favoritesListings and remove the listing with the id of listingId
         setFavoritesListings(favoritesListings.filter((listing: any) => listing.id !== listingId));
@@ -324,6 +332,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const sendOtp = async (email: string) => {
     try {
       const res = await api.post('/auth/send-otp', { email });
+      // console.log(res)
       return res.data.success;
     } catch {
       return false;
@@ -340,6 +349,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+  const forgotPassword = async (email: string) => {
+    try {
+      const res = await api.post('/auth/forgot-password', { email });
+      return res.data.success;
+    } catch {
+      return false;
+    }
+  };
+
+  const resetPassword = async (email: string, password: string, token: string) => {
+    try {
+      const res = await api.post('/auth/reset-password', { email, password, token });
+      return res.data.success;
+    } catch {
+      return false;
+    }
+  }
+
   const value = {
     user,
     loading,
@@ -352,7 +379,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     addFavoritesListing,
     deleteFavoritesListing,
     sendOtp,
-    verifyOtp
+    verifyOtp,
+    setFormData,
+    forgotPassword,
+    resetPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

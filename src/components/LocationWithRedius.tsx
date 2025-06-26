@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 // import locationsData from "../data/us_cities_with_zipcode.json";
 import locationsData from "../data/uscitiesLocation.json";
 import { getLocationFromCoordinates } from "@/hooks/getLocationFromCoordinates ";
+import { useLocationContext } from "@/context/LocationContext";
 
 
 const toRadians = (degree: number) => {
@@ -180,10 +181,11 @@ interface LocationWithRadiusProps {
     setNearByRadius?: (any) => void
     initialRadius?: number
     initialLocation?: Location
-
+    setCurrentLocation? : (any) => void
+    popupStyle?: string
 }
 
-const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation }) => {
+const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation, setCurrentLocation, popupStyle }) => {
     const [selectedOption, setSelectedOption] = useState<Location | null>(null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
@@ -192,6 +194,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
+    const { setLatLngRadius } = useLocationContext()
 
     // console.log("default data => ", initialLocation, initialRadius)
 
@@ -477,6 +480,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             
             setSelectedOption(nearestCity);
             if (onChange) onChange(nearestCity);
+
+            setLatLngRadius(nearestCity.lat, nearestCity.lng, 20)
             
             // Save to localStorage if initial load
             if (!localStorage.getItem("selectedLocation")) {
@@ -490,6 +495,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             if (!localStorage.getItem("selectedLocation")) {
                 localStorage.setItem("selectedLocation", JSON.stringify(DALLAS_FALLBACK));
             }
+
+            setLatLngRadius(DALLAS_FALLBACK.lat, DALLAS_FALLBACK.lng, 20)
         }
     };
 
@@ -629,11 +636,16 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
 
     const handleUpdate = () => {
+        
+        let lat: number, lng: number, r: number;
+
         if (selectedOption) {
             setDisplaySelectedOption(selectedOption);
             // check the current path if it create-listing if it's not then only set the selected location
             if (!notSetDefault) {
                 localStorage.setItem('selectedLocation', JSON.stringify(selectedOption));
+                lat = selectedOption.lat;
+                lng = selectedOption.lng;
             }
             // localStorage.setItem('selectedLocation', JSON.stringify(selectedOption));
         }
@@ -641,8 +653,16 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             setDisplayRadius(radius.toString());
             if (!notSetDefault) {
                 localStorage.setItem('selectedRadius', radius.toString());
+                r = radius;
             }
             // localStorage.setItem('selectedRadius', radius.toString());
+        }
+
+        console.log("inside with radius => ",lat, lng, radius)
+
+        if (lat && lng && r) {
+           
+            setLatLngRadius(lat, lng, r);
         }
 
         setIsOpen(false);
@@ -656,6 +676,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             // console.log(nearbyCities)
             setCities(getNearbyCities(selectedOption.lat, selectedOption.lng, radius));
             setNearByRadius(radius);
+            setCurrentLocation(selectedOption)
         }
     };
 
@@ -839,16 +860,22 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     useEffect(() => {
         const savedLocation = localStorage.getItem("selectedLocation");
         const savedRadius = localStorage.getItem("selectedRadius");
+
+        let lat: number, lng: number, radius: number;
     
         if (!initialLocation && savedLocation) {
             try {
                 const location = JSON.parse(savedLocation);
                 setSelectedOption(location);
                 setDisplaySelectedOption(location);
+                lat = location.lat;
+                lng = location.lng;
             } catch (error) {
                 console.error("Error parsing saved location:", error);
                 setSelectedOption(DALLAS_FALLBACK);
                 setDisplaySelectedOption(DALLAS_FALLBACK);
+                lat = DALLAS_FALLBACK.lat;
+                lng = DALLAS_FALLBACK.lng;
             }
         } else if (!initialLocation) {
             handleIPGeolocation();
@@ -859,9 +886,11 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             if (!isNaN(radiusValue)) {
                 setRadius(radiusValue);
                 setDisplayRadius(radiusValue.toString());
+                radius = radiusValue;
             } else {
                 setRadius(20);
                 setDisplayRadius("20");
+                radius = 20;
             }
         }
 
@@ -885,6 +914,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     // Save the radius to localStorage
                     localStorage.setItem("selectedRadius", "20");
 
+                    setLatLngRadius(data.lat, data.lng, 20)
+
                 })
                 .catch(error => {
                     console.error("Error fetching IP geolocation data:", error);
@@ -905,6 +936,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
 
                     // Save the radius to localStorage
                     localStorage.setItem("selectedRadius", "20");
+                    setLatLngRadius(fallbackLocation.lat, fallbackLocation.lng, 20)
                 });
         }
     }, []);
@@ -913,6 +945,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
         if (setCities && selectedOption && radius) {
             setCities(getNearbyCities(selectedOption.lat, selectedOption.lng, radius));
             setNearByRadius(radius);
+            setCurrentLocation(selectedOption)
         }
     }, [selectedOption, radius, setCities]);
 
@@ -925,7 +958,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 >
                     <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-primary" />
-                        <span className="truncate">
+                        {/* <span className="truncate underline">
+                            {dispalySelectedOption
+                                ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
+                                : "Select location"}
+                        </span> */}
+
+                        <span className="truncate underline decoration-from-font [text-underline-position:under]">
                             {dispalySelectedOption
                                 ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
                                 : "Select location"}
@@ -934,8 +973,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 </Button>
             </PopoverTrigger>
 
-            <PopoverContent className="w-64 p-4" align="start">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <PopoverContent className={`w-64 p-4 ${popupStyle}`} align="end" side="top">
+                <form onSubmit={handleSubmit} className={`space-y-4`}>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                         <AsyncSelect
@@ -950,15 +989,29 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                             getOptionValue={(option: Location) => option.search}
                             // getOptionValue={(option: Location) => option.zip.toString()}
                             placeholder="Search by city"
-                            className="text-sm foucs:red-500 focus:outline-none hover:outline-none border-none"
+                            className="text-sm "
                             styles={{
                                 control: (base, state) => ({
+<<<<<<< HEAD
                                     ...base,
                                     paddingLeft: '2rem',
                                     // borderColor: state.isFocused ? 'red' : '#d1d5db', // Change border color on focus
                                     // minHeight: '42px',
                                     // transition: 'border-color 0.3s ease', // Optional transition for smooth effect
                                      outline: 'none', // Remove the focus outline
+=======
+                                    // ...base,
+                                    paddingLeft: '1.6rem',
+                                    border: state.isFocused ? '2px solid #ff7a19' : '2px solid #d1d5db', // Change border color on focus
+                                    borderRadius: '0.375rem',
+                                    minHeight: '42px',
+                                    backgroundColor: '#fff',
+                                    // border: '1px solid #f1db0e !important', // Default border color
+                                    display:"flex",
+                                    alignItems:"center",
+
+                                    transition: 'border-color 0.3s ease', // Optional transition for smooth effect
+>>>>>>> 265452164b02b1739d0ef655cbabecbec7e702d8
                                 }),
                             }}
 
