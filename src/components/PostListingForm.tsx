@@ -480,12 +480,12 @@
 
 
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Info, Upload, X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/axois";
 
 import loadingImg from "@/assets/Loading.svg";
@@ -556,6 +556,7 @@ interface Location {
 function PostListingForm() {
   const [searchParams] = useSearchParams();
   const listingId = searchParams.get('id');
+  const location = useLocation()
   const isEditMode = !!listingId;
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -625,6 +626,7 @@ function PostListingForm() {
 
         // Set form values
         reset(initialData);
+        
 
 
         // find availble sub categories
@@ -667,6 +669,41 @@ function PostListingForm() {
 
     fetchListing();
   }, [listingId, isEditMode, reset]);
+
+
+  useEffect(() => {
+    const isEditMode = searchParams.has('id');
+    
+    if (!isEditMode) {
+      // Full reset logic
+      reset({
+        category: "",
+        subCategory: "",
+        title: "",
+        description: "",
+        image: null,
+        isUSA: false,
+      });
+      
+      // Clear other related state
+      setImagePreview(null);
+      setCities([]);
+      setRadius(0);
+      setCurrentLocation(null);
+      setAvailableSubCategories([]);
+      
+      // If using default values from props
+        reset({
+          category: "",
+          subCategory: "",
+          title: "",
+          description: "",
+          image: null,
+          isUSA: false,
+        });
+      
+    }
+  }, [location.key, reset, searchParams]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -877,13 +914,49 @@ function PostListingForm() {
     }
   }, [selectedCategory, setValue, watch]); // Watch for category changes
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [descriptionLength]); 
 
+  // const resizeTextarea = useCallback((textarea: HTMLTextAreaElement) => {
+  //   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  //   textarea.style.height = 'auto';
+  //   textarea.style.height = `${textarea.scrollHeight}px`;
+  //   window.scrollTo(0, scrollTop);
+  // }, []);
+
+  // const resizeTextarea = useCallback(() => {
+  //   if (!textareaRef.current) return;
+    
+  //   // Store current scroll position
+  //   const { scrollTop } = document.documentElement || document.body;
+    
+  //   // Reset and set height
+  //   textareaRef.current.style.height = 'auto';
+  //   textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    
+  //   // Restore scroll position (prevents jump)
+  //   window.requestAnimationFrame(() => {
+  //     window.scrollTo(0, scrollTop);
+  //   });
+  // }, []);
+
+  //   // Trigger resize when description changes (including initial load)
+  //   useEffect(() => {
+  //     resizeTextarea();
+  //   }, [watch("description"), resizeTextarea]);
+
+  // Working resize function
+const resizeTextarea = useCallback((textarea: HTMLTextAreaElement) => {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+  window.scrollTo(0, scrollTop);
+}, []);
+
+// Trigger resize on initial load and updates
+useEffect(() => {
+  if (textareaRef.current && watch("description")) {
+    resizeTextarea(textareaRef.current);
+  }
+}, [watch("description"), resizeTextarea]);
 
   if (isLoading) {
     return (
@@ -1042,16 +1115,34 @@ function PostListingForm() {
             render={({ field }) => (
               <div className="relative">
                 <textarea
-                  ref={textareaRef}
                   maxLength={3000}
                   {...field}
+                  ref={textareaRef}
                   id="description"
                   placeholder="Describe your listing in detail"
                   className=" min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none rounded-xl w-full p-2 ring-1 ring-transparent focus:ring-orange-500"
+                  // onInput={(e) => {
+                  //   const target = e.target as HTMLTextAreaElement;
+                  //   target.style.height = "auto";
+                  //   target.style.height = `${target.scrollHeight}px`;
+                  // }}
+                  // onInput={(e) => {
+                  //   const target = e.target as HTMLTextAreaElement;
+                  //   // Store current scroll position
+                  //   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                  //   target.style.height = "auto";
+                  //   target.style.height = `${target.scrollHeight}px`;
+                    
+                  //   // Restore scroll position
+                  //   window.scrollTo(0, scrollTop);
+                  // }}
+
+                  // onInput={(e) => resizeTextarea(e.target as HTMLTextAreaElement)}
+
                   onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = "auto";
-                    target.style.height = `${target.scrollHeight}px`;
+                    field.onChange(e); // Ensure react-hook-form gets the change
+                    resizeTextarea(e.target as HTMLTextAreaElement);
                   }}
                 />
                 <div className="absolute bottom-[-20px] right-2 text-xs text-gray-500 px-1 rounded">

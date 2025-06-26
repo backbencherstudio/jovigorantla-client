@@ -61,7 +61,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const searchParams = new URLSearchParams(window.location.search);
-  const editId = searchParams.get("edit");
+  const editId = searchParams.get("id");
   const isEditing = Boolean(editId);
 
   return (
