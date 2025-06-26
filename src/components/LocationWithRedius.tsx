@@ -182,9 +182,10 @@ interface LocationWithRadiusProps {
     initialRadius?: number
     initialLocation?: Location
     setCurrentLocation? : (any) => void
+    popupStyle?: string
 }
 
-const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation, setCurrentLocation }) => {
+const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, className, setCities, notSetDefault, setNearByRadius, initialRadius, initialLocation, setCurrentLocation, popupStyle }) => {
     const [selectedOption, setSelectedOption] = useState<Location | null>(null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
@@ -957,7 +958,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 >
                     <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-primary" />
-                        <span className="truncate">
+                        {/* <span className="truncate underline">
+                            {dispalySelectedOption
+                                ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
+                                : "Select location"}
+                        </span> */}
+
+                        <span className="truncate underline decoration-from-font [text-underline-position:under]">
                             {dispalySelectedOption
                                 ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
                                 : "Select location"}
@@ -966,8 +973,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 </Button>
             </PopoverTrigger>
 
-            <PopoverContent className="w-64 p-4" align="start">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <PopoverContent className={`w-64 p-4 ${popupStyle}`} align="end" side="top">
+                <form onSubmit={handleSubmit} className={`space-y-4`}>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                         <AsyncSelect

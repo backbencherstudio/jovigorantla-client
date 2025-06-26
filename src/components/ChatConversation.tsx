@@ -247,6 +247,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
           onUnblockUser={handleUnblockUser}
           onReportConversation={handleReportConversation}
           onDeleteConversation={handleDeleteConversation}
+          blockedByOther={blockedByOther}
         />
       </div>
 
@@ -321,10 +322,6 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
           </div>
         )}
       </div>
-
-
-
-
     </div>
   );
 };

@@ -18,6 +18,7 @@ import LoginForm from "./Auth/LoginForm";
 import SignupEmailForm from "./Auth/SignupEmailForm";
 import { useNavigate } from "react-router-dom";
 import ResetPasswordWithOTPForm from "./Auth/ResetPasswordWithOTPForm";
+import { api } from "@/lib/axois";
 
 interface AuthModalProps {
   open: boolean;
@@ -112,7 +113,7 @@ const resetPasswordWithOtpSchema = z
     otp: z.string().min(6, "OTP must be at least 4 characters"),
     password: z
       .string()
-      .min(6, "Password must be at least 6 characters long"),
+      .min(8, "Password must be at least 6 characters long"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -158,22 +159,27 @@ const resetPasswordWithOtpSchema = z
     setIsLoading(true);
     try {
       const isSignIn = await signIn(values.email, values.password);
+
       if (!isSignIn) {
-        toast.error("Login failed", {
-          description: "Please enter correct email and password",
-          className: "bg-red-700 text-white border-none",
+        loginForm.setError("password", {
+          type: "manual",
+          message: "Incorrect email or password",
         });
+        // toast.error("Login failed", {
+        //   description: "Please enter correct email and password",
+        //   className: "bg-red-700 text-white border-none",
+        // });
       } else {
-        toast.success('Login successful', {
-          className: 'bg-green-700 text-white border-none text-center',
-        });
+        // toast.success('Login successful', {
+        //   className: 'bg-green-700 text-white border-none text-center',
+        // });
         onOpenChange(false);
       }
     } catch (error) {
-      toast.error("Login failed", {
-        description: "Username or Password May be Wrong",
-        className: "bg-red-700 text-white border-none",
-      });
+      // toast.error("Login failed", {
+      //   description: "Username or Password May be Wrong",
+      //   className: "bg-red-700 text-white border-none",
+      // });
     } finally {
       setIsLoading(false);
     }
@@ -190,7 +196,7 @@ const resetPasswordWithOtpSchema = z
       // Start the resend timer
       setResendDisabled(true);
       //TODO: opt setResendTimer(120);
-      setResendTimer(120);
+      setResendTimer(100);
       toast.success("Verification code sent to your email");
     } catch (error) {
       toast.error("Failed to send verification code");
@@ -220,17 +226,17 @@ const resetPasswordWithOtpSchema = z
   ) => {
     setIsLoading(true);
     try {
-      const isSignUp = await signUp(
-        signupEmail,
-        values.password,
-        values.username,
-      );
-      if (isSignUp) {
-        toast.error("Signup failed", { description: "Signup failed" });
-      } else {
-        toast.success("Signup successful");
-        onOpenChange(false);
-      }
+      // const isSignUp = await signUp(
+      //   signupEmail,
+      //   values.password,
+      //   values.username,
+      // );
+      // if (isSignUp) {
+      //   toast.error("Signup failed", { description: "Signup failed" });
+      // } else {
+      //   toast.success("Signup successful");
+      //   onOpenChange(false);
+      // }
     } catch (error) {
       toast.error("Signup failed", {
         description: "An unexpected error occurred",
@@ -285,7 +291,7 @@ const resetPasswordWithOtpSchema = z
     setSignupStep("verify");
     setIsLoading(true);
     setResendDisabled(true);
-    setResendTimer(60);
+    setResendTimer(100);
     try {
       await handleForgotPassword(values.email);
       setForgotPassword(false);
@@ -310,20 +316,55 @@ const resetPasswordWithOtpSchema = z
   }
 
   // Handle resend OTP
-  const handleResend = () => {
+  const handleResend = async () => {
     setResendDisabled(true);
-    setResendTimer(60);
-    toast.success("Verification code resent to your email");
+    setResendTimer(100);
+    resetForm.reset();
+    const res = await api.post('/auth/forgot-password', {
+      email: resetEmail
+    })
+    console.log(res)
+  };
+
+  const handleSignResend = async () => {
+    setResendDisabled(true);
+    setResendTimer(100);
+    const res = await api.post('/auth/send-otp', {
+      email: signupEmail
+    })
+    console.log(res)
   };
 
   const handleReset = async (values: z.infer<typeof resetPasswordWithOtpSchema>) => {
     try {
       // API call to reset password with values.otp, values.password
-      console.log(values);
+      const { data } = await api.post('/auth/reset-password', {
+        "email": resetEmail,
+        "token": values.otp,
+        "password": values.password
+      })
+
+      if(data.success){
+        setOpenResetPassword(false);
+        setActiveTab('login')
+        setResetEmail('')
+        resetForm.reset();
+      }else{
+        resetForm.setError("otp", {
+          type: "manual",
+          message: "Invalid OTP",
+        });
+      }
+      console.log(values, resetEmail);
     } catch (err) {
       console.error("Reset failed", err);
     }
   };
+
+  const redirectToLogin = () => {
+    setSignupStep("email");
+    setActiveTab('login')
+  }
 
   // Timer effect for resend button
   useEffect(() => {
@@ -347,7 +388,13 @@ const resetPasswordWithOtpSchema = z
         resetForm={resetForm}
         handleReset={handleReset}
         isLoading={isLoading}
-        setBackToEmailForm={setOpenResetPassword}
+        setBackToEmailForm={() => {
+          setOpenResetPassword(false);
+          setForgotPassword(true)
+        }}
+        resendTimer={resendTimer}
+        resendDisabled={resendDisabled}
+        handleResend={handleResend}
       />
     }
     // Show forgot password form
@@ -355,7 +402,7 @@ const resetPasswordWithOtpSchema = z
       return (
         <ResetPasswordForm
           resetPasswordForm={resetPasswordForm}
-          handleResetPassword={handleResetPassword}
+          handleResetPassword={handleOpenResetPassword}
           isLoading={isLoading}
           setForgotPassword={setForgotPassword}
         />
@@ -374,13 +421,14 @@ const resetPasswordWithOtpSchema = z
           handleVerifyOTP={handleVerifyOTP}
           resendTimer={resendTimer}
           resendDisabled={resendDisabled}
-          handleResend={handleResend}
+          handleResend={handleSignResend}
           signupDetailsForm={signupDetailsForm}
           handleDetailsSubmit={handleDetailsSubmit}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           showConfirmPassword={showConfirmPassword}
           setShowConfirmPassword={setShowConfirmPassword}
+          redirectToLogin={redirectToLogin}
         />
       );
     }

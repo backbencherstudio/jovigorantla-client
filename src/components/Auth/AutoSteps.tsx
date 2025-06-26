@@ -22,6 +22,7 @@ const AuthSteps = ({
   showConfirmPassword,
   setShowConfirmPassword,
   signupEmailForm,
+  redirectToLogin,
 }: {
   signupStep: "verify" | "details";
   setSignupStep: (step: "email" | "verify" | "details") => void;
@@ -47,6 +48,7 @@ const AuthSteps = ({
   showConfirmPassword: boolean;
   setShowConfirmPassword: (show: boolean) => void;
   signupEmailForm?: UseFormReturn<{ email: string }>;
+  redirectToLogin: () => void;
 }) => {
   return (
     <div className="w-full h-[500px] flex flex-col items-center justify-center bg-white">
@@ -61,6 +63,7 @@ const AuthSteps = ({
               } else {
                 setSignupStep("email");
               }
+              
               // Reset the form when going back
               // signupEmailForm?.reset();
             }}
@@ -90,12 +93,13 @@ const AuthSteps = ({
         {signupStep === "details" && (
           <UserDetailsForm
             signupDetailsForm={signupDetailsForm}
-            handleDetailsSubmit={handleDetailsSubmit}
+            // handleDetailsSubmit={handleDetailsSubmit}
             isLoading={isLoading}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
             showConfirmPassword={showConfirmPassword}
             setShowConfirmPassword={setShowConfirmPassword}
+            redirectToLogin={redirectToLogin}
           />
         )}
       </div>

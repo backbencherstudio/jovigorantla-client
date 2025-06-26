@@ -528,8 +528,9 @@ const formSchema = z.object({
   title: z.string()
     .trim()
     .min(5, "Title must be at least 5 characters")
-    .max(55, "Title must be less than 55 characters"),
-  description: z.string().optional(),
+    .max(75, "Title must be less than 55 characters"),
+  // description: z.string().optional(),
+  description: z.string().max(3000, "Description must be less than 3000 characters").optional(),
   image: z
     .any()
     .refine((file) => !file || file instanceof File, {
@@ -570,6 +571,7 @@ function PostListingForm() {
   const [isOpenError, setIsOpenError] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { setFormData, user } = useAuth()
 
@@ -590,6 +592,8 @@ function PostListingForm() {
   const selectedCategory = watch("category");
   const selectedSubCategory = watch("subCategory");
   const titleLength = watch("title")?.length || 0;
+  const descriptionLength = watch("description")?.length || 0;
+
 
   const showPhotoUpload = selectedCategory === "Marketplace" || selectedCategory === "Accommodations";
   // let availableSubCategories = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
@@ -873,6 +877,13 @@ function PostListingForm() {
     }
   }, [selectedCategory, setValue, watch]); // Watch for category changes
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [descriptionLength]); 
+
 
   if (isLoading) {
     return (
@@ -1001,17 +1012,19 @@ function PostListingForm() {
           <Controller
             name="title"
             control={control}
+
             render={({ field }) => (
               <div className="relative">
                 <input
                   {...field}
+                  
                   id="title"
                   placeholder="Enter a descriptive title"
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 bg-[#e5ebee]"
-                  maxLength={55}
+                  maxLength={75}
                 />
                 <div className="absolute bottom-[-20px] right-2 text-xs text-gray-500 px-1 rounded">
-                  {titleLength}/55
+                  {titleLength}/75
                 </div>
               </div>
             )}
@@ -1027,18 +1040,24 @@ function PostListingForm() {
             name="description"
             control={control}
             render={({ field }) => (
-              <textarea
-                // maxLength={}
-                {...field}
-                id="description"
-                placeholder="Describe your listing in detail"
-                className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none rounded-xl w-full p-2 ring-1 ring-transparent focus:ring-orange-500"
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = "auto";
-                  target.style.height = `${target.scrollHeight}px`;
-                }}
-              />
+              <div className="relative">
+                <textarea
+                  ref={textareaRef}
+                  maxLength={3000}
+                  {...field}
+                  id="description"
+                  placeholder="Describe your listing in detail"
+                  className=" min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none rounded-xl w-full p-2 ring-1 ring-transparent focus:ring-orange-500"
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = "auto";
+                    target.style.height = `${target.scrollHeight}px`;
+                  }}
+                />
+                <div className="absolute bottom-[-20px] right-2 text-xs text-gray-500 px-1 rounded">
+                  {descriptionLength}/3000
+                </div>
+              </div>
             )}
           />
         </div>

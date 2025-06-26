@@ -15,6 +15,9 @@ const ResetPasswordWithOTPForm = ({
   handleReset,
   isLoading,
   setBackToEmailForm,
+  resendTimer,
+  resendDisabled,
+  handleResend,
 }) => {
   return (
     <div className="w-full h-[520px] flex flex-col bg-white">
@@ -35,7 +38,7 @@ const ResetPasswordWithOTPForm = ({
 
         <Form {...resetForm}>
           <form
-            onSubmit={() => {}}
+            onSubmit={resetForm.handleSubmit(handleReset)}
             className="h-full flex flex-col"
           >
             {/* OTP */}
@@ -116,6 +119,26 @@ const ResetPasswordWithOTPForm = ({
             >
               {isLoading ? "Resetting..." : "Reset Password"}
             </Button>
+
+            <div className="text-center mt-4">
+            {resendDisabled ? (
+            <p className="text-sm text-gray-500 text-center">
+              You can resend OTP in{" "}
+              <span className="font-semibold text-orange-600">{resendTimer}</span> sec
+            </p>
+          ) : (
+            <p className="text-sm text-center">
+              Didn’t get the code?{" "}
+              <span
+                onClick={handleResend}
+                className="text-orange-600 font-semibold cursor-pointer hover:underline"
+              >
+                Resend OTP
+              </span>
+            </p>
+          )}
+          </div>
+
           </form>
         </Form>
       </div>

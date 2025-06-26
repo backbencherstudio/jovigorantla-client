@@ -236,6 +236,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         otp,
       });
 
+      console.log("from sign up=> ",res.data)
+
       if (res.data.success) {
         await fetchUser();
         return true;
@@ -330,6 +332,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const sendOtp = async (email: string) => {
     try {
       const res = await api.post('/auth/send-otp', { email });
+      // console.log(res)
       return res.data.success;
     } catch {
       return false;

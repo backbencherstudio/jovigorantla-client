@@ -208,8 +208,8 @@ export default function Accommodations() {
                                         />
                                     </div>
                                 </form>
-                                <div className="mt-2 flex items-center justify-end">
-                                    <LocationWithRadius />
+                                <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                                <LocationWithRadius popupStyle="mr-2" />
                                 </div>
                                 <div className="pb-2">
                                     <CategoryIcons />

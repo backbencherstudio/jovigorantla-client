@@ -348,6 +348,7 @@ const ListingDetailPage = () => {
                   e.stopPropagation(); // ✅ stop event bubbling
                 }}
           />
+
             </div>
           </div>
 
@@ -374,9 +375,24 @@ const ListingDetailPage = () => {
             )}
           </div>
 
+          {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
+            // <PhotoGallery images={[listing.image]} listingId={listing.id} />
+            <div
+            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+            style={{ aspectRatio: "574/300" }}
+        >
+            <img
+                src={listing.image_url}
+                alt={listing.title}
+                className="absolute inset-0 w-full h-full object-cover rounded-lg"
+            />
+            {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
+        </div>
+          )}
+
           {/* Description - only show if it exists */}
           {listing.description && (
-            <Card className="mb-6 border-none shadow-none">
+            <Card className="mb-6 border-none shadow-none mt-4">
               <CardContent className="p-0">
                 <h2 className="text-lg font-bold mb-2">Description</h2>
                 <p className="text-gray-700 whitespace-pre-line">
@@ -385,6 +401,7 @@ const ListingDetailPage = () => {
               </CardContent>
             </Card>
           )}
+
 
 
           {/* <Card className="mb-6 border-none shadow-none">
@@ -451,10 +468,7 @@ If you’re interested or have any questions, please reach out for pictures, ren
           
 
           {/* Photo Gallery - only show if there are images and not for jobs/rides */}
-          {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
-            // <PhotoGallery images={[listing.image]} listingId={listing.id} />
-            <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" />
-          )}
+          
         </div>
         {/* Contact button - only show on desktop */}
         {!isMobile && (

@@ -26,6 +26,7 @@ interface UserDetailsFormProps {
   setShowPassword: (show: boolean) => void;
   showConfirmPassword: boolean;
   setShowConfirmPassword: (show: boolean) => void;
+  redirectToLogin: () => void;
 }
 
 const UserDetailsForm = ({
@@ -35,6 +36,7 @@ const UserDetailsForm = ({
   setShowPassword,
   showConfirmPassword,
   setShowConfirmPassword,
+  redirectToLogin,
 }: UserDetailsFormProps) => {
   const { signUp } = useAuth();
 
@@ -49,10 +51,9 @@ const UserDetailsForm = ({
       return;
     }
 
-    
-
     try {
       const success = await signUp(email, data.password!, data.username!, otp);
+
       if (success) {
         toast.success("Account created successfully!", {
           description: "You can now start using your account.",
@@ -60,6 +61,7 @@ const UserDetailsForm = ({
         // Clear sensitive data from localStorage
         localStorage.removeItem("otp");
         localStorage.removeItem("signupEmail");
+        redirectToLogin()
       } else {
         toast.error("Registration failed", {
           description: "Please try again or contact support if the problem persists.",
