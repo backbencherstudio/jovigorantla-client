@@ -956,8 +956,9 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                                     ...base,
                                     paddingLeft: '2rem',
                                     // borderColor: state.isFocused ? 'red' : '#d1d5db', // Change border color on focus
-                                    minHeight: '42px',
-                                    transition: 'border-color 0.3s ease', // Optional transition for smooth effect
+                                    // minHeight: '42px',
+                                    // transition: 'border-color 0.3s ease', // Optional transition for smooth effect
+                                     outline: 'none', // Remove the focus outline
                                 }),
                             }}
 
