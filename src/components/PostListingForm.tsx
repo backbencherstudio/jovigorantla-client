@@ -671,6 +671,13 @@ function PostListingForm() {
   }, [listingId, isEditMode, reset]);
 
 
+  const resizeTextarea1 = useCallback(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, []);
+
   useEffect(() => {
     const isEditMode = searchParams.has('id');
     
@@ -691,19 +698,30 @@ function PostListingForm() {
       setRadius(0);
       setCurrentLocation(null);
       setAvailableSubCategories([]);
+      //  console.log('Reset completed');
       
-      // If using default values from props
-        reset({
-          category: "",
-          subCategory: "",
-          title: "",
-          description: "",
-          image: null,
-          isUSA: false,
-        });
+      // // If using default values from props
+      //   reset({
+      //     category: "",
+      //     subCategory: "",
+      //     title: "",
+      //     description: "",
+      //     image: null,
+      //     isUSA: false,
+      //   });
+
+        setTimeout(resizeTextarea1, 0);
       
     }
   }, [location.key, reset, searchParams]);
+
+ 
+
+  
+
+  // useEffect(() => {
+  //   resizeTextarea1();
+  // }, [watch("description"), resizeTextarea1]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);

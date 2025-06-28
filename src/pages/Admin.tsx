@@ -11,7 +11,7 @@ const Admin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || user.type !== "admin") {
+    if (!user || (user.type !== "admin" && user.type !== "co_admin") ) {
       navigate("/");
       return;
     }
@@ -22,10 +22,14 @@ const Admin = () => {
     <div className="container mx-auto p-4 max-w-6xl">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-      <Tabs defaultValue="ads">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
+      <Tabs defaultValue={user.type === 'admin'? 'ads': 'flagged'} >
+        <TabsList className={`grid w-full ${user.type === 'admin'? 'grid-cols-3': 'grid-cols-2'} mb-8`}>
           <TabsTrigger value="flagged">Flagged Listings</TabsTrigger>
-          <TabsTrigger value="ads">Ad Management</TabsTrigger>
+          {
+            user.type === "admin" && (
+              <TabsTrigger value="ads">Ad Management</TabsTrigger>
+            )}
+          {/* <TabsTrigger value="ads">Ad Management</TabsTrigger> */}
           <TabsTrigger value="usa">USA Listings</TabsTrigger>
         </TabsList>
 
@@ -33,9 +37,17 @@ const Admin = () => {
           <FlaggedListings />
         </TabsContent>
 
-        <TabsContent value="ads">
+        {
+          user.type === "admin" && (
+            <TabsContent value="ads">
+              <AdManagement />
+            </TabsContent>
+          )
+        }
+
+        {/* <TabsContent value="ads">
           <AdManagement />
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="usa">
           <USAListings />
