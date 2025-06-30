@@ -283,6 +283,8 @@ const ListingDetailPage = () => {
   // const city = locationParts[0]?.trim() || "";
   // const state = locationParts[1]?.trim() || "";
 
+
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
@@ -471,7 +473,7 @@ If you’re interested or have any questions, please reach out for pictures, ren
           
         </div>
         {/* Contact button - only show on desktop */}
-        {!isMobile && (
+        {!isMobile && user.id !== listing.user_id && (
           <div className="w-full relative ">
             <div
               style={{ width: width }}
@@ -491,7 +493,7 @@ If you’re interested or have any questions, please reach out for pictures, ren
       </div>
 
       {/* Fixed button at the bottom only for mobile */}
-      {isMobile && (
+      {isMobile && user.id !== listing.user_id && (
         <div className="fixed bottom-0 left-0 right-0 py-4 px-4 bg-white border-t shadow-md">
           <div className="max-w-3xl mx-auto">
             <Button

@@ -223,7 +223,7 @@ export default function Accommodations() {
 
                       
 
-                        <div className="px-4 mt-4 space-y-4">
+                        <div className="px-4 my-4 space-y-4">
                             {listings.map((listing, index) => (
                                 <div key={`${listing.id}-${index}`}>
                                     {listing?.type === "listing" && (
@@ -255,7 +255,7 @@ export default function Accommodations() {
                                 </div>
                             )}
 
-                        {!hasMore && listings.length === 0 && <NoListingsFound />}
+                            {!hasMore && listings.length === 0 && <NoListingsFound />}
 
                         </div>
                     </main>

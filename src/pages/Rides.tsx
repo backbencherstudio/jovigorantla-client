@@ -489,7 +489,7 @@ export default function Jobs() {
 
                       
 
-                        <div className="px-4 mt-4 space-y-4">
+                        <div className="px-4 my-4 space-y-4">
                             {listings.map((listing, index) => (
                                 <div key={`${listing.id}-${index}`}>
                                     {listing?.type === "listing" && (

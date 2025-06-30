@@ -227,6 +227,7 @@ const AdManagement = () => {
   const fetchSidebarTopAds = async () => {
     try {
       const { data: topAds } = await api.get('/admin/ads/sidebar-top')
+      console.log("topAds => ", topAds.data)
       if (topAds?.success) {
         setSidebarTopAds({
           image_url: topAds.data.image_url,
@@ -1661,11 +1662,11 @@ const AdManagement = () => {
                         <span>Select Image</span>
                       </Label>
                     </div>
-                    {selectedFile && (
+                    {/* {selectedFile && (
                       <div className="text-sm text-gray-500">
                         {selectedFile.name}
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   {adPreview && (
@@ -1877,11 +1878,11 @@ const AdManagement = () => {
                               <span>Select Image</span>
                             </Label>
                           </div>
-                          {selectedFile && (
+                          {/* {selectedFile && (
                             <div className="text-sm text-gray-500">
                               {selectedFile.name}
                             </div>
-                          )}
+                          )} */}
                         </div>
 
                         {adPreview && (
