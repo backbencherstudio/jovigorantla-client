@@ -956,7 +956,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     variant="outline"
                     className={`flex items-center  w-full hover:bg-transparent bg-transparent outline-0 border-0 justify-end ${className} `}
                 >
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                         <MapPin className="h-4 w-4 mr-2 text-primary" />
                         {/* <span className="truncate underline">
                             {dispalySelectedOption
@@ -964,10 +964,17 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                                 : "Select location"}
                         </span> */}
 
-                        <span className="truncate underline decoration-from-font [text-underline-position:under]">
+                        {/* <span className="truncate underline decoration-from-font [text-underline-position:under]">
                             {dispalySelectedOption
                                 ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
                                 : "Select location"}
+                        </span> */}
+
+                        <span className="truncate relative pb-0.1">
+                        {dispalySelectedOption
+                            ? `${dispalySelectedOption?.search?.replace(/, [^,]+$/, '')} • ${displayRadius} mi`
+                            : "Select location"}
+                        <span className="absolute bottom-0 left-0 w-full h-px bg-current" />
                         </span>
                     </div>
                 </Button>
@@ -1001,7 +1008,6 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                                     // border: '1px solid #f1db0e !important', // Default border color
                                     display:"flex",
                                     alignItems:"center",
-
                                     transition: 'border-color 0.3s ease', // Optional transition for smooth effect
                                 }),
                             }}

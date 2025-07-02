@@ -37,6 +37,7 @@ import { LocationProvider } from "./context/LocationContext";
 import Accommodations from "./pages/Accommodations";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
+import MainLayout from "./components/layouts/MainLayout";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -73,10 +74,13 @@ function AppRoutes() {
         <Route
           path="/"
           element={
-            // <ResponsiveLayout>
-            //   <Index />
-            // </ResponsiveLayout>
-            <Home />
+            // <MainLayout>
+            //   {/* <Index /> */}
+            //   <Home /> 
+            // </MainLayout>
+            <ResponsiveLayout>
+              <Home />
+            </ResponsiveLayout>
           }
         />
         <Route
@@ -85,7 +89,9 @@ function AppRoutes() {
             // <ResponsiveLayout>
             //   <Index />
             // </ResponsiveLayout>
-            <Accommodations />
+            <ResponsiveLayout>
+              <Accommodations />
+            </ResponsiveLayout>
           }
         />
         <Route
@@ -94,7 +100,11 @@ function AppRoutes() {
             // <ResponsiveLayout>
             //   <Index />
             // </ResponsiveLayout>
-            <Jobs />
+            // <MainLayout>
+            <ResponsiveLayout>
+              <Jobs />
+            </ResponsiveLayout>
+
           }
         />
         <Route
@@ -103,7 +113,10 @@ function AppRoutes() {
             // <ResponsiveLayout>
             //   <Index />
             // </ResponsiveLayout>
-            <Marketplace />
+            <ResponsiveLayout>
+              <Marketplace />
+            </ResponsiveLayout>
+
           }
         />
         {/* <Route
@@ -118,7 +131,10 @@ function AppRoutes() {
             // <ResponsiveLayout>
             //   <Index />
             // </ResponsiveLayout>
-            <Rides />
+            <ResponsiveLayout>
+              <Rides />
+              </ResponsiveLayout>
+
           }
         />
 

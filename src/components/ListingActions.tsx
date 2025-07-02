@@ -388,6 +388,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { useListing } from "@/context/ListingContext";
 import { api } from "@/lib/axois";
+import { useAuthModal } from "@/hooks/useAuthModal";
+import AuthModal from "./AuthModal";
 
 interface ListingActionsProps {
   listingId: string;
@@ -406,9 +408,10 @@ const ListingActions = ({
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
   const { favoritesListings, addFavoritesListing, deleteFavoritesListing } = useAuth();
-  const { hideListing } = useListing();
+  const { isOpen, closeModal, defaultTab, openModal } = useAuthModal();
+  // const { hideListing } = useListing();
   const location = useLocation();
-  const isOnListingPage = location.pathname.startsWith("/listing");
+  const isOnListingPage = location.pathname.startsWith("/listing") || location.pathname.startsWith("/saved-listings");
   const [showReportModal, setShowReportModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [reportStatus, setReportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -440,7 +443,7 @@ const ListingActions = ({
         setDropdownOpen(false);
         break;
       case "hide":
-        hideListing(listingId);
+        // hideListing(listingId);
         setDropdownOpen(false);
         break;
       case "report":
@@ -462,7 +465,8 @@ const ListingActions = ({
       }
       setSaved(!saved);
     } else {
-      toast.error("You must be logged in to save a listing");
+      console.log('clicked')
+      // openModal()
     }
   };
 
@@ -515,7 +519,12 @@ const ListingActions = ({
     setReportStatus("idle");
   };
 
+  if(!user)return null;
+  
+
   return (
+    <>
+    
     <div className="flex items-center">
       <Button
         variant="ghost"
@@ -627,7 +636,7 @@ const ListingActions = ({
                     Cancel
                   </Button>
                   <Button
-                    variant="destructive"
+                    // variant="destructive"
                     onClick={handleReportListing}
                     disabled={reportStatus === "loading"}
                   >
@@ -645,6 +654,13 @@ const ListingActions = ({
         </div>
       )}
     </div>
+
+    <AuthModal
+        open={isOpen}
+        onOpenChange={closeModal}
+        defaultTab={defaultTab as "login" | "signup"}
+      />
+    </>
   );
 };
 

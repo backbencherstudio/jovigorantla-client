@@ -524,7 +524,9 @@ const formSchema = z.object({
   category: z.enum(categories as [string, ...string[]], {
     errorMap: () => ({ message: "Category is required" }),
   }),
-  subCategory: z.string(),
+  subCategory: z.string().nonempty({
+    message: "Sub-category is required",
+  }),
   title: z.string()
     .trim()
     .min(5, "Title must be at least 5 characters")
@@ -842,9 +844,9 @@ function PostListingForm() {
     setValue('category', value);
 
     // Only reset sub-category if current one isn't valid for new category
-    if (!newSubCategories.includes(currentSubCategory)) {
-      setValue('subCategory', newSubCategories[0] || "");
-    }
+    // if (!newSubCategories.includes(currentSubCategory)) {
+    //   setValue('subCategory', newSubCategories[0] || "");
+    // }
   };
 
   // useEffect(() => {
@@ -889,14 +891,14 @@ function PostListingForm() {
     };
   }, [imagePreview]);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      const firstSubCategory = categoriesConfig[selectedCategory as keyof typeof categoriesConfig]?.[0];
-      if (firstSubCategory && !isEditMode) {
-        setValue("subCategory", firstSubCategory);
-      }
-    }
-  }, [selectedCategory, setValue, isEditMode]);
+  // useEffect(() => {
+  //   if (selectedCategory) {
+  //     const firstSubCategory = categoriesConfig[selectedCategory as keyof typeof categoriesConfig]?.[0];
+  //     if (firstSubCategory && !isEditMode) {
+  //       setValue("subCategory", firstSubCategory);
+  //     }
+  //   }
+  // }, [selectedCategory, setValue, isEditMode]);
 
   useEffect(() => {
     if (!(selectedSubCategory === 'Service' || selectedSubCategory === 'Hiring')) {
@@ -925,10 +927,10 @@ function PostListingForm() {
       setAvailableSubCategories(newSubCategories);
 
       // If the current sub-category is not valid for the new category, reset it to the first available option
-      const currentSubCategory = watch("subCategory");
-      if (!newSubCategories.includes(currentSubCategory)) {
-        setValue("subCategory", newSubCategories[0] || "");
-      }
+      // const currentSubCategory = watch("subCategory");
+      // if (!newSubCategories.includes(currentSubCategory)) {
+      //   setValue("subCategory", newSubCategories[0] || "");
+      // }
     }
   }, [selectedCategory, setValue, watch]); // Watch for category changes
 
@@ -975,6 +977,27 @@ useEffect(() => {
     resizeTextarea(textareaRef.current);
   }
 }, [watch("description"), resizeTextarea]);
+
+useEffect(() => {
+  const handleFocus = (e: Event) => {
+    const activeElement = e.target as HTMLElement;
+    if (
+      activeElement.tagName === 'INPUT' || 
+      activeElement.tagName === 'TEXTAREA' ||
+      activeElement.tagName === 'SELECT'
+    ) {
+      setTimeout(() => {
+        activeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 300);
+    }
+  };
+
+  document.addEventListener('focusin', handleFocus);
+  return () => document.removeEventListener('focusin', handleFocus);
+});
 
   if (isLoading) {
     return (
@@ -1027,6 +1050,7 @@ useEffect(() => {
                     field.onChange(value);
                     handleCategoryChange(value);
                   }}
+                  disabled={isEditMode}
                 >
                   <div className="relative">
                     <SelectTrigger
@@ -1069,6 +1093,7 @@ useEffect(() => {
                     field.onChange(value);
                     handleSubCategoryChange(value);
                   }}
+                  disabled={isEditMode}
                 >
                   <div className="relative">
                     <SelectTrigger
@@ -1247,7 +1272,7 @@ useEffect(() => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="w-[200px] text-sm">
-                        Reviewed by Desieasy team, will go live if approved.
+                        Reviewed by Desieasy team
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -1270,10 +1295,10 @@ useEffect(() => {
           </div>
         ) : null}
 
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center pb-8">
           <button
             type="submit"
-            className="px-6 py-2 bg-orange-500 text-white rounded-md disabled:opacity-50"
+            className="px-6 py-2 bg-brand text-white rounded-md disabled:opacity-50"
             disabled={isSubmitting}
           >
             {isSubmitting

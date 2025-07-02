@@ -123,9 +123,13 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
                   </form>
 
                   {/* Mobile: Location display - no border or box */}
-                  <div className="mt-2 flex items-center justify-end">
-                    {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
-                    <LocationWithRadius />
+                  {/* <div className="mt-2 flex items-center justify-end"> */}
+                  {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
+                  {/* <LocationWithRadius /> */}
+                  {/* </div> */}
+
+                  <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                    <LocationWithRadius popupStyle="mr-2" />
                   </div>
                 </div>
 

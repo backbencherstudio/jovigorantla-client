@@ -249,3 +249,8 @@ main.w-full.mx-auto.max-w-3xl {
   -ms-perspective: 1000;
   perspective: 1000;
 }
+
+
+html, body {
+  overscroll-behavior-y: none;
+}

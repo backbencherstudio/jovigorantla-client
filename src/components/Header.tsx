@@ -282,7 +282,7 @@ const Header = ({  searchInput,
               {/* Post button with plus icon - Reduced size */}
               <Button
                 onClick={handlePostAd}
-                className="bg-brand hover:bg-brand/90 text-white flex items-center gap-1 rounded-full px-3 py-1.5 h-8 md:h-8 text-xs md:text-xs"
+                className="bg-brand text-white flex items-center gap-1 rounded-full px-3 py-1.5 h-8 md:h-8 text-xs md:text-xs"
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span>Post</span>
@@ -297,7 +297,7 @@ const Header = ({  searchInput,
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-9 w-9 bg-[#f1f5f9]"
+                    className="rounded-full h-8 w-8 bg-[#f1f5f9]"
                   >
                     <MessageCircle
                       className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"

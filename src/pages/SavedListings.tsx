@@ -13,6 +13,7 @@ import {
 import { api } from "@/lib/axois";
 import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
+import ListingActions from "@/components/ListingActions";
 
 type ListingType = {
   id: string;
@@ -365,11 +366,27 @@ const SavedListings = () => {
                         <span className="mx-2">•</span>
                         <span>{formatTime(listing.created_at)}</span>
                         <span className="mx-2">•</span>
-                        {/* <span>{listing.location}</span> */}
-                        <span>Denton, TX</span>
+                        <span>
+                    {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                  </span>
+                        {/* <span>Denton, TX</span> */}
                       </div>
 
-                      <div className="flex items-center">
+                      <ListingActions
+                        listingId={listing.id}
+                        listingTitle={listing.title}
+                        isUsa={false}
+                        // saved={listing.saved || false}
+                        // saved={false}
+                        // onToggleSave={onToggleSave}
+                        onToggleSave={(e) => {
+                          e.preventDefault(); // ✅ prevent default link navigation
+                          e.stopPropagation(); // ✅ stop event bubbling
+                          // onToggleSave(e, listing.id);
+                        }}
+                      />
+
+                      {/* <div className="flex items-center">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -416,7 +433,7 @@ const SavedListings = () => {
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
