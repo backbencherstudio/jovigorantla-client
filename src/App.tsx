@@ -38,6 +38,8 @@ import Accommodations from "./pages/Accommodations";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
+import { useEffect, useState } from "react";
+
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -280,8 +282,90 @@ function AppRoutes() {
 
 // Main App component - wrap AppRoutes with AuthProvider
 function App() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+  // Add this to your App.jsx or main component
+  useEffect(() => {
+    let startY = 0;
+    let isDragging = false;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].pageY;
+        isDragging = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      const currentY = e.touches[0].pageY;
+      const deltaY = currentY - startY;
+      
+      if (deltaY > 150 && window.scrollY === 0) {
+        setIsRefreshing(true);
+      }
+      
+      if (deltaY > 200 && window.scrollY === 0) {
+        setShowLoading(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 800);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      if (!showLoading) {
+        setIsRefreshing(false);
+      }
+      isDragging = false;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [showLoading]);
   return (
-    <Router>
+    <>
+     {showLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: '#ff6b00',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '4px solid white',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginBottom: '20px'
+          }} />
+          <p style={{
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: '600',
+            margin: 0
+          }}>
+            Refreshing...
+          </p>
+        </div>
+      )}
+ <Router> 
       <AuthProvider>
         <ListingProvider>
           <LocationProvider>
@@ -294,6 +378,8 @@ function App() {
         </ListingProvider>
       </AuthProvider>
     </Router>
+    </>
+   
   );
 }
 

@@ -9,10 +9,8 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     allowedHosts: [
-      '7647-137-59-180-113.ngrok-free.app', // Add your Ngrok subdomain here
       'localhost',
       '127.0.0.1',
-      'loose-mugs-deny.loca.lt'
     ],
   },
   plugins: [

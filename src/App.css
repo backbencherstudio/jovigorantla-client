@@ -254,3 +254,8 @@ main.w-full.mx-auto.max-w-3xl {
 html, body {
   overscroll-behavior-y: none;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

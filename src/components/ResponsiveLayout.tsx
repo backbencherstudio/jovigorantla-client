@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -33,7 +33,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
 
     // If search field is cleared, navigate to home without query
     if (!value.trim() && location.search.includes("q=")) {
-      navigate("/");
+      navigate(location.pathname);
     }
   };
 
@@ -41,7 +41,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       // Navigate with search query
-      navigate(`/?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`${location.pathname}?q=${encodeURIComponent(searchQuery)}`);
     } else {
       // If empty search, show all listings
       navigate("/");
@@ -76,6 +76,18 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
       window.removeEventListener("scroll", controlNavbar);
     };
   }, [lastScrollY]);
+
+
+  const handleClearInput = () => {
+    setSearchQuery("");
+    navigate(location.pathname); // Navigate to home without query
+  };
+  useEffect(() => {
+    const queryParam = new URLSearchParams(location.search).get("q") || "";
+    setSearchQuery(queryParam);
+  }, [location.search]);
+
+
 
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
@@ -119,6 +131,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
                         onChange={handleSearchChange}
                         className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
                       />
+                      {searchQuery && (
+                          <X
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                            onClick={handleClearInput} // Clear the input on click
+                          />
+                        )}
                     </div>
                   </form>
 

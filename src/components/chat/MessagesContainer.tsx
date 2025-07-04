@@ -24,7 +24,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   
   messages.forEach(message => {
     const date = new Date(message.timestamp);
-    const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    // const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const dateKey = date.toISOString().split('T')[0];
     
     if (!groupedMessages[dateKey]) {
       groupedMessages[dateKey] = [];

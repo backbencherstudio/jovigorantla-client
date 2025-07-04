@@ -396,6 +396,7 @@ interface ListingActionsProps {
   isUsa: boolean;
   listingTitle: string;
   onToggleSave: (e: React.MouseEvent, id: string) => void;
+  onHide: () => void;
 }
 
 const ListingActions = ({
@@ -403,6 +404,7 @@ const ListingActions = ({
   isUsa,
   listingTitle,
   onToggleSave,
+  onHide,
 }: ListingActionsProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -444,6 +446,7 @@ const ListingActions = ({
         break;
       case "hide":
         // hideListing(listingId);
+        onHide();
         setDropdownOpen(false);
         break;
       case "report":

@@ -294,7 +294,7 @@ export default function Accommodations() {
   const location = useLocation();
 
   const searchParams = new URLSearchParams(location.search);
-  const initialQuery = searchParams.get("query") || "";
+  const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
@@ -377,19 +377,23 @@ export default function Accommodations() {
     }
   };
 
+  const handleHide = (id: string) => {
+    setListings(listings.filter(listing => listing.id !== id));
+  };
+
   useEffect(() => {
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     fetchNearByListings(activeFilter, searchQuery);
-
+    // console.log("listings => ", searchQuery);
     return () => {
      
     };
   }, [activeFilter, searchQuery, lat, lng, radius]);
 
   useEffect(() => {
-    const queryParam = new URLSearchParams(location.search).get("query") || "";
+    const queryParam = new URLSearchParams(location.search).get("q") || "";
     setSearchQuery(queryParam);
     setSearchInput(queryParam);
   }, [location.search]);
@@ -451,7 +455,7 @@ export default function Accommodations() {
         {listings.map((listing, index) => (
           <div key={`${listing.id}-${index}`}>
             {listing?.type === "listing" && (
-              <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} />
+              <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
             )}
             {listing?.type === "ad" && (
               <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">
@@ -475,7 +479,7 @@ export default function Accommodations() {
             ref={loadMoreRef}
             className="w-full flex justify-center py-6 text-gray-400 text-sm"
           >
-            Loading more accommodations...
+            Loading more...
           </div>
         )}
 

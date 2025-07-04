@@ -39,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const { user } = useAuth();
   const { setCategory, setIsUsa, setSubCategory} = useListing();
   const navigate = useNavigate();
+  const { search } = location; // Get the current query parameters
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
   const isEmployee =
@@ -78,8 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       setIsUsa(false);
       setSubCategory("");
     }
-
-    
   }
 
   // Admin/Employee menu items - only visible to employees or admins
@@ -128,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                to={search? `${item.path}${search}` : item.path}
                 onClick={() => handleSetCategory(item.label)}
                 className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${isActive
                   ? "bg-gray-100 text-black"

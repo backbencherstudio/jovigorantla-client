@@ -8,7 +8,8 @@ const CategoryIcons: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setCategory, setIsUsa, setSubCategory} = useListing(); // Assuming setCategory is available in ListingContext
-
+  const { search } = location;
+  
   const categories = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Store, label: 'Marketplace', path: '/marketplace' },
@@ -79,7 +80,7 @@ const CategoryIcons: React.FC = () => {
             key={category.path}
             className="flex flex-col items-center cursor-pointer"
             onClick={() => {
-              navigate(category.path)
+              navigate(search? `${category.path}${search}` : category.path)
               handleSetCategory(category.label)
             }}
           >

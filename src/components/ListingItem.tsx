@@ -135,9 +135,10 @@ interface ListingItemProps {
   listing: ListingType;
   isUsa: boolean;
   onToggleSave: (e: React.MouseEvent, id: string) => void;
+  onHide: () => void;
 }
 
-const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
+const ListingItem = ({ listing, onToggleSave, isUsa, onHide }: ListingItemProps) => {
   const formatCategoryStatus = (category: string, status: string) => {
     let displayCategory = category;
     if (category === "ACCOMMODATIONS") displayCategory = "Accommodation";
@@ -187,12 +188,13 @@ const ListingItem = ({ listing, onToggleSave, isUsa }: ListingItemProps) => {
                 e.stopPropagation();
                 onToggleSave(e, listing.id);
               }}
+              onHide={onHide}
             />
           </div>
         </div>
 
         <div className={`${listing?.title?.length > 40 ? "mb-0" : "mb-1 sm:mb-0"}`}>
-          <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mr-2 break-all">
+          <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mr-2">
             {listing.title}
           </h3>
         </div>

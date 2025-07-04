@@ -435,7 +435,7 @@ const resetPasswordWithOtpSchema = z
 
     // Show login/signup tabs
     return (
-      <div className="w-full h-[500px] bg-white">
+      <div className="w-full  bg-white">
         <div className="w-full text-center mb-6 bg-white">
           <h1 className="text-xl md:text-2xl font-bold mt-2 text-center">
             Login or Signup
@@ -520,7 +520,7 @@ const resetPasswordWithOtpSchema = z
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="h-[100vh] bg-white">
+        <DrawerContent className="h-[80vh] bg-white">
           <div className="absolute right-4 top-4 z-10">
             <DrawerClose asChild>
               <Button variant="ghost" size="icon">

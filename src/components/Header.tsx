@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Info,
   Users,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -73,6 +74,7 @@ const Header = ({  searchInput,
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+  const [ searchValue, setSearchValue ] = useState("")
 
   const { unreadMessages } = useMessages();
 
@@ -193,17 +195,56 @@ const Header = ({  searchInput,
   //     navigate(location.pathname);
   //   }
   // };
+  const handleClearInput = () => {
+    // onSearchInputChange(""); // Clear the search input value
+    // Clear the search input value
+    setSearchValue("");
+    // Navigate to the current path without the query parameter
+    navigate(location.pathname);
+  };
+
+  useEffect(() => {
+    // Get the search query parameter `q` from the URL
+    const params = new URLSearchParams(location.search);
+    const query = params.get("q");
+
+    // Update the state with the query if it exists
+    if (query) {
+      setSearchValue(query);
+    }
+  }, [location.search]);
+
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchInputChange(e.target.value);
+    // onSearchInputChange(e.target.value);
+    setSearchValue(e.target.value);
     if (!e.target.value.trim()) {
       navigate(location.pathname);
     }
+
   };
+
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   onSearchSubmit(searchInput);
+    
+  // };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearchSubmit(searchInput);
+    const query = searchValue?.trim();
+    // console.log(query)
+    
+    // If the search query exists, update the query params, otherwise navigate to current path
+    if (query) {
+      navigate(`${location.pathname}?q=${encodeURIComponent(query)}`);
+    } else {
+      // If the input is empty, navigate to the current path without the query parameter
+      navigate(location.pathname);
+    }
+  
+    // Optional: Trigger the onSearchSubmit function if you need to handle search elsewhere in the app
+    // onSearchSubmit(query);
   };
 
 
@@ -243,10 +284,16 @@ const Header = ({  searchInput,
               <Input
                 type="text"
                 placeholder="Search"
-                value={searchInput}
+                value={searchValue}
                 onChange={handleSearchChange}
                 className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               />
+              {searchValue && (
+              <X
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                onClick={handleClearInput} // Clear the input on click
+              />
+            )}
             </form>
           )}
 
