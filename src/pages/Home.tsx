@@ -506,7 +506,9 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export default function Home() {
+export default function Home({
+  openModal,
+}) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -650,7 +652,7 @@ export default function Home() {
         {listings.map((listing, index) => (
           <div key={`${listing.id}-${index}`}>
             {listing?.type === "listing" && (
-              <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
+              <ListingItem openModal={openModal} listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
             )}
             {listing?.type === "ad" && (
               <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">

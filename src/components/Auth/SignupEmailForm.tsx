@@ -62,7 +62,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
         />
         <Button
           type="submit"
-          className="md:w-full w-[92%] absolute md:static bottom-5 rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5 mt-0.5"
+          className="md:w-full w-full md:static bottom-5 rounded-full bg-brand py-5 mt-0.5 mt-12"
           disabled={isLoading}
         >
           {isLoading ? "Sending..." : "Continue"}

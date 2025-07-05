@@ -51,7 +51,7 @@ const AuthSteps = ({
   redirectToLogin: () => void;
 }) => {
   return (
-    <div className="w-full h-[500px] flex flex-col items-center justify-center bg-white">
+    <div className="w-full  flex flex-col items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 h-full flex flex-col bg-white">
         <div className="flex items-center justify-between">
           <Button

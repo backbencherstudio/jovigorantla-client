@@ -280,8 +280,8 @@ const Profile = () => {
         </form>
 
         {/* Name Edit Dialog */}
-        <Dialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen}>
-          <DialogContent className="sm:max-w-md">
+        <Dialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen} >
+          <DialogContent className="sm:max-w-md rounded-md">
             <DialogHeader>
               <DialogTitle>Edit Name</DialogTitle>
             </DialogHeader>

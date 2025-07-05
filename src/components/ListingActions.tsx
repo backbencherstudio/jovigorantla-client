@@ -390,6 +390,8 @@ import { useListing } from "@/context/ListingContext";
 import { api } from "@/lib/axois";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import AuthModal from "./AuthModal";
+import { createPortal } from 'react-dom';
+
 
 interface ListingActionsProps {
   listingId: string;
@@ -397,6 +399,7 @@ interface ListingActionsProps {
   listingTitle: string;
   onToggleSave: (e: React.MouseEvent, id: string) => void;
   onHide: () => void;
+  openModal: () => void;
 }
 
 const ListingActions = ({
@@ -405,18 +408,21 @@ const ListingActions = ({
   listingTitle,
   onToggleSave,
   onHide,
+  openModal,
 }: ListingActionsProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
   const { favoritesListings, addFavoritesListing, deleteFavoritesListing } = useAuth();
-  const { isOpen, closeModal, defaultTab, openModal } = useAuthModal();
   // const { hideListing } = useListing();
   const location = useLocation();
   const isOnListingPage = location.pathname.startsWith("/listing") || location.pathname.startsWith("/saved-listings");
   const [showReportModal, setShowReportModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [reportStatus, setReportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const ModalPortal = ({ children }) => {
+    return createPortal(children, document.body);
+  };
 
   useEffect(() => {
     if (user) {
@@ -450,6 +456,10 @@ const ListingActions = ({
         setDropdownOpen(false);
         break;
       case "report":
+        if (!user) {
+          openModal()
+          break;
+        }
         setShowReportModal(true);
         setDropdownOpen(false);
         break;
@@ -469,7 +479,7 @@ const ListingActions = ({
       setSaved(!saved);
     } else {
       console.log('clicked')
-      // openModal()
+      openModal()
     }
   };
 
@@ -516,13 +526,14 @@ const ListingActions = ({
 
   const closeReportModal = (e?: React.MouseEvent) => {
     if (e) {
+      e.preventDefault();
       e.stopPropagation();
     }
     setShowReportModal(false);
     setReportStatus("idle");
   };
 
-  if(!user)return null;
+  // if(!user)return null;
   
 
   return (
@@ -580,13 +591,19 @@ const ListingActions = ({
       </DropdownMenu>
 
       {showReportModal && (
+        <ModalPortal>
+
         <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
           onClick={closeReportModal}
         >
           <div 
-            className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg z-100"
-            onClick={(e) => e.stopPropagation()}
+            className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg z-[1001]"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+            }
+            }
           >
             {reportStatus === "success" ? (
               <div className="flex flex-col items-center text-center">
@@ -655,14 +672,15 @@ const ListingActions = ({
             )}
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
 
-    <AuthModal
+    {/* <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
         defaultTab={defaultTab as "login" | "signup"}
-      />
+      /> */}
     </>
   );
 };

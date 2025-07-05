@@ -136,9 +136,10 @@ interface ListingItemProps {
   isUsa: boolean;
   onToggleSave: (e: React.MouseEvent, id: string) => void;
   onHide: () => void;
+  openModal: ()=> void
 }
 
-const ListingItem = ({ listing, onToggleSave, isUsa, onHide }: ListingItemProps) => {
+const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: ListingItemProps) => {
   const formatCategoryStatus = (category: string, status: string) => {
     let displayCategory = category;
     if (category === "ACCOMMODATIONS") displayCategory = "Accommodation";
@@ -180,6 +181,7 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide }: ListingItemProps)
           <span>{displayStatus?.slice(0, 1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
           <div className="flex-1 absolute right-0 listing-actions">
             <ListingActions
+            openModal={openModal}
               listingId={listing.id}
               listingTitle={listing.title}
               isUsa={isUsa}

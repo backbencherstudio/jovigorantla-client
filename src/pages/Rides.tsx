@@ -762,7 +762,7 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export default function Rides() {
+export default function Rides({ openModal }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -907,7 +907,7 @@ export default function Rides() {
         {listings.map((listing, index) => (
           <div key={`${listing.id}-${index}`}>
             {listing?.type === "listing" && (
-              <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
+              <ListingItem listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} openModal={openModal} />
             )}
             {listing?.type === "ad" && (
               <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">

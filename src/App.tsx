@@ -81,7 +81,7 @@ function AppRoutes() {
             //   <Home /> 
             // </MainLayout>
             <ResponsiveLayout>
-              <Home />
+              <Home  openModal={openModal}/>
             </ResponsiveLayout>
           }
         />
@@ -92,7 +92,7 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Accommodations />
+              <Accommodations  openModal={openModal} />
             </ResponsiveLayout>
           }
         />
@@ -104,7 +104,7 @@ function AppRoutes() {
             // </ResponsiveLayout>
             // <MainLayout>
             <ResponsiveLayout>
-              <Jobs />
+              <Jobs openModal={openModal} />
             </ResponsiveLayout>
 
           }
@@ -116,7 +116,7 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Marketplace />
+              <Marketplace openModal={openModal}  />
             </ResponsiveLayout>
 
           }
@@ -134,7 +134,7 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Rides />
+              <Rides openModal={openModal}  />
               </ResponsiveLayout>
 
           }
