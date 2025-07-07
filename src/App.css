@@ -190,12 +190,17 @@ html {
 
   /* Make sure the filter tabs remain visible and fixed */
   .filter-tabs-container {
+    position: -webkit-sticky; /* Safari prefix - MUST COME FIRST */
     position: sticky;
     top: 67px;
     z-index: 9;
     background-color: #fff;
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform;
+
+     /* iOS fixes */
+  transform: translateZ(0); /* Creates new stacking context */
+  -webkit-backface-visibility: hidden; /* Prevents flickering */
   }
 }
 

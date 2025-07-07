@@ -63,13 +63,13 @@ const EmailVerification = ({
   const isOtpComplete = otp.length === 6;
 
   return (
-    <>
-      <p className="text-sm text-gray-500 text-center">
+    <div >
+      <p className="text-sm text-gray-500 text-center mb-4">
         We've sent a 6-digit code to your email.
         <br />
         Please check your inbox and spam folder.
       </p>
-      <div className="space-y-6 h-full flex flex-col justify-between">
+      <div className=" h-full flex flex-col ">
         <div>
           <OTPInput
             value={otp}
@@ -87,8 +87,8 @@ const EmailVerification = ({
             </p>
           )}
         </div>
-        <div className="text-center space-y-4">
-          <p className="text-sm text-gray-500 text-center mb-2 md:static absolute bottom-16 md:w-full w-[92%]">
+        <div className="text-center">
+          <p className="text-sm text-gray-500 text-center mb-2 mt-5 w-full">
             Didn't receive the code?
             {resendDisabled ? (
               <span className="text-gray-400 mx-3">
@@ -105,14 +105,14 @@ const EmailVerification = ({
           </p>
           <Button
             onClick={() => handleVerifyOTP(otp)}
-            className="w-[92%] md:w-full absolute md:static bottom-5 left-4 bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
+            className="w-full md:w-full  bg-brand py-5 rounded-full mt-5"
             disabled={isLoading || !isOtpComplete}
           >
             {isLoading ? "Verifying..." : "Verify"}
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -37,7 +37,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
     <Form {...signupEmailForm}>
       <form
         onSubmit={signupEmailForm.handleSubmit(onSubmit)}
-        className="h-full flex flex-col justify-between"
+        className="h-full"
       >
         <FormField
           control={signupEmailForm.control}
@@ -62,7 +62,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
         />
         <Button
           type="submit"
-          className="md:w-full w-full md:static bottom-5 rounded-full bg-brand py-5 mt-0.5 mt-12"
+          className="w-full rounded-full bg-brand py-5 mt-0.5"
           disabled={isLoading}
         >
           {isLoading ? "Sending..." : "Continue"}

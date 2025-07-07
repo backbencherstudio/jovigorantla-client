@@ -41,6 +41,7 @@ export interface ListingType {
   image_url?: string;
   ad_group_id?: string;
   address?: string;
+  post_to_usa: boolean;
   user: {
     id: string;
     name: string;

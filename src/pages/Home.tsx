@@ -641,6 +641,31 @@ export default function Home({
     };
   }, [hasMore, isLoading]);
 
+  const yourTrackingFunction = async (listing: any) => {
+    try {
+      await api.post(`/ads/${listing.id}/track-click`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+  // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
+  if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+    console.log(e)
+    // For new tab/window opens
+     await yourTrackingFunction(listing)
+    return; // Let default browser behavior proceed
+  }
+  
+  // Regular left click
+  e.preventDefault();
+  await yourTrackingFunction(listing)
+  
+  // Programmatic navigation after tracking
+  window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+};
+
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent">
 
@@ -655,7 +680,11 @@ export default function Home({
               <ListingItem openModal={openModal} listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
             )}
             {listing?.type === "ad" && (
-              <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">
+              <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+               onClick={(e) => handleAdClick(e, listing)}
+                onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+              >
                 <div
                   className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
                   style={{ aspectRatio: "574/300", maxWidth: "574px" }}

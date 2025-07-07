@@ -83,7 +83,7 @@ const UserDetailsForm = ({
       <Form {...signupDetailsForm}>
         <form
           onSubmit={signupDetailsForm.handleSubmit(onSubmit)}
-          className="space-y-4 h-full flex flex-col justify-between"
+          className="space-y-4 flex flex-col justify-between"
         >
           <div className="space-y-1">
             <FormField
@@ -197,7 +197,7 @@ const UserDetailsForm = ({
 
           <Button
             type="submit"
-            className="w-[93%] md:w-full absolute md:static bottom-5 left-4 bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
+            className="w-full  bg-[#ff6b00] hover:bg-[#e55f00] py-5 rounded-full"
             disabled={isLoading}
           >
             {isLoading ? "Creating account..." : "Create account"}

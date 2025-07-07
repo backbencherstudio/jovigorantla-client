@@ -699,7 +699,7 @@ const AuthModal = ({
 
   const resetPasswordWithOtpSchema = z
     .object({
-      otp: z.string().min(6, "OTP must be at least 4 characters"),
+      otp: z.string().min(6, "OTP must be at least 6 characters"),
       password: z
         .string()
         .min(8, "Password must be at least 6 characters long"),
@@ -889,7 +889,7 @@ const AuthModal = ({
 
         setActiveTab('login');
         setResetEmail('');
-        setSignupSuccessfull("Password changed successfully - you're good to go!")
+        setSignupSuccessfull("Password changed successfully!")
         resetForm.reset();
       }else{
         resetForm.setError("otp", {
@@ -955,6 +955,7 @@ const AuthModal = ({
     // Show signup steps (verify email or enter details)
     if (signupStep === "verify" || signupStep === "details") {
       return (
+
         <AuthSteps
           signupStep={signupStep}
           setSignupStep={setSignupStep}
@@ -1065,12 +1066,18 @@ const AuthModal = ({
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent 
-          className="bg-white"
+          className=" justify-center bg-white"
           style={{ 
-            height: Math.min(viewportHeight * 0.8, 600), // Use fixed height based on initial viewport
-            maxHeight: Math.min(viewportHeight * 0.8, 600),
+            height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
+            maxHeight: Math.min(viewportHeight * 0.85, 600),
           }}
+
+          // style={{ 
+          //   // height: '90vh',
+          //   // maxHeight: '90vh',
+          // }}
         >
+          
           <div className="absolute right-4 top-4 z-10">
             <DrawerClose asChild>
               <Button variant="ghost" size="icon">
@@ -1078,7 +1085,13 @@ const AuthModal = ({
               </Button>
             </DrawerClose>
           </div>
-          <div className="px-4 py-8 h-full bg-white overflow-y-auto">
+          <div className="px-4 py-8 h-full  flex overflow-y-auto"
+           style={{
+            paddingBottom: '60px', // Extra padding for keyboard
+            scrollBehavior: 'smooth',
+            overscrollBehavior: 'contain',
+          }}
+          >
             {authContent}
           </div>
         </DrawerContent>

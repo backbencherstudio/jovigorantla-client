@@ -84,6 +84,16 @@
   }
 }
 
+input, textarea, select {
+  font-size: 16px; /* Prevents zoom on iOS */
+}
+
+/* For better keyboard handling */
+.drawer-content {
+  height: 100vh;
+  height: calc(100vh - env(keyboard-inset-height, 0px));
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -192,6 +202,8 @@
   transition: opacity 300ms, transform 300ms;
 }
 
+
+
 /* Responsive layout helpers */
 @media (max-width: 767px) {
   .content-container {
@@ -210,3 +222,5 @@
     padding: 2rem;
   }
 }
+
+

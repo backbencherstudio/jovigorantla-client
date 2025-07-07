@@ -181,7 +181,7 @@ function AppRoutes() {
           path="/messages/:conversationId"
           element={
             <PrivateRoute>
-              <PageLayout title="Chat">
+              <PageLayout>
                 <ChatPage />
               </PageLayout>
             </PrivateRoute>

@@ -30,7 +30,15 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   const location = useLocation();
 
   const handleBack = () => {
+    // navigate(-1);
+     // Check if there is history to go back to
+  if (window.history.length > 1) {
+    // If yes, go back
     navigate(-1);
+  } else {
+    // Otherwise, redirect to home
+    navigate('/');
+  }
   };
 
   // Calculate the left sidebar width based on device

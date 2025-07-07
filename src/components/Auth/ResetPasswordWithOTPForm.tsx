@@ -20,7 +20,7 @@ const ResetPasswordWithOTPForm = ({
   handleResend,
 }) => {
   return (
-    <div className="w-full h-[520px] flex flex-col bg-white">
+    <div className="w-full flex flex-col justify-center items-center">
       <Button
         variant="ghost"
         size="icon"
@@ -114,7 +114,7 @@ const ResetPasswordWithOTPForm = ({
 
             <Button
               type="submit"
-              className="left-4 w-[92%] md:w-[88%] md:left-6 absolute bottom-5 rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5"
+              className=" w-full rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5"
               disabled={isLoading}
             >
               {isLoading ? "Resetting..." : "Reset Password"}

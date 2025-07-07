@@ -89,29 +89,33 @@ const LoginForm = ({
                 <div className="h-5">
                   <FormMessage className="text-xs text-[#b3261e] font-normal ml-3 -mt-[6.5px]" />
                 </div>
+                
               </FormItem>
-            )}
+            )}  
           />
 
-          {signupSuccessfull && <p className="text-center text-brand">{signupSuccessfull}</p>}
-          <div className="text-center w-[92%] md:w-full absolute md:static bottom-16">
+          {signupSuccessfull && <p className="text-center text-brand pb-4">{signupSuccessfull}</p>}
+
+          
+        </div>
+        <Button
+          ref={loginButtonRef}
+          type="submit"
+          className="md:w-full  py-5 bg-brand rounded-full mt-1 "
+          disabled={isLoading}
+        >
+          {isLoading ? "Logging in..." : "Login"}
+        </Button>
+
+        <div className="text-center md:w-full mb-4">
             <Button
               variant="link"
-              className="text-sm text-[#3b82f6] p-0 hover:text-blue-600 font-normal mt-5"
+              className="text-sm text-[#3b82f6] p-0 hover:text-blue-600 font-normal"
               onClick={() => setForgotPassword(true)}
             >
               Forgot your password?
             </Button>
           </div>
-        </div>
-        <Button
-          ref={loginButtonRef}
-          type="submit"
-          className=" w-[92%] md:w-full absolute md:static bottom-5 py-5 bg-brand rounded-full mt-1 "
-          disabled={isLoading}
-        >
-          {isLoading ? "Logging in..." : "Login"}
-        </Button>
       </form>
     </Form>
   );

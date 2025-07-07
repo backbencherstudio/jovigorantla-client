@@ -215,7 +215,7 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: Listin
                 <span className="mx-2">•</span>
                 <div className="flex items-center">
                   <span>
-                    {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                    {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
                   </span>
                 </div>
               </>

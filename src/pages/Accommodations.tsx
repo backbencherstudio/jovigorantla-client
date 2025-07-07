@@ -274,6 +274,7 @@
 // }
 
 
+
 // src/pages/Accommodations.tsx
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -288,6 +289,32 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
+  const [distanceFromTop, setDistanceFromTop] = useState(0);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const calculateDistance = () => {
+      const rect = ref.current!.getBoundingClientRect();
+      setDistanceFromTop(window.scrollY + rect.top);
+    };
+
+    // Calculate immediately
+    calculateDistance();
+
+    // Re-calculate on resize/scroll
+    window.addEventListener('resize', calculateDistance);
+    window.addEventListener('scroll', calculateDistance);
+
+    return () => {
+      window.removeEventListener('resize', calculateDistance);
+      window.removeEventListener('scroll', calculateDistance);
+    };
+  }, [ref]);
+
+  return distanceFromTop;
+};
 export default function Accommodations({openModal}) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -297,6 +324,8 @@ export default function Accommodations({openModal}) {
   const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const filterTabsRef = useRef<HTMLDivElement>(null);
+
 
   const [isLoading, setLoading] = useState(false);
   const [listings, setListings] = useState<any[]>([]);
@@ -309,6 +338,8 @@ export default function Accommodations({openModal}) {
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
 
+  const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput(value);
@@ -317,6 +348,10 @@ export default function Accommodations({openModal}) {
       setSearchQuery("");
     }
   };
+
+   useEffect(() => {
+    console.log('Distance from top:', distanceFromTop, 'px');
+  }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -400,8 +435,51 @@ export default function Accommodations({openModal}) {
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
-    window.scrollTo(0, 0);  // Scroll to the top
+    
+    if (filterTabsRef.current) {
+      const rect = filterTabsRef.current.getBoundingClientRect();
+      console.log(rect)
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const targetY = rect.top + scrollTop - 60; // 60px offset for the header
+      console.log(targetY, scrollTop, document.documentElement.scrollTop, window.scrollY + rect.bottom)
+      
+      window.scrollTo({
+        top: targetY,
+        // behavior: 'smooth'
+      });
+    }
   };
+
+  // const handleFilterClick = (filter: string) => {
+  // setActiveFilter(filter);
+  
+  // // Use setTimeout to ensure DOM update completes
+  // setTimeout(() => {
+  //   if (filterTabsRef.current) {
+  //     // Get position accounting for any parent scrolling
+  //     const rect = filterTabsRef.current.getBoundingClientRect();
+      
+  //     // Calculate position relative to document
+  //     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  //     const targetY = rect.top + scrollTop;
+      
+  //     // iOS-specific adjustments
+  //     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  //     const adjustedTargetY = isIOS ? targetY - 10 : targetY; // Small iOS offset
+      
+  //     // Use different scrolling method for iOS
+  //     if (isIOS) {
+  //       document.body.scrollTop = adjustedTargetY;
+  //       document.documentElement.scrollTop = adjustedTargetY;
+  //     } else {
+  //       window.scrollTo({
+  //         top: adjustedTargetY,
+  //         behavior: 'auto' // 'smooth' can cause issues on iOS
+  //       });
+  //     }
+  //   }
+  // }, 50); // Small delay helps iOS
+  // };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -421,35 +499,15 @@ export default function Accommodations({openModal}) {
       if (currentElement) observer.unobserve(currentElement);
     };
   }, [hasMore, isLoading]);
-
+  
   return (
-    <main className="w-full mx-auto max-w-3xl bg-transparent">
-      {/* {isMobile && (
-        <div className="z-10 transition-transform bg-white px-4 pt-2 pb-2">
-          <form onSubmit={handleSearchSubmit}>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                type="text"
-                placeholder="Search accommodations"
-                value={searchInput}
-                onChange={handleSearchChange}
-                className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
-              />
-            </div>
-          </form>
-          <div className="mt-2 mr-[-18px] flex items-center justify-end">
-            <LocationWithRadius popupStyle="mr-2" />
-          </div>
-          <div className="pb-2">
-            <CategoryIcons />
-          </div>
-        </div>
-      )} */}
+    <main className="w-full mx-auto max-w-3xl bg-transparent" ref={filterTabsRef} >
 
-      <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
+      {/* <div
+        ref={filterTabsRef} 
+       className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]"> */}
         <FilterTabs tabs={["All", "Available", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
-      </div>
+      {/* </div> */}
 
       <div className="px-4 my-4 space-y-4">
         {listings.map((listing, index) => (

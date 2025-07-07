@@ -178,7 +178,7 @@ const ManageListings = () => {
                           {listing?.address && (
                               <div className="flex items-center">
                                 <span>
-                                  Location: {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                                  Location: {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
                                 </span>
                               </div>
                             )}
@@ -191,6 +191,7 @@ const ManageListings = () => {
                           size="sm"
                           onClick={() => handleEditListing(listing.id)}
                           className="h-8"
+                          disabled={listing.post_to_usa}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

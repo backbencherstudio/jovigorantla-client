@@ -367,7 +367,7 @@ const SavedListings = () => {
                         <span>{formatTime(listing.created_at)}</span>
                         <span className="mx-2">•</span>
                         <span>
-                    {listing.address.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                    {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
                   </span>
                         {/* <span>Denton, TX</span> */}
                       </div>
@@ -384,6 +384,9 @@ const SavedListings = () => {
                           e.stopPropagation(); // ✅ stop event bubbling
                           // onToggleSave(e, listing.id);
                         }}
+
+                        onHide={() => {}}
+                        openModal={()=>{}}
                       />
 
                       {/* <div className="flex items-center">

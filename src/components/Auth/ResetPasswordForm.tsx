@@ -17,7 +17,7 @@ const ResetPasswordForm = ({
   setForgotPassword
 }) => {
   return (
-    <div className="w-full h-[500px] flex flex-col  bg-white">
+    <div className="w-full flex flex-col items-center justify-center">
       <Button
         variant="ghost"
         size="icon"
@@ -37,7 +37,7 @@ const ResetPasswordForm = ({
         <Form {...resetPasswordForm}>
           <form
             onSubmit={resetPasswordForm.handleSubmit(handleResetPassword)}
-            className="h-full flex flex-col justify-between"
+            className="h-full"
           >
             <FormField
               control={resetPasswordForm.control}
@@ -63,7 +63,7 @@ const ResetPasswordForm = ({
 
             <Button
               type="submit"
-              className="left-4 w-[92%] md:w-[88%] md:left-6 absolute  bottom-5 rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5"
+              className=" w-full rounded-full bg-[#ff6b00] hover:bg-[#e55f00] py-5"
               disabled={isLoading}
             >
               {isLoading ? "Sending..." : "Send OTP"}

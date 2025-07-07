@@ -93,7 +93,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className={`flex flex-col min-h-[${isDesktop? '100vh': '200vh'}] bg-gray-50`}>
       <Header />
 
       <div className="flex flex-1">

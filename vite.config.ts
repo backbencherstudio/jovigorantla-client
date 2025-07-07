@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
     allowedHosts: [
       'localhost',
       '127.0.0.1',
+      '15ad-137-59-180-113.ngrok-free.app'
     ],
   },
   plugins: [
