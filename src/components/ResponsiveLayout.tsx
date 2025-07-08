@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { Search, X } from "lucide-react";
+import { ArrowLeft, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -11,12 +11,16 @@ import AdBanner from "@/components/AdBanner";
 import LocationSelector from "@/components/LocationSelector";
 import SidebarAds from "./ui/Sidebar-Ads";
 import LocationWithRadius from "./LocationWithRedius";
+import { Button } from "./ui/button";
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
+  title?: string;
+  hideBackButton?: boolean;
+  fullWidth?: boolean;
 }
 
-const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
+const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hideBackButton=false, fullWidth=false }) => {
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -32,13 +36,19 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
     setSearchQuery(value);
 
     // If search field is cleared, navigate to home without query
-    if (!value.trim() && location.search.includes("q=")) {
-      navigate(location.pathname);
-    }
+    // if (!value.trim() && location.search.includes("q=")) {
+    //   navigate(location.pathname);
+    // }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Dismiss the keyboard by blurring the active element
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  
     if (searchQuery.trim()) {
       // Navigate with search query
       navigate(`${location.pathname}?q=${encodeURIComponent(searchQuery)}`);
@@ -80,7 +90,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
 
   const handleClearInput = () => {
     setSearchQuery("");
-    navigate(location.pathname); // Navigate to home without query
+    // navigate(location.pathname); // Navigate to home without query
   };
   useEffect(() => {
     const queryParam = new URLSearchParams(location.search).get("q") || "";
@@ -92,11 +102,42 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
+  const [width, setWidth] = useState("768px");
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+   
+ // List of paths to check against
+ const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];
+
+ // Check if current path matches any of the valid paths
+ const isValidPage = validPaths.includes(location.pathname);
+  
+
   return (
     <div className={`flex flex-col min-h-[${isDesktop? '100vh': '200vh'}] bg-gray-50`}>
       <Header />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-[100%]">
         {/* Left Sidebar - Menu (only on desktop/tablet) */}
         {!isMobile && (
           <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -104,8 +145,44 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
           </div>
         )}
 
+        {!isValidPage && <main
+           className={`w-full mx-auto ${
+             fullWidth ? "" : "max-w-3xl"
+           } bg-white flex flex-col min-h-[100%]`}
+         >
+           {/* Page Header with back button */}
+           {title && (
+             <div className="relative">
+               <div
+                 className="fixed z-20 bg-white  border-b border-gray-100 px-4 py-3 flex items-center"
+                 style={{
+                   width: width,
+                   top: "67px" /* Header height */,
+                 }}
+               >
+                 {!hideBackButton && (
+                   <Button
+                     variant="ghost"
+                     size="icon"
+                     onClick={handleBack}
+                     className="mr-2"
+                   >
+                     <ArrowLeft className="h-5 w-5" />
+                   </Button>
+                 )}
+                 <h1 className="text-xl font-bold">{title}</h1>
+               </div>
+               <div className="h-[65px] bg-white border-b "></div>
+             </div>
+           )}
+
+           {/* Page Content */}
+           <div className="flex-1 h-full bg-white">{children}</div>
+         </main>
+        }
+
         {/* Main Content Area */}
-        <div
+        {isValidPage && <div
           className="flex-1 listings-container"
           style={{
             marginLeft: !isMobile ? leftSidebarWidth : "0",
@@ -163,7 +240,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
               {children}
             </div>
           </main>
-        </div>
+        </div>}
 
         {/* Right sidebar with ad banners - only visible on desktop */}
         {isDesktop && (

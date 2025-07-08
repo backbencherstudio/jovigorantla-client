@@ -195,7 +195,7 @@ const SavedListings = () => {
 
 
 
- 
+
   // Custom event listener for real-time updates
   useEffect(() => {
     if (!user) {
@@ -275,7 +275,7 @@ const SavedListings = () => {
     // Dispatch event for immediate updates
     // window.dispatchEvent(new Event("savedListingsUpdated"));
 
-    
+
   };
 
   const handleListingAction = (
@@ -291,17 +291,17 @@ const SavedListings = () => {
 
     switch (action) {
       case "share":
-          if (navigator.share) {
-            navigator.share({
-              title: listing.title,
-              text: `Check out this listing: ${listing.title}`,
-              url: `${window.location.origin}/listing/${listingId}`,
-            });
-          } else {
-            navigator.clipboard.writeText(
-              `${window.location.origin}/listing/${listingId}`
+        if (navigator.share) {
+          navigator.share({
+            title: listing.title,
+            text: `Check out this listing: ${listing.title}`,
+            url: `${window.location.origin}/listing/${listingId}`,
+          });
+        } else {
+          navigator.clipboard.writeText(
+            `${window.location.origin}/listing/${listingId}`
           );
-          }
+        }
         break;
       case "hide":
         // toast.success(`Listing hidden: "${listing.title}"`);
@@ -350,26 +350,11 @@ const SavedListings = () => {
                   onClick={() => handleListingClick(listing.id)}
                 >
                   <div className="pb-2 px-4">
-                    <div className="flex items-center text-sm text-gray-500 mb-1">
-                    <span>{formatCategory(listing.category)}</span>
-                    <span className="mx-2">•</span>
-                    <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
-                    </div>
-
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {listing.title}
-                    </h3>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center text-sm text-gray-500">
-                        <span>{listing.user.name}</span>
+                    <div className="flex justify-between">
+                      <div className="flex items-center text-sm text-gray-500 mb-1">
+                        <span>{formatCategory(listing.category)}</span>
                         <span className="mx-2">•</span>
-                        <span>{formatTime(listing.created_at)}</span>
-                        <span className="mx-2">•</span>
-                        <span>
-                    {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
-                  </span>
-                        {/* <span>Denton, TX</span> */}
+                        <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
                       </div>
 
                       <ListingActions
@@ -385,9 +370,28 @@ const SavedListings = () => {
                           // onToggleSave(e, listing.id);
                         }}
 
-                        onHide={() => {}}
-                        openModal={()=>{}}
+                        onHide={() => { }}
+                        openModal={() => { }}
                       />
+                    </div>
+
+                    <h3 className="text-lg font-medium text-gray-900 ">
+                      {listing.title}
+                    </h3>
+
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <span>{listing?.user?.name?.slice(0, 15)}</span>
+                        <span className="mx-2">•</span>
+                        <span>{formatTime(listing.created_at)}</span>
+                        <span className="mx-2">•</span>
+                        <span>
+                          {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                        </span>
+                        {/* <span>Denton, TX</span> */}
+                      </div>
+
+
 
                       {/* <div className="flex items-center">
                         <Button

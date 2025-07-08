@@ -559,7 +559,13 @@ const ListingActions = ({
 
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" 
+             onClick={(e) => {
+              e.preventDefault(); // Prevent default link behavior
+              e.stopPropagation(); // Prevent event propagation to the parent
+              // setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
+            }}
+          >
             <MoreVertical className="h-5 w-5 text-gray-400" />
           </Button>
         </DropdownMenuTrigger>

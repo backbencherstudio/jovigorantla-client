@@ -285,13 +285,19 @@ const Profile = () => {
             <DialogHeader>
               <DialogTitle>Edit Name</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <Input
+            <div className="space-y-8">
+             <div className="relative">
+             <Input
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
                 placeholder="Enter your name"
                 autoFocus
+                maxLength={15}
               />
+              <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
+                  {tempName.length}/15
+                </div>
+             </div>
               <div className="flex justify-end space-x-2">
                 <Button 
                   variant="outline" 

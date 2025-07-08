@@ -69,12 +69,13 @@ const Header = ({  searchInput,
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const [ searchValue, setSearchValue ] = useState("")
+  const [isMobile, setIsMobile] = useState(false);
 
   const { unreadMessages } = useMessages();
 
@@ -200,7 +201,7 @@ const Header = ({  searchInput,
     // Clear the search input value
     setSearchValue("");
     // Navigate to the current path without the query parameter
-    navigate(location.pathname);
+    // navigate(location.pathname);
   };
 
   useEffect(() => {
@@ -218,9 +219,9 @@ const Header = ({  searchInput,
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // onSearchInputChange(e.target.value);
     setSearchValue(e.target.value);
-    if (!e.target.value.trim()) {
-      navigate(location.pathname);
-    }
+    // if (!e.target.value.trim()) {
+    //   navigate(location.pathname);
+    // }
 
   };
 
@@ -261,8 +262,28 @@ const Header = ({  searchInput,
     }
   };
 
+  useEffect(() => {
+    // Check if the screen is mobile or not based on your window width
+    const handleResize = () => {
+      setIsMobile(window.innerWidth >= 768); // Set mobile break point here
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initialize on mount
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   // Mobile icon size - slightly larger for mobile
   const mobileIconSize = isMobile ? 6 : 5.5;
+
+   // List of paths to check against
+ const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];
+
+ // Check if current path matches any of the valid paths
+ const isValidPage = validPaths.includes(location.pathname);
 
   return (
     <>
@@ -278,8 +299,10 @@ const Header = ({  searchInput,
           </Link>
 
           {/* Search - Only on Tablet and Desktop */}
-          {!isMobile && (
-            <form onSubmit={handleSearch} className=" mx-4 w-[25vw] relative">
+          {isValidPage &&  (
+            <form onSubmit={handleSearch} className=" mx-4 w-[25vw] relative hidden md:block"
+            // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
+            >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 type="text"
@@ -361,7 +384,7 @@ const Header = ({  searchInput,
 
               {/* User menu */}
               {user ? (
-                <DropdownMenu>
+                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"

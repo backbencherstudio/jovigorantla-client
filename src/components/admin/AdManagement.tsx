@@ -634,7 +634,7 @@ const AdManagement = () => {
       return;
     }
 
-    const hasAd = newAdForm.name.trim() && newAdForm.targetUrl.trim() && selectedFile;
+    const hasAd = selectedFile;
 
     try {
       const formData = new FormData();
@@ -645,13 +645,13 @@ const AdManagement = () => {
       // if (formState.start_date?.trim()) formData.append("start_date", formState.start_date);
       // if (formState.end_date?.trim()) formData.append("end_date", formState.end_date);
 
-      console.log("start date => ", formState.start_date || null)
-      console.log("end date => ", formState.end_date || null)
+      // console.log("start date => ", formState.start_date || null)
+      // console.log("end date => ", formState.end_date || null)
 
       formData.append("start_date", formState.start_date || null);
       formData.append("end_date", formState.end_date || null);
       // format the cities
-      const fornatedCities = cityData.map(city =>{
+      const fornatedCities = cityData.map(city => {
         return {
           address: city.name,
           latitude: city.latitude,
@@ -710,7 +710,9 @@ const AdManagement = () => {
         // Create new group with optional first ad
         if (hasAd) {
           formData.append("ad_name", newAdForm.name.trim());
-          formData.append("target_url", newAdForm.targetUrl.trim());
+          if (newAdForm.targetUrl.trim()) {
+            formData.append("target_url", newAdForm.targetUrl.trim());
+          }
           formData.append("image", selectedFile);
         }
 
@@ -901,17 +903,17 @@ const AdManagement = () => {
 
   const handleSaveAdToExistingGroup = async () => {
     try {
-      if (!newAdForm.name.trim()) return toast.error("Please enter an ad name");
-      if (!newAdForm.targetUrl.trim()) return toast.error("Please enter a target URL");
+      // if (!newAdForm.name.trim()) return toast.error("Please enter an ad name");
+      // if (!newAdForm.targetUrl.trim()) return toast.error("Please enter a target URL");
       if (!newAdForm.groupId) return toast.error("Please select an ad group");
       if (!selectedFile) return toast.error("Please select an image file");
-  
+
       const formData = new FormData();
       formData.append("name", newAdForm.name.trim());
       formData.append("image", selectedFile);
       formData.append("target_url", newAdForm.targetUrl.trim());
       formData.append("ad_group_id", newAdForm.groupId);
-  
+
       // 👇 Append city metadata
       if (cityData.length > 0) {
         const formattedCities = cityData.map(city => ({
@@ -921,9 +923,9 @@ const AdManagement = () => {
         }));
         formData.append("cities", JSON.stringify(formattedCities));
       }
-  
+
       const { data: ad } = await api.post("/admin/ads", formData);
-  
+
       if (ad.success) {
         toast.success("Ad saved successfully");
         resetForm();
@@ -942,18 +944,19 @@ const AdManagement = () => {
       toast.error("Error saving ad");
     }
   };
-  
+
 
   const handleSaveSidebarTopAd = async () => {
     try {
-      if (!sidebarTopFile && !sidebarTopAds?.target_url) {
-        toast.error("Please select an image and provide a target URL");
-        return;
-      }
+      // if (!sidebarTopFile && !sidebarTopAds?.target_url) {
+      //   toast.error("Please select an image and provide a target URL");
+      //   return;
+      // }
 
       const formData = new FormData();
       formData.append("image", sidebarTopFile); // file input
       formData.append("target_url", sidebarTopAds.target_url); // string input
+      
 
       const { data } = await api.post("/admin/ads/sidebar-top", formData, {
         headers: {
@@ -975,14 +978,15 @@ const AdManagement = () => {
 
   const handleSaveSidebarBottomAd = async () => {
     try {
-      if (!sidebarBottomFile && !sidebarBottomAds?.target_url) {
-        toast.error("Please select an image and enter a target URL");
-        return;
-      }
+      // if (!sidebarBottomFile && !sidebarBottomAds?.target_url) {
+      //   toast.error("Please select an image and enter a target URL");
+      //   return;
+      // }
 
       const formData = new FormData();
       formData.append("image", sidebarBottomFile); // the actual file
       formData.append("target_url", sidebarBottomAds.target_url); // user-entered URL
+
 
       const { data } = await api.post("/admin/ads/sidebar-bottom", formData, {
         headers: {
@@ -1429,6 +1433,17 @@ const AdManagement = () => {
                             alt="Top Sidebar Ad"
                             className="h-[250px] w-[230px] mx-auto rounded-lg object-cover"
                           />
+
+                          {/* {image && (
+          <div className="my-4 overflow-hidden rounded-[100px]">
+            <img
+              src={image}
+              alt={title}
+              className="w-full rounded-lg overflow-hidden"
+              onLoad={() => setImageLoaded(true)}
+            />
+          </div>
+        )} */}
                         </div>
                       )}
 
@@ -1449,8 +1464,8 @@ const AdManagement = () => {
                     </div>
 
                     <div className="flex justify-between">
-                          <span>👁️ {sidebarTopAds?.views || 0}</span>
-                          <span>👆 {sidebarTopAds?.clicks || 0}</span>
+                      <span>👁️ {sidebarTopAds?.views || 0}</span>
+                      <span>👆 {sidebarTopAds?.clicks || 0}</span>
                     </div>
 
                     <div className="grid gap-2 grid-cols-3">
@@ -1554,8 +1569,8 @@ const AdManagement = () => {
 
 
                     <div className="flex justify-between">
-                          <span>👁️ {sidebarBottomAds?.views || 0}</span>
-                          <span>👆 {sidebarBottomAds?.clicks || 0}</span>
+                      <span>👁️ {sidebarBottomAds?.views || 0}</span>
+                      <span>👆 {sidebarBottomAds?.clicks || 0}</span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
@@ -1633,6 +1648,7 @@ const AdManagement = () => {
                   <Input
                     id="targetUrl"
                     value={newAdForm.targetUrl}
+                    type="url"
                     onChange={(e) =>
                       setNewAdForm({
                         ...newAdForm,
@@ -1670,13 +1686,25 @@ const AdManagement = () => {
                   </div>
 
                   {adPreview && (
-                    <div className="rounded-lg">
-                      <img
-                        src={adPreview}
-                        alt="Ad Preview"
-                        className="h-[124px] object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
-                      />
-                    </div>
+                    // <div className="rounded-lg">
+                    //   <img
+                    //     src={adPreview}
+                    //     alt="Ad Preview"
+                    //     className="h-[124px] object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
+                    //   />
+                    // </div>
+                    <div className="flex justify-center items-center mt-5">
+                           <div
+                            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
+                            style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                          >
+                            <img
+                              src={adPreview}
+                              alt={"Ad Preview"}
+                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                            />
+                          </div>
+                         </div>
                   )}
                 </div>
 
@@ -1886,13 +1914,26 @@ const AdManagement = () => {
                         </div>
 
                         {adPreview && (
-                          <div className="rounded-lg">
+                          // <div className="rounded-lg">
+                          //   <img
+                          //     src={adPreview}
+                          //     alt="Ad Preview"
+                          //     className="object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
+                          //   />
+                          // </div>
+
+                         <div className="flex justify-center items-center mt-5">
+                           <div
+                            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
+                            style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                          >
                             <img
                               src={adPreview}
-                              alt="Ad Preview"
-                              className="h-[124px] object-cover w-full lg:w-[574px] mx-auto rounded-lg mt-4"
+                              alt={"Ad Preview"}
+                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
                             />
                           </div>
+                         </div>
                         )}
                       </div>
 

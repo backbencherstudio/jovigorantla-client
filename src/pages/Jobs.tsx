@@ -640,9 +640,9 @@ export default function Jobs({ openModal }) {
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent">
 
-      <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
+      {/* <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]"> */}
         <FilterTabs tabs={["All", "Hiring", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
-      </div>
+      {/* </div> */}
 
       <div className="px-4 my-4 space-y-4">
         {listings.map((listing, index) => (

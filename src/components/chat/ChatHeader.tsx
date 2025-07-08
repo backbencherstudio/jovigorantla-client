@@ -101,7 +101,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
       </div>
 
       {/* Options menu for conversation actions */}
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="rounded-full">
             <MoreVertical className="h-5 w-5" />

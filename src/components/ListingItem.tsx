@@ -174,8 +174,8 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: Listin
       className="bg-white flex max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}
     >
-      <div className="p-4 pb-2 lg:pb-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
-        <div className="flex items-center text-sm text-gray-500 mb-1 relative">
+      <div className="p-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
+        <div className="flex items-center text-sm text-gray-500 relative">
           <span>{displayCategory?.slice(0, 1).toUpperCase() + displayCategory?.slice(1).toLowerCase()}</span>
           <span className="mx-2">•</span>
           <span>{displayStatus?.slice(0, 1).toUpperCase() + displayStatus?.slice(1).toLowerCase()}</span>
@@ -195,7 +195,7 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: Listin
           </div>
         </div>
 
-        <div className={`${listing?.title?.length > 40 ? "mb-0" : "mb-1 sm:mb-0"}`}>
+        <div className="my-1">
           <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mr-2">
             {listing.title}
           </h3>
@@ -203,7 +203,7 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: Listin
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span>{listing.user.name}</span>
+            <span>{listing?.user?.name?.slice(0, 15)}</span>
             {listing?.created_at && (
               <>
                 <span className="mx-2">•</span>

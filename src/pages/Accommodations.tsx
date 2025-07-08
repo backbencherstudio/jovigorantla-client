@@ -435,19 +435,20 @@ export default function Accommodations({openModal}) {
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
+    window.scrollTo(0, 0)
     
-    if (filterTabsRef.current) {
-      const rect = filterTabsRef.current.getBoundingClientRect();
-      console.log(rect)
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const targetY = rect.top + scrollTop - 60; // 60px offset for the header
-      console.log(targetY, scrollTop, document.documentElement.scrollTop, window.scrollY + rect.bottom)
+    // if (filterTabsRef.current) {
+    //   const rect = filterTabsRef.current.getBoundingClientRect();
+    //   console.log(rect)
+    //   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    //   const targetY = rect.top + scrollTop - 60; // 60px offset for the header
+    //   console.log(targetY, scrollTop, document.documentElement.scrollTop, window.scrollY + rect.bottom)
       
-      window.scrollTo({
-        top: targetY,
-        // behavior: 'smooth'
-      });
-    }
+    //   window.scrollTo({
+    //     top: targetY,
+    //     // behavior: 'smooth'
+    //   });
+    // }
   };
 
   // const handleFilterClick = (filter: string) => {

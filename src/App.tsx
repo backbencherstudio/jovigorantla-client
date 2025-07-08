@@ -81,7 +81,7 @@ function AppRoutes() {
             //   <Home /> 
             // </MainLayout>
             <ResponsiveLayout>
-              <Home  openModal={openModal}/>
+              <Home openModal={openModal} />
             </ResponsiveLayout>
           }
         />
@@ -92,7 +92,7 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Accommodations  openModal={openModal} />
+              <Accommodations openModal={openModal} />
             </ResponsiveLayout>
           }
         />
@@ -116,7 +116,7 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Marketplace openModal={openModal}  />
+              <Marketplace openModal={openModal} />
             </ResponsiveLayout>
 
           }
@@ -134,8 +134,8 @@ function AppRoutes() {
             //   <Index />
             // </ResponsiveLayout>
             <ResponsiveLayout>
-              <Rides openModal={openModal}  />
-              </ResponsiveLayout>
+              <Rides openModal={openModal} />
+            </ResponsiveLayout>
 
           }
         />
@@ -144,10 +144,17 @@ function AppRoutes() {
         <Route
           path="/create-listing"
           element={
-            <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
-              {/* <CreateListing isEditing={isEditing} /> */}
+            // <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
+
+            //   {/* <CreateListing isEditing={isEditing} /> */}
+            //   <PostListingForm />
+
+            // </PageLayout>
+
+            <ResponsiveLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
               <PostListingForm />
-            </PageLayout>
+
+            </ResponsiveLayout>
           }
         />
 
@@ -162,18 +169,23 @@ function AppRoutes() {
         <Route
           path="/listing/:id"
           element={
-            <PageLayout title="Listing Details">
+            // <PageLayout title="Listing Details">
+            //   <ListingDetailPage />
+            // </PageLayout>
+
+            <ResponsiveLayout title="Listing Details">
               <ListingDetailPage />
-            </PageLayout>
+
+            </ResponsiveLayout>
           }
         />
         <Route
           path="/messages"
           element={
             <PrivateRoute>
-              <PageLayout title="Messages">
+              <ResponsiveLayout title="Messages">
                 <Messages />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -181,9 +193,9 @@ function AppRoutes() {
           path="/messages/:conversationId"
           element={
             <PrivateRoute>
-              <PageLayout>
+              <ResponsiveLayout>
                 <ChatPage />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -191,9 +203,9 @@ function AppRoutes() {
           path="/profile"
           element={
             <PrivateRoute>
-              <PageLayout title="Profile">
+              <ResponsiveLayout title="Profile">
                 <Profile />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -201,9 +213,9 @@ function AppRoutes() {
           path="/saved-listings"
           element={
             <PrivateRoute>
-              <PageLayout title="Saved Listings">
+              <ResponsiveLayout title="Saved Listings">
                 <SavedListings />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -211,9 +223,9 @@ function AppRoutes() {
           path="/my-listings"
           element={
             <PrivateRoute>
-              <PageLayout title="My Listings">
+              <ResponsiveLayout title="My Listings">
                 <ManageListings />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -221,9 +233,9 @@ function AppRoutes() {
           path="/admin"
           element={
             <PrivateRoute>
-              <PageLayout title="Admin Panel">
+              <ResponsiveLayout title="Admin Panel">
                 <Admin />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
@@ -231,42 +243,42 @@ function AppRoutes() {
           path="/employee"
           element={
             <PrivateRoute>
-              <PageLayout title="Employee Panel">
+              <ResponsiveLayout title="Employee Panel">
                 <EmployeePanel />
-              </PageLayout>
+              </ResponsiveLayout>
             </PrivateRoute>
           }
         />
         <Route
           path="/about-us"
           element={
-            <PageLayout title="About Us">
+            <ResponsiveLayout title="About Us">
               <AboutUs />
-            </PageLayout>
+            </ResponsiveLayout>
           }
         />
         <Route
           path="/privacy-policy"
           element={
-            <PageLayout title="Privacy Policy">
+            <ResponsiveLayout title="Privacy Policy">
               <PrivacyPolicy />
-            </PageLayout>
+            </ResponsiveLayout>
           }
         />
         <Route
           path="/user-agreement"
           element={
-            <PageLayout title="User Agreement">
+            <ResponsiveLayout title="User Agreement">
               <UserAgreement />
-            </PageLayout>
+            </ResponsiveLayout>
           }
         />
         <Route
           path="*"
           element={
-            <PageLayout>
+            <ResponsiveLayout>
               <NotFound />
-            </PageLayout>
+            </ResponsiveLayout>
           }
         />
       </Routes>
@@ -300,11 +312,11 @@ function App() {
       if (!isDragging) return;
       const currentY = e.touches[0].pageY;
       const deltaY = currentY - startY;
-      
+
       if (deltaY > 150 && window.scrollY === 0) {
         setIsRefreshing(true);
       }
-      
+
       if (deltaY > 200 && window.scrollY === 0) {
         setShowLoading(true);
         setTimeout(() => {
@@ -332,7 +344,7 @@ function App() {
   }, [showLoading]);
   return (
     <>
-     {showLoading && (
+      {showLoading && (
         <div style={{
           position: 'fixed',
           top: 0,
@@ -365,21 +377,21 @@ function App() {
           </p>
         </div>
       )}
- <Router> 
-      <AuthProvider>
-        <ListingProvider>
-          <LocationProvider>
-            <SocketProvider>
-              <MessageProvider>
-                <AppRoutes />
-              </MessageProvider>
-            </SocketProvider>
-          </LocationProvider>
-        </ListingProvider>
-      </AuthProvider>
-    </Router>
+      <Router>
+        <AuthProvider>
+          <ListingProvider>
+            <LocationProvider>
+              <SocketProvider>
+                <MessageProvider>
+                  <AppRoutes />
+                </MessageProvider>
+              </SocketProvider>
+            </LocationProvider>
+          </ListingProvider>
+        </AuthProvider>
+      </Router>
     </>
-   
+
   );
 }
 
