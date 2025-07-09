@@ -32,7 +32,7 @@
 //   const [session, setSession] = useState<Session | null>(null);
 //   const [user, setUser] = useState<User | null>(null);
 //   const [loading, setLoading] = useState(true);
-  
+
 //   useEffect(() => {
 //     // Set up auth state listener FIRST
 //     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -135,6 +135,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../lib/axois'; // your axios instance with `withCredentials: true`
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 type User = {
@@ -161,6 +162,12 @@ type AuthContextType = {
   setFormData: (formData: any) => void;
   forgotPassword: (email: string) => Promise<boolean>;
   resetPassword: (email: string, password: string, token: string) => Promise<boolean>;
+  isOpenSuccessAfterLogin: boolean,
+  isOpenPendingAfterLogin: boolean,
+  isOpenErrorAfterLogin: boolean,
+  setIsOpenErrorAfterLogin: (boolean) => void,
+  setIsOpenSuccessAfterLogin: (boolean) => void,
+  setIsOpenPendingAfterLogin:(boolean) => void,
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -170,6 +177,60 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [favoritesListings, setFavoritesListings] = useState([]);
   const [formData, setFormData] = useState(null)
+  const [isOpenSuccessAfterLogin, setIsOpenSuccessAfterLogin] = useState(false);
+  const [isOpenPendingAfterLogin, setIsOpenPendingAfterLogin] = useState(false);
+  const [isOpenErrorAfterLogin, setIsOpenErrorAfterLogin] = useState(false);
+
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const redirect = localStorage.getItem("redirect");
+    if (redirect) {
+      localStorage.removeItem("redirect");
+
+      let afterLoginForm = localStorage.getItem("afterLogin");
+
+      if (afterLoginForm) {
+        afterLoginForm = JSON.parse(localStorage.getItem("afterLogin"))
+        const formData = new FormData()
+        for (const key in afterLoginForm as any) {
+            formData.append(key, afterLoginForm[key])
+        }
+        // if (localStorage.getItem("image")) {
+        //   console.log("image", localStorage.getItem("image"))
+        //   formData.append("image", localStorage.getItem("image"))
+        // }
+        api.post('/listings', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }).then((res) => {
+          localStorage.removeItem("afterLogin")
+          if (res.data.success) {
+            if ((afterLoginForm as any).post_to_usa == "true") {
+              setIsOpenPendingAfterLogin(true)
+            }else{
+              setIsOpenSuccessAfterLogin(true)
+            }
+          } else {
+            setIsOpenErrorAfterLogin(true)
+          }
+        }).catch((err) => {
+          console.log(err);
+          setIsOpenErrorAfterLogin(true)
+        })
+      }
+    
+
+        
+      
+
+      navigate(redirect);
+
+    }
+  }, []);
 
   const fetchUser = async () => {
     try {
@@ -177,7 +238,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         withCredentials: true,
       });
       // console.log(res);
-      
+
       setUser(res.data.data);
     } catch {
       setUser(null);
@@ -192,7 +253,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
 
-  
+
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -209,10 +270,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithGoogle = async () => {
     try {
-
+      localStorage.setItem("redirect", location.pathname)
       window.location.href = `${import.meta.env.VITE_BASE_URL}/auth/google`;
       return true;
-      
+
       // const res = await api.get('/auth/google');
       // console.log(res);
       // if (res.data.success) {
@@ -236,7 +297,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         otp,
       });
 
-      console.log("from sign up=> ",res.data)
+      console.log("from sign up=> ", res.data)
 
       if (res.data.success) {
         await fetchUser();
@@ -294,11 +355,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteFavoritesListing = async (listingId: string) => {
     try {
-      const res = await api.post('/favorites', { 
+      const res = await api.post('/favorites', {
         listing_id: listingId,
-       });
+      });
 
-       console.log("from => ",res.data);
+      console.log("from => ", res.data);
       if (res.data.success) {
         // go throw favoritesListings and remove the listing with the id of listingId
         setFavoritesListings(favoritesListings.filter((listing: any) => listing.id !== listingId));
@@ -312,9 +373,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addFavoritesListing = async (listingId: string) => {
     try {
-      const res = await api.post('/favorites', { 
+      const res = await api.post('/favorites', {
         listing_id: listingId,
-       });
+      });
       if (res.data.success) {
         fetchFavoritesListings()
         return true;
@@ -383,6 +444,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setFormData,
     forgotPassword,
     resetPassword,
+    isOpenSuccessAfterLogin,
+    isOpenPendingAfterLogin,
+    isOpenErrorAfterLogin,
+    setIsOpenErrorAfterLogin,
+    setIsOpenSuccessAfterLogin,
+    setIsOpenPendingAfterLogin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -69,13 +69,12 @@ const Header = ({  searchInput,
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
-  // const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const [ searchValue, setSearchValue ] = useState("")
-  const [isMobile, setIsMobile] = useState(false);
 
   const { unreadMessages } = useMessages();
 
@@ -262,22 +261,9 @@ const Header = ({  searchInput,
     }
   };
 
-  useEffect(() => {
-    // Check if the screen is mobile or not based on your window width
-    const handleResize = () => {
-      setIsMobile(window.innerWidth >= 768); // Set mobile break point here
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initialize on mount
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   // Mobile icon size - slightly larger for mobile
-  const mobileIconSize = isMobile ? 6 : 5.5;
+  // const mobileIconSize = isMobile ? 6 : 5.5;
 
    // List of paths to check against
  const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];

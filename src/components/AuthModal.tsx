@@ -577,7 +577,7 @@ import AuthSteps from "./Auth/AutoSteps";
 import SocialAuthButtons from "./Auth/SocialAuthButtons";
 import LoginForm from "./Auth/LoginForm";
 import SignupEmailForm from "./Auth/SignupEmailForm";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ResetPasswordWithOTPForm from "./Auth/ResetPasswordWithOTPForm";
 import { api } from "@/lib/axois";
 
@@ -986,19 +986,23 @@ const AuthModal = ({
           </h1>
           <p className="text-sm text-gray-600 mt-2 px-4">
             By continuing, you agree to our{" "}
-            <p
-              onClick={() => navigate("/user-agreement")}
+            <Link
+              to={"/user-agreement"}
+              target="_blank"
+              // onClick={() => navigate("/user-agreement")}
               className="text-blue-500 hover:underline inline cursor-pointer"
             >
               User Agreement
-            </p>{" "}
+            </Link>{" "}
             and acknowledge that you understand the{" "}
-            <p
-              onClick={() => navigate("/privacy-policy")}
+            <Link
+            to={"/privacy-policy"}
+             target="_blank"
+              // onClick={() => navigate("/privacy-policy")}
               className="text-blue-500 inline hover:underline cursor-pointer"
             >
               Privacy Policy
-            </p>
+            </Link>
             .
           </p>
         </div>
