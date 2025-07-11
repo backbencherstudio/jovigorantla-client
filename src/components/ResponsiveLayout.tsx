@@ -122,7 +122,15 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   }, []);
 
   const handleBack = () => {
-    navigate(-1);
+    // navigate(-1);
+     // Check if there is history to go back to
+    if (window.history.length > 1) {
+      // If yes, go back
+      navigate(-1);
+    } else {
+      // Otherwise, redirect to home
+      navigate('/');
+    }
   };
 
    
@@ -137,7 +145,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
     <div className={`flex flex-col min-h-[${isDesktop? '100vh': '200vh'}] bg-gray-50`}>
       <Header />
 
-      <div className="flex flex-1 min-h-[100%]">
+      <div className="flex flex-1 min-h-[calc(100vh-67px)]">
         {/* Left Sidebar - Menu (only on desktop/tablet) */}
         {!isMobile && (
           <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -148,7 +156,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
         {!isValidPage && <main
            className={`w-full mx-auto ${
              fullWidth ? "" : "max-w-3xl"
-           } bg-white flex flex-col min-h-[100%]`}
+           } bg-white flex flex-col flex-1 min-h-[100%]`}
          >
            {/* Page Header with back button */}
            {title && (

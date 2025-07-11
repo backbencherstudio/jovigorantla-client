@@ -265,6 +265,7 @@ const AdManagement = () => {
       if (groups?.success) {
         setAdGroups(groups.data)
       }
+    console.log("groups => ", groups)
     } catch (error) {
       console.log("error => ", error)
       toast.error("Error fetching ad groups");

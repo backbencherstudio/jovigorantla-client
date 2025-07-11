@@ -79,7 +79,7 @@ const ListingDetailPage = () => {
     }
   }
 
-  console.log(listing)
+  // console.log(listing)
 
 
 
@@ -349,6 +349,8 @@ const ListingDetailPage = () => {
                   e.preventDefault(); // ✅ prevent default link navigation
                   e.stopPropagation(); // ✅ stop event bubbling
                 }}
+                onHide={() => {}}
+                openModal={() => {}}
           />
 
             </div>

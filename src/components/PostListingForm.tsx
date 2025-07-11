@@ -1592,6 +1592,15 @@ function PostListingForm() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
+  interface FileRecord {
+    id: number;
+    name: string;
+    type: string;
+    size: number;
+    lastModified: number;
+    file: File;
+  }
+
   const { control, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -1754,13 +1763,11 @@ function PostListingForm() {
       // Common fields
       if (data.image) {
         formData.append('image', data.image);
-        formDataAfterLogin['image'] = data.image;
         // console.log("image => ", data.image)
         // localStorage.setItem('image', data.image)
       } else if (isEditMode && typeof imagePreview === 'string' && imagePreview.startsWith('http')) {
         // Preserve existing image URL if not changed
         formData.append('image_url', imagePreview);
-        formDataAfterLogin['image_url'] = imagePreview;
       }
 
       formData.append('category', data.category.toUpperCase());
@@ -1822,13 +1829,14 @@ function PostListingForm() {
       if (isEditMode) {
         const response = await api.patch(`/listings/${listingId}`, formData);
 
-        console.log(response.data)
+        // console.log(response.data)
         if (response.data.success) {
           if (data.isUSA) {
             setIsOpenPending(true);
           } else {
             setIsOpenSuccess(true);
           }
+          await wipeDatabaseCompletely()
         } else {
           setIsOpenError(true);
         }
@@ -1864,7 +1872,89 @@ function PostListingForm() {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  let dbInstance: IDBDatabase | null = null;
+
+  const openDB = (): Promise<IDBDatabase> => {
+    return new Promise((resolve, reject) => {
+      if (dbInstance) {
+        return resolve(dbInstance);
+      }
+  
+      const request = indexedDB.open('MyFileStorage', 1);
+      
+      request.onupgradeneeded = (event) => {
+        const target = event.target as IDBOpenDBRequest;
+        dbInstance = target.result;
+        if (!dbInstance.objectStoreNames.contains('files')) {
+          dbInstance.createObjectStore('files', { keyPath: 'id' });
+        }
+      };
+      
+      request.onsuccess = (event) => {
+        dbInstance = (event.target as IDBOpenDBRequest).result;
+        resolve(dbInstance);
+      };
+      
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  };
+
+  const wipeDatabaseCompletely = async (): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+      // Close existing connection if open
+      if (dbInstance) {
+        dbInstance.close();
+        dbInstance = null;
+      }
+  
+      const request = indexedDB.deleteDatabase('MyFileStorage');
+  
+      request.onsuccess = () => resolve();
+      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      
+      request.onblocked = () => {
+        // If blocked, wait and try again
+        setTimeout(() => {
+          indexedDB.deleteDatabase('MyFileStorage').onsuccess = () => resolve();
+        }, 200);
+      };
+    });
+  };
+
+  
+  
+  const storeFile = async (file: File): Promise<void> => {
+    const db = await openDB();
+    
+    return new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction('files', 'readwrite');
+      const store = transaction.objectStore('files');
+      
+      const fileRecord: FileRecord = {
+        id: Date.now(),
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified,
+        file: file
+      };
+      
+      const request = store.add(fileRecord);
+      
+      request.onsuccess = () => resolve();
+      request.onerror = (event: Event) => {
+        const target = event.target as IDBRequest;
+        reject(target.error);
+      };
+    });
+  };
+
+
+
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -1874,6 +1964,7 @@ function PostListingForm() {
     }
 
     setValue("image", file);
+    await storeFile(file);
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
   };
@@ -1922,12 +2013,13 @@ function PostListingForm() {
     setValue('subCategory', value);
   };
 
-  const removeImage = () => {
+  const removeImage = async () => {
     setValue("image", null);
     if (imagePreview && imagePreview.startsWith('blob:')) {
       URL.revokeObjectURL(imagePreview);
     }
     setImagePreview(null);
+    await wipeDatabaseCompletely();
   };
 
   useEffect(() => {
@@ -2082,8 +2174,9 @@ useEffect(() => {
         {isEditMode ? "Edit Listing" : "Create New Listing"}
       </h2> */}
 
+
         <div className="space-y-2">
-          <label htmlFor="category" className="block text-black font-medium text-sm">
+          <label htmlFor="category" className="block text-black font-medium text-sm  ">
             Category
           </label>
           <Controller
