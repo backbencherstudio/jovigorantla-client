@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, Flag, Eye, Ban, Trash2 } from "lucide-react";
+import { History, Flag, Eye, Ban, Trash2, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +36,7 @@ import { formatCategory } from "@/lib/format";
 
 interface FlaggedListing {
   id: string;
+  report_id: string
   reason: string | null;  // Reason can be null
   message: string | null;  // Message can be null
   report_type: string;
@@ -250,6 +251,29 @@ const FlaggedListings = () => {
       setIsFetchingHistory(false);
     }
   }, []);
+
+
+  const reverseFlaggedHistory = async (reportId)=>{
+    try {
+      const response = await api.patch(`/admin/listings/flagged-listings/${reportId}/reverse`);
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
+
+      const report = flaggedHistory.find((item) => item.id === reportId);
+      if (report) {
+        const updatedReport = {
+         ...report,
+        status: "PENDING",
+        updated_at: new Date().toISOString(),
+      };
+
+        console.log(updatedReport)
+      }
+    } catch (error) {
+      toast.error("Failed to reverse flagged history");
+    }
+  }
   
   
 
@@ -485,14 +509,23 @@ const FlaggedListings = () => {
                       <TableCell>
                         {report.updated_at ? formatDate(report.updated_at) : "-"}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="flex gap-1">
+                       
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleViewListing(report.listing.id)}
                         >
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
+                          <Eye className="h-3 w-3" />
+                          {/* View */}
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => reverseFlaggedHistory(report.report_id)}
+                        >
+                          <SquarePen className="h-3 w-3" />
                         </Button>
                       </TableCell>
                     </TableRow>

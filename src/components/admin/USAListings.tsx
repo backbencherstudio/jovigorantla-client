@@ -326,7 +326,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, Flag, Eye, Ban, Trash2 } from "lucide-react";
+import { History, Flag, Eye, Ban, Trash2, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -560,6 +560,12 @@ const USAListing = () => {
       setIsFetchingHistory(false);
     }
   }, []);
+
+
+  const reverseUSAHistory = async (listingId) => {
+
+    console.log(listingId)
+  }
   
 
   useEffect(() => {
@@ -796,7 +802,7 @@ const USAListing = () => {
                       <TableCell>
                         {item.updated_at ? formatDate(item.updated_at) : "-"}
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Button
                           size="sm"
                           variant="outline"
@@ -805,7 +811,26 @@ const USAListing = () => {
                           <Eye className="h-4 w-4 mr-1" />
                           View
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
+                      <TableCell className="flex gap-1">
+                       
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={() => handleViewListing(item.id)}
+                       >
+                         <Eye className="h-3 w-3" />
+                         {/* View */}
+                       </Button>
+
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={() => reverseUSAHistory(item.id)}
+                       >
+                         <SquarePen className="h-3 w-3" />
+                       </Button>
+                     </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
