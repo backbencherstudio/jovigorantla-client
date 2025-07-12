@@ -69,6 +69,20 @@ const CategoryIcons: React.FC = () => {
     }
   }, [location.pathname, setCategory]);
 
+  const handleClick = (path: string) => {
+    // Parse the current query parameters from the URL
+    const currentParams = new URLSearchParams(location.search);
+
+    // Remove the 'tab' parameter if it exists
+    currentParams.delete('tab');
+
+    // Rebuild the URL with the updated query string
+    const newSearch = currentParams.toString() ? `?${currentParams.toString()}` : '';
+
+    // Navigate to the new path with the updated query parameters
+    navigate(`${path}${newSearch}`);
+  };
+
   return (
     <div className="flex justify-between py-2">
       {categories.map((category) => {
@@ -80,7 +94,8 @@ const CategoryIcons: React.FC = () => {
             key={category.path}
             className="flex flex-col items-center cursor-pointer"
             onClick={() => {
-              navigate(search? `${category.path}${search}` : category.path)
+              // navigate(search? `${category.path}${search}` : category.path);
+              handleClick(category.path);
               handleSetCategory(category.label)
             }}
           >

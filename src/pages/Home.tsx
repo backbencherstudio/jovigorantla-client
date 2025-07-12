@@ -219,7 +219,7 @@
 //                             <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 //                         </div>
 
-                      
+
 
 //                         <div className="px-4 my-4 space-y-4">
 //                             {listings.map((listing, index) => (
@@ -493,8 +493,234 @@
 // }
 
 
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+// import { useState, useEffect, useRef } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import { api } from "@/lib/axois";
+// import { Search } from "lucide-react";
+// import CategoryIcons from "@/components/CategoryIcons";
+// import ListingItem from "@/components/ListingItem";
+// import { Input } from "@/components/ui/input";
+// import LocationWithRadius from "@/components/LocationWithRedius";
+// import FilterTabs from "@/components/FilterTabs";
+// import { useLocationContext } from "@/context/LocationContext";
+// import NoListingsFound from "@/components/NoListingsFound";
+// import { useIsMobile } from "@/hooks/use-mobile";
+
+// export default function Home({
+//   openModal,
+// }) {
+//   const isMobile = useIsMobile();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   const searchParams = new URLSearchParams(location.search);
+//   const initialQuery = searchParams.get("q") || "";
+//   const [searchInput, setSearchInput] = useState(initialQuery);
+//   const [searchQuery, setSearchQuery] = useState(initialQuery);
+
+//   const [isLoading, setLoading] = useState(false);
+//   const [listings, setListings] = useState<any[]>([]);
+//   const [hasMore, setHasMore] = useState(true);
+//   const loadMoreRef = useRef<HTMLDivElement>(null);
+//   const numberOfShownListings = useRef(0);
+//   const listingCutoffTime = useRef("");
+//   const isFetchingRef = useRef(false);
+//   const [activeFilter, setActiveFilter] = useState("Nearby");
+//   const [oldFilter, setOldFilter] = useState("");
+//   const { lat, lng, radius } = useLocationContext();
+
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setSearchInput(value);
+//     if (!value.trim()) {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     const trimmed = searchInput.trim();
+//     if (trimmed) {
+//       navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
+//       setSearchQuery(trimmed);
+//     } else {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   const fetchNearByListings = async (filter: string, query: string) => {
+//     if (isFetchingRef.current) return;
+//     isFetchingRef.current = true;
+
+//     try {
+//       setLoading(true);
+//       const shownCount = numberOfShownListings.current || 0;
+
+//       const isUsa = filter === "USA";
+
+//       const { data: listingResponse } = await api.get("/listings/nearby", {
+//         params: {
+//           search: query,
+//           is_usa: isUsa,
+//           limit: 10,
+//           numberOfShownListings: shownCount,
+//           lat: lat,
+//           lng: lng,
+//           radius: radius,
+//         },
+//       });
+
+//       const data = listingResponse.data;
+
+//       if (data.listings && data.listings.length > 0) {
+//         if (shownCount === 0 || oldFilter !== filter) {
+//           setListings(data.listings);
+//           setOldFilter(filter);
+//           listingCutoffTime.current = data.listings.listingCutoffTime;
+//           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
+//         } else {
+//           setListings(prev => [...prev, ...data.listings]);
+//           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
+//         }
+//         setHasMore(data.hasMore);
+//       } else {
+//         setHasMore(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching accommodations:", error);
+//     } finally {
+//       setLoading(false);
+//       isFetchingRef.current = false;
+//     }
+//   };
+
+//   const handleHide = (id: string) => {
+//     setListings(listings.filter(listing => listing.id !== id));
+//   };
+
+//   useEffect(() => {
+//     numberOfShownListings.current = 0;
+//     setListings([]);
+//     setHasMore(true);
+//     fetchNearByListings(activeFilter, searchQuery);
+
+//     return () => {
+
+//     };
+//   }, [activeFilter, searchQuery, lat, lng, radius]);
+
+//   useEffect(() => {
+//     const queryParam = new URLSearchParams(location.search).get("q") || "";
+//     setSearchQuery(queryParam);
+//     setSearchInput(queryParam);
+//   }, [location.search]);
+
+//   const handleFilterClick = (filter: string) => {
+//     setActiveFilter(filter);
+//     window.scrollTo(0, 0);  // Scroll to the top
+//   };
+
+//   useEffect(() => {
+//     const observer = new IntersectionObserver(
+//       entries => {
+//         const first = entries[0];
+//         if (first.isIntersecting && hasMore && !isLoading) {
+//           fetchNearByListings(activeFilter, searchQuery);
+//         }
+//       },
+//       { threshold: 1 }
+//     );
+
+//     const currentElement = loadMoreRef.current;
+//     if (currentElement) observer.observe(currentElement);
+
+//     return () => {
+//       if (currentElement) observer.unobserve(currentElement);
+//     };
+//   }, [hasMore, isLoading]);
+
+//   const yourTrackingFunction = async (listing: any) => {
+//     try {
+//       await api.post(`/ads/${listing.id}/track-click`)
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
+
+//   const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+//   // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
+//   if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+//     console.log(e)
+//     // For new tab/window opens
+//      await yourTrackingFunction(listing)
+//     return; // Let default browser behavior proceed
+//   }
+
+//   // Regular left click
+//   e.preventDefault();
+//   await yourTrackingFunction(listing)
+
+//   // Programmatic navigation after tracking
+//   window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+// };
+
+//   return (
+//     <main className="w-full mx-auto max-w-3xl bg-transparent">
+
+//       {/* <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]"> */}
+//         <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+//       {/* </div> */}
+
+//       <div className="px-4 my-4 space-y-4">
+//         {listings.map((listing, index) => (
+//           <div key={`${listing.id}-${index}`}>
+//             {listing?.type === "listing" && (
+//               <ListingItem openModal={openModal} listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
+//             )}
+//             {listing?.type === "ad" && (
+//               <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+//                onClick={(e) => handleAdClick(e, listing)}
+//                 onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+//                 onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+//               >
+//                 <div
+//                   className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+//                   style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+//                 >
+//                   <img
+//                     src={listing.image_url}
+//                     alt={listing.title}
+//                     className="absolute inset-0 w-full h-full object-cover rounded-lg"
+//                   />
+//                 </div>
+//               </a>
+//             )}
+//           </div>
+//         ))}
+
+//         {hasMore && (
+//           <div
+//             ref={loadMoreRef}
+//             className="w-full flex justify-center py-6 text-gray-400 text-sm"
+//           >
+//             Loading more...
+//           </div>
+//         )}
+
+//         {!hasMore && listings.length === 0 && <NoListingsFound />}
+//       </div>
+//     </main>
+//   );
+// }
+
+
+
+
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/axois";
 import { Search } from "lucide-react";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -505,10 +731,36 @@ import FilterTabs from "@/components/FilterTabs";
 import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ListingSkeleton from "@/components/ListingSkeleton";
 
-export default function Home({
-  openModal,
-}) {
+const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
+  const [distanceFromTop, setDistanceFromTop] = useState(0);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const calculateDistance = () => {
+      const rect = ref.current!.getBoundingClientRect();
+      setDistanceFromTop(window.scrollY + rect.top);
+    };
+
+    // Calculate immediately
+    calculateDistance();
+
+    // Re-calculate on resize/scroll
+    window.addEventListener('resize', calculateDistance);
+    window.addEventListener('scroll', calculateDistance);
+
+    return () => {
+      window.removeEventListener('resize', calculateDistance);
+      window.removeEventListener('scroll', calculateDistance);
+    };
+  }, [ref]);
+
+  return distanceFromTop;
+};
+
+export default function Home({ openModal }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -517,6 +769,7 @@ export default function Home({
   const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const filterTabsRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setLoading] = useState(false);
   const [listings, setListings] = useState<any[]>([]);
@@ -528,6 +781,18 @@ export default function Home({
   const [activeFilter, setActiveFilter] = useState("Nearby");
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
+  const [isTabChanging, setIsTabChanging] = useState(false);
+
+  // Add these new state variables for better tracking
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
+
+  const tabParam = searchParams.get('tab'); // returns "true" or null
+
+  // If you want a boolean value
+  const isTabActive = tabParam === 'true';
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -537,6 +802,10 @@ export default function Home({
       setSearchQuery("");
     }
   };
+
+  useEffect(() => {
+    console.log('Distance from top:', distanceFromTop, 'px');
+  }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -550,65 +819,98 @@ export default function Home({
     }
   };
 
-  const fetchNearByListings = async (filter: string, query: string) => {
-    if (isFetchingRef.current) return;
+  // Use useCallback to prevent unnecessary re-renders
+  const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
+    // Prevent multiple simultaneous requests
+    if (isFetchingRef.current) {
+      console.log('Already fetching, skipping request');
+      return;
+    }
+
+    // Don't fetch if no more items and it's not a new filter
+    if (!hasMore && !isNewFilter) {
+      console.log('No more items to fetch');
+      return;
+    }
+
     isFetchingRef.current = true;
+    console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
     try {
       setLoading(true);
-      const shownCount = numberOfShownListings.current || 0;
+      const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
       const isUsa = filter === "USA";
 
       const { data: listingResponse } = await api.get("/listings/nearby", {
         params: {
-          search: query,
           is_usa: isUsa,
+          search: query,
           limit: 10,
           numberOfShownListings: shownCount,
           lat: lat,
           lng: lng,
           radius: radius,
+          listing_cutoff_time: isNewFilter ? undefined : listingCutoffTime.current,
         },
       });
 
       const data = listingResponse.data;
+      // console.log('Fetch response:', { 
+      //   listingsCount: data.listings?.length || 0, 
+      //   hasMore: data.hasMore,
+      //   totalCount: data.totalCount,
+      //   numberOfShownListings: data.numberOfShownListings
+      // });
 
       if (data.listings && data.listings.length > 0) {
-        if (shownCount === 0 || oldFilter !== filter) {
+        if (isNewFilter || shownCount === 0) {
+          // Reset for new filter or initial load
           setListings(data.listings);
-          setOldFilter(filter);
-          listingCutoffTime.current = data.listings.listingCutoffTime;
           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
+          setOldFilter(filter);
         } else {
+          // Append to existing listings
           setListings(prev => [...prev, ...data.listings]);
           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
         }
+
         setHasMore(data.hasMore);
+        listingCutoffTime.current = data.listing_cutoff_time || "";
       } else {
+        // No listings returned
+        if (isNewFilter || shownCount === 0) {
+          setListings([]);
+          numberOfShownListings.current = 0;
+        }
         setHasMore(false);
       }
     } catch (error) {
       console.error("Error fetching accommodations:", error);
+      setHasMore(false); // Stop trying to fetch more on error
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
+      setIsInitialLoad(false);
     }
-  };
+  }, [lat, lng, radius, hasMore]);
 
   const handleHide = (id: string) => {
     setListings(listings.filter(listing => listing.id !== id));
   };
 
+  // Reset and fetch on filter/search/location change
   useEffect(() => {
+    // console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
+
+    // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
-    fetchNearByListings(activeFilter, searchQuery);
+    setIsInitialLoad(true);
 
-    return () => {
-     
-    };
+    // Fetch with new filter flag
+    fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
 
   useEffect(() => {
@@ -618,99 +920,146 @@ export default function Home({
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
+    // Get the current query parameters from the URL
+    const currentParams = new URLSearchParams(location.search);
+
+    // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
+    currentParams.set('tab', 'true');
+
+    // Navigate to the same path but with the updated query parameters
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+
+    setIsTabChanging(true);
     setActiveFilter(filter);
-    window.scrollTo(0, 0);  // Scroll to the top
+
+    setTimeout(() => {
+      setIsTabChanging(false);
+    }, 500);
   };
 
+  // Improved intersection observer with better cleanup
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        const first = entries[0];
-        if (first.isIntersecting && hasMore && !isLoading) {
-          fetchNearByListings(activeFilter, searchQuery);
-        }
-      },
-      { threshold: 1 }
-    );
+    // Clean up existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      const first = entries[0];
+      console.log('Intersection observed:', {
+        isIntersecting: first.isIntersecting,
+        hasMore,
+        isLoading,
+        isFetching: isFetchingRef.current,
+        isTabChanging,
+        isInitialLoad
+      });
+
+      if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
+        console.log('Triggering load more');
+        fetchNearByListings(activeFilter, searchQuery, false);
+      }
+    };
+
+    observerRef.current = new IntersectionObserver(handleIntersection, {
+      threshold: 0.1, // Trigger when 10% visible instead of 100%
+      rootMargin: '50px' // Trigger 50px before the element is visible
+    });
 
     const currentElement = loadMoreRef.current;
-    if (currentElement) observer.observe(currentElement);
+    if (currentElement) {
+      observerRef.current.observe(currentElement);
+    }
 
     return () => {
-      if (currentElement) observer.unobserve(currentElement);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
     };
-  }, [hasMore, isLoading]);
+  }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
 
-  const yourTrackingFunction = async (listing: any) => {
-    try {
-      await api.post(`/ads/${listing.id}/track-click`)
-    } catch (error) {
-      console.log(error)
+
+  useEffect(() => {
+    // Scroll to top on filter change
+    console.log(isTabActive)
+    if (isTabActive) {
+      window.scrollTo(0, isMobile ? 200 : 0);
     }
-  }
+    // window.scrollTo(0, isMobile ? 200 : 0);
+  }); // Only run once on mount
 
-  const handleAdClick = async (e: React.MouseEvent, listing: any) => {
-  // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
-  if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
-    console.log(e)
-    // For new tab/window opens
-     await yourTrackingFunction(listing)
-    return; // Let default browser behavior proceed
-  }
-  
-  // Regular left click
-  e.preventDefault();
-  await yourTrackingFunction(listing)
-  
-  // Programmatic navigation after tracking
-  window.open(listing.target_url, '_blank', 'noopener,noreferrer');
-};
+  // useEffect(() => {
+  //     window.scrollTo(0, 0);
+  // },[]);
+
+
+  // Debug logging
+  // useEffect(() => {
+  //   console.log('State update:', {
+  //     listings: listings.length,
+  //     hasMore,
+  //     isLoading,
+  //     numberOfShownListings: numberOfShownListings.current,
+  //     isTabChanging,
+  //     isInitialLoad
+  //   });
+  // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+
 
   return (
-    <main className="w-full mx-auto max-w-3xl bg-transparent">
+    <main className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
+      <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 
-      {/* <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]"> */}
-        <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
-      {/* </div> */}
+      {!isTabChanging ? (
+        <div className="px-4 my-4 space-y-4">
+          {listings.map((listing, index) => (
+            <div key={`${listing.id}-${index}`}>
+              {listing?.type === "listing" && (
+                <ListingItem
+                  listing={listing}
+                  onToggleSave={() => { }}
+                  isUsa={false}
+                  onHide={() => handleHide(listing.id)}
+                  openModal={openModal}
+                />
+              )}
+              {listing?.type === "ad" && (
+                <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">
+                  <div
+                    className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                    style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                  >
+                    <img
+                      src={listing.image_url}
+                      alt={listing.title}
+                      className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                </a>
+              )}
+            </div>
+          ))}
 
-      <div className="px-4 my-4 space-y-4">
-        {listings.map((listing, index) => (
-          <div key={`${listing.id}-${index}`}>
-            {listing?.type === "listing" && (
-              <ListingItem openModal={openModal} listing={listing} onToggleSave={() => { }} isUsa={false} onHide={() => handleHide(listing.id)} />
-            )}
-            {listing?.type === "ad" && (
-              <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
-               onClick={(e) => handleAdClick(e, listing)}
-                onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
-              >
-                <div
-                  className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                  style={{ aspectRatio: "574/300", maxWidth: "574px" }}
-                >
-                  <img
-                    src={listing.image_url}
-                    alt={listing.title}
-                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              </a>
-            )}
-          </div>
-        ))}
+          {hasMore && (
+            <div
+              ref={loadMoreRef}
+              className="w-full flex justify-center py-6 text-gray-400 text-sm"
+            >
+              {isLoading ? 'Loading more...' : 'Scroll for more...'}
+            </div>
+          )}
 
-        {hasMore && (
-          <div
-            ref={loadMoreRef}
-            className="w-full flex justify-center py-6 text-gray-400 text-sm"
-          >
-            Loading more...
-          </div>
-        )}
+          {!hasMore && listings.length === 0 && <NoListingsFound />}
 
-        {!hasMore && listings.length === 0 && <NoListingsFound />}
-      </div>
+          {/* Debug info - remove in production */}
+          {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+            Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
+            Shown: {numberOfShownListings.current}, TabChanging: {isTabChanging.toString()}
+          </div> */}
+        </div>
+      ) : (
+        <ListingSkeleton />
+      )}
     </main>
   );
 }

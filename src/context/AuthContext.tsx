@@ -173,6 +173,7 @@ type AuthContextType = {
   setIsOpenErrorAfterLogin: (boolean) => void,
   setIsOpenSuccessAfterLogin: (boolean) => void,
   setIsOpenPendingAfterLogin: (boolean) => void,
+  fetchFavoritesListings: () => Promise<boolean>;
 };
 
 interface FileRecord {
@@ -617,6 +618,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsOpenErrorAfterLogin,
     setIsOpenSuccessAfterLogin,
     setIsOpenPendingAfterLogin,
+    fetchFavoritesListings,
   };
 
   return <AuthContext.Provider value={value}>

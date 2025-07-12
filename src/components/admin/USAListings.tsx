@@ -563,7 +563,6 @@ const USAListing = () => {
 
 
   const reverseUSAHistory = async (listingId) => {
-
     console.log(listingId)
   }
   
