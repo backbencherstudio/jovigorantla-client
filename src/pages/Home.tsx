@@ -929,6 +929,7 @@ export default function Home({ openModal }) {
     // Navigate to the same path but with the updated query parameters
     navigate(`${location.pathname}?${currentParams.toString()}`);
 
+    window.scrollTo(0, isMobile ? 200 : 0);
     setIsTabChanging(true);
     setActiveFilter(filter);
 
@@ -946,14 +947,14 @@ export default function Home({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      console.log('Intersection observed:', {
-        isIntersecting: first.isIntersecting,
-        hasMore,
-        isLoading,
-        isFetching: isFetchingRef.current,
-        isTabChanging,
-        isInitialLoad
-      });
+      // console.log('Intersection observed:', {
+      //   isIntersecting: first.isIntersecting,
+      //   hasMore,
+      //   isLoading,
+      //   isFetching: isFetchingRef.current,
+      //   isTabChanging,
+      //   isInitialLoad
+      // });
 
       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
         console.log('Triggering load more');
@@ -979,18 +980,20 @@ export default function Home({ openModal }) {
   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
 
 
-  useEffect(() => {
-    // Scroll to top on filter change
-    console.log(isTabActive)
-    if (isTabActive) {
-      window.scrollTo(0, isMobile ? 200 : 0);
-    }
-    // window.scrollTo(0, isMobile ? 200 : 0);
-  }); // Only run once on mount
-
   // useEffect(() => {
-  //     window.scrollTo(0, 0);
-  // },[]);
+  //   // Scroll to top on filter change
+  //   // console.log(isTabActive)
+  //   if (isTabActive && isMobile) {
+  //     window.scrollTo(0, isMobile ? 200 : 0);
+  //   }
+  //   // window.scrollTo(0, isMobile ? 200 : 0);
+  // }); // Only run once on mount
+
+  useEffect(() => {
+    if (isInitialLoad) {
+      window.scrollTo(0, 0);
+    }
+  },[]);
 
 
   // Debug logging

@@ -14,6 +14,7 @@ import {
   Edit,
   ExternalLink,
   Check,
+  SquarePen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -1290,13 +1291,13 @@ const AdManagement = () => {
                             </Button>
                           </div>
 
-                          {group.ads.length === 0 ? (
+                          {group?.ads?.length === 0 ? (
                             <div className="text-sm text-gray-500 bg-gray-50 p-4 rounded text-center">
                               No ads in this group yet
                             </div>
                           ) : (
                             <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
-                              {group.ads.map((ad) => (
+                              {group?.ads?.map((ad) => (
                                 <div
                                   key={ad.id}
                                   className="border rounded-md overflow-hidden"
@@ -1313,17 +1314,14 @@ const AdManagement = () => {
                                       <div className="flex justify-between">
                                         <h4 className="font-medium text-sm flex items-center">
                                           {ad.name}
-                                          <span
+                                          {/* <span
                                             className={`ml-2 px-1.5 py-0.5 text-xs rounded-full ${ad.active
                                               ? "bg-green-100 text-green-800"
                                               : "bg-gray-100 text-gray-800"
                                               }`}
-                                          >
-                                            {ad.active ? "Active" : "Inactive"}
-                                          </span>
-                                        </h4>
-                                        <div className="flex space-x-1">
-                                          <Button
+                                          > */}
+                                            {/* {ad.active ? "Active" : "Inactive"} */}
+                                            <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0"
@@ -1341,6 +1339,20 @@ const AdManagement = () => {
                                               <Check className="h-3.5 w-3.5 text-green-600" />
                                             )}
                                           </Button>
+                                          {/* </span> */}
+                                        </h4>
+                                        <div className="flex space-x-1">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-7 w-7 p-0"
+                                            onClick={() => console.log('hit')}
+                                          >
+                                            <SquarePen className="h-3 w-3" />
+                                          </Button>
+
+
+                                          
                                           <Button
                                             variant="ghost"
                                             size="sm"

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, Flag, Eye, Ban, Trash2, SquarePen } from "lucide-react";
+import { History, Flag, Eye, Ban, Trash2, SquarePen, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,6 +107,7 @@ const FlaggedListings = () => {
           status: "DELETED",
           flagged_listing_status: "DELETED",
           updated_at: new Date().toISOString(),
+          report_id: id,
         };
 
         setFlaggedHistory([updatedListing, ...flaggedHistory]);
@@ -136,6 +137,7 @@ const FlaggedListings = () => {
           status: "APPROVED",
           flagged_listing_status: "APPROVED",
           updated_at: new Date().toISOString(),
+          report_id: id,
         };
   
         setFlaggedHistory([updatedListing, ...flaggedHistory]);
@@ -165,6 +167,7 @@ const FlaggedListings = () => {
           status: "BLOCKED",
           flagged_listing_status: "BLOCKED",
           updated_at: new Date().toISOString(),
+          report_id: id,
         };
 
         setFlaggedHistory([updatedListing, ...flaggedHistory]);
@@ -255,19 +258,21 @@ const FlaggedListings = () => {
 
   const reverseFlaggedHistory = async (reportId)=>{
     try {
+      console.log(reportId)
       const response = await api.patch(`/admin/listings/flagged-listings/${reportId}/reverse`);
       if(!response?.data?.success){
         throw Error(response.data.message);
       }
 
-      const report = flaggedHistory.find((item) => item.id === reportId);
+      const report = flaggedHistory.find((item) => item.report_id === reportId);
       if (report) {
         const updatedReport = {
          ...report,
         status: "PENDING",
         updated_at: new Date().toISOString(),
       };
-
+      setFlaggedHistory((prev) => prev.filter(item => item.report_id !== reportId));
+      setFlaggedListings((prev) => [updatedReport,...flaggedListings]);
         console.log(updatedReport)
       }
     } catch (error) {
@@ -525,7 +530,7 @@ const FlaggedListings = () => {
                           variant="outline"
                           onClick={() => reverseFlaggedHistory(report.report_id)}
                         >
-                          <SquarePen className="h-3 w-3" />
+                          <Undo2 className="h-3 w-3" />
                         </Button>
                       </TableCell>
                     </TableRow>

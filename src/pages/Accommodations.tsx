@@ -221,7 +221,7 @@
 //                             <FilterTabs tabs={["All", "Available", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 //                         </div>
 
-                      
+
 
 //                         <div className="px-4 my-4 space-y-4">
 //                             {listings.map((listing, index) => (
@@ -425,7 +425,7 @@
 //     fetchNearByListings(activeFilter, searchQuery);
 //     // console.log("listings => ", searchQuery);
 //     return () => {
-     
+
 //     };
 //   }, [activeFilter, searchQuery, lat, lng, radius]);
 
@@ -444,14 +444,14 @@
 //     }, 500);
 //     // window.scrollTo(0, 0)
 //     // window.scrollTo(100, 500);
-    
+
 //     // if (filterTabsRef.current) {
 //     //   const rect = filterTabsRef.current.getBoundingClientRect();
 //     //   console.log(rect)
 //     //   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 //     //   const targetY = rect.top + scrollTop - 60; // 60px offset for the header
 //     //   console.log(targetY, scrollTop, document.documentElement.scrollTop, window.scrollY + rect.bottom)
-      
+
 //     //   window.scrollTo({
 //     //     top: targetY,
 //     //     // behavior: 'smooth'
@@ -461,21 +461,21 @@
 
 //   // const handleFilterClick = (filter: string) => {
 //   // setActiveFilter(filter);
-  
+
 //   // // Use setTimeout to ensure DOM update completes
 //   // setTimeout(() => {
 //   //   if (filterTabsRef.current) {
 //   //     // Get position accounting for any parent scrolling
 //   //     const rect = filterTabsRef.current.getBoundingClientRect();
-      
+
 //   //     // Calculate position relative to document
 //   //     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 //   //     const targetY = rect.top + scrollTop;
-      
+
 //   //     // iOS-specific adjustments
 //   //     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 //   //     const adjustedTargetY = isIOS ? targetY - 10 : targetY; // Small iOS offset
-      
+
 //   //     // Use different scrolling method for iOS
 //   //     if (isIOS) {
 //   //       document.body.scrollTop = adjustedTargetY;
@@ -607,7 +607,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   return distanceFromTop;
 };
 
-export default function Accommodations({openModal}) {
+export default function Accommodations({ openModal }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -629,7 +629,7 @@ export default function Accommodations({openModal}) {
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
-  
+
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -637,7 +637,7 @@ export default function Accommodations({openModal}) {
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
 
   const tabParam = searchParams.get('tab'); // returns "true" or null
-  
+
   // If you want a boolean value
   const isTabActive = tabParam === 'true';
 
@@ -673,7 +673,7 @@ export default function Accommodations({openModal}) {
       console.log('Already fetching, skipping request');
       return;
     }
-    
+
     // Don't fetch if no more items and it's not a new filter
     if (!hasMore && !isNewFilter) {
       console.log('No more items to fetch');
@@ -704,8 +704,8 @@ export default function Accommodations({openModal}) {
       });
 
       const data = listingResponse.data;
-      console.log('Fetch response:', { 
-        listingsCount: data.listings?.length || 0, 
+      console.log('Fetch response:', {
+        listingsCount: data.listings?.length || 0,
         hasMore: data.hasMore,
         totalCount: data.totalCount,
         numberOfShownListings: data.numberOfShownListings
@@ -722,7 +722,7 @@ export default function Accommodations({openModal}) {
           setListings(prev => [...prev, ...data.listings]);
           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
         }
-        
+
         setHasMore(data.hasMore);
         listingCutoffTime.current = data.listing_cutoff_time || "";
       } else {
@@ -750,13 +750,13 @@ export default function Accommodations({openModal}) {
   // Reset and fetch on filter/search/location change
   useEffect(() => {
     console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
-    
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
-    
+
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
@@ -768,14 +768,16 @@ export default function Accommodations({openModal}) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
-     // Get the current query parameters from the URL
-     const currentParams = new URLSearchParams(location.search);
+    // Get the current query parameters from the URL
+    const currentParams = new URLSearchParams(location.search);
 
-     // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-     currentParams.set('tab', 'true');
- 
-     // Navigate to the same path but with the updated query parameters
-     navigate(`${location.pathname}?${currentParams.toString()}`);
+    // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
+    currentParams.set('tab', 'true');
+
+    // Navigate to the same path but with the updated query parameters
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+
+    window.scrollTo(0, isMobile ? 200 : 0);
 
     setIsTabChanging(true);
     setActiveFilter(filter);
@@ -793,14 +795,14 @@ export default function Accommodations({openModal}) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      console.log('Intersection observed:', {
-        isIntersecting: first.isIntersecting,
-        hasMore,
-        isLoading,
-        isFetching: isFetchingRef.current,
-        isTabChanging,
-        isInitialLoad
-      });
+      // console.log('Intersection observed:', {
+      //   isIntersecting: first.isIntersecting,
+      //   hasMore,
+      //   isLoading,
+      //   isFetching: isFetchingRef.current,
+      //   isTabChanging,
+      //   isInitialLoad
+      // });
 
       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
         console.log('Triggering load more');
@@ -825,18 +827,20 @@ export default function Accommodations({openModal}) {
     };
   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
 
-  useEffect(() => {
-    // Scroll to top on filter change
-    // console.log(isTabActive)
-    if (isTabActive) {
-      window.scrollTo(0, isMobile ? 200 : 0);
-    }
-    // window.scrollTo(0, isMobile ? 200 : 0);
-  });  // Only run once on mount
+  // useEffect(() => {
+  //   // Scroll to top on filter change
+  //   // console.log(isTabActive)
+  //   if (isTabActive && isMobile) {
+  //     window.scrollTo(0, isMobile ? 200 : 0);
+  //   }
+  //   // window.scrollTo(0, isMobile ? 200 : 0);
+  // });  // Only run once on mount
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-},[]);
+    if (isInitialLoad) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
   // Debug logging
   // useEffect(() => {
   //   console.log('State update:', {
@@ -858,12 +862,12 @@ export default function Accommodations({openModal}) {
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (
-                <ListingItem 
-                  listing={listing} 
-                  onToggleSave={() => {}} 
-                  isUsa={false} 
-                  onHide={() => handleHide(listing.id)} 
-                  openModal={openModal} 
+                <ListingItem
+                  listing={listing}
+                  onToggleSave={() => { }}
+                  isUsa={false}
+                  onHide={() => handleHide(listing.id)}
+                  openModal={openModal}
                 />
               )}
               {listing?.type === "ad" && (
@@ -893,7 +897,7 @@ export default function Accommodations({openModal}) {
           )}
 
           {!hasMore && listings.length === 0 && <NoListingsFound />}
-          
+
           {/* Debug info - remove in production */}
           {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
             Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 

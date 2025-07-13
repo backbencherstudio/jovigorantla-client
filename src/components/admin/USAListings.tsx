@@ -326,7 +326,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { History, Flag, Eye, Ban, Trash2, SquarePen } from "lucide-react";
+import { History, Flag, Eye, Ban, Trash2, SquarePen, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -563,7 +563,28 @@ const USAListing = () => {
 
 
   const reverseUSAHistory = async (listingId) => {
-    console.log(listingId)
+    try {
+      console.log(listingId)
+      const response = await api.patch(`/admin/listings/usa-listings/${listingId}/reverse`);
+      if(!response?.data?.success){
+        throw Error(response.data.message);
+      }
+
+      const report = flaggedHistory.find((item) => item.id === listingId);
+      if (report) {
+        const updatedReport = {
+         ...report,
+        status: "PENDING",
+        updated_at: new Date().toISOString(),
+      };
+      setFlaggedHistory((prev) => prev.filter(item => item.id !== listingId));
+      setFlaggedListings((prev) => [updatedReport,...flaggedListings]);
+
+      console.log(updatedReport)
+      }
+    } catch (error) {
+      toast.error("Failed to reverse flagged history");
+    }
   }
   
 
@@ -757,7 +778,7 @@ const USAListing = () => {
       {showFlaggedHistory && (
         <>
           <h3 className="font-medium text-lg mb-2">Decision History</h3>
-          {flaggedHistory.length === 0 ? (
+          {flaggedHistory?.length === 0 ? (
             <div className="text-center py-8 bg-gray-50 rounded-lg">
               <History className="w-12 h-12 mx-auto text-gray-400 mb-2" />
               <p className="text-gray-500">No decision history available</p>
@@ -827,7 +848,7 @@ const USAListing = () => {
                          variant="outline"
                          onClick={() => reverseUSAHistory(item.id)}
                        >
-                         <SquarePen className="h-3 w-3" />
+                          <Undo2 className="h-3 w-3" />
                        </Button>
                      </TableCell>
                     </TableRow>

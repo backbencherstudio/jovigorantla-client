@@ -220,7 +220,7 @@
 //                             <FilterTabs tabs={["All", "Hiring", "Looking"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 //                         </div>
 
-                      
+
 
 //                         <div className="px-4 my-4 space-y-4">
 //                             {listings.map((listing, index) => (
@@ -588,7 +588,7 @@
 //   const handleHide = (id: string) => {
 //     setListings(listings.filter(listing => listing.id !== id));
 //   };
-  
+
 //   useEffect(() => {
 //     numberOfShownListings.current = 0;
 //     setListings([]);
@@ -596,7 +596,7 @@
 //     fetchNearByListings(activeFilter, searchQuery);
 
 //     return () => {
-     
+
 //     };
 //   }, [activeFilter, searchQuery, lat, lng, radius]);
 
@@ -729,7 +729,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   return distanceFromTop;
 };
 
-export default function Jobs({openModal}) {
+export default function Jobs({ openModal }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -751,7 +751,7 @@ export default function Jobs({openModal}) {
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
-  
+
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -759,7 +759,7 @@ export default function Jobs({openModal}) {
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
 
   const tabParam = searchParams.get('tab'); // returns "true" or null
-  
+
   // If you want a boolean value
   const isTabActive = tabParam === 'true';
 
@@ -795,7 +795,7 @@ export default function Jobs({openModal}) {
       console.log('Already fetching, skipping request');
       return;
     }
-    
+
     // Don't fetch if no more items and it's not a new filter
     if (!hasMore && !isNewFilter) {
       console.log('No more items to fetch');
@@ -826,8 +826,8 @@ export default function Jobs({openModal}) {
       });
 
       const data = listingResponse.data;
-      console.log('Fetch response:', { 
-        listingsCount: data.listings?.length || 0, 
+      console.log('Fetch response:', {
+        listingsCount: data.listings?.length || 0,
         hasMore: data.hasMore,
         totalCount: data.totalCount,
         numberOfShownListings: data.numberOfShownListings
@@ -844,7 +844,7 @@ export default function Jobs({openModal}) {
           setListings(prev => [...prev, ...data.listings]);
           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
         }
-        
+
         setHasMore(data.hasMore);
         listingCutoffTime.current = data.listing_cutoff_time || "";
       } else {
@@ -872,13 +872,13 @@ export default function Jobs({openModal}) {
   // Reset and fetch on filter/search/location change
   useEffect(() => {
     console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
-    
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
-    
+
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
@@ -890,14 +890,17 @@ export default function Jobs({openModal}) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
-     // Get the current query parameters from the URL
-     const currentParams = new URLSearchParams(location.search);
+    // Get the current query parameters from the URL
+    const currentParams = new URLSearchParams(location.search);
 
-     // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-     currentParams.set('tab', 'true');
- 
-     // Navigate to the same path but with the updated query parameters
-     navigate(`${location.pathname}?${currentParams.toString()}`);
+    // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
+    currentParams.set('tab', 'true');
+
+    // Navigate to the same path but with the updated query parameters
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+
+    window.scrollTo(0, isMobile ? 200 : 0);
+
     setIsTabChanging(true);
     setActiveFilter(filter);
     setTimeout(() => {
@@ -946,19 +949,20 @@ export default function Jobs({openModal}) {
     };
   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
 
+  // useEffect(() => {
+  //   // Scroll to top on filter change
+  //   // console.log(isTabActive)
+  //   if (isTabActive && isMobile) {
+  //     window.scrollTo(0, isMobile ? 200 : 0);
+  //   }
+  //   // window.scrollTo(0, isMobile ? 200 : 0);
+  // }); 
+
   useEffect(() => {
-    // Scroll to top on filter change
-    // console.log(isTabActive)
-    if (isTabActive) {
-      window.scrollTo(0, isMobile ? 200 : 0);
+    if (isInitialLoad) {
+      window.scrollTo(0, 0);
     }
-    // window.scrollTo(0, isMobile ? 200 : 0);
-  }); 
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-},[]);
-
+  }, []);
   // Debug logging
   // useEffect(() => {
   //   console.log('State update:', {
@@ -980,12 +984,12 @@ export default function Jobs({openModal}) {
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (
-                <ListingItem 
-                  listing={listing} 
-                  onToggleSave={() => {}} 
-                  isUsa={false} 
-                  onHide={() => handleHide(listing.id)} 
-                  openModal={openModal} 
+                <ListingItem
+                  listing={listing}
+                  onToggleSave={() => { }}
+                  isUsa={false}
+                  onHide={() => handleHide(listing.id)}
+                  openModal={openModal}
                 />
               )}
               {listing?.type === "ad" && (
@@ -1015,7 +1019,7 @@ export default function Jobs({openModal}) {
           )}
 
           {!hasMore && listings.length === 0 && <NoListingsFound />}
-          
+
           {/* Debug info - remove in production */}
           {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
             Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
