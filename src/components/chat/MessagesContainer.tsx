@@ -43,7 +43,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
 
   return (
     <ScrollArea className="flex-1 pb-4 bg-gray-100">
-      <div className="space-y-6 p-4">
+      <div className="space-y-6 p-4 mt-6">
         {dateKeys.map(dateKey => {
           const dateMessages = groupedMessages[dateKey];
           const date = new Date(dateKey);

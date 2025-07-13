@@ -241,8 +241,11 @@ interface OptionType {
   };
 }
 
-const CitySelectorWithDetails = ({ onSubmit }: { onSubmit: (cityPayloads: any[]) => void }) => {
-  const [selectedCities, setSelectedCities] = useState<any[]>([]);
+const CitySelectorWithDetails = ({ onSubmit, existingCities }: { onSubmit: (cityPayloads: any[]) => void, existingCities?: any}) => {
+  const [selectedCities, setSelectedCities] = useState<any[]>(existingCities || []);
+
+  console.log('Existing Cities:', selectedCities)
+
 
   // Convert the static data to options format
   const cityOptions = useMemo(() => {

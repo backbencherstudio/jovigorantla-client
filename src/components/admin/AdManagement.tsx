@@ -156,6 +156,10 @@ const AdManagement = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [cityData, setCityData] = useState<any[]>([]);
 
+  const [existingCities, setExistingCities] = useState<any[]>([]);
+
+
+
   const handleSelect = (options) => {
     console.log("options => ", options)
     setSelectedCities(prev => [...prev, ...options]);
@@ -225,6 +229,160 @@ const AdManagement = () => {
   } | null>(null);
 
 
+  const [editingAd, setEditingAd] = useState<Ad | null>(null); // Track the ad being edited
+
+  // const handleEditAd = async (ad: Ad) => {
+  //   console.log("ad => ", ad)
+  //   setEditingAd(ad); // Set the ad being edited
+  //   setNewAdForm({
+  //     name: ad.name,
+  //     targetUrl: ad.target_url,
+  //     groupId: ad.ad_group_id, // Keep the group ID for the ad
+  //     isAddingToExistingGroup: true,
+  //   });
+  //   setSelectedFile(null); // Clear any previously selected file
+  //   setAdPreview(ad.image_url); // Set the current image preview
+
+  //   // fetch ad details and set cities
+  //  const response = await api.get(`/admin/ads/${ad.id}`)
+
+  //  if (response?.data?.success) {
+  //   const adDetails = response.data.data
+  //   const cities = adDetails.cities.map(city => ({
+  //     ...city,
+  //     label: city.address,
+  //     value: {
+  //       ...city
+  //     }
+  //   }))
+
+
+  //   setExistingCities(cities)
+
+  //  }
+  //   console.log("response => ", response)
+
+  // };
+
+  const handleEditAd = async (ad: Ad) => {
+    try {
+      // Fetch the ad details
+      const response = await api.get(`/admin/ads/${ad.id}`);
+
+      if (response?.data?.success) {
+        const adDetails = response.data.data;
+        const cities = adDetails.cities.map((city: any) => ({
+          ...city,
+          label: city.address,
+          name: city.address,
+          value: {
+            value: city.address,
+            ...city,
+          },
+        }));
+
+        console.log("cities => ", cities)
+        // Set the cities for editing
+        setExistingCities(cities); // This will trigger a re-render with the updated city data
+
+        console.log("ad => ", ad);
+        setEditingAd(ad); // Set the ad being edited
+
+        // Update the new ad form state with ad details
+        setNewAdForm({
+          name: ad.name,
+          targetUrl: ad.target_url,
+          groupId: ad.ad_group_id, // Keep the group ID for the ad
+          isAddingToExistingGroup: true,
+        });
+
+        setSelectedFile(null); // Clear any previously selected file
+        setAdPreview(ad.image_url); // Set the current image preview
+
+      }
+    } catch (error) {
+      console.error("Error fetching ad details:", error);
+    }
+
+
+
+
+  };
+
+
+  const handleUpdateAdToExistingGroup = async () => {
+    try {
+      // if (!newAdForm.name.trim()) {
+      //   toast.error("Please enter an ad name");
+      //   return;
+      // }
+
+      // if (!newAdForm.targetUrl.trim()) {
+      //   toast.error("Please enter a target URL");
+      //   return;
+      // }
+
+      // if (!newAdForm.groupId) {
+      //   toast.error("Please select an ad group");
+      //   return;
+      // }
+
+      if (!selectedFile && !adPreview) {
+        toast.error("Please select an image");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", newAdForm.name.trim());
+      if (selectedFile) {
+        formData.append("image", selectedFile); 
+      }
+      // formData.append("image", selectedFile || adPreview); // Include the updated image
+      formData.append("target_url", newAdForm.targetUrl.trim());
+
+      console.log(cityData)
+      // if (cityData.length > 0) {
+      //   const formattedCities = cityData.map(city => ({
+      //     address: city.name,
+      //     latitude: city.latitude,
+      //     longitude: city.longitude,
+      //   }));
+      //   formData.append("cities", JSON.stringify(formattedCities));
+      // }
+
+
+
+      // If editing an existing ad, send a PUT request to update the ad
+      if (editingAd) {
+        const { data: updatedAd } = await api.patch(`/admin/ads/${editingAd.id}`, formData);
+        if (updatedAd.success) {
+          toast.success("Ad updated successfully");
+
+          // Update the ad in the local state
+          setAdGroups((groups) =>
+            groups.map((group) =>
+              group.id === newAdForm.groupId
+                ? {
+                  ...group,
+                  ads: group.ads.map((ad) =>
+                    ad.id === editingAd.id ? { ...ad, ...updatedAd.data } : ad
+                  ),
+                }
+                : group
+            )
+          );
+          resetForm();
+        } else {
+          toast.error("Error updating ad");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating ad:", error);
+      toast.error("Error updating ad");
+    }
+  };
+
+
   const fetchSidebarTopAds = async () => {
     try {
       const { data: topAds } = await api.get('/admin/ads/sidebar-top')
@@ -266,7 +424,7 @@ const AdManagement = () => {
       if (groups?.success) {
         setAdGroups(groups.data)
       }
-    console.log("groups => ", groups)
+      console.log("groups => ", groups)
     } catch (error) {
       console.log("error => ", error)
       toast.error("Error fetching ad groups");
@@ -958,7 +1116,7 @@ const AdManagement = () => {
       const formData = new FormData();
       formData.append("image", sidebarTopFile); // file input
       formData.append("target_url", sidebarTopAds.target_url); // string input
-      
+
 
       const { data } = await api.post("/admin/ads/sidebar-top", formData, {
         headers: {
@@ -1320,8 +1478,8 @@ const AdManagement = () => {
                                               : "bg-gray-100 text-gray-800"
                                               }`}
                                           > */}
-                                            {/* {ad.active ? "Active" : "Inactive"} */}
-                                            <Button
+                                          {/* {ad.active ? "Active" : "Inactive"} */}
+                                          <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0"
@@ -1346,13 +1504,13 @@ const AdManagement = () => {
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0"
-                                            onClick={() => console.log('hit')}
+                                            onClick={() => handleEditAd(ad)}
                                           >
                                             <SquarePen className="h-3 w-3" />
                                           </Button>
 
 
-                                          
+
                                           <Button
                                             variant="ghost"
                                             size="sm"
@@ -1632,6 +1790,7 @@ const AdManagement = () => {
                   isAddingToExistingGroup: false,
                   groupId: null,
                 });
+                setExistingCities([]);
                 setSelectedFile(null);
                 setAdPreview(null);
               }}
@@ -1707,17 +1866,17 @@ const AdManagement = () => {
                     //   />
                     // </div>
                     <div className="flex justify-center items-center mt-5">
-                           <div
-                            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
-                            style={{ aspectRatio: "574/300", maxWidth: "574px" }}
-                          >
-                            <img
-                              src={adPreview}
-                              alt={"Ad Preview"}
-                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                            />
-                          </div>
-                         </div>
+                      <div
+                        className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
+                        style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                      >
+                        <img
+                          src={adPreview}
+                          alt={"Ad Preview"}
+                          className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
 
@@ -1725,7 +1884,7 @@ const AdManagement = () => {
                   // console.log("Selected cities with boundaries:", cityDataArray);
                   setCityData(cityDataArray);
                   // You can store this in state and use it in formData.append("cities", JSON.stringify(cityDataArray))
-                }} />
+                }} existingCities={existingCities} />
 
               </div>
             </CardContent>
@@ -1738,9 +1897,9 @@ const AdManagement = () => {
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
               </Button>
-              <Button onClick={handleSaveAdToExistingGroup}>
+              <Button onClick={editingAd? handleUpdateAdToExistingGroup : handleSaveAdToExistingGroup}>
                 <Save className="h-4 w-4 mr-2" />
-                Add Ad
+                {editingAd ? "Update Ad" : "Add Ad"}
               </Button>
             </CardFooter>
           </Card>
@@ -1935,18 +2094,18 @@ const AdManagement = () => {
                           //   />
                           // </div>
 
-                         <div className="flex justify-center items-center mt-5">
-                           <div
-                            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
-                            style={{ aspectRatio: "574/300", maxWidth: "574px" }}
-                          >
-                            <img
-                              src={adPreview}
-                              alt={"Ad Preview"}
-                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                            />
+                          <div className="flex justify-center items-center mt-5">
+                            <div
+                              className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer "
+                              style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                            >
+                              <img
+                                src={adPreview}
+                                alt={"Ad Preview"}
+                                className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                              />
+                            </div>
                           </div>
-                         </div>
                         )}
                       </div>
 

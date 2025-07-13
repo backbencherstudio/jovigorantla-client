@@ -212,7 +212,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
     <div className={`flex flex-col  bg-gray-50`}>
       <Header />
 
-      {isVisiblef ? isDesktop ? null : <PageSkeleton /> : <div className="flex flex-1 min-h-[calc(100vh-67px)]">
+      {isVisiblef ? isDesktop ? null : <PageSkeleton /> : <div className="flex flex-1 min-h-[calc(100vh-67px)] ">
         {/* Left Sidebar - Menu (only on desktop/tablet) */}
         {!isMobile && (
           <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">

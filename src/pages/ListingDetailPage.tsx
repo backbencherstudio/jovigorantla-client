@@ -286,7 +286,7 @@ const ListingDetailPage = () => {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col bg-white">
       {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
       <div className="flex-1 py-[10px] overflow-y-auto pb-24 max-w-3xl mx-auto w-full">
         {/* Category, status and action buttons */}
@@ -472,6 +472,8 @@ If you’re interested or have any questions, please reach out for pictures, ren
           
 
           {/* Photo Gallery - only show if there are images and not for jobs/rides */}
+
+          
           
         </div>
         {/* Contact button - only show on desktop */}
