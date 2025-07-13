@@ -1085,7 +1085,7 @@
 //                             <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 //                         </div>
 
-                      
+
 
 //                         <div className="px-4 my-4 space-y-4">
 //                             {listings.map((listing, index) => (
@@ -1465,7 +1465,7 @@
 //     fetchNearByListings(activeFilter, searchQuery);
 
 //     return () => {
-     
+
 //     };
 //   }, [activeFilter, searchQuery, lat, lng, radius]);
 
@@ -1597,7 +1597,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   return distanceFromTop;
 };
 
-export default function Marketplace({openModal}) {
+export default function Marketplace({ openModal }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -1619,14 +1619,14 @@ export default function Marketplace({openModal}) {
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
-  
+
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
   const tabParam = searchParams.get('tab'); // returns "true" or null
-  
+
   // If you want a boolean value
   const isTabActive = tabParam === 'true';
 
@@ -1662,7 +1662,7 @@ export default function Marketplace({openModal}) {
       console.log('Already fetching, skipping request');
       return;
     }
-    
+
     // Don't fetch if no more items and it's not a new filter
     if (!hasMore && !isNewFilter) {
       console.log('No more items to fetch');
@@ -1677,9 +1677,9 @@ export default function Marketplace({openModal}) {
       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
       const sub_category =
-      filter === "Services" ? "Service" :
-      filter === "Items" ? "Item" :
-      filter !== "All" ? filter : null;
+        filter === "Services" ? "Service" :
+          filter === "Items" ? "Item" :
+            filter !== "All" ? filter : null;
 
       const { data: listingResponse } = await api.get("/listings/nearby", {
         params: {
@@ -1696,8 +1696,8 @@ export default function Marketplace({openModal}) {
       });
 
       const data = listingResponse.data;
-      console.log('Fetch response:', { 
-        listingsCount: data.listings?.length || 0, 
+      console.log('Fetch response:', {
+        listingsCount: data.listings?.length || 0,
         hasMore: data.hasMore,
         totalCount: data.totalCount,
         numberOfShownListings: data.numberOfShownListings
@@ -1714,7 +1714,7 @@ export default function Marketplace({openModal}) {
           setListings(prev => [...prev, ...data.listings]);
           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
         }
-        
+
         setHasMore(data.hasMore);
         listingCutoffTime.current = data.listing_cutoff_time || "";
       } else {
@@ -1742,13 +1742,13 @@ export default function Marketplace({openModal}) {
   // Reset and fetch on filter/search/location change
   useEffect(() => {
     console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
-    
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
-    
+
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
@@ -1760,17 +1760,17 @@ export default function Marketplace({openModal}) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
-     // Get the current query parameters from the URL
-     const currentParams = new URLSearchParams(location.search);
+    // Get the current query parameters from the URL
+    const currentParams = new URLSearchParams(location.search);
 
-     // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-     currentParams.set('tab', 'true');
- 
-     // Navigate to the same path but with the updated query parameters
-     navigate(`${location.pathname}?${currentParams.toString()}`);
+    // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
+    currentParams.set('tab', 'true');
 
-     window.scrollTo(0, isMobile ? 200 : 0);
-     
+    // Navigate to the same path but with the updated query parameters
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+
+    window.scrollTo(0, isMobile ? 200 : 0);
+
     setIsTabChanging(true);
     setActiveFilter(filter);
     setTimeout(() => {
@@ -1832,7 +1832,7 @@ export default function Marketplace({openModal}) {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
     }
-  },[]);
+  }, []);
 
   // // Debug logging
   // useEffect(() => {
@@ -1846,6 +1846,31 @@ export default function Marketplace({openModal}) {
   //   });
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
+  const yourTrackingFunction = async (listing: any) => {
+    try {
+      await api.post(`/ads/${listing.id}/track-click`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+    // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
+    if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+      console.log(e)
+      // For new tab/window opens
+      await yourTrackingFunction(listing)
+      return; // Let default browser behavior proceed
+    }
+
+    // Regular left click
+    e.preventDefault();
+    await yourTrackingFunction(listing)
+
+    // Programmatic navigation after tracking
+    window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
       <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
@@ -1855,16 +1880,20 @@ export default function Marketplace({openModal}) {
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (
-                <ListingItem 
-                  listing={listing} 
-                  onToggleSave={() => {}} 
-                  isUsa={false} 
-                  onHide={() => handleHide(listing.id)} 
-                  openModal={openModal} 
+                <ListingItem
+                  listing={listing}
+                  onToggleSave={() => { }}
+                  isUsa={false}
+                  onHide={() => handleHide(listing.id)}
+                  openModal={openModal}
                 />
               )}
               {listing?.type === "ad" && (
-                <a href={listing.target_url} target="_blank" className="block" rel="noreferrer">
+                <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+                  onClick={(e) => handleAdClick(e, listing)}
+                  onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                  // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                >
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
                     style={{ aspectRatio: "574/300", maxWidth: "574px" }}
@@ -1890,7 +1919,7 @@ export default function Marketplace({openModal}) {
           )}
 
           {!hasMore && listings.length === 0 && <NoListingsFound />}
-          
+
           {/* Debug info - remove in production */}
           {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
             Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
