@@ -17,7 +17,7 @@ interface LocationProviderProps {
 export const LocationProvider = ({ children }: LocationProviderProps) => {
   const [lat, setLat] = useState(localStorage.getItem('selectedLocation') ? JSON.parse(localStorage.getItem('selectedLocation')).lat : 40.7128);
   const [lng, setLng] = useState(localStorage.getItem('selectedLocation')? JSON.parse(localStorage.getItem('selectedLocation')).lng : -74.0060);
-  const [radius, setRadius] = useState(localStorage.getItem('selectedRadius')? JSON.parse(localStorage.getItem('selectedRadius')) : 1000);
+  const [radius, setRadius] = useState(localStorage.getItem('selectedRadius')? JSON.parse(localStorage.getItem('selectedRadius')) : 100);
 
   const setLatLngRadius = (lat: number, lng: number, radius: number) => {
     setLat(lat);

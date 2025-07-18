@@ -50,7 +50,7 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
   });
 };
 
-const ListingDetailPage = () => {
+const ListingDetailPage = ({ openModal }) => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -350,7 +350,7 @@ const ListingDetailPage = () => {
                   e.stopPropagation(); // ✅ stop event bubbling
                 }}
                 onHide={() => {}}
-                openModal={() => {}}
+                openModal={openModal}
           />
 
             </div>

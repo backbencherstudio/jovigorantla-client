@@ -174,7 +174,7 @@ function AppRoutes() {
             // </PageLayout>
 
             <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage />
+              <ListingDetailPage openModal={openModal} />
 
             </ResponsiveLayout>
           }

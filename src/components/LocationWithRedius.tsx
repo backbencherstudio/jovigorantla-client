@@ -189,8 +189,8 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
     const [selectedOption, setSelectedOption] = useState<Location | null>(null);
     const [dispalySelectedOption, setDisplaySelectedOption] = useState<Location | null>(null);
     const [searchValue, setSearchValue] = useState("");
-    const [radius, setRadius] = useState(20);
-    const [displayRadius, setDisplayRadius] = useState("20");
+    const [radius, setRadius] = useState(100);
+    const [displayRadius, setDisplayRadius] = useState("100");
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [locationLoading, setLocationLoading] = useState(false);
@@ -481,7 +481,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             setSelectedOption(nearestCity);
             if (onChange) onChange(nearestCity);
 
-            setLatLngRadius(nearestCity.lat, nearestCity.lng, 20)
+            setLatLngRadius(nearestCity.lat, nearestCity.lng, 100)
             
             // Save to localStorage if initial load
             if (!localStorage.getItem("selectedLocation")) {
@@ -496,7 +496,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 localStorage.setItem("selectedLocation", JSON.stringify(DALLAS_FALLBACK));
             }
 
-            setLatLngRadius(DALLAS_FALLBACK.lat, DALLAS_FALLBACK.lng, 20)
+            setLatLngRadius(DALLAS_FALLBACK.lat, DALLAS_FALLBACK.lng, 100)
         }
     };
 
@@ -888,9 +888,9 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 setDisplayRadius(radiusValue.toString());
                 radius = radiusValue;
             } else {
-                setRadius(20);
-                setDisplayRadius("20");
-                radius = 20;
+                setRadius(100);
+                setDisplayRadius("100");
+                radius = 100;
             }
         }
 
@@ -908,13 +908,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     localStorage.setItem("selectedLocation", JSON.stringify(data));
 
                     // Set radius to 50 and update state
-                    setRadius(20);
-                    setDisplayRadius("20");
+                    setRadius(100);
+                    setDisplayRadius("100");
 
                     // Save the radius to localStorage
-                    localStorage.setItem("selectedRadius", "20");
+                    localStorage.setItem("selectedRadius", "100");
 
-                    setLatLngRadius(data.lat, data.lng, 20)
+                    setLatLngRadius(data.lat, data.lng, 100)
 
                 })
                 .catch(error => {
@@ -931,12 +931,12 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                     localStorage.setItem("selectedLocation", JSON.stringify(fallbackLocation));
 
                     // Set radius to 50 and update state
-                    setRadius(20);
-                    setDisplayRadius("20");
+                    setRadius(100);
+                    setDisplayRadius("100");
 
                     // Save the radius to localStorage
-                    localStorage.setItem("selectedRadius", "20");
-                    setLatLngRadius(fallbackLocation.lat, fallbackLocation.lng, 20)
+                    localStorage.setItem("selectedRadius", "100");
+                    setLatLngRadius(fallbackLocation.lat, fallbackLocation.lng, 100)
                 });
         }
     }, []);
@@ -1084,11 +1084,11 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
                 // className="w-20 text-right"
                 className="w-20 text-right pr-6"
               /> */}
-                            <span className="text-sm text-[#FF7A19]">{radius || "20"} miles</span>
+                            <span className="text-sm text-[#FF7A19]">{radius || "100"} miles</span>
                         </div>
 
                         <Slider
-                            value={[parseInt(radius.toString() || "20")]}
+                            value={[parseInt(radius.toString() || "100")]}
                             min={5}
                             max={100}
                             step={5}

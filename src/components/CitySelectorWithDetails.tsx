@@ -317,6 +317,8 @@ const CitySelectorWithDetails = ({ onSubmit, existingCities }: { onSubmit: (city
         longitude: city.value.longitude,
         boundary: city.value.boundary,
       }));
+
+      console.log('Enriched Data:', enrichedData)
       onSubmit(enrichedData);
     }
   };

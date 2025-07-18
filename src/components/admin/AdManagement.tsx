@@ -276,16 +276,29 @@ const AdManagement = () => {
           label: city.address,
           name: city.address,
           value: {
-            value: city.address,
             ...city,
+            name: city.address,
+            country: city.address?.split(', ')?.[2],
+            state: city.address?.split(', ')?.[1],
           },
         }));
 
-        console.log("cities => ", cities)
+        // value = {
+        //   address:"Chicago, IL, USA",
+        //   center:(2)[-87.6866, 41.8375],
+        //   country:"USA",
+        //   id:"chicago-il",
+        //   latitude:41.8375,
+        //   longitude:-87.6866,,
+        //   slug:"chicago",
+        //   state:"Illinois",
+        // }
+
+        // console.log("cities => ", cities)
         // Set the cities for editing
         setExistingCities(cities); // This will trigger a re-render with the updated city data
 
-        console.log("ad => ", ad);
+        // console.log("ad => ", ad);
         setEditingAd(ad); // Set the ad being edited
 
         // Update the new ad form state with ad details
@@ -335,20 +348,22 @@ const AdManagement = () => {
       const formData = new FormData();
       formData.append("name", newAdForm.name.trim());
       if (selectedFile) {
-        formData.append("image", selectedFile); 
+        formData.append("image", selectedFile);
       }
       // formData.append("image", selectedFile || adPreview); // Include the updated image
       formData.append("target_url", newAdForm.targetUrl.trim());
 
-      console.log(cityData)
-      // if (cityData.length > 0) {
-      //   const formattedCities = cityData.map(city => ({
-      //     address: city.name,
-      //     latitude: city.latitude,
-      //     longitude: city.longitude,
-      //   }));
-      //   formData.append("cities", JSON.stringify(formattedCities));
-      // }
+      // console.log(cityData)
+      if (cityData.length > 0) {
+        const formattedCities = cityData.map(city => ({
+          address: city.name,
+          latitude: city.latitude,
+          longitude: city.longitude,
+        }));
+        formData.append("cities", JSON.stringify(formattedCities));
+      }else {
+        formData.append("cities", JSON.stringify([]));
+      }
 
 
 
@@ -1479,7 +1494,28 @@ const AdManagement = () => {
                                               }`}
                                           > */}
                                           {/* {ad.active ? "Active" : "Inactive"} */}
-                                          <Button
+                                          {/* <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-7 w-7 p-0"
+                                            onClick={() =>
+                                              handleToggleAdActive(
+                                                ad.active,
+                                                group.id,
+                                                ad.id
+                                              )
+                                            }
+                                          >
+                                            {ad.active ? (
+                                              <Ban className="h-3.5 w-3.5 text-gray-600" />
+                                            ) : (
+                                              <Check className="h-3.5 w-3.5 text-green-600" />
+                                            )}
+                                          </Button> */}
+                                          {/* </span> */}
+                                        </h4>
+                                        <div className="flex space-x-1">
+                                        <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0"
@@ -1497,9 +1533,6 @@ const AdManagement = () => {
                                               <Check className="h-3.5 w-3.5 text-green-600" />
                                             )}
                                           </Button>
-                                          {/* </span> */}
-                                        </h4>
-                                        <div className="flex space-x-1">
                                           <Button
                                             variant="ghost"
                                             size="sm"
@@ -1897,7 +1930,7 @@ const AdManagement = () => {
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
               </Button>
-              <Button onClick={editingAd? handleUpdateAdToExistingGroup : handleSaveAdToExistingGroup}>
+              <Button onClick={editingAd ? handleUpdateAdToExistingGroup : handleSaveAdToExistingGroup}>
                 <Save className="h-4 w-4 mr-2" />
                 {editingAd ? "Update Ad" : "Add Ad"}
               </Button>
