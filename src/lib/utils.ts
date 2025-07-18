@@ -93,7 +93,7 @@ export const formatTime = (date: string) => {
   if (years > 0) {
     formattedTime = years === 1 ? "1y ago" : `${years}y ago`;
   } else if (months > 0) {
-    formattedTime = months === 1 ? "1m ago" : `${months}m ago`;
+    formattedTime = months === 1 ? "1mo ago" : `${months}mo ago`;
   } else if (days > 0) {
     formattedTime = days === 1 ? "1d ago" : `${days}d ago`;
   } else if (hours > 0) {
