@@ -212,7 +212,7 @@
 // export default CitySelectorWithDetails;
 
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import { X } from 'lucide-react';
 import usCities from '../data/uscitiesLocation.json'; // Adjust the import path as needed
@@ -244,7 +244,13 @@ interface OptionType {
 const CitySelectorWithDetails = ({ onSubmit, existingCities }: { onSubmit: (cityPayloads: any[]) => void, existingCities?: any}) => {
   const [selectedCities, setSelectedCities] = useState<any[]>(existingCities || []);
 
-  console.log('Existing Cities:', selectedCities)
+  // console.log('Existing Cities:', selectedCities)
+
+  useEffect(() => {
+    if (existingCities && existingCities.length > 0) {
+      setSelectedCities(existingCities);
+    }
+  }, [existingCities]);
 
 
   // Convert the static data to options format

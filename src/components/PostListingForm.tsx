@@ -1592,6 +1592,9 @@ function PostListingForm() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
+  
+
+
   interface FileRecord {
     id: number;
     name: string;
@@ -2408,7 +2411,18 @@ useEffect(() => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" 
+                        onClick={(e) => {
+                            // Only handle click on touch devices
+                            if ('ontouchstart' in window) {
+                              e.preventDefault();
+                              const tooltip = e.currentTarget.closest('.flex').querySelector('[role="tooltip"]');
+                              if (tooltip) {
+                                tooltip.classList.toggle('hidden');
+                              }
+                            }
+                          }}
+                      />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="w-[200px] text-sm">

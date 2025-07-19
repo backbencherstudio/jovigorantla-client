@@ -297,7 +297,7 @@ const AdManagement = () => {
         // console.log("cities => ", cities)
         // Set the cities for editing
         setExistingCities(cities); // This will trigger a re-render with the updated city data
-
+        setCityData(cities);
         // console.log("ad => ", ad);
         setEditingAd(ad); // Set the ad being edited
 
@@ -323,6 +323,21 @@ const AdManagement = () => {
   };
 
 
+  const handleEditReverse = () => {
+    setExistingCities(null); // This will trigger a re-render with the updated city data
+    setCityData(null);
+    // console.log("ad => ", ad);
+    setEditingAd(null); // Set the ad being edited
+
+
+
+    setSelectedFile(null); // Clear any previously selected file
+    setAdPreview(null); // Set the current image preview
+    setEditingAd(null); // Reset the editingAd state
+    resetForm(); // Reset the form state
+  };
+
+
   const handleUpdateAdToExistingGroup = async () => {
     try {
       // if (!newAdForm.name.trim()) {
@@ -345,6 +360,9 @@ const AdManagement = () => {
         return;
       }
 
+      // console.log("newAdForm => ", newAdForm);
+
+
       const formData = new FormData();
       formData.append("name", newAdForm.name.trim());
       if (selectedFile) {
@@ -353,6 +371,8 @@ const AdManagement = () => {
       // formData.append("image", selectedFile || adPreview); // Include the updated image
       formData.append("target_url", newAdForm.targetUrl.trim());
 
+      // console.log("cities => ", cityData)
+      // console.log("existingCities => ", existingCities)
       // console.log(cityData)
       if (cityData.length > 0) {
         const formattedCities = cityData.map(city => ({
@@ -361,8 +381,9 @@ const AdManagement = () => {
           longitude: city.longitude,
         }));
         formData.append("cities", JSON.stringify(formattedCities));
-      }else {
+      } else {
         formData.append("cities", JSON.stringify([]));
+
       }
 
 
@@ -1515,7 +1536,7 @@ const AdManagement = () => {
                                           {/* </span> */}
                                         </h4>
                                         <div className="flex space-x-1">
-                                        <Button
+                                          <Button
                                             variant="ghost"
                                             size="sm"
                                             className="h-7 w-7 p-0"
@@ -1824,6 +1845,7 @@ const AdManagement = () => {
                   groupId: null,
                 });
                 setExistingCities([]);
+                setEditingAd(null)
                 setSelectedFile(null);
                 setAdPreview(null);
               }}
@@ -1925,7 +1947,7 @@ const AdManagement = () => {
               <Button
                 variant="outline"
                 onClick={previewAd}
-                disabled={!newAdForm.name.trim() || !newAdForm.targetUrl.trim()}
+              // disabled={!newAdForm.name.trim() || !newAdForm.targetUrl.trim()}
               >
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
