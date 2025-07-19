@@ -25,7 +25,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import LocationSelector from "@/components/LocationSelector";
 import { Upload, X, ImageIcon, Info, CheckCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 import {
   Tooltip,
   TooltipContent,
@@ -41,6 +41,7 @@ import { MdWarningAmber } from "react-icons/md";
 import AutoExpandingInput from "./ui/AutoExpandingInput";
 import { api } from "@/lib/axois";
 import { useListing, Location } from "@/context/ListingContext";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 55;
@@ -94,7 +95,9 @@ const ListingForm = ({
   const [selectedSubCategory, setSelectedSubCategory] = useState(
     initialValues?.subCategory || ""
   );
-  const [availableSubCategories, setAvailableSubCategories] = useState<string[]>([]);
+  const [availableSubCategories, setAvailableSubCategories] = useState<
+    string[]
+  >([]);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [showUSAOption, setShowUSAOption] = useState(false);
@@ -106,11 +109,19 @@ const ListingForm = ({
   const [isOpenSuccess, setIsOpenSuccess] = useState(false);
   const [isOpenPending, setIsOpenPending] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
+  const [showMobileInfo, setShowMobileInfo] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('edit');
+  const id = searchParams.get("edit");
 
-  const { createListing, updateListing, setSelectedLocation, selectedLocation } = useListing();
+  const {
+    createListing,
+    updateListing,
+    setSelectedLocation,
+    selectedLocation,
+  } = useListing();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -127,32 +138,37 @@ const ListingForm = ({
 
   const fetchEditListing = async () => {
     try {
-      const {data: listing} = await api.get(`/listings/${id}`);
+      const { data: listing } = await api.get(`/listings/${id}`);
       if (listing?.success) {
-        const category = listing.data.category?.slice(0,1)?.toUpperCase() + listing.data?.category?.slice(1).toLowerCase();
-        const subCategory = listing.data.sub_category?.slice(0,1)?.toUpperCase() + listing.data?.sub_category?.slice(1).toLowerCase();
-  
+        const category =
+          listing.data.category?.slice(0, 1)?.toUpperCase() +
+          listing.data?.category?.slice(1).toLowerCase();
+        const subCategory =
+          listing.data.sub_category?.slice(0, 1)?.toUpperCase() +
+          listing.data?.sub_category?.slice(1).toLowerCase();
+
         form.setValue("title", listing.data.title);
-        form.setValue("description", listing.data.description || '');
+        form.setValue("description", listing.data.description || "");
         form.setValue("category", category);
         form.setValue("subCategory", subCategory);
         form.setValue("postToUSA", listing.data.post_to_usa);
         form.setValue("address", listing.data.address);
-  
+
         setSelectedCategory(category);
         setSelectedSubCategory(subCategory);
-  
+
         // Set location data
         if (listing.data.lat && listing.data.lng) {
           setSelectedLocation({
             lat: Number(listing.data.lat),
             lng: Number(listing.data.lng),
-            address: listing.data.address
+            address: listing.data.address,
           });
         }
-  
+
         // Update available subcategories based on category
-        const subcats = categoriesConfig[category as keyof typeof categoriesConfig] || [];
+        const subcats =
+          categoriesConfig[category as keyof typeof categoriesConfig] || [];
         setAvailableSubCategories(subcats);
 
         // Handle image data
@@ -177,8 +193,13 @@ const ListingForm = ({
   }, [id]);
 
   useEffect(() => {
-    if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
-      const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+    if (
+      selectedCategory &&
+      categoriesConfig[selectedCategory as keyof typeof categoriesConfig]
+    ) {
+      const subcats =
+        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
+        [];
       setAvailableSubCategories(subcats);
 
       const currentSubCat = form.getValues("subCategory");
@@ -197,7 +218,8 @@ const ListingForm = ({
 
   useEffect(() => {
     const shouldShowUSAOption =
-      (selectedCategory === "Marketplace" && selectedSubCategory === "Service") ||
+      (selectedCategory === "Marketplace" &&
+        selectedSubCategory === "Service") ||
       (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
 
     setShowUSAOption(shouldShowUSAOption);
@@ -237,12 +259,12 @@ const ListingForm = ({
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-  
+
     if (file.size > MAX_FILE_SIZE) {
       alert(`File ${file.name} is too large. Maximum size is 5MB.`);
       return;
     }
-  
+
     setImages([file]);
     setImagePreviewUrls([URL.createObjectURL(file)]);
   };
@@ -254,7 +276,7 @@ const ListingForm = ({
     setImages([]);
     setImagePreviewUrls([]);
   };
-  
+
   const handleSubmit = async (values: FormValues) => {
     try {
       if (!selectedLocation) {
@@ -266,24 +288,27 @@ const ListingForm = ({
       const formData = new FormData();
 
       // Append all form values
-      formData.append('title', values.title);
-      formData.append('description', values.description || ''); // Send empty string instead of null
-      formData.append('category', values.category.toUpperCase());
-      formData.append('sub_category', values.subCategory);
-      formData.append('post_to_usa', String(values.postToUSA || false));
+      formData.append("title", values.title);
+      formData.append("description", values.description || ""); // Send empty string instead of null
+      formData.append("category", values.category.toUpperCase());
+      formData.append("sub_category", values.subCategory);
+      formData.append("post_to_usa", String(values.postToUSA || false));
       // formData.append('user_id', user.id);
-      formData.append('address', values.address);
+      formData.append("address", values.address);
 
       // Append coordinates with correct field names
-      formData.append('lat', String(selectedLocation.lat));
-      formData.append('lng', String(selectedLocation.lng));
+      formData.append("lat", String(selectedLocation.lat));
+      formData.append("lng", String(selectedLocation.lng));
 
       // Handle image upload properly
       if (images[0]) {
-        formData.append('image', images[0]);
-      } else if (imagePreviewUrls[0] && imagePreviewUrls[0].startsWith('http')) {
+        formData.append("image", images[0]);
+      } else if (
+        imagePreviewUrls[0] &&
+        imagePreviewUrls[0].startsWith("http")
+      ) {
         // If we have an existing image URL, send it back
-        formData.append('image_url', imagePreviewUrls[0]);
+        formData.append("image_url", imagePreviewUrls[0]);
       }
 
       if (id) {
@@ -327,8 +352,10 @@ const ListingForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-black">Category</FormLabel>
-                  <Select value={field.value} onValueChange={handleCategoryChange}>
-
+                  <Select
+                    value={field.value}
+                    onValueChange={handleCategoryChange}
+                  >
                     <FormControl className="bg-[#e5ebee] rounded-xl focus-within:ring-0">
                       <SelectTrigger className="focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                         <SelectValue placeholder="Select a category" />
@@ -353,8 +380,10 @@ const ListingForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-black">Sub-Category</FormLabel>
-                  <Select value={field.value} onValueChange={handleSubCategoryChange}>
-
+                  <Select
+                    value={field.value}
+                    onValueChange={handleSubCategoryChange}
+                  >
                     <FormControl className="bg-[#e5ebee] rounded-xl focus:ring-[.75px] focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0">
                       <SelectTrigger>
                         <SelectValue placeholder="Select a sub-category" />
@@ -506,19 +535,43 @@ const ListingForm = ({
                 render={({ field }) => (
                   <FormItem className="flex justify-end space-x-3 space-y-0">
                     <div className="space-y-1 leading-none flex items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="w-[200px] text-sm">
-                              Reviewed by Desieasy team, will go live if
-                              approved.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      {isMobile ? (
+                        <TooltipProvider>
+                          <Tooltip
+                            open={isTooltipOpen}
+                            onOpenChange={setIsTooltipOpen}
+                          >
+                            <TooltipTrigger asChild>
+                              <Info
+                                className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-pointer"
+                                onClick={() =>
+                                  setIsTooltipOpen((open) => !open)
+                                }
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent side="top" align="center" className="ml-5 md:ml-0">
+                              <p className="w-[200px] text-sm">
+                                Reviewed by Desieasy team, will go live if
+                                approved.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 mr-1 mt-1 text-gray-500 cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="w-[200px] text-sm">
+                                Reviewed by Desieasy team, will go live if
+                                approved.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                       <FormLabel className="font-medium">
                         Also post in USA Listings
                       </FormLabel>
