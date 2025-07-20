@@ -1624,7 +1624,7 @@ function PostListingForm() {
   const descriptionLength = watch("description")?.length || 0;
 
 
-  const showPhotoUpload = selectedCategory === "Marketplace" || selectedCategory === "Accommodations";
+  const showPhotoUpload = selectedCategory === "Marketplace" || selectedCategory === "Accommodations" || (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
   // let availableSubCategories = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
 
   // console.log("availble sub categories => ", availableSubCategories)
