@@ -169,9 +169,9 @@ const ManageListings = () => {
                           <div className="flex items-center">
                             <span>Category: {formatCategory(listing?.category)}</span>
                           </div>
-                          <div className="flex items-center">
+                          {/* <div className="flex items-center">
                             <span>Status: {formatSubCategory(listing.category, listing.sub_category)}</span>
-                          </div>
+                          </div> */}
                           <div className="flex items-center">
                             <span>Created: {formatTime(listing.created_at)}</span>
                           </div>

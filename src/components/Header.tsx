@@ -295,7 +295,7 @@ const Header = ({  searchInput,
                 placeholder="Search"
                 value={searchValue}
                 onChange={handleSearchChange}
-                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
               />
               {searchValue && (
               <X

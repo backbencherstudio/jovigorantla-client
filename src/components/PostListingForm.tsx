@@ -2449,6 +2449,7 @@ function PostListingForm() {
                 control={control}
                 render={({ field }) => (
                   <Checkbox
+                    id="isUSA"
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
