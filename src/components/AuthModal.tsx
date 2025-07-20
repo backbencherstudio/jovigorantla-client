@@ -923,6 +923,27 @@ const AuthModal = ({
     return () => clearInterval(interval);
   }, [resendTimer, resendDisabled]);
 
+  useEffect(() => {
+    const handleFocus = (e: Event) => {
+      const activeElement = e.target as HTMLElement;
+      if (
+        activeElement.tagName === 'INPUT' || 
+        activeElement.tagName === 'TEXTAREA' ||
+        activeElement.tagName === 'SELECT'
+      ) {
+        setTimeout(() => {
+          activeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 300);
+      }
+    };
+  
+    document.addEventListener('focusin', handleFocus);
+    return () => document.removeEventListener('focusin', handleFocus);
+  });
+  
   const renderMainContent = () => {
     // Show Reset Password form
     if (openResetPassword) {

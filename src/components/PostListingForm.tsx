@@ -618,10 +618,10 @@
 //   useEffect(() => {
 //     const savedData = localStorage.getItem("formData");
 //     if (!savedData) return;
-  
+
 //     const formData = JSON.parse(savedData);
 //     console.log("Loaded from localStorage:", formData); // Debugging
-  
+
 //     // 1. Reset form with default values FIRST
 //     reset({
 //       category: "",
@@ -631,7 +631,7 @@
 //       isUSA: false,
 //       image: null
 //     });
-  
+
 //     // 2. Set values INDIVIDUALLY with setTimeout
 //     setTimeout(() => {
 //       if (formData.category) setValue("category", formData.category);
@@ -639,7 +639,7 @@
 //       if (formData.title) setValue("title", formData.title);
 //       if (formData.description) setValue("description", formData.description);
 //       if (formData.isUSA) setValue("isUSA", formData.isUSA);
-      
+
 //       // 3. Handle image preview
 //       // if (formData.image) {
 //       //   if (formData.image.startsWith('data:')) {
@@ -649,7 +649,7 @@
 //       //     setImagePreview(previewUrl);
 //       //   }
 //       // }
-  
+
 //       // 4. Set other states
 //       setCities(formData.cities || []);
 //       setRadius(formData.radius || 0);
@@ -910,24 +910,24 @@
 //   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     const file = e.target.files?.[0];
 //     if (!file) return;
-  
+
 //     // Validate file size
 //     if (file.size > 5 * 1024 * 1024) {
 //       alert("Image size must be less than 5MB");
 //       e.target.value = ''; // Reset input
 //       return;
 //     }
-  
+
 //     // Clean up previous preview
 //     if (imagePreview) {
 //       URL.revokeObjectURL(imagePreview);
 //     }
-  
+
 //     // Create preview and set form value
 //     const previewUrl = URL.createObjectURL(file);
 //     setImagePreview(previewUrl);
 //     setValue("image", file, { shouldValidate: true });
-  
+
 //     // Save to localStorage (if user not logged in)
 //     if (!user) {
 //       const reader = new FileReader();
@@ -1591,8 +1591,10 @@ function PostListingForm() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-  
+
+
 
 
   interface FileRecord {
@@ -1652,7 +1654,7 @@ function PostListingForm() {
 
         // Set form values
         reset(initialData);
-        
+
 
 
         // find availble sub categories
@@ -1697,7 +1699,7 @@ function PostListingForm() {
   }, [listingId, isEditMode, reset]);
 
 
-  useEffect(()=> {
+  useEffect(() => {
     setIsOpenError(isOpenErrorAfterLogin)
     setIsOpenPending(isOpenPendingAfterLogin)
     setIsOpenSuccess(isOpenSuccessAfterLogin)
@@ -1713,7 +1715,7 @@ function PostListingForm() {
 
   useEffect(() => {
     const isEditMode = searchParams.has('id');
-    
+
     if (!isEditMode) {
       // Full reset logic
       reset({
@@ -1724,7 +1726,7 @@ function PostListingForm() {
         image: null,
         isUSA: false,
       });
-      
+
       // Clear other related state
       setImagePreview(null);
       setCities([]);
@@ -1732,7 +1734,7 @@ function PostListingForm() {
       setCurrentLocation(null);
       setAvailableSubCategories([]);
       //  console.log('Reset completed');
-      
+
       // // If using default values from props
       //   reset({
       //     category: "",
@@ -1743,14 +1745,14 @@ function PostListingForm() {
       //     isUSA: false,
       //   });
 
-        setTimeout(resizeTextarea1, 0);
-      
+      setTimeout(resizeTextarea1, 0);
+
     }
   }, [location.key, reset, searchParams]);
 
- 
 
-  
+
+
 
   // useEffect(() => {
   //   resizeTextarea1();
@@ -1784,7 +1786,7 @@ function PostListingForm() {
       formDataAfterLogin['sub_category'] = data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase();
       formDataAfterLogin['title'] = data.title;
       formDataAfterLogin['description'] = data.description || '';
-      formDataAfterLogin['post_to_usa'] = data.isUSA? 'true' : 'false';
+      formDataAfterLogin['post_to_usa'] = data.isUSA ? 'true' : 'false';
 
       // Location fields
       formData.append('address', currentLocation?.search);
@@ -1847,7 +1849,7 @@ function PostListingForm() {
         const response = await api.post('/listings', formData);
         // console.log("Listing created successfully");
         // Reset form for new listings
-  
+
 
         if (response.data.success) {
           reset();
@@ -1882,9 +1884,9 @@ function PostListingForm() {
       if (dbInstance) {
         return resolve(dbInstance);
       }
-  
+
       const request = indexedDB.open('MyFileStorage', 1);
-      
+
       request.onupgradeneeded = (event) => {
         const target = event.target as IDBOpenDBRequest;
         dbInstance = target.result;
@@ -1892,12 +1894,12 @@ function PostListingForm() {
           dbInstance.createObjectStore('files', { keyPath: 'id' });
         }
       };
-      
+
       request.onsuccess = (event) => {
         dbInstance = (event.target as IDBOpenDBRequest).result;
         resolve(dbInstance);
       };
-      
+
       request.onerror = (event) => {
         reject((event.target as IDBRequest).error);
       };
@@ -1911,12 +1913,12 @@ function PostListingForm() {
         dbInstance.close();
         dbInstance = null;
       }
-  
+
       const request = indexedDB.deleteDatabase('MyFileStorage');
-  
+
       request.onsuccess = () => resolve();
       request.onerror = (event) => reject((event.target as IDBRequest).error);
-      
+
       request.onblocked = () => {
         // If blocked, wait and try again
         setTimeout(() => {
@@ -1926,15 +1928,15 @@ function PostListingForm() {
     });
   };
 
-  
-  
+
+
   const storeFile = async (file: File): Promise<void> => {
     const db = await openDB();
-    
+
     return new Promise<void>((resolve, reject) => {
       const transaction = db.transaction('files', 'readwrite');
       const store = transaction.objectStore('files');
-      
+
       const fileRecord: FileRecord = {
         id: Date.now(),
         name: file.name,
@@ -1943,9 +1945,9 @@ function PostListingForm() {
         lastModified: file.lastModified,
         file: file
       };
-      
+
       const request = store.add(fileRecord);
-      
+
       request.onsuccess = () => resolve();
       request.onerror = (event: Event) => {
         const target = event.target as IDBRequest;
@@ -2086,14 +2088,14 @@ function PostListingForm() {
 
   // const resizeTextarea = useCallback(() => {
   //   if (!textareaRef.current) return;
-    
+
   //   // Store current scroll position
   //   const { scrollTop } = document.documentElement || document.body;
-    
+
   //   // Reset and set height
   //   textareaRef.current.style.height = 'auto';
   //   textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    
+
   //   // Restore scroll position (prevents jump)
   //   window.requestAnimationFrame(() => {
   //     window.scrollTo(0, scrollTop);
@@ -2106,40 +2108,40 @@ function PostListingForm() {
   //   }, [watch("description"), resizeTextarea]);
 
   // Working resize function
-const resizeTextarea = useCallback((textarea: HTMLTextAreaElement) => {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  textarea.style.height = 'auto';
-  textarea.style.height = `${textarea.scrollHeight}px`;
-  window.scrollTo(0, scrollTop);
-}, []);
+  const resizeTextarea = useCallback((textarea: HTMLTextAreaElement) => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+    window.scrollTo(0, scrollTop);
+  }, []);
 
-// Trigger resize on initial load and updates
-useEffect(() => {
-  if (textareaRef.current && watch("description")) {
-    resizeTextarea(textareaRef.current);
-  }
-}, [watch("description"), resizeTextarea]);
-
-useEffect(() => {
-  const handleFocus = (e: Event) => {
-    const activeElement = e.target as HTMLElement;
-    if (
-      activeElement.tagName === 'INPUT' || 
-      activeElement.tagName === 'TEXTAREA' ||
-      activeElement.tagName === 'SELECT'
-    ) {
-      setTimeout(() => {
-        activeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-      }, 300);
+  // Trigger resize on initial load and updates
+  useEffect(() => {
+    if (textareaRef.current && watch("description")) {
+      resizeTextarea(textareaRef.current);
     }
-  };
+  }, [watch("description"), resizeTextarea]);
 
-  document.addEventListener('focusin', handleFocus);
-  return () => document.removeEventListener('focusin', handleFocus);
-});
+  useEffect(() => {
+    const handleFocus = (e: Event) => {
+      const activeElement = e.target as HTMLElement;
+      if (
+        activeElement.tagName === 'INPUT' ||
+        activeElement.tagName === 'TEXTAREA' ||
+        activeElement.tagName === 'SELECT'
+      ) {
+        setTimeout(() => {
+          activeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 300);
+      }
+    };
+
+    document.addEventListener('focusin', handleFocus);
+    return () => document.removeEventListener('focusin', handleFocus);
+  });
 
   if (isLoading) {
     return (
@@ -2276,7 +2278,7 @@ useEffect(() => {
               <div className="relative">
                 <input
                   {...field}
-                  
+
                   id="title"
                   placeholder="Enter a descriptive title"
                   className="block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 bg-[#e5ebee]"
@@ -2316,10 +2318,10 @@ useEffect(() => {
                   //   const target = e.target as HTMLTextAreaElement;
                   //   // Store current scroll position
                   //   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    
+
                   //   target.style.height = "auto";
                   //   target.style.height = `${target.scrollHeight}px`;
-                    
+
                   //   // Restore scroll position
                   //   window.scrollTo(0, scrollTop);
                   // }}
@@ -2409,20 +2411,27 @@ useEffect(() => {
             <div className="flex justify-end items-center space-x-3">
               <div className="flex items-center space-x-1">
                 <TooltipProvider>
-                  <Tooltip>
+                  <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen} >
                     <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" 
+                      {/* <Info className="h-4 w-4 text-gray-500 cursor-help" 
                         onClick={(e) => {
                             // Only handle click on touch devices
                             if ('ontouchstart' in window) {
-                              e.preventDefault();
-                              const tooltip = e.currentTarget.closest('.flex').querySelector('[role="tooltip"]');
-                              if (tooltip) {
-                                tooltip.classList.toggle('hidden');
-                              }
+                              setIsTooltipOpen(prev => !prev);
                             }
                           }}
-                      />
+                      /> */}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if ('ontouchstart' in window) {
+                            setIsTooltipOpen(prev => !prev);
+                          }
+                        }}
+                      >
+                        <Info className="h-4 w-4 text-gray-500" />
+                      </button>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="w-[200px] text-sm">
@@ -2467,7 +2476,7 @@ useEffect(() => {
       <CustomModal
         type="success"
         open={isOpenSuccess}
-        onOpenChange={(_)=> {
+        onOpenChange={(_) => {
           setIsOpenSuccessAfterLogin(false)
           setIsOpenSuccess(false)
         }}
@@ -2480,16 +2489,16 @@ useEffect(() => {
       {/* Pending Review Modal - shown when postToUSA is true */}
       <CustomModal
         open={isOpenPending}
-        onOpenChange={(_)=> {
+        onOpenChange={(_) => {
           setIsOpenPendingAfterLogin(false)
-           setIsOpenPending(false)
+          setIsOpenPending(false)
         }}
         title="Your listing is under review and will be live if approved."
         icon={<img className="" src={loadingImg} alt="loading" />}
       />
       <CustomModal
         open={isOpenError}
-        onOpenChange={(_)=>{
+        onOpenChange={(_) => {
           setIsOpenErrorAfterLogin(false)
           setIsOpenError(false)
         }}
