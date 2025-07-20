@@ -59,6 +59,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   const [isVisible, setIsVisible] = useState(true);
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const [isMobileHeaderRendered, setIsMobileHeaderRendered] = useState(false);
+  
 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

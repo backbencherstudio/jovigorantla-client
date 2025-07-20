@@ -1767,8 +1767,10 @@ function PostListingForm() {
 
       // Common fields
       if (data.image) {
-        formData.append('image', data.image);
-        // console.log("image => ", data.image)
+        // console.log("image => ", data.image);
+        // console.log("type => ", typeof data.image);
+        // console.log("instanceof File => ", data.image instanceof File);
+        formData.append('image', data.image, data.image.name);
         // localStorage.setItem('image', data.image)
       } else if (isEditMode && typeof imagePreview === 'string' && imagePreview.startsWith('http')) {
         // Preserve existing image URL if not changed
@@ -1832,7 +1834,11 @@ function PostListingForm() {
 
 
       if (isEditMode) {
-        const response = await api.patch(`/listings/${listingId}`, formData);
+        const response = await api.patch(`/listings/${listingId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
 
         // console.log(response.data)
         if (response.data.success) {
@@ -1846,7 +1852,15 @@ function PostListingForm() {
           setIsOpenError(true);
         }
       } else {
-        const response = await api.post('/listings', formData);
+        for (let pair of formData.entries()) {
+          console.log(`${pair[0]}:`, pair[1]);
+        }
+
+        const response = await api.post('/listings', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
         // console.log("Listing created successfully");
         // Reset form for new listings
 
