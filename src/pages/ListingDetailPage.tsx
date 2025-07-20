@@ -117,8 +117,13 @@ const ListingDetailPage = ({ openModal }) => {
   const [width, setWidth] = useState("500px");
 
   useEffect(() => {
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0);
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTo(0, 0);
+    };
+  
+    // Initial scroll
+    scrollToTop();
 
     // Function to update width based on screen size
     const updateWidth = () => {
