@@ -293,7 +293,7 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <div className="flex flex-col bg-white">
       {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
-      <div className="flex-1 py-[10px] overflow-y-auto pb-24 max-w-3xl mx-auto w-full">
+      <div className="flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 xl:pl-0">
         {/* Category, status and action buttons */}
         <div className="px-4">
           <div className="flex items-center justify-between mb-2">

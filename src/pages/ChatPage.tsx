@@ -429,7 +429,7 @@
 //         //   lastMessage: { ...data.lastMessage, isRead: true },  // Mark last message as read
 //         //   messages: data.messages.map((msg: any) => ({ ...msg, read: true }))  // Mark all messages as read
 //         // };
-        
+
 //         // setConversation(updatedConversation);
 
 //         // // Update total unread messages count
@@ -705,7 +705,7 @@
 
 //     console.log(foundConversation)
 //     setConversation(foundConversation)
-  
+
 
 //     if (foundConversation) {
 //       // Mark all messages as read when opening the conversation
@@ -835,7 +835,7 @@ const ChatPage = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { conversations, setActiveConversation, activeConversation, addMessage,handleSetUnreadMessages } = useMessages();
+  const { conversations, setActiveConversation, activeConversation, addMessage, handleSetUnreadMessages } = useMessages();
   // const [conversation, setConversation] = useState<Conversation | null>(null);
 
   // useEffect(() => {
@@ -908,7 +908,7 @@ const ChatPage = () => {
 
         // Add the new message to the conversation
         addMessage(conversationId, newMessage);
-        
+
 
         // Update conversation state with the new message
         // setConversation((prev) => {
@@ -933,7 +933,19 @@ const ChatPage = () => {
   const handleBack = () => {
     handleSetUnreadMessages(conversationId, 0)
     setActiveConversation(null)
+    // navigate('/messages', { replace: true });
     navigate(-1); // Go back to the previous page
+    // Get current history length
+    // const historyLength = window.history.length;
+
+    // // Go back as much as possible
+    // window.history.go(-(historyLength - 1));
+
+    // Replace current entry with root
+    // window.history.replaceState({}, '', '/');
+
+    // // Push messages route
+    // window.history.pushState({}, '', '/messages');
   };
 
   if (!activeConversation) {

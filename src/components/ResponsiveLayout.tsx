@@ -51,6 +51,8 @@ interface ResponsiveLayoutProps {
 const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hideBackButton = false, fullWidth = false }) => {
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isCollapsed = useMediaQuery("(min-width: 768px) and (max-width: 1100px)");
+  
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const navigate = useNavigate();
   const location = useLocation();
@@ -217,7 +219,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
         {/* Left Sidebar - Menu (only on desktop/tablet) */}
         {!isMobile && (
           <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
-            <Sidebar collapsed={isTablet} />
+            <Sidebar collapsed={isCollapsed} />
           </div>
         )}
 
