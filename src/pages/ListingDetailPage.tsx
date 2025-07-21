@@ -503,7 +503,7 @@ If you’re interested or have any questions, please reach out for pictures, ren
 
       {/* Fixed button at the bottom only for mobile */}
       {isMobile && user?.id !== listing?.user_id && (
-        <div className="fixed bottom-0 left-0 right-0 py-4 px-4 bg-white border-t shadow-md">
+        <div className="fixed bottom-10 left-0 right-0 py-4 px-4 bg-white border-t shadow-md">
           <div className="max-w-3xl mx-auto">
             <Button
               onClick={handleContact}
