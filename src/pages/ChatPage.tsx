@@ -935,17 +935,7 @@ const ChatPage = () => {
     setActiveConversation(null)
     // navigate('/messages', { replace: true });
     navigate(-1); // Go back to the previous page
-    // Get current history length
-    // const historyLength = window.history.length;
-
-    // // Go back as much as possible
-    // window.history.go(-(historyLength - 1));
-
-    // Replace current entry with root
-    // window.history.replaceState({}, '', '/');
-
-    // // Push messages route
-    // window.history.pushState({}, '', '/messages');
+    window.history.back();
   };
 
   if (!activeConversation) {
