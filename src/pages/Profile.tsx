@@ -237,6 +237,16 @@ const Profile = () => {
     }
   };
 
+  const handleInputFocus = () => {
+    // Scroll the dialog content into view when input is focused
+    setTimeout(() => {
+      const input = document.querySelector('input:focus');
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 300); // Delay to account for keyboard animation
+  };
+
   if (!user) return null;
 
   return (
@@ -287,12 +297,13 @@ const Profile = () => {
             </DialogHeader>
             <div className="space-y-8">
              <div className="relative">
-             <Input
+             <Input 
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
                 placeholder="Enter your name"
                 autoFocus
                 maxLength={15}
+                onFocus={handleInputFocus}
               />
               <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
                   {tempName.length}/15
