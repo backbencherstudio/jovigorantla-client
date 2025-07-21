@@ -5,13 +5,14 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { ArrowLeft, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
 import AdBanner from "@/components/AdBanner";
 import LocationSelector from "@/components/LocationSelector";
 import SidebarAds from "./ui/Sidebar-Ads";
 import LocationWithRadius from "./LocationWithRedius";
 import { Button } from "./ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 
 const PageSkeleton = () => {
@@ -52,7 +53,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isCollapsed = useMediaQuery("(min-width: 768px) and (max-width: 1100px)");
-  
+
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +62,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   const [isVisible, setIsVisible] = useState(true);
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const [isMobileHeaderRendered, setIsMobileHeaderRendered] = useState(false);
-  
+  const { user } = useAuth();
+
 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -330,6 +332,19 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
         )}
       </div>}
 
+      {!isDesktop && !user && (
+        <footer className="bg-gray-50 py-4 fixed bottom-0 left-0 right-0 z-[1000000000]">
+          <div className="container mx-auto text-center">
+            <p className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]" style={{fontSize: '11px'}}>
+             Desieasy &copy; {new Date().getFullYear()} 
+  
+            <span className="inline-flex gap-1">• <Link to={'/privacy-policy'}>Privacy Policy</Link></span>
+            <span className="inline-flex gap-1"> &bull; <Link to={'/user-agreement'}>User Agreement</Link></span>
+
+            </p>
+          </div>
+        </footer>
+       )}
 
     </div>
   );
