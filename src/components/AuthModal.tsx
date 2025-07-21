@@ -1000,7 +1000,7 @@ const AuthModal = ({
 
     // Show login/signup tabs
     return (
-      <div className="w-full bg-white">
+      <div className="w-full bg-white ">
         <div className="w-full text-center mb-6 bg-white">
           <h1 className="text-xl md:text-2xl font-bold mt-2 text-center">
             Login or Signup

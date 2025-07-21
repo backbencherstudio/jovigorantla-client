@@ -333,7 +333,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
       </div>}
 
       {!isDesktop && !user && (
-        <footer className="bg-gray-50 py-4 fixed bottom-0 left-0 right-0 z-[1000000000]">
+        <footer className="bg-gray-50 py-4 fixed bottom-0 left-0 right-0 z-[10]">
           <div className="container mx-auto text-center">
             <p className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]" style={{fontSize: '11px'}}>
              Desieasy &copy; {new Date().getFullYear()} 
