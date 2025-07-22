@@ -112,7 +112,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
                   )}
-                  <h1 className="text-xl font-bold">{title}asdfasdf</h1>
+                  <h1 className="text-xl font-bold">{title}</h1>
                 </div>
                 <div className="h-[65px] bg-white border-b "></div>
               </div>

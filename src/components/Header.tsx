@@ -61,11 +61,15 @@ interface HeaderProps {
   searchInput?: string;
   onSearchInputChange?: (value: string) => void;
   onSearchSubmit?: (value: string) => void;
+  showHeader?: boolean; // Add this prop
 }
 
-const Header = ({  searchInput,
+const Header = ({
+  searchInput,
   onSearchInputChange,
-  onSearchSubmit }: HeaderProps) => {
+  onSearchSubmit,
+  showHeader = true,
+}: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
@@ -74,7 +78,7 @@ const Header = ({  searchInput,
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
-  const [ searchValue, setSearchValue ] = useState("")
+  const [searchValue, setSearchValue] = useState("");
 
   const { unreadMessages } = useMessages();
 
@@ -95,10 +99,7 @@ const Header = ({  searchInput,
     return emailName.charAt(0).toUpperCase() + emailName.slice(1);
   };
 
-
   const unreadMessagesCount = sumRecord(unreadMessages);
-
-
 
   // useEffect(() => {
   //   // Extract search query from URL if present
@@ -127,8 +128,6 @@ const Header = ({  searchInput,
   //     navigate("/");
   //   }
   // };
-
-
 
   // const handleSearch = (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -214,27 +213,25 @@ const Header = ({  searchInput,
     }
   }, [location.search]);
 
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // onSearchInputChange(e.target.value);
     setSearchValue(e.target.value);
     // if (!e.target.value.trim()) {
     //   navigate(location.pathname);
     // }
-
   };
 
   // const handleSearch = (e: React.FormEvent) => {
   //   e.preventDefault();
   //   onSearchSubmit(searchInput);
-    
+
   // };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const query = searchValue?.trim();
     // console.log(query)
-    
+
     // If the search query exists, update the query params, otherwise navigate to current path
     if (query) {
       navigate(`${location.pathname}?q=${encodeURIComponent(query)}`);
@@ -242,11 +239,10 @@ const Header = ({  searchInput,
       // If the input is empty, navigate to the current path without the query parameter
       navigate(location.pathname);
     }
-  
+
     // Optional: Trigger the onSearchSubmit function if you need to handle search elsewhere in the app
     // onSearchSubmit(query);
   };
-
 
   const handleSignOut = async () => {
     const isLogout = await signOut();
@@ -261,33 +257,44 @@ const Header = ({  searchInput,
     }
   };
 
-
   // Mobile icon size - slightly larger for mobile
   // const mobileIconSize = isMobile ? 6 : 5.5;
 
-   // List of paths to check against
- const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];
+  // List of paths to check against
+  const validPaths = [
+    "/",
+    "/marketplace",
+    "/rides",
+    "/accommodations",
+    "/jobs",
+  ];
 
- // Check if current path matches any of the valid paths
- const isValidPage = validPaths.includes(location.pathname);
+  // Check if current path matches any of the valid paths
+  const isValidPage = validPaths.includes(location.pathname);
 
   return (
     <>
-      <header className="bg-white px-4 md:px-6 border-b sticky top-0 z-20 shadow-sm py-[13px]">
+      <header
+        className={`bg-white px-4 md:px-6 border-b sticky top-0 z-[101] shadow-sm py-[13px] transition-transform duration-300 ${  // Changed z-20 to z-[101]
+          isMobile ? (showHeader ? "translate-y-0" : "-translate-y-full") : ""
+        }`}
+      >
         <div className="max-w-full mx-auto flex justify-between">
           {/* Logo */}
-          <Link to={'/'} className="flex items-center">
+          <Link to={"/"} className="flex items-center">
             <img
-            src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
+              src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
               className="h-10"
             />
           </Link>
 
           {/* Search - Only on Tablet and Desktop */}
-          {isValidPage &&  (
-            <form onSubmit={handleSearch} className=" mx-4 w-[25vw] relative hidden md:block"
-            // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
+          {isValidPage && (
+            <form
+              onSubmit={handleSearch}
+              className=" mx-4 w-[25vw] relative hidden md:block"
+              // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
             >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
@@ -298,16 +305,15 @@ const Header = ({  searchInput,
                 className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
               />
               {searchValue && (
-              <X
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                onClick={handleClearInput} // Clear the input on click
-              />
-            )}
+                <X
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                  onClick={handleClearInput} // Clear the input on click
+                />
+              )}
             </form>
           )}
 
           {/* <LocationWithRedius /> */}
-
 
           <div className="flex items-center justify-end gap-2">
             {/* Location - Only on Tablet and Desktop */}
@@ -329,8 +335,9 @@ const Header = ({  searchInput,
                   className="rounded-full h-9 w-9"
                 >
                   <Users
-                    className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                      }`}
+                    className={`text-brand ${
+                      isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                    }`}
                   />
                 </Button>
               )}
@@ -356,11 +363,12 @@ const Header = ({  searchInput,
                     className="rounded-full h-8 w-8 bg-[#f1f5f9]"
                   >
                     <MessageCircle
-                      className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                        }`}
+                      className={`text-brand ${
+                        isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                      }`}
                     />
                   </Button>
-                  {(parseInt(unreadMessagesCount) > 0) && (
+                  {parseInt(unreadMessagesCount) > 0 && (
                     <Badge className="absolute top-1 right-1 h-4 min-w-4 p-0 flex items-center justify-center text-[9px] hover:bg-[#bf072c] bg-[#bf072c] border-white border">
                       {unreadMessagesCount}
                     </Badge>
