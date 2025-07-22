@@ -392,7 +392,7 @@ const Header = ({
                       />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 z-[102]">
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <UserRound className="h-4 w-4 mr-2" />
                       <span>Profile</span>
