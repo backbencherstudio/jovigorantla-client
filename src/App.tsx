@@ -28,7 +28,7 @@ import ChatPage from "./pages/ChatPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import UserAgreement from "./pages/UserAgreement";
 import { ListingProvider } from "./context/ListingContext";
-import { SocketProvider } from '@/context/SocketContext';
+import { SocketProvider } from "@/context/SocketContext";
 import { MessageProvider } from "./context/MessageContext";
 import PostListingForm from "./components/PostListingForm";
 import Marketplace from "./pages/Marketplace";
@@ -40,12 +40,9 @@ import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
 import { useEffect, useState } from "react";
 
-
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-
-
 
   // If still loading auth state, don't redirect yet
   if (loading) {
@@ -78,7 +75,7 @@ function AppRoutes() {
           element={
             // <MainLayout>
             //   {/* <Index /> */}
-            //   <Home /> 
+            //   <Home />
             // </MainLayout>
             <ResponsiveLayout>
               <Home openModal={openModal} />
@@ -106,7 +103,6 @@ function AppRoutes() {
             <ResponsiveLayout>
               <Jobs openModal={openModal} />
             </ResponsiveLayout>
-
           }
         />
         <Route
@@ -118,7 +114,6 @@ function AppRoutes() {
             <ResponsiveLayout>
               <Marketplace openModal={openModal} />
             </ResponsiveLayout>
-
           }
         />
         {/* <Route
@@ -136,7 +131,6 @@ function AppRoutes() {
             <ResponsiveLayout>
               <Rides openModal={openModal} />
             </ResponsiveLayout>
-
           }
         />
 
@@ -151,9 +145,10 @@ function AppRoutes() {
 
             // </PageLayout>
 
-            <ResponsiveLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
+            <ResponsiveLayout
+              title={isEditing ? "Editing Listing" : "Create Listing"}
+            >
               <PostListingForm />
-
             </ResponsiveLayout>
           }
         />
@@ -175,7 +170,6 @@ function AppRoutes() {
 
             <ResponsiveLayout title="Listing Details">
               <ListingDetailPage openModal={openModal} />
-
             </ResponsiveLayout>
           }
         />
@@ -332,47 +326,55 @@ function App() {
       isDragging = false;
     };
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', handleTouchMove, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [showLoading]);
   return (
     <>
       {showLoading && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: '#ff6b00',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <div style={{
-            width: '50px',
-            height: '50px',
-            border: '4px solid rgba(255, 255, 255, 0.3)',
-            borderTop: '4px solid white',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            marginBottom: '20px'
-          }} />
-          <p style={{
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: '600',
-            margin: 0
-          }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "#ff6b00",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              width: "50px",
+              height: "50px",
+              border: "4px solid rgba(255, 255, 255, 0.3)",
+              borderTop: "4px solid white",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+              marginBottom: "20px",
+            }}
+          />
+          <p
+            style={{
+              color: "white",
+              fontSize: "18px",
+              fontWeight: "600",
+              margin: 0,
+            }}
+          >
             Refreshing...
           </p>
         </div>
@@ -391,7 +393,6 @@ function App() {
         </AuthProvider>
       </Router>
     </>
-
   );
 }
 

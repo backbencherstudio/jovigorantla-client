@@ -216,7 +216,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   });
 
   return (
-    <div className={`flex flex-col  bg-gray-50`}>
+    <div className={`flex flex-col bg-gray-50 overflow-x-hidden`}>
       {/* <div className="z-10"> */}
       <Header />
       {/* </div> */}
@@ -363,7 +363,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         </div>
                       </form>
 
-                      <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                      <div className={`mt-2 flex items-center justify-end`}>
                         <LocationWithRadius popupStyle="mr-2" />
                       </div>
                     </div>
