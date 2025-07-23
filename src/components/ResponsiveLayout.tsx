@@ -217,10 +217,51 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   return (
     <div className={`flex flex-col bg-gray-50 overflow-x-hidden`}>
-      {/* <div className="z-10"> */}
-      <Header />
-      {/* </div> */}
+      {/* Unified animated header for mobile */}
+      {isMobile ? (
+        <div
+          className={`fixed top-0 left-0 right-0 z-[101] transition-transform duration-300 ease-in-out bg-white overflow-hidden ${
+            isVisible ? "translate-y-0" : "-translate-y-[100%]"
+          }`}
+          style={{ boxShadow: "none", borderBottom: "none" }}
+        >
+          <Header />
+          {/* Mobile responsive header (search/location/categories) */}
+          <div className="bg-white border-b">
+            <div className="px-4 pt-2 pb-2">
+              <form onSubmit={handleSearchSubmit}>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                  />
+                  {searchQuery && (
+                    <X
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                      onClick={handleClearInput}
+                    />
+                  )}
+                </div>
+              </form>
+              <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                <LocationWithRadius popupStyle="mr-2" />
+              </div>
+            </div>
+            <div className="px-4 pb-2">
+              <CategoryIcons />
+            </div>
+          </div>
+        </div>
+      ) : (
+        // Desktop/tablet: header always visible
+        <Header />
+      )}
 
+      {/* Rest of the layout remains unchanged */}
       {isVisiblef ? (
         isDesktop ? null : (
           <PageSkeleton />
@@ -330,15 +371,17 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 {isMobile && (
                   <div
                     ref={mobileHeaderRef}
-                    className={`z-[100] transition-transform duration-300 ease-in-out bg-white ${  // Changed bg-red-500 to bg-white
+                    className={`z-[100] transition-transform duration-300 ease-in-out bg-white ${
+                      // Changed bg-red-500 to bg-white
                       lastScrollY > 100 && isVisible
                         ? "translate-y-0 top-[60px]"
-                        : "-translate-y-full top-[60px]"  // Changed top-[0] to top-[60px]
+                        : "-translate-y-full top-[60px]" // Changed top-[0] to top-[60px]
                     }`}
                     style={{
                       position: "fixed",
                       left: 0,
                       right: 0,
+                      top: "60px",
                       opacity: lastScrollY > 100 ? 1 : 0,
                       pointerEvents: lastScrollY > 100 ? "auto" : "none",
                     }}
@@ -368,7 +411,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       </div>
                     </div>
 
-                    <div className="px-4 pb-2">
+                    <div className="px-4 pt-4 ">
                       <CategoryIcons />
                     </div>
                   </div>

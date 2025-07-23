@@ -92,7 +92,7 @@ const CategoryIcons: React.FC = () => {
         return (
           <div
             key={category.path}
-            className="flex flex-col items-center cursor-pointer"
+            className="flex flex-col items-center cursor-pointer pb-[50px]"
             onClick={() => {
               // navigate(search? `${category.path}${search}` : category.path);
               handleClick(category.path);
