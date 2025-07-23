@@ -247,7 +247,13 @@ const ListingDetailPage = ({ openModal }) => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    const lastListPageUrl = sessionStorage.getItem('lastListPageUrl');
+    if (lastListPageUrl) {
+      navigate(lastListPageUrl, { replace: true });
+      sessionStorage.removeItem('lastListPageUrl');
+    } else {
+      navigate('/');
+    }
   };
 
   const closeModal = () => setIsOpen(false);
