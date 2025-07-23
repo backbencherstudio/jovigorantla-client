@@ -247,12 +247,12 @@ const ListingDetailPage = ({ openModal }) => {
   };
 
   const handleBack = () => {
-    const lastListPageUrl = sessionStorage.getItem('lastListPageUrl');
+    const lastListPageUrl = sessionStorage.getItem("lastListPageUrl");
     if (lastListPageUrl) {
       navigate(lastListPageUrl, { replace: true });
-      sessionStorage.removeItem('lastListPageUrl');
+      sessionStorage.removeItem("lastListPageUrl");
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
