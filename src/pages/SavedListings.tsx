@@ -481,7 +481,7 @@ const SavedListings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  console.log("favoritesListings from context:", favoritesListings);
+  // console.log("favoritesListings from context:", favoritesListings);
 
   // Fetch saved listings from API
   const fetchSavedListings = useCallback(async () => {
@@ -644,7 +644,7 @@ const SavedListings = () => {
               className="bg-white border-b border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => handleListingClick(listing.id)}
             >
-              <div className="pb-2 px-4">
+              <div className="pb-4 px-4">
                 <div className="flex justify-between">
                   <div className="flex items-center text-sm text-gray-500 mb-1">
                     <span>{formatCategory(listing.category)}</span>
@@ -670,7 +670,7 @@ const SavedListings = () => {
                   {listing.title}
                 </h3>
 
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mt-2">
                   <div className="flex items-center text-sm text-gray-500">
                     <span>{listing?.user?.name?.slice(0, 15)}</span>
                     <span className="mx-2">•</span>

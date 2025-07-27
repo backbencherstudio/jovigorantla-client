@@ -592,7 +592,7 @@ const AuthModal = ({
   onOpenChange,
   defaultTab = "login",
 }: AuthModalProps) => {
-  const { signIn, signUp, signUpWithGoogle, resetPassword, forgotPassword: handleForgotPassword} = useAuth();
+  const { signIn, signUp, signUpWithGoogle, resetPassword, forgotPassword: handleForgotPassword, setIsModalOpen} = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -661,6 +661,8 @@ const AuthModal = ({
       signupEmailForm.clearErrors();
       signupDetailsForm.clearErrors();
       resetPasswordForm.clearErrors();
+    }else{
+      setIsModalOpen(true);
     }
   }, [open]);
 
@@ -873,7 +875,7 @@ const AuthModal = ({
     const res = await api.post('/auth/send-otp', {
       email: signupEmail
     });
-    console.log(res);
+    // console.log(res);
   };
 
   const handleReset = async (values: z.infer<typeof resetPasswordWithOtpSchema>) => {
@@ -922,6 +924,12 @@ const AuthModal = ({
 
     return () => clearInterval(interval);
   }, [resendTimer, resendDisabled]);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    console.log("new open => ", newOpen)
+    onOpenChange(newOpen);
+    setIsModalOpen?.(newOpen); // Call if provided
+  };
 
   useEffect(() => {
     const handleFocus = (e: Event) => {
@@ -1089,9 +1097,9 @@ const AuthModal = ({
   // Use Drawer for mobile and Dialog for desktop
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open} onOpenChange={handleOpenChange}>
         <DrawerContent 
-          className=" justify-center bg-white"
+          className="justify-center bg-white"
           style={{ 
             height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
             maxHeight: Math.min(viewportHeight * 0.85, 600),
@@ -1125,7 +1133,7 @@ const AuthModal = ({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange} >
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto p-3 bg-white">
         <DialogClose className="absolute right-4 top-4 z-10">
           <Button

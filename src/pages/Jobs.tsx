@@ -803,7 +803,7 @@ export default function Jobs({ openModal }) {
     }
 
     isFetchingRef.current = true;
-    console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+    // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
     try {
       setLoading(true);

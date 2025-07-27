@@ -62,7 +62,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   const [isVisible, setIsVisible] = useState(true);
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const [isMobileHeaderRendered, setIsMobileHeaderRendered] = useState(false);
-  const { user } = useAuth();
+  const { user, isModalOpen } = useAuth();
 
 
 
@@ -236,7 +236,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
                 className="fixed z-20 bg-white  border-b border-gray-100 px-4 py-3 flex items-center"
                 style={{
                   width: width,
-                  top: "67px" /* Header height */,
+                  top: "60px" /* Header height */,
                 }}
               >
                 {!hideBackButton && (
@@ -256,7 +256,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
           )}
 
           {/* Page Content */}
-          <div className="flex-1 h-full bg-white">{children}</div>
+          <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
         </main>
         }
 
@@ -274,7 +274,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
             {isMobile && (
               <div
                 ref={mobileHeaderRef}
-                className=" z-10 transition-transform bg-white"
+                className=" z-10 transition-transform bg-white pt-3"
               >
                 <div className="px-4 pt-2 pb-2">
                   <form onSubmit={handleSearchSubmit}>
@@ -315,11 +315,83 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
             )}
 
             {/* Filter tabs should be in a fixed position with z-index above main content */}
-            <div className="sticky top-[60px] z-10 border-b border-gray-100">
+            <div className={`z-10 border-b border-gray-100 ${!isMobile && 'mt-[60px]' }`}>
               {children}
             </div>
           </main>
         </div>}
+
+
+            
+        {isMobile && !isModalOpen && !isValidPage &&(
+              <div
+                ref={mobileHeaderRef}
+                // className={`z-[100] pt-3 transition-transform duration-300 ease-in-out  bg-white ${lastScrollY > 100 && isVisible ? 'translate-y-0 top-[60px]' : '-translate-y-full'
+                //   }`}
+                // style={{
+                //   position: 'fixed',
+                //   // top: '60px', // Below the main header
+                //   left: 0,
+                //   right: 0,
+                //   // Remove the display property and use opacity to prevent layout shift
+                //   opacity: lastScrollY > 100 ? 1 : 0,
+                //   pointerEvents: lastScrollY > 100 ? 'auto' : 'none'
+                // }}
+
+                // className={`z-[100] pt-3 transition-all duration-500 ease-in-out bg-white ${
+                //   lastScrollY > 100 && isVisible 
+                //     ? 'translate-y-0 opacity-100 pointer-events-auto' 
+                //     : '-translate-y-full opacity-0 pointer-events-none'
+                // }`}
+                // style={{
+                //   position: 'fixed',
+                //   top: '60px',
+                //   left: 0,
+                //   right: 0,
+                // }}
+
+
+                className={`fixed z-[101] pt-3 transition-all duration-300 ease-in-out bg-white ${
+                  lastScrollY > 100 && isVisible 
+                    ? 'translate-y-0' 
+                    : '-translate-y-full'
+                }`}
+                style={{
+                  top: '60px',
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                <div className="px-4 pt-2 pb-2">
+                  <form onSubmit={handleSearchSubmit}>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                      <Input
+                        type="text"
+                        placeholder="Search"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                      />
+                      {searchQuery && (
+                        <X
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                          onClick={handleClearInput}
+                        />
+                      )}
+                    </div>
+                  </form>
+
+                  <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                    <LocationWithRadius popupStyle="mr-2 relative z-[101]" />
+                  </div>
+                </div>
+
+                <div className="px-4 pb-2 ">
+                  <CategoryIcons />
+                </div>
+              </div>
+            )}
 
         {/* Right sidebar with ad banners - only visible on desktop */}
         {isDesktop && (

@@ -786,6 +786,9 @@ export default function Home({ openModal }) {
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [filterOptions, setFilterOptions] = useState(["Nearby", "USA"])
+  const isFirstLoadDone = useRef(false);
+  const isNearbyEmpty = useRef(false);
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
 
@@ -803,9 +806,9 @@ export default function Home({ openModal }) {
     }
   };
 
-  useEffect(() => {
-    console.log('Distance from top:', distanceFromTop, 'px');
-  }, [distanceFromTop]);
+  // useEffect(() => {
+  //   console.log('Distance from top:', distanceFromTop, 'px');
+  // }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -834,7 +837,7 @@ export default function Home({ openModal }) {
     }
 
     isFetchingRef.current = true;
-    console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+    // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
     try {
       setLoading(true);
@@ -885,8 +888,16 @@ export default function Home({ openModal }) {
         }
         setHasMore(false);
       }
+
+      if (!isFirstLoadDone.current) {
+        isFirstLoadDone.current = true;
+        if (filter === "Nearby" && !isNearbyEmpty.current && listings.length === 0) {
+          isNearbyEmpty.current = true;
+        }
+      }
+      
+      
     } catch (error) {
-      console.error("Error fetching accommodations:", error);
       setHasMore(false); // Stop trying to fetch more on error
     } finally {
       setLoading(false);
@@ -938,6 +949,21 @@ export default function Home({ openModal }) {
     }, 500);
   };
 
+  useEffect(() => {
+    // Only run this on initial load when we have the listings response
+    if (isNearbyEmpty.current && listings.length === 0) {
+      // Wait a brief moment before switching to give users a chance to see the empty state
+      const timer = setTimeout(() => {
+        handleFilterClick("USA");
+        setIsInitialLoad(true)
+        setFilterOptions(["USA", "Nearby"]);
+      }, 500); // 1.5 second delay
+      
+      isNearbyEmpty.current = false;
+      return () => clearTimeout(timer);
+    }
+  }, [isNearbyEmpty.current, listings.length]);
+
   // Improved intersection observer with better cleanup
   useEffect(() => {
     // Clean up existing observer
@@ -957,7 +983,7 @@ export default function Home({ openModal }) {
       // });
 
       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
-        console.log('Triggering load more');
+        // console.log('Triggering load more');
         fetchNearByListings(activeFilter, searchQuery, false);
       }
     };
@@ -1036,7 +1062,7 @@ export default function Home({ openModal }) {
 
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
-      <FilterTabs tabs={["Nearby", "USA"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+      <FilterTabs tabs={filterOptions} activeTab={activeFilter} onTabClick={handleFilterClick} />
 
       {!isTabChanging ? (
         <div className="px-4 my-4 space-y-4">

@@ -170,10 +170,13 @@ type AuthContextType = {
   isOpenPendingAfterLogin: boolean,
   isOpenErrorAfterLogin: boolean,
   isUploading: boolean,
+  isModalOpen: boolean,
+
   setIsOpenErrorAfterLogin: (boolean) => void,
   setIsOpenSuccessAfterLogin: (boolean) => void,
   setIsOpenPendingAfterLogin: (boolean) => void,
   fetchFavoritesListings: () => Promise<boolean>;
+  setIsModalOpen: (boolean) => void,
 };
 
 interface FileRecord {
@@ -196,6 +199,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpenPendingAfterLogin, setIsOpenPendingAfterLogin] = useState(false);
   const [isOpenErrorAfterLogin, setIsOpenErrorAfterLogin] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -612,6 +617,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     forgotPassword,
     resetPassword,
     isUploading,
+    isModalOpen,
     isOpenSuccessAfterLogin,
     isOpenPendingAfterLogin,
     isOpenErrorAfterLogin,
@@ -619,6 +625,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsOpenSuccessAfterLogin,
     setIsOpenPendingAfterLogin,
     fetchFavoritesListings,
+    setIsModalOpen
   };
 
   return <AuthContext.Provider value={value}>

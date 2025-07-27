@@ -1659,18 +1659,18 @@ export default function Marketplace({ openModal }) {
   const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
     // Prevent multiple simultaneous requests
     if (isFetchingRef.current) {
-      console.log('Already fetching, skipping request');
+      // console.log('Already fetching, skipping request');
       return;
     }
 
     // Don't fetch if no more items and it's not a new filter
     if (!hasMore && !isNewFilter) {
-      console.log('No more items to fetch');
+      // console.log('No more items to fetch');
       return;
     }
 
     isFetchingRef.current = true;
-    console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+    // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
     try {
       setLoading(true);

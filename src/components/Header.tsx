@@ -68,12 +68,13 @@ const Header = ({  searchInput,
   onSearchSubmit }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isModalOpen } = useAuth();
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
+
   const [ searchValue, setSearchValue ] = useState("")
 
   const { unreadMessages } = useMessages();
@@ -273,8 +274,8 @@ const Header = ({  searchInput,
 
   return (
     <>
-      <header className="bg-white px-4 md:px-6 border-b sticky top-0 z-20 shadow-sm py-[13px]">
-        <div className="max-w-full mx-auto flex justify-between">
+      <header className={`bg-white px-4 md:px-6 border-b fixed  right-0 left-0 pt-6 -top-4 flex flex-1 shadow-sm py-[13px] ${!isModalOpen? 'z-[102]': 'z-[20]'}`}>
+        <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
           <Link to={'/'} className="flex items-center">
             <img
@@ -384,7 +385,7 @@ const Header = ({  searchInput,
                       />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 z-[102] relative" >
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <UserRound className="h-4 w-4 mr-2" />
                       <span>Profile</span>

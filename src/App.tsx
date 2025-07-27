@@ -67,6 +67,7 @@ function AppRoutes() {
   const editId = searchParams.get("id");
   const isEditing = Boolean(editId);
 
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Routes>

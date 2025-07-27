@@ -192,7 +192,7 @@ html {
   .filter-tabs-container {
     position: -webkit-sticky; /* Safari prefix - MUST COME FIRST */
     position: sticky;
-    top: 67px;
+    top: 62px;
     z-index: 9;
     background-color: #fff;
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
