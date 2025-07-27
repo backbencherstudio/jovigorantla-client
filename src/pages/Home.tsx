@@ -790,6 +790,12 @@ export default function Home({ openModal }) {
   const isFirstLoadDone = useRef(false);
   const isNearbyEmpty = useRef(false);
 
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+  const [autoSwitched, setAutoSwitched] = useState(false);
+  const [locationChanged, setLocationChanged] = useState(false);
+
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
 
   const tabParam = searchParams.get('tab'); // returns "true" or null
@@ -887,6 +893,10 @@ export default function Home({ openModal }) {
           numberOfShownListings.current = 0;
         }
         setHasMore(false);
+
+        if (!initialLoadDone && filter === "Nearby" && !autoSwitched) {
+          setAutoSwitched(true);
+        }
       }
 
       if (!isFirstLoadDone.current) {
@@ -895,14 +905,22 @@ export default function Home({ openModal }) {
           isNearbyEmpty.current = true;
         }
       }
-      
-      
+
+
     } catch (error) {
       setHasMore(false); // Stop trying to fetch more on error
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
       setIsInitialLoad(false);
+      if (!initialLoadComplete) {
+        setInitialLoadComplete(true);
+      }
+
+      // Reset location changed flag after handling
+      if (locationChanged) {
+        setLocationChanged(false);
+      }
     }
   }, [lat, lng, radius, hasMore]);
 
@@ -931,6 +949,7 @@ export default function Home({ openModal }) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
+    setInitialLoadDone(true);
     // Get the current query parameters from the URL
     const currentParams = new URLSearchParams(location.search);
 
@@ -949,20 +968,28 @@ export default function Home({ openModal }) {
     }, 500);
   };
 
+
+
+  // Add this effect for handling the initial auto-switch
   useEffect(() => {
-    // Only run this on initial load when we have the listings response
-    if (isNearbyEmpty.current && listings.length === 0) {
-      // Wait a brief moment before switching to give users a chance to see the empty state
-      const timer = setTimeout(() => {
-        handleFilterClick("USA");
-        setIsInitialLoad(true)
-        setFilterOptions(["USA", "Nearby"]);
-      }, 500); // 1.5 second delay
-      
-      isNearbyEmpty.current = false;
-      return () => clearTimeout(timer);
+    if (autoSwitched && !initialLoadDone && activeFilter === "Nearby" && listings.length === 0 && !isLoading) {
+      setInitialLoadDone(true);
+      setFilterOptions(["USA", "Nearby"]);
+      setActiveFilter("USA");
+
+      // Update URL without triggering navigation
+      const currentParams = new URLSearchParams(location.search);
+      currentParams.set('tab', 'true');
+      navigate(`${location.pathname}?${currentParams.toString()}`, { replace: true });
+
+      // Trigger fetch for USA listings
+      numberOfShownListings.current = 0;
+      setListings([]);
+      setHasMore(true);
+      fetchNearByListings("USA", searchQuery, true);
     }
-  }, [isNearbyEmpty.current, listings.length]);
+  }, [autoSwitched, initialLoadDone, activeFilter, listings.length, isLoading]);
+
 
   // Improved intersection observer with better cleanup
   useEffect(() => {
@@ -1081,7 +1108,7 @@ export default function Home({ openModal }) {
                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
                   onClick={(e) => handleAdClick(e, listing)}
                   onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                  // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
                 >
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
