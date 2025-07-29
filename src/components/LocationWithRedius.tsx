@@ -954,7 +954,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className={`flex items-center  w-full hover:bg-transparent bg-transparent outline-0 border-0 justify-end ${className} `}
+                    className={`flex items-center w-full hover:bg-transparent bg-transparent outline-0 border-0 justify-end ${className} `}
                 >
                     <div className="flex items-center justify-center">
                         <MapPin className="h-4 w-4 mr-2 text-primary" />

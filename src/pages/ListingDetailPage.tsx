@@ -293,7 +293,8 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <div className="flex flex-col bg-white">
       {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
-      <div className="flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 xl:pl-0">
+      {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
+      <div className="flex-1 py-[10px] overflow-y-auto pb-24 mx-auto w-full p-0 pl-2 lg:pl-4">
         {/* Category, status and action buttons */}
         <div className="px-4">
           <div className="flex items-center justify-between mb-2">
@@ -483,14 +484,14 @@ If you’re interested or have any questions, please reach out for pictures, ren
         </div>
         {/* Contact button - only show on desktop */}
         {!isMobile && user?.id !== listing?.user_id && (
-          <div className="w-full relative ">
+          <div className="w-full relative">
             <div
-              style={{ width: width }}
-              className="my-8 p-4 bg-white  mx-auto fixed  -bottom-10 "
+              // style={{ width: width }}
+              className="my-8 p-4 bg-white  mx-auto fixed left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
             >
               <Button
                 onClick={handleContact}
-                className=" bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+                className="bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
                 Message

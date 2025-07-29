@@ -22,7 +22,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
             } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
             onClick={() => onTabClick?.(tab)}
           >
-            {tab}
+            {tab} 
           </div>
         ))}
       </div>

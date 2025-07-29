@@ -733,6 +733,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 
+
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
 
@@ -758,7 +759,10 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   }, [ref]);
 
   return distanceFromTop;
+
+
 };
+
 
 export default function Home({ openModal }) {
   const isMobile = useIsMobile();
@@ -846,6 +850,7 @@ export default function Home({ openModal }) {
     // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
     try {
+
       setLoading(true);
       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
@@ -930,6 +935,7 @@ export default function Home({ openModal }) {
 
   // Reset and fetch on filter/search/location change
   useEffect(() => {
+
     // console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
 
     // Reset state
@@ -969,9 +975,10 @@ export default function Home({ openModal }) {
   };
 
 
-
   // Add this effect for handling the initial auto-switch
   useEffect(() => {
+
+    
     if (autoSwitched && !initialLoadDone && activeFilter === "Nearby" && listings.length === 0 && !isLoading) {
       setInitialLoadDone(true);
       setFilterOptions(["USA", "Nearby"]);
@@ -989,6 +996,7 @@ export default function Home({ openModal }) {
       fetchNearByListings("USA", searchQuery, true);
     }
   }, [autoSwitched, initialLoadDone, activeFilter, listings.length, isLoading]);
+
 
 
   // Improved intersection observer with better cleanup
@@ -1087,8 +1095,12 @@ export default function Home({ openModal }) {
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
 
+
+  
+
+
   return (
-    <main className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
+    <main className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto" style={{padding: "0 8px"}} ref={filterTabsRef}>
       <FilterTabs tabs={filterOptions} activeTab={activeFilter} onTabClick={handleFilterClick} />
 
       {!isTabChanging ? (
@@ -1112,7 +1124,7 @@ export default function Home({ openModal }) {
                 >
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                    style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                    style={{ aspectRatio: "574/300", maxWidth: "100%" }}
                   >
                     <img
                       src={listing.image_url}

@@ -161,17 +161,21 @@ const ListingItem = ({ listing, onToggleSave, isUsa, onHide, openModal }: Listin
   );
 
   const handleLinkClick = (e: MouseEvent) => {
+   
     // If the click originated from within the actions container, prevent navigation
     if ((e.target as HTMLElement).closest('.listing-actions')) {
       e.preventDefault();
     }
   };
 
+
+  
+
   return (
     <Link
       to={`/listing/${listing.slug}`}
       key={listing.id}
-      className="bg-white flex max-w-[576px] rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}
     >
       <div className="p-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
