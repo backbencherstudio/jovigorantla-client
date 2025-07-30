@@ -323,7 +323,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
 
 
             
-        {isMobile && !isModalOpen && !isValidPage &&(
+        {isMobile && !isModalOpen && isValidPage &&(
               <div
                 ref={mobileHeaderRef}
                 // className={`z-[100] pt-3 transition-transform duration-300 ease-in-out  bg-white ${lastScrollY > 100 && isVisible ? 'translate-y-0 top-[60px]' : '-translate-y-full'
@@ -391,7 +391,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
                   <CategoryIcons />
                 </div>
               </div>
-            )}
+        )}
 
         {/* Right sidebar with ad banners - only visible on desktop */}
         {isDesktop && (

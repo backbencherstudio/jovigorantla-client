@@ -60,7 +60,7 @@ const DALLAS_FALLBACK: Location = {
     lat: 32.7935,
     lng: -96.7667,
     search: "Dallas, TX, USA",
-    zip: null
+    zips: null
 };
 
 // const isValidCoordinate = (lat: number, lng: number) => {
@@ -164,7 +164,7 @@ const findNearestCity = (lat: number, lng: number): Location => {
 
 
 interface Location {
-    zip: number | [number];
+    zips: [string];
     lat: number;
     lng: number;
     city: string;
@@ -617,12 +617,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             const nearestCity = findNearestCity(lat, lng);
             
             // 5. Return enriched location data
-            return {
-                ...nearestCity,
-                search: `${data.city || nearestCity.city}, ${data.region || nearestCity.state_id}, USA`,
-                lat: nearestCity.lat, 
-                lng: nearestCity.lng
-            };
+            // return {
+            //     ...nearestCity,
+            //     search: `${data.city || nearestCity.city}, ${data.region || nearestCity.state_id}, USA`,
+            //     lat: nearestCity.lat, 
+            //     lng: nearestCity.lng
+            // };
+            return nearestCity;
             
         } catch (error) {
             console.error("Error in getLocationFromIP:", error);
@@ -726,6 +727,48 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({ onChange, class
             resolve(filtered as Location[]); // Resolve the filtered results
         });
     };
+
+
+    // const loadOptions = (inputValue: string) => {
+    //     return new Promise<Location[]>((resolve) => {
+    //         const searchValue = inputValue.toLowerCase().trim();
+            
+    //         // If empty search, return empty array
+    //         if (!searchValue) {
+    //             resolve([]);
+    //             return;
+    //         }
+    
+    //         const filtered = (locationsData as Location[])
+    //             .filter((location: Location) => {
+    //                 // Check main search field
+    //                 if (location.search.toLowerCase().includes(searchValue)) {
+    //                     return true;
+    //                 }
+    
+    //                 // Check zip codes if they exist
+    //                 if (location.zips && location.zips.length > 0) {
+    //                     // Join all zips into a single string and check
+    //                     const allZips = location.zips.join(' ');
+    //                     if (allZips.includes(searchValue)) {
+    //                         return true;
+    //                     }
+    
+    //                     // Alternatively, check each zip individually
+    //                     /*
+    //                     return location.zips.some(zipBlock => {
+    //                         return zipBlock.split(' ').some(zip => zip.includes(searchValue));
+    //                     });
+    //                     */
+    //                 }
+    
+    //                 return false;
+    //             })
+    //             .slice(0, 5); // Limit results to 5 suggestions
+    
+    //         resolve(filtered as Location[]);
+    //     });
+    // };
 
     // const getNearbyCities = (lat: number, lng: number, radiusInMiles: number) => {
     //     const radiusInKm = milesToKilometers(radiusInMiles); // Convert radius to kilometers

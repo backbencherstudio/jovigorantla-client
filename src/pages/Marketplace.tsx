@@ -1620,6 +1620,8 @@ export default function Marketplace({ openModal }) {
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
 
+  const [isRestoringScroll, setIsRestoringScroll] = useState(false);
+
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -1831,7 +1833,7 @@ export default function Marketplace({ openModal }) {
   useEffect(() => {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
-    }
+    } 
   }, []);
 
   // // Debug logging
@@ -1845,6 +1847,40 @@ export default function Marketplace({ openModal }) {
   //     isInitialLoad
   //   });
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+
+  const handleItemsClicks = () => {
+    // Store the current scroll position and path
+    sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+    sessionStorage.setItem('lastPath', location.pathname);  // Store the current path
+    console.log("window scrollY => ", window.scrollY)
+  };
+
+  // useEffect(() => {
+  //   const storedPath = sessionStorage.getItem('lastPath');
+  //   const storedScrollPosition = sessionStorage.getItem('scrollPosition');
+  //   console.log("storedPath => ", storedPath)
+  //   console.log("storedScrollPosition => ", storedScrollPosition)
+  //   // Check if we are returning to the marketplace page
+  //   //  if (storedPath === location.pathname && storedScrollPosition) {
+  //   //   window.scrollTo(0, parseInt(storedScrollPosition)); // Scroll to the stored position
+  //   //  }
+
+  //   if (storedPath === location.pathname && storedScrollPosition) {
+  //     setIsRestoringScroll(true);
+      
+  //     // Use setTimeout to ensure the state update is processed before scrolling
+  //     setTimeout(() => {
+  //       window.scrollTo(0, parseInt(storedScrollPosition));
+  //       setIsRestoringScroll(false);
+        
+  //       // Clear the stored values after restoring
+  //       // sessionStorage.removeItem('scrollPosition');
+  //       // sessionStorage.removeItem('lastPath');
+  //     }, 0);
+  //   }
+  // });  // Dependency to ensure the effect runs when the pathname changes
+  
+  
 
   const yourTrackingFunction = async (listing: any) => {
     try {
@@ -1871,6 +1907,7 @@ export default function Marketplace({ openModal }) {
     window.open(listing.target_url, '_blank', 'noopener,noreferrer');
   };
 
+
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
       <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
@@ -1880,13 +1917,15 @@ export default function Marketplace({ openModal }) {
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (
-                <ListingItem
+                <div onClick={handleItemsClicks}>
+                  <ListingItem
                   listing={listing}
                   onToggleSave={() => { }}
                   isUsa={false}
                   onHide={() => handleHide(listing.id)}
                   openModal={openModal}
                 />
+                </div>
               )}
               {listing?.type === "ad" && (
                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"

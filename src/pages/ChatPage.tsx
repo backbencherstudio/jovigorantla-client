@@ -934,6 +934,7 @@ const ChatPage = () => {
     handleSetUnreadMessages(conversationId, 0)
     setActiveConversation(null)
     // navigate('/messages', { replace: true });
+    
     navigate(-1); // Go back to the previous page
     window.history.back();
   };
