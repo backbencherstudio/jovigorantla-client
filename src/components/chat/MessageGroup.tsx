@@ -324,6 +324,7 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
 
   messages.forEach((message) => {
     const currentTimestamp = new Date(message.timestamp).getTime();
+    // console.log(message.timestamp)
 
     if (
       !prevMessage ||

@@ -1045,6 +1045,7 @@ export default function Home({ openModal }) {
   useEffect(() => {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
+      // window.document.body.scrollTo(0, 0);
     }
   }, []);
 

@@ -25,7 +25,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   messages.forEach(message => {
     const date = new Date(message.timestamp);
     // const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = date.toLocaleDateString().split('T')[0];
     
     if (!groupedMessages[dateKey]) {
       groupedMessages[dateKey] = [];
@@ -49,8 +49,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
           const date = new Date(dateKey);
           const isToday = new Date().toDateString() === date.toDateString();
           const isYesterday = new Date(Date.now() - 86400000).toDateString() === date.toDateString();
+
+          console.log(dateKey)
+          console.log(date)
           
           let dateLabel = date.toLocaleDateString();
+          console.log("data label", dateLabel)
           if (isToday) dateLabel = "Today";
           else if (isYesterday) dateLabel = "Yesterday";
           

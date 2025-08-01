@@ -804,9 +804,10 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import ChatConversation from "@/components/ChatConversation";
-import { Message } from "@/components/chat/types";
 import { useMessages } from "@/context/MessageContext";
 import { api } from "@/lib/axois";
+import { Message } from "@/types/chat";
+import utcToLocalDate from "@/utils/utcToLocalDate";
 
 // Conversation type definition
 interface Conversation {
@@ -897,12 +898,16 @@ const ChatPage = () => {
           receiver_id: activeConversation.other.id,
         });
 
+        console.log(data)
+
         // Create a new message object
         const newMessage: Message = {
           id: Date.now().toString(),
           senderId: user?.id || "current-user",
           content: content,
-          timestamp: new Date(),
+          timestamp: utcToLocalDate(data?.data?.created_at) || new Date(),
+          created_at: utcToLocalDate(data?.data?.created_at) || new Date(),
+          receiver_id: data?.data?.receiver_id || "",
           read: true, // Marking own messages as read
         };
 

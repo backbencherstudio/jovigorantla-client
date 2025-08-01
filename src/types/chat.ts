@@ -2,10 +2,11 @@ export type Message = {
     id: string;
     senderId: string;
     content: string;
-    timestamp: Date;
+    timestamp: Date | string;
     read?: boolean;
     receiver_id: string;
     isRead?: boolean;
+    created_at: Date | string;
   };
   
 //   export type Conversation = {

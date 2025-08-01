@@ -889,6 +889,7 @@ import { useSocket } from './SocketContext';
 import { useAuth } from './AuthContext';
 import { api } from '@/lib/axois';
 import { Message } from '@/types/chat';
+import utcToLocalDate from '@/utils/utcToLocalDate';
 
 type UnReadMessages = Record<string, number>;
 
@@ -927,6 +928,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   const addMessage = useCallback(async (conversationId: string, message: Message) => {
+    console.log("message inside context: ", message)
     setConversations(prev => {
       const target = prev.find(c => c.id === conversationId);
       if (!target) return prev;
@@ -976,7 +978,8 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       senderId: from,
       content: data.body_text,
       receiver_id: data.receiver_id,
-      timestamp: new Date(data.created_at),
+      timestamp: utcToLocalDate(data.created_at) || new Date(),
+      created_at: data.created_at,
       isRead: data.conversation_id === activeConversation?.id,
     };
     addMessage(data.conversation_id, newMessage);
