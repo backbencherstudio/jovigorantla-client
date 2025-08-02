@@ -112,13 +112,13 @@ export default function Home({ openModal }) {
     async (filter: string, query: string, isNewFilter = false) => {
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
-        console.log("Already fetching, skipping request");
+        //console.log("Already fetching, skipping request");
         return;
       }
 
       // Don't fetch if no more items and it's not a new filter
       if (!hasMore && !isNewFilter) {
-        console.log("No more items to fetch");
+        //console.log("No more items to fetch");
         return;
       }
 
@@ -147,6 +147,7 @@ export default function Home({ openModal }) {
         });
 
         const data = listingResponse.data;
+
         // console.log('Fetch response:', {
         //   listingsCount: data.listings?.length || 0,
         //   hasMore: data.hasMore,
@@ -221,7 +222,6 @@ export default function Home({ openModal }) {
   // ================ New Code Start ============
 
   // Add session storage management
-
   const isReturningFromListing = useRef(false);
 
   // Check if we're returning from a listing page
@@ -439,7 +439,7 @@ export default function Home({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-  
+
       // console.log("Intersection observed:", {
       //   isIntersecting: first.isIntersecting,
       //   hasMore,
