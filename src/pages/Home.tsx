@@ -218,7 +218,10 @@ export default function Home({ openModal }) {
     setListings(listings.filter((listing) => listing.id !== id));
   };
 
+  // ================ New Code Start ============
+
   // Add session storage management
+
   const isReturningFromListing = useRef(false);
 
   // Check if we're returning from a listing page
@@ -227,7 +230,8 @@ export default function Home({ openModal }) {
     const cachedData = sessionStorage.getItem("home_cached_data");
     const savedScrollPosition = sessionStorage.getItem("home_scroll_position");
 
-    if (cachedData) {
+    // Only restore from session storage if we have scroll position (indicating we came from a listing)
+    if (cachedData && savedScrollPosition) {
       try {
         const parsed = JSON.parse(cachedData);
         if (parsed.listings && parsed.listings.length > 0) {
@@ -243,10 +247,8 @@ export default function Home({ openModal }) {
           setInitialLoadDone(parsed.initialLoadDone || false);
           setAutoSwitched(parsed.autoSwitched || false);
 
-          // Mark as returning
+          // Mark as returning and set proper loading states
           isReturningFromListing.current = true;
-
-          // Prevent loading states
           setIsInitialLoad(false);
           setInitialLoadComplete(true);
 
@@ -257,6 +259,9 @@ export default function Home({ openModal }) {
         console.error("Error parsing cached data:", error);
         sessionStorage.removeItem("home_cached_data");
       }
+    } else if (cachedData) {
+      // Clear cache if no scroll position (not from listing page)
+      sessionStorage.removeItem("home_cached_data");
     }
 
     // Restore scroll position if available
@@ -282,7 +287,7 @@ export default function Home({ openModal }) {
       setTimeout(() => {
         window.scrollTo(0, location.state.scrollY);
         isReturningFromListing.current = false;
-      }, 100); // Delay for page load
+      }, 100); // Delay for DOM load
     }
   }, [location.state, listings.length]);
 
@@ -340,20 +345,26 @@ export default function Home({ openModal }) {
     autoSwitched,
   ]);
 
+  // =============== New Code End ================
+
   // Reset and fetch on filter/search/location change
   useEffect(() => {
     // Don't reset if we're returning from a listing page
     if (isReturningFromListing.current) {
+      // Reset the flag after a short delay to allow proper initialization
+      setTimeout(() => {
+        isReturningFromListing.current = false;
+      }, 100);
       return;
     }
 
-    /* console.log("Effect triggered:", {
-      activeFilter,
-      searchQuery,
-      lat,
-      lng,
-      radius,
-    }); */
+    // console.log("Effect triggered:", {
+    //   activeFilter,
+    //   searchQuery,
+    //   lat,
+    //   lng,
+    //   radius,
+    // });
 
     // Reset state
     numberOfShownListings.current = 0;
@@ -428,13 +439,14 @@ export default function Home({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      // console.log('Intersection observed:', {
+  
+      // console.log("Intersection observed:", {
       //   isIntersecting: first.isIntersecting,
       //   hasMore,
       //   isLoading,
       //   isFetching: isFetchingRef.current,
       //   isTabChanging,
-      //   isInitialLoad
+      //   isInitialLoad,
       // });
 
       if (
@@ -445,14 +457,14 @@ export default function Home({ openModal }) {
         !isTabChanging &&
         !isInitialLoad
       ) {
-        // console.log('Triggering load more');
+        //console.log("Triggering load more");
         fetchNearByListings(activeFilter, searchQuery, false);
       }
     };
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: "50px", // Trigger 50px before the element is visible
+      threshold: 0.1,
+      rootMargin: "50px",
     });
 
     const currentElement = loadMoreRef.current;
