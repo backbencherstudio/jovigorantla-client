@@ -12,7 +12,7 @@ export const api = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    'timezone': userTimezone // 'America/New_York', // Add the timezone header here
+    'timezone': userTimezone // 'America/New_York' , // Add the timezone header here
   }
 });
 

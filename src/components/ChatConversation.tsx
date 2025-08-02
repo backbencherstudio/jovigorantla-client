@@ -210,13 +210,55 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
     }
   };
 
+  function goBackAndRemoveLastEntry() {
+    const handler = () => {
+      // After going back, replace the current entry with itself
+      history.replaceState(history.state, '', location.href);
+      window.removeEventListener('popstate', handler);
+    };
+  
+    // Listen for the popstate triggered by history.back()
+    window.addEventListener('popstate', handler);
+    history.back();
+  }
+  
+  // Usage:
+  // goBackAndRemoveLastEntry();
+  
+  // function removeLastHistoryEntry() {
+  //   // Get current state and URL
+  //   const currentState = history.state;
+  //   const currentUrl = location.href;
+    
+
+  //   console.log("history => ", history, currentState)
+  //   // Go back temporarily
+  //   // history.back();
+    
+  //   // // Immediately replace the previous entry with our current state
+  //   // setTimeout(() => {
+  //   //   history.replaceState(currentState, '', currentUrl);
+  //   // }, 0);
+  // }
+
   const handleDeleteConversation = async () => {
     try {
       const res = await api.delete(`/chat/conversation/${conversationId}/soft-delete`);
       if (res.data.success) {
         toast.success("Conversation deleted");
-        if (onBack) onBack();
+        window.history.back();
+        window.history.back();
+        // window.location.replace('/messages');
+
+        // window.history.replaceState(null, '', '/messages');
+
+        
+        // if (onBack) onBack();
+        // goBackAndRemoveLastEntry();
       }
+      // removeLastHistoryEntry();
+      
+
     } catch (error) {
       toast.error("Failed to delete conversation");
       console.error(error);

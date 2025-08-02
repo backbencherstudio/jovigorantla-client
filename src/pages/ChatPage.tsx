@@ -808,6 +808,7 @@ import { useMessages } from "@/context/MessageContext";
 import { api } from "@/lib/axois";
 import { Message } from "@/types/chat";
 import utcToLocalDate from "@/utils/utcToLocalDate";
+import usePreviousRoute from "@/hooks/usePreviousRoute";
 
 // Conversation type definition
 interface Conversation {
@@ -837,6 +838,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { conversations, setActiveConversation, activeConversation, addMessage, handleSetUnreadMessages } = useMessages();
+  const prevRoute = usePreviousRoute();
   // const [conversation, setConversation] = useState<Conversation | null>(null);
 
   // useEffect(() => {
@@ -939,9 +941,9 @@ const ChatPage = () => {
     handleSetUnreadMessages(conversationId, 0)
     setActiveConversation(null)
     // navigate('/messages', { replace: true });
-    
+    // console.log(prevRoute)
     navigate(-1); // Go back to the previous page
-    window.history.back();
+    // window.history.back();
   };
 
   if (!activeConversation) {

@@ -50,11 +50,11 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
           const isToday = new Date().toDateString() === date.toDateString();
           const isYesterday = new Date(Date.now() - 86400000).toDateString() === date.toDateString();
 
-          console.log(dateKey)
-          console.log(date)
+          // console.log(dateKey)
+          // console.log(date)
           
           let dateLabel = date.toLocaleDateString();
-          console.log("data label", dateLabel)
+          // console.log("data label", dateLabel)
           if (isToday) dateLabel = "Today";
           else if (isYesterday) dateLabel = "Yesterday";
           
