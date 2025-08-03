@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { Facebook, Youtube, Instagram } from 'lucide-react';
+import { Facebook, Youtube, Instagram } from "lucide-react";
 import { useListing } from "@/context/ListingContext";
-
+import useRedirectNav from "@/hooks/useRedirectNav";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg
@@ -19,25 +19,34 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-
-
 const socialIcons = [
-  { icon: <XIcon className="w-4 h-4 text-white" />, link: 'https://x.com/desieasyteam' },
-  { icon: <Facebook className="w-4 h-4 text-white" />, link: 'https://www.facebook.com/desieasy' },
-  { icon: <Youtube className="w-4 h-4 text-white" />, link: 'https://www.youtube.com/@desieasy' },
-  { icon: <Instagram className="w-4 h-4 text-white" />, link: 'https://www.instagram.com/desieasyofficial/' },
+  {
+    icon: <XIcon className="w-4 h-4 text-white" />,
+    link: "https://x.com/desieasyteam",
+  },
+  {
+    icon: <Facebook className="w-4 h-4 text-white" />,
+    link: "https://www.facebook.com/desieasy",
+  },
+  {
+    icon: <Youtube className="w-4 h-4 text-white" />,
+    link: "https://www.youtube.com/@desieasy",
+  },
+  {
+    icon: <Instagram className="w-4 h-4 text-white" />,
+    link: "https://www.instagram.com/desieasyofficial/",
+  },
 ];
-
-
 
 interface SidebarProps {
   collapsed?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
+  const { redirectNavLink } = useRedirectNav();
   const location = useLocation();
   const { user } = useAuth();
-  const { setCategory, setIsUsa, setSubCategory} = useListing();
+  const { setCategory, setIsUsa, setSubCategory } = useListing();
   const navigate = useNavigate();
   const { search } = location; // Get the current query parameters
   // This is a placeholder for real authentication logic
@@ -55,12 +64,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   ];
 
   const handleSetCategory = (menu: string) => {
-
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
       setIsUsa(false);
       setSubCategory("");
-
     } else if (menu === "Rides") {
       setCategory("RIDES");
       setIsUsa(false);
@@ -69,8 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       setCategory("ACCOMMODATIONS");
       setIsUsa(false);
       setSubCategory("");
-    }
-    else if (menu === "Jobs") {
+    } else if (menu === "Jobs") {
       setCategory("JOBS");
       setIsUsa(false);
       setSubCategory("");
@@ -79,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       setIsUsa(false);
       setSubCategory("");
     }
-  }
+  };
 
   // Admin/Employee menu items - only visible to employees or admins
   const adminMenuItems = [
@@ -115,7 +121,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
     }
   }, [location.pathname, setCategory, setIsUsa, setSubCategory]);
 
-
   return (
     // Previous w-[70px]
     <aside className={`h-full ${collapsed ? "w-[85px]" : "w-[240px]"}`}>
@@ -128,16 +133,18 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             return (
               <Link
                 key={item.path}
-                to={search? `${item.path}${search}` : item.path}
+                to={search ? `${item.path}${search}` : item.path}
                 onClick={() => handleSetCategory(item.label)}
-                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${isActive
-                  ? "bg-gray-100 text-black"
-                  : "text-gray-700 hover:bg-gray-100"
-                  } ${collapsed ? "justify-center" : ""}`}
+                className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
+                  isActive
+                    ? "bg-gray-100 text-black"
+                    : "text-gray-700 hover:bg-gray-100"
+                } ${collapsed ? "justify-center" : ""}`}
               >
                 <Icon
-                  className={`h-5 w-5 ${isActive ? "text-brand" : "text-gray-500"
-                    }`}
+                  className={`h-5 w-5 ${
+                    isActive ? "text-brand" : "text-gray-500"
+                  }`}
                 />
                 {!collapsed && <span className="ml-3">{item.label}</span>}
               </Link>
@@ -157,14 +164,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${isActive
-                      ? "bg-gray-100 text-black"
-                      : "text-gray-700 hover:bg-gray-100"
-                      } ${collapsed ? "justify-center" : ""}`}
+                    className={`flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
+                      isActive
+                        ? "bg-gray-100 text-black"
+                        : "text-gray-700 hover:bg-gray-100"
+                    } ${collapsed ? "justify-center" : ""}`}
                   >
                     <Icon
-                      className={`h-5 w-5 ${isActive ? "text-brand" : "text-gray-500"
-                        }`}
+                      className={`h-5 w-5 ${
+                        isActive ? "text-brand" : "text-gray-500"
+                      }`}
                     />
                     {!collapsed && <span className="ml-3">{item.label}</span>}
                   </Link>
@@ -175,7 +184,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
         </nav>
       </div>
       <div className="fixed bottom-5 left-4 hidden xl:block">
-
         {/* icons for x, facebook, youtube instagram */}
         <div className="flex justify-center gap-2 py-4">
           {socialIcons.map((item, index) => (
@@ -193,14 +201,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
 
         <div className="flex  gap-2">
           <p
-            onClick={() => navigate("/privacy-policy")}
+            onClick={() => redirectNavLink("/privacy-policy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
           >
             Privacy Policy
           </p>
           <p
             onClick={() => {
-              navigate("/user-agreement");
+              redirectNavLink("/user-agreement");
             }}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
           >

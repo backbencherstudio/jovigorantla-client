@@ -137,8 +137,6 @@
 
 // export default ChatConversation;
 
-
-
 import React, { useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ChatConversationProps } from "./chat/types";
@@ -163,16 +161,13 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
-  const {
-    conversations,
-    markMessagesAsRead,
-  } = useMessages(); // <-- using context
+  const { conversations, markMessagesAsRead } = useMessages(); // <-- using context
 
-  const conversation = conversations.find(c => c.id === conversationId);
+  const conversation = conversations.find((c) => c.id === conversationId);
   const isBlocked = conversation?.isBlocked;
   const blockedByMe = conversation?.blockedByMe;
   const blockedByOther = conversation?.blockedByOther;
-  // 
+  //
 
   // console.log(conversation, isBlocked)
 
@@ -191,7 +186,6 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   const handleBlockUser = async () => {
     try {
       await api.patch(`/chat/conversation/${conversationId}/block`);
-
     } catch (error) {
       toast.error("Failed to block user");
       console.error(error);
@@ -200,7 +194,9 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
   const handleUnblockUser = async () => {
     try {
-      const res = await api.patch(`/chat/conversation/${conversationId}/unblock`);
+      const res = await api.patch(
+        `/chat/conversation/${conversationId}/unblock`
+      );
       if (res.data.success) {
         toast.success("User unblocked successfully");
       }
@@ -213,28 +209,27 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   function goBackAndRemoveLastEntry() {
     const handler = () => {
       // After going back, replace the current entry with itself
-      history.replaceState(history.state, '', location.href);
-      window.removeEventListener('popstate', handler);
+      history.replaceState(history.state, "", location.href);
+      window.removeEventListener("popstate", handler);
     };
-  
+
     // Listen for the popstate triggered by history.back()
-    window.addEventListener('popstate', handler);
+    window.addEventListener("popstate", handler);
     history.back();
   }
-  
+
   // Usage:
   // goBackAndRemoveLastEntry();
-  
+
   // function removeLastHistoryEntry() {
   //   // Get current state and URL
   //   const currentState = history.state;
   //   const currentUrl = location.href;
-    
 
   //   console.log("history => ", history, currentState)
   //   // Go back temporarily
   //   // history.back();
-    
+
   //   // // Immediately replace the previous entry with our current state
   //   // setTimeout(() => {
   //   //   history.replaceState(currentState, '', currentUrl);
@@ -243,7 +238,9 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
   const handleDeleteConversation = async () => {
     try {
-      const res = await api.delete(`/chat/conversation/${conversationId}/soft-delete`);
+      const res = await api.delete(
+        `/chat/conversation/${conversationId}/soft-delete`
+      );
       if (res.data.success) {
         toast.success("Conversation deleted");
         window.history.back();
@@ -252,13 +249,10 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
         // window.history.replaceState(null, '', '/messages');
 
-        
         // if (onBack) onBack();
         // goBackAndRemoveLastEntry();
       }
       // removeLastHistoryEntry();
-      
-
     } catch (error) {
       toast.error("Failed to delete conversation");
       console.error(error);
@@ -271,11 +265,10 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [isBlocked, blockedByMe, blockedByOther])
-
+  }, [isBlocked, blockedByMe, blockedByOther]);
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden bg-gray-100">
+    <div className="flex flex-col h-full overflow-hidden bg-gray-100">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white">
         <ChatHeader
@@ -340,7 +333,6 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
       </div> */}
 
-
       <div className="relative bottom-0 left-0 right-0 z-20 bg-gray-100">
         {!isBlocked ? (
           <MessageInput onSendMessage={handleSendMessage} />
@@ -360,7 +352,9 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
         ) : (
           // I didn’t block them, but they blocked me
           <div className="p-3 bg-[#f0f2f5] border-t border-gray-200 w-full text-center">
-            <Badge variant="destructive">You are blocked in this conversation</Badge>
+            <Badge variant="destructive">
+              You are blocked in this conversation
+            </Badge>
           </div>
         )}
       </div>

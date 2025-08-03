@@ -69,8 +69,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     <div
-      style={{ width: width }}
-      className="p-3 bg-white border-t flex items-center justify-between fixed  top-[60px] z-10"
+      className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
     >
       <div className="flex items-center flex-1">
         <Button
@@ -108,11 +107,23 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-         {!isBlocked ? (blockedByOther ? null : <DropdownMenuItem onClick={onBlockUser} className="cursor-pointer ">
-          Block
-          </DropdownMenuItem>): <DropdownMenuItem onClick={onUnblockUser} className="cursor-pointer ">
-            Unblock
-          </DropdownMenuItem>}
+          {!isBlocked ? (
+            blockedByOther ? null : (
+              <DropdownMenuItem
+                onClick={onBlockUser}
+                className="cursor-pointer "
+              >
+                Block
+              </DropdownMenuItem>
+            )
+          ) : (
+            <DropdownMenuItem
+              onClick={onUnblockUser}
+              className="cursor-pointer "
+            >
+              Unblock
+            </DropdownMenuItem>
+          )}
           {/* <DropdownMenuItem
             onClick={onReportConversation}
             className="cursor-pointer"

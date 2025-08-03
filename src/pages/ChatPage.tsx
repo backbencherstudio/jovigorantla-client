@@ -262,7 +262,6 @@
 
 // export default ChatPage;
 
-
 // import { useState, useEffect } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 // import { useAuth } from "@/context/AuthContext";
@@ -372,16 +371,14 @@
 
 // export default ChatPage;
 
-
 // import React, { useState, useEffect } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 // import { useAuth } from "@/context/AuthContext";
-// import { useSocket } from "@/context/SocketContext"; 
+// import { useSocket } from "@/context/SocketContext";
 // import { useUnreadMessages } from "@/components/Header";
 // import { Message } from "@/components/chat/types";
-// import ChatConversation from "@/components/ChatConversation"; 
+// import ChatConversation from "@/components/ChatConversation";
 // import { api } from "@/lib/axois";
-
 
 // // Conversation type definition
 // // interface Conversation {
@@ -513,7 +510,6 @@
 // };
 
 // export default ChatPage;
-
 
 // import { useState, useEffect } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
@@ -706,7 +702,6 @@
 //     console.log(foundConversation)
 //     setConversation(foundConversation)
 
-
 //     if (foundConversation) {
 //       // Mark all messages as read when opening the conversation
 //       const updatedConversation = {
@@ -798,8 +793,6 @@
 
 // export default ChatPage;
 
-
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -826,7 +819,7 @@ interface Conversation {
   listing: {
     id: string;
     title: string;
-  }
+  };
   unreadCount: number;
   listingTitle: string;
   listingId: string;
@@ -837,7 +830,13 @@ const ChatPage = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { conversations, setActiveConversation, activeConversation, addMessage, handleSetUnreadMessages } = useMessages();
+  const {
+    conversations,
+    setActiveConversation,
+    activeConversation,
+    addMessage,
+    handleSetUnreadMessages,
+  } = useMessages();
   const prevRoute = usePreviousRoute();
   // const [conversation, setConversation] = useState<Conversation | null>(null);
 
@@ -883,7 +882,7 @@ const ChatPage = () => {
 
     if (foundConversation) {
       // setConversation(foundConversation);
-      setActiveConversation(foundConversation)
+      setActiveConversation(foundConversation);
     } else {
       // If conversation not found, redirect to the messages list
       navigate("/messages");
@@ -900,7 +899,7 @@ const ChatPage = () => {
           receiver_id: activeConversation.other.id,
         });
 
-        console.log(data)
+        console.log(data);
 
         // Create a new message object
         const newMessage: Message = {
@@ -915,7 +914,6 @@ const ChatPage = () => {
 
         // Add the new message to the conversation
         addMessage(conversationId, newMessage);
-
 
         // Update conversation state with the new message
         // setConversation((prev) => {
@@ -938,8 +936,8 @@ const ChatPage = () => {
   };
 
   const handleBack = () => {
-    handleSetUnreadMessages(conversationId, 0)
-    setActiveConversation(null)
+    handleSetUnreadMessages(conversationId, 0);
+    setActiveConversation(null);
     // navigate('/messages', { replace: true });
     // console.log(prevRoute)
     navigate(-1); // Go back to the previous page

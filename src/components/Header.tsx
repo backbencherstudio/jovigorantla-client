@@ -36,6 +36,7 @@ import React from "react";
 import { toast } from "sonner";
 import { useMessages } from "@/context/MessageContext";
 import LocationWithRedius from "./LocationWithRedius";
+import useRedirectNav from "@/hooks/useRedirectNav";
 
 // export const UnreadMessagesContext = React.createContext<{
 //   unreadMessages: number;
@@ -63,9 +64,11 @@ interface HeaderProps {
   onSearchSubmit?: (value: string) => void;
 }
 
-const Header = ({  searchInput,
+const Header = ({
+  searchInput,
   onSearchInputChange,
-  onSearchSubmit }: HeaderProps) => {
+  onSearchSubmit,
+}: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut, isModalOpen } = useAuth();
@@ -75,7 +78,7 @@ const Header = ({  searchInput,
   // const [searchQuery, setSearchQuery] = useState("");
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
 
-  const [ searchValue, setSearchValue ] = useState("")
+  const [searchValue, setSearchValue] = useState("");
 
   const { unreadMessages } = useMessages();
 
@@ -96,10 +99,7 @@ const Header = ({  searchInput,
     return emailName.charAt(0).toUpperCase() + emailName.slice(1);
   };
 
-
   const unreadMessagesCount = sumRecord(unreadMessages);
-
-
 
   // useEffect(() => {
   //   // Extract search query from URL if present
@@ -110,8 +110,10 @@ const Header = ({  searchInput,
   //   }
   // }, [location.search]);
 
+  const { redirectNavLink } = useRedirectNav();
+
   const handlePostAd = () => {
-    navigate("/create-listing");
+    redirectNavLink("/create-listing");
     // if (user) {
     //   navigate("/create-listing");
     // } else {
@@ -128,8 +130,6 @@ const Header = ({  searchInput,
   //     navigate("/");
   //   }
   // };
-
-
 
   // const handleSearch = (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -215,27 +215,25 @@ const Header = ({  searchInput,
     }
   }, [location.search]);
 
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // onSearchInputChange(e.target.value);
     setSearchValue(e.target.value);
     // if (!e.target.value.trim()) {
     //   navigate(location.pathname);
     // }
-
   };
 
   // const handleSearch = (e: React.FormEvent) => {
   //   e.preventDefault();
   //   onSearchSubmit(searchInput);
-    
+
   // };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const query = searchValue?.trim();
     // console.log(query)
-    
+
     // If the search query exists, update the query params, otherwise navigate to current path
     if (query) {
       navigate(`${location.pathname}?q=${encodeURIComponent(query)}`);
@@ -243,11 +241,10 @@ const Header = ({  searchInput,
       // If the input is empty, navigate to the current path without the query parameter
       navigate(location.pathname);
     }
-  
+
     // Optional: Trigger the onSearchSubmit function if you need to handle search elsewhere in the app
     // onSearchSubmit(query);
   };
-
 
   const handleSignOut = async () => {
     const isLogout = await signOut();
@@ -262,33 +259,44 @@ const Header = ({  searchInput,
     }
   };
 
-
   // Mobile icon size - slightly larger for mobile
   // const mobileIconSize = isMobile ? 6 : 5.5;
 
-   // List of paths to check against
- const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];
+  // List of paths to check against
+  const validPaths = [
+    "/",
+    "/marketplace",
+    "/rides",
+    "/accommodations",
+    "/jobs",
+  ];
 
- // Check if current path matches any of the valid paths
- const isValidPage = validPaths.includes(location.pathname);
+  // Check if current path matches any of the valid paths
+  const isValidPage = validPaths.includes(location.pathname);
 
   return (
     <>
-      <header className={`bg-white px-4 md:px-6 border-b fixed  right-0 left-0 pt-6 -top-4 flex flex-1 shadow-sm py-[13px] ${!isModalOpen? 'z-[102]': 'z-[20]'}`}>
+      <header
+        className={`bg-white px-4 md:px-6 border-b fixed  right-0 left-0 pt-6 -top-4 flex flex-1 shadow-sm py-[13px] ${
+          !isModalOpen ? "z-[102]" : "z-[20]"
+        }`}
+      >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <Link to={'/'} className="flex items-center">
+          <Link to={"/"} className="flex items-center">
             <img
-            src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
+              src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
               className="h-10"
             />
           </Link>
 
           {/* Search - Only on Tablet and Desktop */}
-          {isValidPage &&  (
-            <form onSubmit={handleSearch} className=" mx-4 w-[25vw] relative hidden md:block"
-            // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
+          {isValidPage && (
+            <form
+              onSubmit={handleSearch}
+              className=" mx-4 w-[25vw] relative hidden md:block"
+              // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
             >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
@@ -299,16 +307,15 @@ const Header = ({  searchInput,
                 className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
               />
               {searchValue && (
-              <X
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                onClick={handleClearInput} // Clear the input on click
-              />
-            )}
+                <X
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                  onClick={handleClearInput} // Clear the input on click
+                />
+              )}
             </form>
           )}
 
           {/* <LocationWithRedius /> */}
-
 
           <div className="flex items-center justify-end gap-2">
             {/* Location - Only on Tablet and Desktop */}
@@ -330,8 +337,9 @@ const Header = ({  searchInput,
                   className="rounded-full h-9 w-9"
                 >
                   <Users
-                    className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                      }`}
+                    className={`text-brand ${
+                      isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                    }`}
                   />
                 </Button>
               )}
@@ -348,7 +356,7 @@ const Header = ({  searchInput,
               {/* Messages button with notification badge - Only shown for logged in users */}
               {user && (
                 <div
-                  onClick={() => navigate("/messages")}
+                  onClick={() => redirectNavLink("/messages")}
                   className="relative  rounded-full cursor-pointer"
                 >
                   <Button
@@ -357,11 +365,12 @@ const Header = ({  searchInput,
                     className="rounded-full h-8 w-8 bg-[#f1f5f9]"
                   >
                     <MessageCircle
-                      className={`text-brand ${isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
-                        }`}
+                      className={`text-brand ${
+                        isMobile ? "h-6 w-6" : "h-5.5 w-5.5"
+                      }`}
                     />
                   </Button>
-                  {(parseInt(unreadMessagesCount) > 0) && (
+                  {parseInt(unreadMessagesCount) > 0 && (
                     <Badge className="absolute top-1 right-1 h-4 min-w-4 p-0 flex items-center justify-center text-[9px] hover:bg-[#bf072c] bg-[#bf072c] border-white border">
                       {unreadMessagesCount}
                     </Badge>
@@ -385,18 +394,25 @@ const Header = ({  searchInput,
                       />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 z-[102] relative" >
-                    <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 z-[102] relative"
+                  >
+                    <DropdownMenuItem
+                      onClick={() => redirectNavLink("/profile")}
+                    >
                       <UserRound className="h-4 w-4 mr-2" />
                       <span>Profile</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => navigate("/saved-listings")}
+                      onClick={() => redirectNavLink("/saved-listings")}
                     >
                       <Star className="h-4 w-4 mr-2" />
                       <span>Saved Listings</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/my-listings")}>
+                    <DropdownMenuItem
+                      onClick={() => redirectNavLink("/my-listings")}
+                    >
                       <svg
                         className="h-4 w-4 mr-2"
                         viewBox="0 0 24 24"
@@ -428,12 +444,16 @@ const Header = ({  searchInput,
                       <span>Manage Listings</span>
                     </DropdownMenuItem>
                     {isEmployee && (
-                      <DropdownMenuItem onClick={() => navigate("/employee")}>
+                      <DropdownMenuItem
+                        onClick={() => redirectNavLink("/employee")}
+                      >
                         <Users className="h-4 w-4 mr-2" />
                         <span>Employee Panel</span>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem onClick={() => navigate("/about-us")}>
+                    <DropdownMenuItem
+                      onClick={() => redirectNavLink("/about-us")}
+                    >
                       <Info className="h-4 w-4 mr-2" />
                       <span>About Us</span>
                     </DropdownMenuItem>

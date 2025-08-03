@@ -42,13 +42,12 @@ const ListingItem = ({
   const navigate = useNavigate();
 
   const handleLinkClick = (e: MouseEvent) => {
-   
     // If the click originated from within the actions container, prevent navigation
     if ((e.target as HTMLElement).closest(".listing-actions")) {
       e.preventDefault();
     } else {
       const currentScrollY = window.scrollY;
-      console.log("Saving scroll position:", currentScrollY);
+      //console.log("Saving scroll position:", currentScrollY);
 
       // Save scroll position to session storage immediately
       sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
@@ -61,9 +60,6 @@ const ListingItem = ({
       });
     }
   };
-
-
-  
 
   return (
     <div

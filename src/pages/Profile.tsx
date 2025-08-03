@@ -66,7 +66,7 @@
 //              },
 //           );
 //         }
-     
+
 //     } catch (error) {
 //       toast.error("Failed to update profile");
 //       console.error(error);
@@ -124,7 +124,6 @@
 // };
 
 // export default Profile;
-
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -185,11 +184,13 @@ const Profile = () => {
       const isUpdated = await updateMe(name);
       if (isUpdated) {
         toast.success("Profile updated successfully", {
-          className: "bg-green-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
+          className:
+            "bg-green-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
         });
       } else {
         toast.error("Failed to update profile", {
-          className: "bg-red-500 text-white font-bold rounded-md px-4 py-2 shadow-md"
+          className:
+            "bg-red-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
         });
       }
     } catch (error) {
@@ -214,19 +215,21 @@ const Profile = () => {
       toast.error("Name cannot be empty");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const isUpdated = await updateMe(tempName);
       if (isUpdated) {
         setName(tempName);
         toast.success("Name updated successfully", {
-          className: "bg-green-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
+          className:
+            "bg-green-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
         });
         closeNameDialog();
       } else {
         toast.error("Failed to update name", {
-          className: "bg-red-500 text-white font-bold rounded-md px-4 py-2 shadow-md"
+          className:
+            "bg-red-500 text-white font-bold rounded-md px-4 py-2 shadow-md",
         });
       }
     } catch (error) {
@@ -240,13 +243,14 @@ const Profile = () => {
   const handleInputFocus = () => {
     // Scroll the dialog content into view when input is focused
     setTimeout(() => {
-      const input = document.querySelector('input:focus');
+      const input = document.querySelector("input:focus");
       if (input) {
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }, 300); // Delay to account for keyboard animation
   };
 
+ 
   if (!user) return null;
 
   return (
@@ -265,7 +269,7 @@ const Profile = () => {
                 className="pl-10 pr-10 cursor-pointer"
                 onClick={openNameDialog}
               />
-              <ChevronRight 
+              <ChevronRight
                 className="absolute right-3 top-3 h-4 w-4 text-gray-500 cursor-pointer"
                 onClick={openNameDialog}
               />
@@ -290,34 +294,34 @@ const Profile = () => {
         </form>
 
         {/* Name Edit Dialog */}
-        <Dialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen} >
+        <Dialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen}>
           <DialogContent className="sm:max-w-md rounded-md">
             <DialogHeader>
               <DialogTitle>Edit Name</DialogTitle>
             </DialogHeader>
             <div className="space-y-8">
-             <div className="relative">
-             <Input 
-                value={tempName}
-                onChange={(e) => setTempName(e.target.value)}
-                placeholder="Enter your name"
-                autoFocus
-                maxLength={15}
-                onFocus={handleInputFocus}
-              />
-              <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
+              <div className="relative">
+                <Input
+                  value={tempName}
+                  onChange={(e) => setTempName(e.target.value)}
+                  placeholder="Enter your name"
+                  autoFocus
+                  maxLength={15}
+                  onFocus={handleInputFocus}
+                />
+                <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
                   {tempName.length}/15
                 </div>
-             </div>
+              </div>
               <div className="flex justify-end space-x-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={closeNameDialog}
                   disabled={isLoading}
                 >
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={saveName}
                   disabled={isLoading || !tempName.trim()}
                 >

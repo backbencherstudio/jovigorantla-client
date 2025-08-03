@@ -13,7 +13,7 @@ import SidebarAds from "./ui/Sidebar-Ads";
 import LocationWithRadius from "./LocationWithRedius";
 import { Button } from "./ui/button";
 import { useAuth } from "@/context/AuthContext";
-
+import useRedirectNav from "@/hooks/useRedirectNav";
 
 const PageSkeleton = () => {
   return (
@@ -41,7 +41,6 @@ const PageSkeleton = () => {
   );
 };
 
-
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
   title?: string;
@@ -49,10 +48,19 @@ interface ResponsiveLayoutProps {
   fullWidth?: boolean;
 }
 
-const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hideBackButton = false, fullWidth = false }) => {
+const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
+  children,
+  title,
+  hideBackButton = false,
+  fullWidth = false,
+}) => {
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
-  const isCollapsed = useMediaQuery("(min-width: 768px) and (max-width: 1100px)");
+  const isCollapsed = useMediaQuery(
+    "(min-width: 768px) and (max-width: 1100px)"
+  );
+
+  const { redirectNavLink } = useRedirectNav();
 
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const navigate = useNavigate();
@@ -63,8 +71,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const [isMobileHeaderRendered, setIsMobileHeaderRendered] = useState(false);
   const { user, isModalOpen } = useAuth();
-
-
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -89,17 +95,16 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
     const currentParams = new URLSearchParams(location.search);
 
     if (searchQuery.trim()) {
-
       // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-      currentParams.set('q', encodeURIComponent(searchQuery));
+      currentParams.set("q", encodeURIComponent(searchQuery));
 
       // Navigate to the same path but with the updated query parameters
       navigate(`${location.pathname}?${currentParams.toString()}`);
       // navigate(`${location.pathname}?q=${encodeURIComponent(searchQuery)}`);
     } else {
       // If empty search, show all listings
-      currentParams.delete('q');
-      navigate(`${location.pathname}?${currentParams.toString()}`)
+      currentParams.delete("q");
+      navigate(`${location.pathname}?${currentParams.toString()}`);
       // navigate("/");
     }
   };
@@ -133,7 +138,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
     };
   }, [lastScrollY]);
 
-
   const handleClearInput = () => {
     setSearchQuery("");
     // navigate(location.pathname); // Navigate to home without query
@@ -142,8 +146,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
     const queryParam = new URLSearchParams(location.search).get("q") || "";
     setSearchQuery(queryParam);
   }, [location.search]);
-
-
 
   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
@@ -175,13 +177,18 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
       navigate(-1);
     } else {
       // Otherwise, redirect to home
-      navigate('/');
+      navigate("/");
     }
   };
 
-
   // List of paths to check against
-  const validPaths = ["/", "/marketplace", "/rides", "/accommodations", "/jobs"];
+  const validPaths = [
+    "/",
+    "/marketplace",
+    "/rides",
+    "/accommodations",
+    "/jobs",
+  ];
 
   // Check if current path matches any of the valid paths
   const isValidPage = validPaths.includes(location.pathname);
@@ -209,220 +216,247 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
     }
-  })
-
-
+  });
 
   return (
     <div className={`flex flex-col bg-gray-50`}>
       <Header />
 
-      {isVisiblef ? isDesktop ? null : <PageSkeleton /> : <div className="flex flex-1 min-h-[calc(100vh-67px)] ">
-        {/* Left Sidebar - Menu (only on desktop/tablet) */}
-        {!isMobile && (
-          <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
-            <Sidebar collapsed={isCollapsed} />
-          </div>
-        )}
-
-        {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
-            }  flex flex-col flex-1 min-h-[100%]`} */}
-
-        {!isValidPage && <main
-          className={`w-full mx-auto ${fullWidth ? "" : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
-            }  flex flex-col flex-1 min-h-[100%]`}
-        >
-          {/* Page Header with back button */}
-          {title && (
-            <div className="relative">
-              <div
-                className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
-                style={{
-                  // width: width, 
-                  top: "60px" /* Header height */,
-                }}
-              >
-                {!hideBackButton && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleBack}
-                    className="mr-2"
-                  >
-                    <ArrowLeft className="h-5 w-5" />
-                  </Button>
-                )}
-                <h1 className="text-xl font-bold">{title}</h1>
-              </div>
-              <div className="h-[65px] bg-white border-b "></div>
+      {isVisiblef ? (
+        isDesktop ? null : (
+          <PageSkeleton />
+        )
+      ) : (
+        <div className="flex flex-1 min-h-[calc(100vh-67px)] ">
+          {/* Left Sidebar - Menu (only on desktop/tablet) */}
+          {!isMobile && (
+            <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
+              <Sidebar collapsed={isCollapsed} />
             </div>
           )}
 
-          {/* Page Content */}
-          <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
-        </main>
-        }
+          {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
+            }  flex flex-col flex-1 min-h-[100%]`} */}
 
-        {/* Main Content Area */}
-        {isValidPage && <div
-          className="flex-1 listings-container"
-          style={{
-            marginLeft: !isMobile ? leftSidebarWidth : "0",
-            marginRight: isDesktop ? rightSidebarWidth : "0",
-          }}
-        >
-          {/* Center Content Container */}
-          <main className="w-full mx-auto max-w-3xl bg-transparent">
-            {/* Mobile: Search, Location and Categories */}
-            {isMobile && (
-              <div
-                ref={mobileHeaderRef}
-                className=" z-10 transition-transform bg-white pt-3"
-              >
-                <div className="px-4 pt-2 pb-2">
-                  <form onSubmit={handleSearchSubmit}>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                      <Input
-                        type="text"
-                        placeholder="Search"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
-                      />
-                      {searchQuery && (
-                        <X
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                          onClick={handleClearInput} // Clear the input on click
-                        />
-                      )}
-                    </div>
-                  </form>
-
-                  {/* Mobile: Location display - no border or box */}
-                  {/* <div className="mt-2 flex items-center justify-end"> */}
-                  {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
-                  {/* <LocationWithRadius /> */}
-                  {/* </div> */}
-
-
-                  {/* mr-[-18px] */}
-                  <div className="mt-2 flex items-center justify-end">
-                    <LocationWithRadius popupStyle="mr-2" />
+          {!isValidPage && (
+            <main
+              className={`w-full mx-auto ${
+                fullWidth
+                  ? ""
+                  : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+              }  flex flex-col flex-1 min-h-[100%]`}
+            >
+              {/* Page Header with back button */}
+              {title && (
+                <div className="relative">
+                  <div
+                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
+                    style={{
+                      // width: width,
+                      top: "60px" /* Header height */,
+                    }}
+                  >
+                    {!hideBackButton && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleBack}
+                        className="mr-2"
+                      >
+                        <ArrowLeft className="h-5 w-5" />
+                      </Button>
+                    )}
+                    <h1 className="text-xl font-bold">{title}</h1>
                   </div>
+                  <div className="h-[65px] bg-white border-b "></div>
                 </div>
+              )}
 
-                {/* Mobile: Category Icons */}
-                <div className="px-4 pb-2">
-                  <CategoryIcons />
+              {/* Page Content */}
+              <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
+            </main>
+          )}
+
+          {/* Main Content Area */}
+          {isValidPage && (
+            <div
+              className="flex-1 listings-container"
+              style={{
+                marginLeft: !isMobile ? leftSidebarWidth : "0",
+                marginRight: isDesktop ? rightSidebarWidth : "0",
+              }}
+            >
+              {/* Center Content Container */}
+              <main className="w-full mx-auto max-w-3xl bg-transparent">
+                {/* Mobile: Search, Location and Categories */}
+                {isMobile && (
+                  <div
+                    ref={mobileHeaderRef}
+                    className=" z-10 transition-transform bg-white pt-3"
+                  >
+                    <div className="px-4 pt-2 pb-2">
+                      <form onSubmit={handleSearchSubmit}>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                          <Input
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                          />
+                          {searchQuery && (
+                            <X
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                              onClick={handleClearInput} // Clear the input on click
+                            />
+                          )}
+                        </div>
+                      </form>
+
+                      {/* Mobile: Location display - no border or box */}
+                      {/* <div className="mt-2 flex items-center justify-end"> */}
+                      {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
+                      {/* <LocationWithRadius /> */}
+                      {/* </div> */}
+
+                      {/* mr-[-18px] */}
+                      <div className="mt-2 flex items-center justify-end">
+                        <LocationWithRadius popupStyle="mr-2" />
+                      </div>
+                    </div>
+
+                    {/* Mobile: Category Icons */}
+                    <div className="px-4 pb-2">
+                      <CategoryIcons />
+                    </div>
+                  </div>
+                )}
+
+                {/* Filter tabs should be in a fixed position with z-index above main content */}
+                <div
+                  className={`z-10 border-b border-gray-100 ${
+                    !isMobile && "mt-[60px]"
+                  }`}
+                >
+                  {children}
+                </div>
+              </main>
+            </div>
+          )}
+
+          {isMobile && !isModalOpen && isValidPage && (
+            <div
+              ref={mobileHeaderRef}
+              // className={`z-[100] pt-3 transition-transform duration-300 ease-in-out  bg-white ${lastScrollY > 100 && isVisible ? 'translate-y-0 top-[60px]' : '-translate-y-full'
+              //   }`}
+              // style={{
+              //   position: 'fixed',
+              //   // top: '60px', // Below the main header
+              //   left: 0,
+              //   right: 0,
+              //   // Remove the display property and use opacity to prevent layout shift
+              //   opacity: lastScrollY > 100 ? 1 : 0,
+              //   pointerEvents: lastScrollY > 100 ? 'auto' : 'none'
+              // }}
+
+              // className={`z-[100] pt-3 transition-all duration-500 ease-in-out bg-white ${
+              //   lastScrollY > 100 && isVisible
+              //     ? 'translate-y-0 opacity-100 pointer-events-auto'
+              //     : '-translate-y-full opacity-0 pointer-events-none'
+              // }`}
+              // style={{
+              //   position: 'fixed',
+              //   top: '60px',
+              //   left: 0,
+              //   right: 0,
+              // }}
+
+              className={`fixed z-[101] pt-3 transition-all duration-300 ease-in-out bg-white ${
+                lastScrollY > 100 && isVisible
+                  ? "translate-y-0"
+                  : "-translate-y-full"
+              }`}
+              style={{
+                top: "60px",
+                left: 0,
+                right: 0,
+              }}
+            >
+              <div className="px-4 pt-2 pb-2">
+                <form onSubmit={handleSearchSubmit}>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <Input
+                      type="text"
+                      placeholder="Search"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                    />
+                    {searchQuery && (
+                      <X
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                        onClick={handleClearInput}
+                      />
+                    )}
+                  </div>
+                </form>
+
+                <div className="mt-2 mr-[-18px] flex items-center justify-end">
+                  <LocationWithRadius popupStyle="mr-2 relative z-[101]" />
                 </div>
               </div>
-            )}
 
-            {/* Filter tabs should be in a fixed position with z-index above main content */}
-            <div className={`z-10 border-b border-gray-100 ${!isMobile && 'mt-[60px]' }`}>
-              {children}
-            </div>
-          </main>
-        </div>}
-
-
-            
-        {isMobile && !isModalOpen && isValidPage &&(
-              <div
-                ref={mobileHeaderRef}
-                // className={`z-[100] pt-3 transition-transform duration-300 ease-in-out  bg-white ${lastScrollY > 100 && isVisible ? 'translate-y-0 top-[60px]' : '-translate-y-full'
-                //   }`}
-                // style={{
-                //   position: 'fixed',
-                //   // top: '60px', // Below the main header
-                //   left: 0,
-                //   right: 0,
-                //   // Remove the display property and use opacity to prevent layout shift
-                //   opacity: lastScrollY > 100 ? 1 : 0,
-                //   pointerEvents: lastScrollY > 100 ? 'auto' : 'none'
-                // }}
-
-                // className={`z-[100] pt-3 transition-all duration-500 ease-in-out bg-white ${
-                //   lastScrollY > 100 && isVisible 
-                //     ? 'translate-y-0 opacity-100 pointer-events-auto' 
-                //     : '-translate-y-full opacity-0 pointer-events-none'
-                // }`}
-                // style={{
-                //   position: 'fixed',
-                //   top: '60px',
-                //   left: 0,
-                //   right: 0,
-                // }}
-
-
-                className={`fixed z-[101] pt-3 transition-all duration-300 ease-in-out bg-white ${
-                  lastScrollY > 100 && isVisible 
-                    ? 'translate-y-0' 
-                    : '-translate-y-full'
-                }`}
-                style={{
-                  top: '60px',
-                  left: 0,
-                  right: 0,
-                }}
-              >
-                <div className="px-4 pt-2 pb-2">
-                  <form onSubmit={handleSearchSubmit}>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                      <Input
-                        type="text"
-                        placeholder="Search"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
-                      />
-                      {searchQuery && (
-                        <X
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                          onClick={handleClearInput}
-                        />
-                      )}
-                    </div>
-                  </form>
-
-                  <div className="mt-2 mr-[-18px] flex items-center justify-end">
-                    <LocationWithRadius popupStyle="mr-2 relative z-[101]" />
-                  </div>
-                </div>
-
-                <div className="px-4 pb-2 ">
-                  <CategoryIcons />
-                </div>
+              <div className="px-4 pb-2 ">
+                <CategoryIcons />
               </div>
-        )}
-
-        {/* Right sidebar with ad banners - only visible on desktop */}
-        {isDesktop && (
-          <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
-            <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
-              {/* <AdBanner position="right_top" className="mb-4" /> */}
-              <SidebarAds className="mb-4" />
             </div>
-          </div>
-        )}
-      </div>}
+          )}
+
+          {/* Right sidebar with ad banners - only visible on desktop */}
+          {isDesktop && (
+            <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
+              <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
+                {/* <AdBanner position="right_top" className="mb-4" /> */}
+                <SidebarAds className="mb-4" />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {!isDesktop && !user && (
         <footer className="bg-gray-50 py-4 fixed bottom-0 left-0 right-0 z-[10]">
           <div className="container mx-auto text-center">
-            <p className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]" style={{fontSize: '11px'}}>
-             Desieasy &copy; {new Date().getFullYear()} 
-  
-            <span className="inline-flex gap-1">• <Link to={'/privacy-policy'}>Privacy Policy</Link></span>
-            <span className="inline-flex gap-1"> &bull; <Link to={'/user-agreement'}>User Agreement</Link></span>
-
+            <p
+              className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]"
+              style={{ fontSize: "11px" }}
+            >
+              Desieasy &copy; {new Date().getFullYear()}
+              <span className="inline-flex gap-1">
+                •{" "}
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() => redirectNavLink("/privacy-policy")}
+                >
+                  Privacy Policy
+                </span>
+              </span>
+              <span className="inline-flex gap-1">
+                {" "}
+                &bull;{" "}
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() => redirectNavLink("/user-agreement")}
+                >
+                  User Agreement
+                </span>
+              </span>
             </p>
           </div>
         </footer>
-       )}
-
+      )}
     </div>
   );
 };
