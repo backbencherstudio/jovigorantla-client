@@ -1532,6 +1532,19 @@ const categoriesConfig = {
   Jobs: ["Hiring", "Looking"],
 };
 
+const normalizeCategory = category =>{
+  if (category === "Rides"){
+    return "Ride"
+  }else if (category === "Accommodations"){
+    return "Accommodation"
+  }else if (category === "Jobs"){
+    return "Job"
+  }else{
+    return category
+  }
+
+}
+
 const categories = Object.keys(categoriesConfig);
 
 const formSchema = z.object({
@@ -1560,7 +1573,7 @@ const formSchema = z.object({
 });
 
 interface Location {
-  zip: number | [number];
+  zips: [string];
   lat: number;
   lng: number;
   city: string;
@@ -1675,7 +1688,7 @@ function PostListingForm() {
             lat: Number(listing.latitude),
             lng: Number(listing.longitude),
             search: listing.address,
-            zip: 123456,
+            zips: null,
             city: listing?.address?.split(',')?.[0],
             state_id: listing?.address?.split(',')?.[1],
             state_name: listing?.address?.split(',')?.[1],
@@ -2222,7 +2235,7 @@ function PostListingForm() {
                   <SelectContent>
                     {categories.map((category) => (
                       <SelectItem key={category} value={category}>
-                        {category}
+                        {normalizeCategory(category)}
                       </SelectItem>
                     ))}
                   </SelectContent>

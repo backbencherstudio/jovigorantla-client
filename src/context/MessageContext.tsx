@@ -889,6 +889,7 @@ import { useSocket } from './SocketContext';
 import { useAuth } from './AuthContext';
 import { api } from '@/lib/axois';
 import { Message } from '@/types/chat';
+import utcToLocalDate from '@/utils/utcToLocalDate';
 
 type UnReadMessages = Record<string, number>;
 
@@ -902,6 +903,7 @@ type MessageContextType = {
   markMessagesAsRead: (conversationId: string) => void;
   getUnreadCount: (conversationId: string) => number;
   handleSetUnreadMessages: (conversationId: string, count: number) => void;
+  handleConversationCreated: (data: any) => void;
 };
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
@@ -927,6 +929,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   const addMessage = useCallback(async (conversationId: string, message: Message) => {
+    // console.log("message inside context: ", message)
     setConversations(prev => {
       const target = prev.find(c => c.id === conversationId);
       if (!target) return prev;
@@ -976,7 +979,8 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       senderId: from,
       content: data.body_text,
       receiver_id: data.receiver_id,
-      timestamp: new Date(data.created_at),
+      timestamp: utcToLocalDate(data.created_at) || new Date(),
+      created_at: data.created_at,
       isRead: data.conversation_id === activeConversation?.id,
     };
     addMessage(data.conversation_id, newMessage);
@@ -998,10 +1002,38 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   
       if (exists) {
         // Case: previously soft-deleted by current user
-        return prev.map((c) =>
-          c.id === data.id ? { ...c, ...data } : c
-        );
+        // return prev.map((c) =>
+        //   c.id === data.id ? { ...c, ...data } : c
+        // );
+        return prev;
       }
+
+      const isCreator = data.creator.id === user?.id;
+      const other = isCreator ? data.participant : data.creator;
+      data.other = other;
+
+      data.messages.forEach((msg: any) => {
+        msg.id = msg.id;
+        msg.senderId = msg.sender_id;
+        msg.receiverId = msg.receiver_id;
+        msg.content = msg.message;
+        msg.timestamp = new Date(msg.created_at);
+        msg.isRead = msg.is_read;
+      });
+
+      // const readMessages = data.messages.filter((msg: any) => !msg.isRead && msg.receiverId === user?.id).length;
+      
+      // Compute block states
+      const blockedByMe = isCreator ? data.blocked_by_creator : data.blocked_by_participant;
+      const blockedByOther = isCreator ? data.blocked_by_participant : data.blocked_by_creator;
+      const isBlocked = blockedByMe || blockedByOther;
+
+      // Add fields
+      data.blockedByMe = blockedByMe;
+      data.blockedByOther = blockedByOther;
+      data.isBlocked = isBlocked;
+
+      
   
       // Add .other field for UI
       if (data.creator.id !== user?.id) {
@@ -1082,6 +1114,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
     socket.on('message', handleIncomingMessage);
     socket.on('conversation', handleConversationCreated);
     socket.on('deleted-conversation', ({ from, data }) => {
+      // console.log("deleted conversation: ", data)
       const isCreator = data.creator.id === user?.id;
         const other = isCreator ? data.participant : data.creator;
         data.other = other;
@@ -1190,6 +1223,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
         markMessagesAsRead,
         getUnreadCount,
         handleSetUnreadMessages,
+        handleConversationCreated,
       }}
     >
       {children}

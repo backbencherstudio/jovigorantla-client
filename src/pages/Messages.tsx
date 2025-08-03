@@ -479,7 +479,7 @@ const Messages = () => {
                       <div className="flex flex-col items-end ml-2">
                         {
                           conv?.messages?.length > 0 ? (
-                            <span className="text-xs text-gray-500 flex justify-center items-center">{formatTime(new Date(conv?.messages?.[conv?.messages?.length - 1]?.timestamp).toISOString())}</span>
+                            <span className="text-xs text-gray-500 flex justify-center items-center">{formatTime(new Date(conv?.messages?.[conv?.messages?.length - 1]?.timestamp).toString())}</span>
                           ) : (
                             // <span className="text-xs text-gray-500">
                             // </span>

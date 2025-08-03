@@ -70,7 +70,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   return (
     <div
       style={{ width: width }}
-      className="p-3 bg-white border-t flex items-center justify-between fixed  top-[66px] z-10"
+      className="p-3 bg-white border-t flex items-center justify-between fixed  top-[60px] z-10"
     >
       <div className="flex items-center flex-1">
         <Button

@@ -28,6 +28,7 @@ import { api } from "@/lib/axois";
 import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
+import { useMessages } from "@/context/MessageContext";
 
 
 const renderDescriptionWithPhoneLinks = (text: string) => {
@@ -60,6 +61,7 @@ const ListingDetailPage = ({ openModal }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
   const [listing, setListing] = useState<any>({});
+  const  {handleConversationCreated} = useMessages();
 
   // In a real app, you would fetch the listing details from an API
   // For now, we'll use mock data
@@ -163,9 +165,14 @@ const ListingDetailPage = ({ openModal }) => {
           listing_id: listing?.id,
         })
 
-        // console.log("conversation", conversation);
+
+
+
+
+        console.log("conversation", conversation);
 
         if (conversation?.data?.success) {
+          handleConversationCreated({data: conversation?.data?.data});
           // console.log("conversation", conversation?.data?.data.id);
           navigate(`/messages/${conversation?.data?.data.id}`);
           // navigate(`/messages/${1}`);

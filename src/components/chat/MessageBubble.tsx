@@ -45,6 +45,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   );
 
   // console.log("message", message.content);
+  // console.log(message)
 
   return (
     <div
