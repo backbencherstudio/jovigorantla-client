@@ -1556,6 +1556,1193 @@
 
 
 
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import { api } from "@/lib/axois";
+// import { Search } from "lucide-react";
+// import CategoryIcons from "@/components/CategoryIcons";
+// import ListingItem from "@/components/ListingItem";
+// import { Input } from "@/components/ui/input";
+// import LocationWithRadius from "@/components/LocationWithRedius";
+// import FilterTabs from "@/components/FilterTabs";
+// import { useLocationContext } from "@/context/LocationContext";
+// import NoListingsFound from "@/components/NoListingsFound";
+// import { useIsMobile } from "@/hooks/use-mobile";
+// import ListingSkeleton from "@/components/ListingSkeleton";
+
+// const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
+//   const [distanceFromTop, setDistanceFromTop] = useState(0);
+
+//   useEffect(() => {
+//     if (!ref.current) return;
+
+//     const calculateDistance = () => {
+//       const rect = ref.current!.getBoundingClientRect();
+//       setDistanceFromTop(window.scrollY + rect.top);
+//     };
+
+//     // Calculate immediately
+//     calculateDistance();
+
+//     // Re-calculate on resize/scroll
+//     window.addEventListener('resize', calculateDistance);
+//     window.addEventListener('scroll', calculateDistance);
+
+//     return () => {
+//       window.removeEventListener('resize', calculateDistance);
+//       window.removeEventListener('scroll', calculateDistance);
+//     };
+//   }, [ref]);
+
+//   return distanceFromTop;
+// };
+
+// export default function Marketplace({ openModal }) {
+//   const isMobile = useIsMobile();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   const searchParams = new URLSearchParams(location.search);
+//   const initialQuery = searchParams.get("q") || "";
+//   const [searchInput, setSearchInput] = useState(initialQuery);
+//   const [searchQuery, setSearchQuery] = useState(initialQuery);
+//   const filterTabsRef = useRef<HTMLDivElement>(null);
+
+//   const [isLoading, setLoading] = useState(false);
+//   const [listings, setListings] = useState<any[]>([]);
+//   const [hasMore, setHasMore] = useState(true);
+//   const loadMoreRef = useRef<HTMLDivElement>(null);
+//   const numberOfShownListings = useRef(0);
+//   const listingCutoffTime = useRef("");
+//   const isFetchingRef = useRef(false);
+//   const [activeFilter, setActiveFilter] = useState("All");
+//   const [oldFilter, setOldFilter] = useState("");
+//   const { lat, lng, radius } = useLocationContext();
+//   const [isTabChanging, setIsTabChanging] = useState(false);
+
+//   const [isRestoringScroll, setIsRestoringScroll] = useState(false);
+
+//   // Add these new state variables for better tracking
+//   const [isInitialLoad, setIsInitialLoad] = useState(true);
+//   const observerRef = useRef<IntersectionObserver | null>(null);
+
+//   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
+//   const tabParam = searchParams.get('tab'); // returns "true" or null
+
+//   // If you want a boolean value
+//   const isTabActive = tabParam === 'true';
+
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setSearchInput(value);
+//     if (!value.trim()) {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   useEffect(() => {
+//     console.log('Distance from top:', distanceFromTop, 'px');
+//   }, [distanceFromTop]);
+
+//   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     const trimmed = searchInput.trim();
+//     if (trimmed) {
+//       navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
+//       setSearchQuery(trimmed);
+//     } else {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   // Use useCallback to prevent unnecessary re-renders
+//   const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
+//     // Prevent multiple simultaneous requests
+//     if (isFetchingRef.current) {
+//       // console.log('Already fetching, skipping request');
+//       return;
+//     }
+
+//     // Don't fetch if no more items and it's not a new filter
+//     if (!hasMore && !isNewFilter) {
+//       // console.log('No more items to fetch');
+//       return;
+//     }
+
+//     isFetchingRef.current = true;
+//     // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+
+//     try {
+//       setLoading(true);
+//       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
+
+//       const sub_category =
+//         filter === "Services" ? "Service" :
+//           filter === "Items" ? "Item" :
+//             filter !== "All" ? filter : null;
+
+//       const { data: listingResponse } = await api.get("/listings/nearby", {
+//         params: {
+//           category: "MARKETPLACE",
+//           sub_category,
+//           search: query,
+//           limit: 10,
+//           numberOfShownListings: shownCount,
+//           lat: lat,
+//           lng: lng,
+//           radius: radius,
+//           listing_cutoff_time: isNewFilter ? undefined : listingCutoffTime.current,
+//         },
+//       });
+
+//       const data = listingResponse.data;
+//       console.log('Fetch response:', {
+//         listingsCount: data.listings?.length || 0,
+//         hasMore: data.hasMore,
+//         totalCount: data.totalCount,
+//         numberOfShownListings: data.numberOfShownListings
+//       });
+
+//       if (data.listings && data.listings.length > 0) {
+//         if (isNewFilter || shownCount === 0) {
+//           // Reset for new filter or initial load
+//           setListings(data.listings);
+//           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
+//           setOldFilter(filter);
+//         } else {
+//           // Append to existing listings
+//           setListings(prev => [...prev, ...data.listings]);
+//           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
+//         }
+
+//         setHasMore(data.hasMore);
+//         listingCutoffTime.current = data.listing_cutoff_time || "";
+//       } else {
+//         // No listings returned
+//         if (isNewFilter || shownCount === 0) {
+//           setListings([]);
+//           numberOfShownListings.current = 0;
+//         }
+//         setHasMore(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching accommodations:", error);
+//       setHasMore(false); // Stop trying to fetch more on error
+//     } finally {
+//       setLoading(false);
+//       isFetchingRef.current = false;
+//       setIsInitialLoad(false);
+//     }
+//   }, [lat, lng, radius, hasMore]);
+
+//   const handleHide = (id: string) => {
+//     setListings(listings.filter(listing => listing.id !== id));
+//   };
+
+//   // Reset and fetch on filter/search/location change
+//   useEffect(() => {
+//     console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
+
+//     // Reset state
+//     numberOfShownListings.current = 0;
+//     setListings([]);
+//     setHasMore(true);
+//     setIsInitialLoad(true);
+
+//     // Fetch with new filter flag
+//     fetchNearByListings(activeFilter, searchQuery, true);
+//   }, [activeFilter, searchQuery, lat, lng, radius]);
+
+//   useEffect(() => {
+//     const queryParam = new URLSearchParams(location.search).get("q") || "";
+//     setSearchQuery(queryParam);
+//     setSearchInput(queryParam);
+//   }, [location.search]);
+
+//   const handleFilterClick = (filter: string) => {
+//     // Get the current query parameters from the URL
+//     const currentParams = new URLSearchParams(location.search);
+
+//     // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
+//     currentParams.set('tab', 'true');
+
+//     // Navigate to the same path but with the updated query parameters
+//     navigate(`${location.pathname}?${currentParams.toString()}`);
+
+//     window.scrollTo(0, isMobile ? 200 : 0);
+
+//     setIsTabChanging(true);
+//     setActiveFilter(filter);
+//     setTimeout(() => {
+//       setIsTabChanging(false);
+//     }, 500);
+//   };
+
+//   // Improved intersection observer with better cleanup
+//   useEffect(() => {
+//     // Clean up existing observer
+//     if (observerRef.current) {
+//       observerRef.current.disconnect();
+//     }
+
+//     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+//       const first = entries[0];
+//       // console.log('Intersection observed:', {
+//       //   isIntersecting: first.isIntersecting,
+//       //   hasMore,
+//       //   isLoading,
+//       //   isFetching: isFetchingRef.current,
+//       //   isTabChanging,
+//       //   isInitialLoad
+//       // });
+
+//       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
+//         console.log('Triggering load more');
+//         fetchNearByListings(activeFilter, searchQuery, false);
+//       }
+//     };
+
+//     observerRef.current = new IntersectionObserver(handleIntersection, {
+//       threshold: 0.1, // Trigger when 10% visible instead of 100%
+//       rootMargin: '50px' // Trigger 50px before the element is visible
+//     });
+
+//     const currentElement = loadMoreRef.current;
+//     if (currentElement) {
+//       observerRef.current.observe(currentElement);
+//     }
+
+//     return () => {
+//       if (observerRef.current) {
+//         observerRef.current.disconnect();
+//       }
+//     };
+//   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
+
+//   // useEffect(() => {
+//   //   // Scroll to top on filter change
+//   //   // console.log(isTabActive)
+//   //   if (isTabActive && isMobile) {
+//   //     window.scrollTo(0, isMobile ? 200 : 0);
+//   //   }
+//   //   // window.scrollTo(0, isMobile ? 200 : 0);
+//   // }); 
+
+//   useEffect(() => {
+//     if (isInitialLoad) {
+//       window.scrollTo(0, 0);
+//     } 
+//   }, []);
+
+//   // // Debug logging
+//   // useEffect(() => {
+//   //   console.log('State update:', {
+//   //     listings: listings.length,
+//   //     hasMore,
+//   //     isLoading,
+//   //     numberOfShownListings: numberOfShownListings.current,
+//   //     isTabChanging,
+//   //     isInitialLoad
+//   //   });
+//   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+
+//   const handleItemsClicks = () => {
+//     // Store the current scroll position and path
+//     sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+//     sessionStorage.setItem('lastPath', location.pathname);  // Store the current path
+//     console.log("window scrollY => ", window.scrollY)
+//   };
+
+//   // useEffect(() => {
+//   //   const storedPath = sessionStorage.getItem('lastPath');
+//   //   const storedScrollPosition = sessionStorage.getItem('scrollPosition');
+//   //   console.log("storedPath => ", storedPath)
+//   //   console.log("storedScrollPosition => ", storedScrollPosition)
+//   //   // Check if we are returning to the marketplace page
+//   //   //  if (storedPath === location.pathname && storedScrollPosition) {
+//   //   //   window.scrollTo(0, parseInt(storedScrollPosition)); // Scroll to the stored position
+//   //   //  }
+
+//   //   if (storedPath === location.pathname && storedScrollPosition) {
+//   //     setIsRestoringScroll(true);
+
+//   //     // Use setTimeout to ensure the state update is processed before scrolling
+//   //     setTimeout(() => {
+//   //       window.scrollTo(0, parseInt(storedScrollPosition));
+//   //       setIsRestoringScroll(false);
+
+//   //       // Clear the stored values after restoring
+//   //       // sessionStorage.removeItem('scrollPosition');
+//   //       // sessionStorage.removeItem('lastPath');
+//   //     }, 0);
+//   //   }
+//   // });  // Dependency to ensure the effect runs when the pathname changes
+
+
+
+//   const yourTrackingFunction = async (listing: any) => {
+//     try {
+//       await api.post(`/ads/${listing.id}/track-click`)
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
+
+//   const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+//     // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
+//     if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+//       console.log(e)
+//       // For new tab/window opens
+//       await yourTrackingFunction(listing)
+//       return; // Let default browser behavior proceed
+//     }
+
+//     // Regular left click
+//     e.preventDefault();
+//     await yourTrackingFunction(listing)
+
+//     // Programmatic navigation after tracking
+//     window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+//   };
+
+
+//   return (
+//     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
+//       <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+
+//       {!isTabChanging ? (
+//         <div className="px-4 my-4 space-y-4">
+//           {listings.map((listing, index) => (
+//             <div key={`${listing.id}-${index}`}>
+//               {listing?.type === "listing" && (
+//                 <div onClick={handleItemsClicks}>
+//                   <ListingItem
+//                   listing={listing}
+//                   onToggleSave={() => { }}
+//                   isUsa={false}
+//                   onHide={() => handleHide(listing.id)}
+//                   openModal={openModal}
+//                 />
+//                 </div>
+//               )}
+//               {listing?.type === "ad" && (
+//                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+//                   onClick={(e) => handleAdClick(e, listing)}
+//                   onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+//                   // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+//                 >
+//                   <div
+//                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+//                     style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+//                   >
+//                     <img
+//                       src={listing.image_url}
+//                       alt={listing.title}
+//                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
+//                     />
+//                   </div>
+//                 </a>
+//               )}
+//             </div>
+//           ))}
+
+//           {hasMore && (
+//             <div
+//               ref={loadMoreRef}
+//               className="w-full flex justify-center py-6 text-gray-400 text-sm"
+//             >
+//               {isLoading ? 'Loading more...' : 'Scroll for more...'}
+//             </div>
+//           )}
+
+//           {!hasMore && listings.length === 0 && <NoListingsFound />}
+
+//           {/* Debug info - remove in production */}
+//           {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+//             Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
+//             Shown: {numberOfShownListings.current}, TabChanging: {isTabChanging.toString()}
+//           </div> */}
+//         </div>
+//       ) : (
+//         <ListingSkeleton />
+//       )}
+//     </main>
+//   );
+// }
+
+
+// grok v1 with session
+
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import { api } from "@/lib/axois";
+// import { Search } from "lucide-react";
+// import CategoryIcons from "@/components/CategoryIcons";
+// import ListingItem from "@/components/ListingItem";
+// import { Input } from "@/components/ui/input";
+// import LocationWithRadius from "@/components/LocationWithRedius";
+// import FilterTabs from "@/components/FilterTabs";
+// import { useLocationContext } from "@/context/LocationContext";
+// import NoListingsFound from "@/components/NoListingsFound";
+// import { useIsMobile } from "@/hooks/use-mobile";
+// import ListingSkeleton from "@/components/ListingSkeleton";
+
+// const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
+//   const [distanceFromTop, setDistanceFromTop] = useState(0);
+
+//   useEffect(() => {
+//     if (!ref.current) return;
+
+//     const calculateDistance = () => {
+//       const rect = ref.current!.getBoundingClientRect();
+//       setDistanceFromTop(window.scrollY + rect.top);
+//     };
+
+//     calculateDistance();
+//     window.addEventListener('resize', calculateDistance);
+//     window.addEventListener('scroll', calculateDistance);
+
+//     return () => {
+//       window.removeEventListener('resize', calculateDistance);
+//       window.removeEventListener('scroll', calculateDistance);
+//     };
+//   }, [ref]);
+
+//   return distanceFromTop;
+// };
+
+// export default function Marketplace({ openModal }) {
+//   const isMobile = useIsMobile();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   const searchParams = new URLSearchParams(location.search);
+//   const initialQuery = searchParams.get("q") || "";
+//   const [searchInput, setSearchInput] = useState(initialQuery);
+//   const [searchQuery, setSearchQuery] = useState(initialQuery);
+//   const filterTabsRef = useRef<HTMLDivElement>(null);
+
+//   const [isLoading, setLoading] = useState(false);
+//   const [listings, setListings] = useState<any[]>([]);
+//   const [hasMore, setHasMore] = useState(true);
+//   const loadMoreRef = useRef<HTMLDivElement>(null);
+//   const numberOfShownListings = useRef(0);
+//   const listingCutoffTime = useRef("");
+//   const isFetchingRef = useRef(false);
+//   const [activeFilter, setActiveFilter] = useState("All");
+//   const [oldFilter, setOldFilter] = useState("");
+//   const { lat, lng, radius } = useLocationContext();
+//   const [isTabChanging, setIsTabChanging] = useState(false);
+//   const [isInitialLoad, setIsInitialLoad] = useState(true);
+//   const observerRef = useRef<IntersectionObserver | null>(null);
+
+//   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
+//   const tabParam = searchParams.get('tab');
+//   const isTabActive = tabParam === 'true';
+
+//   // Session storage key based on current path and filter
+//   const storageKey = `marketplace_listings_${location.pathname}_${activeFilter}_${searchQuery}`;
+
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setSearchInput(value);
+//     if (!value.trim()) {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   useEffect(() => {
+//     console.log('Distance from top:', distanceFromTop, 'px');
+//   }, [distanceFromTop]);
+
+//   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     const trimmed = searchInput.trim();
+//     if (trimmed) {
+//       navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
+//       setSearchQuery(trimmed);
+//     } else {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
+//     if (isFetchingRef.current) {
+//       return;
+//     }
+
+//     if (!hasMore && !isNewFilter) {
+//       return;
+//     }
+
+//     isFetchingRef.current = true;
+//     try {
+//       setLoading(true);
+//       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
+
+//       const sub_category =
+//         filter === "Services" ? "Service" :
+//         filter === "Items" ? "Item" :
+//         filter !== "All" ? filter : null;
+
+//       const { data: listingResponse } = await api.get("/listings/nearby", {
+//         params: {
+//           category: "MARKETPLACE",
+//           sub_category,
+//           search: query,
+//           limit: 10,
+//           numberOfShownListings: shownCount,
+//           lat: lat,
+//           lng: lng,
+//           radius: radius,
+//           listing_cutoff_time: isNewFilter ? undefined : listingCutoffTime.current,
+//         },
+//       });
+
+//       const data = listingResponse.data;
+
+//       if (data.listings && data.listings.length > 0) {
+//         let newListings;
+//         if (isNewFilter || shownCount === 0) {
+//           newListings = data.listings;
+//           setListings(newListings);
+//           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
+//           setOldFilter(filter);
+//         } else {
+//           newListings = [...listings, ...data.listings];
+//           setListings(newListings);
+//           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
+//         }
+
+//         // Store in sessionStorage
+//         sessionStorage.setItem(storageKey, JSON.stringify({
+//           listings: newListings,
+//           hasMore: data.hasMore,
+//           listingCutoffTime: data.listing_cutoff_time || "",
+//           numberOfShownListings: numberOfShownListings.current
+//         }));
+
+//         setHasMore(data.hasMore);
+//         listingCutoffTime.current = data.listing_cutoff_time || "";
+//       } else {
+//         if (isNewFilter || shownCount === 0) {
+//           setListings([]);
+//           numberOfShownListings.current = 0;
+//           sessionStorage.setItem(storageKey, JSON.stringify({
+//             listings: [],
+//             hasMore: false,
+//             listingCutoffTime: "",
+//             numberOfShownListings: 0
+//           }));
+//         }
+//         setHasMore(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching accommodations:", error);
+//       setHasMore(false);
+//     } finally {
+//       setLoading(false);
+//       isFetchingRef.current = false;
+//       setIsInitialLoad(false);
+//     }
+//   }, [lat, lng, radius, hasMore, listings, storageKey]);
+
+//   const handleHide = (id: string) => {
+//     const updatedListings = listings.filter(listing => listing.id !== id);
+//     setListings(updatedListings);
+//     // Update sessionStorage
+//     sessionStorage.setItem(storageKey, JSON.stringify({
+//       listings: updatedListings,
+//       hasMore,
+//       listingCutoffTime: listingCutoffTime.current,
+//       numberOfShownListings: numberOfShownListings.current
+//     }));
+//   };
+
+//   // Load from sessionStorage on mount or filter/search/location change
+//   useEffect(() => {
+//     // Reset state
+//     numberOfShownListings.current = 0;
+//     setListings([]);
+//     setHasMore(true);
+//     setIsInitialLoad(true);
+
+//     // Check sessionStorage
+//     const storedData = sessionStorage.getItem(storageKey);
+//     if (storedData) {
+//       const parsedData = JSON.parse(storedData);
+//       setListings(parsedData.listings || []);
+//       setHasMore(parsedData.hasMore !== false);
+//       listingCutoffTime.current = parsedData.listingCutoffTime || "";
+//       numberOfShownListings.current = parsedData.numberOfShownListings || 0;
+//       setIsInitialLoad(false);
+//     } else {
+//       // Fetch if no stored data
+//       fetchNearByListings(activeFilter, searchQuery, true);
+//     }
+//   }, [activeFilter, searchQuery, lat, lng, radius, storageKey]);
+
+//   useEffect(() => {
+//     const queryParam = new URLSearchParams(location.search).get("q") || "";
+//     setSearchQuery(queryParam);
+//     setSearchInput(queryParam);
+//   }, [location.search]);
+
+//   const handleFilterClick = (filter: string) => {
+//     const currentParams = new URLSearchParams(location.search);
+//     currentParams.set('tab', 'true');
+//     navigate(`${location.pathname}?${currentParams.toString()}`);
+//     window.scrollTo(0, isMobile ? 200 : 0);
+//     setIsTabChanging(true);
+//     setActiveFilter(filter);
+//     setTimeout(() => {
+//       setIsTabChanging(false);
+//     }, 500);
+//   };
+
+//   useEffect(() => {
+//     if (observerRef.current) {
+//       observerRef.current.disconnect();
+//     }
+
+//     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+//       const first = entries[0];
+//       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
+//         fetchNearByListings(activeFilter, searchQuery, false);
+//       }
+//     };
+
+//     observerRef.current = new IntersectionObserver(handleIntersection, {
+//       threshold: 0.1,
+//       rootMargin: '50px'
+//     });
+
+//     const currentElement = loadMoreRef.current;
+//     if (currentElement) {
+//       observerRef.current.observe(currentElement);
+//     }
+
+//     return () => {
+//       if (observerRef.current) {
+//         observerRef.current.disconnect();
+//       }
+//     };
+//   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
+
+//   useEffect(() => {
+//     if (isInitialLoad) {
+//       window.scrollTo(0, 0);
+//     }
+//   }, []);
+
+//   const handleItemsClicks = () => {
+//     sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+//     sessionStorage.setItem('lastPath', location.pathname);
+//   };
+
+//   const yourTrackingFunction = async (listing: any) => {
+//     try {
+//       await api.post(`/ads/${listing.id}/track-click`);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+//     if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+//       await yourTrackingFunction(listing);
+//       return;
+//     }
+
+//     e.preventDefault();
+//     await yourTrackingFunction(listing);
+//     window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+//   };
+
+//   return (
+//     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
+//       <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+
+//       {!isTabChanging ? (
+//         <div className="px-4 my-4 space-y-4">
+//           {listings.map((listing, index) => (
+//             <div key={`${listing.id}-${index}`}>
+//               {listing?.type === "listing" && (
+//                 <div onClick={handleItemsClicks}>
+//                   <ListingItem
+//                     listing={listing}
+//                     onToggleSave={() => {}}
+//                     isUsa={false}
+//                     onHide={() => handleHide(listing.id)}
+//                     openModal={openModal}
+//                   />
+//                 </div>
+//               )}
+//               {listing?.type === "ad" && (
+//                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+//                   onClick={(e) => handleAdClick(e, listing)}
+//                   onAuxClick={(e) => handleAdClick(e, listing)}
+//                 >
+//                   <div
+//                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+//                     style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+//                   >
+//                     <img
+//                       src={listing.image_url}
+//                       alt={listing.title}
+//                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
+//                     />
+//                   </div>
+//                 </a>
+//               )}
+//             </div>
+//           ))}
+
+//           {hasMore && (
+//             <div
+//               ref={loadMoreRef}
+//               className="w-full flex justify-center py-6 text-gray-400 text-sm"
+//             >
+//               {isLoading ? 'Loading more...' : 'Scroll for more...'}
+//             </div>
+//           )}
+
+//           {!hasMore && listings.length === 0 && <NoListingsFound />}
+//         </div>
+//       ) : (
+//         <ListingSkeleton />
+//       )}
+//     </main>
+//   );
+// }
+
+
+// claude v1 with scroll restore
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import { api } from "@/lib/axois";
+// import { Search } from "lucide-react";
+// import CategoryIcons from "@/components/CategoryIcons";
+// import ListingItem from "@/components/ListingItem";
+// import { Input } from "@/components/ui/input";
+// import LocationWithRadius from "@/components/LocationWithRedius";
+// import FilterTabs from "@/components/FilterTabs";
+// import { useLocationContext } from "@/context/LocationContext";
+// import NoListingsFound from "@/components/NoListingsFound";
+// import { useIsMobile } from "@/hooks/use-mobile";
+// import ListingSkeleton from "@/components/ListingSkeleton";
+
+// const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
+//   const [distanceFromTop, setDistanceFromTop] = useState(0);
+
+//   useEffect(() => {
+//     if (!ref.current) return;
+
+//     const calculateDistance = () => {
+//       const rect = ref.current!.getBoundingClientRect();
+//       setDistanceFromTop(window.scrollY + rect.top);
+//     };
+
+//     calculateDistance();
+//     window.addEventListener('resize', calculateDistance);
+//     window.addEventListener('scroll', calculateDistance);
+
+//     return () => {
+//       window.removeEventListener('resize', calculateDistance);
+//       window.removeEventListener('scroll', calculateDistance);
+//     };
+//   }, [ref]);
+
+//   return distanceFromTop;
+// };
+
+// export default function Marketplace({ openModal }) {
+//   const isMobile = useIsMobile();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   const searchParams = new URLSearchParams(location.search);
+//   const initialQuery = searchParams.get("q") || "";
+//   const [searchInput, setSearchInput] = useState(initialQuery);
+//   const [searchQuery, setSearchQuery] = useState(initialQuery);
+//   const filterTabsRef = useRef<HTMLDivElement>(null);
+
+//   const [isLoading, setLoading] = useState(false);
+//   const [listings, setListings] = useState<any[]>([]);
+//   const [hasMore, setHasMore] = useState(true);
+//   const loadMoreRef = useRef<HTMLDivElement>(null);
+//   const numberOfShownListings = useRef(0);
+//   const listingCutoffTime = useRef("");
+//   const isFetchingRef = useRef(false);
+//   const [activeFilter, setActiveFilter] = useState("All");
+//   const [oldFilter, setOldFilter] = useState("");
+//   const { lat, lng, radius } = useLocationContext();
+//   const [isTabChanging, setIsTabChanging] = useState(false);
+//   const [isInitialLoad, setIsInitialLoad] = useState(true);
+//   const observerRef = useRef<IntersectionObserver | null>(null);
+//   const [scrollRestored, setScrollRestored] = useState(false);
+
+//   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
+//   const tabParam = searchParams.get('tab');
+//   const isTabActive = tabParam === 'true';
+
+//   // Session storage key based on current path and filter
+//   const storageKey = `marketplace_listings_${location.pathname}_${activeFilter}_${searchQuery}`;
+//   const scrollStorageKey = `marketplace_scroll_${location.pathname}_${activeFilter}_${searchQuery}`;
+
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const value = e.target.value;
+//     setSearchInput(value);
+//     if (!value.trim()) {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   // Save scroll position when leaving the page
+//   const saveScrollPosition = useCallback(() => {
+//     sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+//     console.log(window.scrollY);
+//   }, [scrollStorageKey]);
+
+//   // Restore scroll position
+//   const restoreScrollPosition = useCallback(() => {
+//     if (scrollRestored) return;
+
+//     const savedScrollPosition = sessionStorage.getItem(scrollStorageKey);
+//     if (savedScrollPosition) {
+//       const scrollY = parseInt(savedScrollPosition, 10);
+//       if (!isNaN(scrollY)) {
+//         // Use requestAnimationFrame to ensure DOM is ready
+//         requestAnimationFrame(() => {
+//           console.log('Scrolling to:', scrollY);
+//           window.scrollTo(0, scrollY);
+//           setScrollRestored(true);
+//         });
+//       }
+//     } else {
+//       setScrollRestored(true);
+//     }
+//   }, []);
+
+//   // Save scroll position on scroll
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       // Throttle scroll saving to avoid excessive sessionStorage writes
+//       clearTimeout((window as any).scrollSaveTimeout);
+//       (window as any).scrollSaveTimeout = setTimeout(() => {
+//         saveScrollPosition();
+//       }, 100);
+//     };
+
+//     window.addEventListener('scroll', handleScroll, { passive: true });
+
+//     return () => {
+//       window.removeEventListener('scroll', handleScroll);
+//       if ((window as any).scrollSaveTimeout) {
+//         clearTimeout((window as any).scrollSaveTimeout);
+//       }
+//     };
+//   }, [saveScrollPosition]);
+
+//   // Save scroll position when component unmounts or before navigation
+//   useEffect(() => {
+//     return () => {
+//       saveScrollPosition();
+//     };
+//   }, [saveScrollPosition]);
+
+//   useEffect(() => {
+//     console.log('Distance from top:', distanceFromTop, 'px');
+//   }, [distanceFromTop]);
+
+//   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     const trimmed = searchInput.trim();
+//     if (trimmed) {
+//       // Clear scroll position when searching
+//       sessionStorage.removeItem(scrollStorageKey);
+//       setScrollRestored(false);
+//       navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
+//       setSearchQuery(trimmed);
+//     } else {
+//       navigate(location.pathname);
+//       setSearchQuery("");
+//     }
+//   };
+
+//   const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
+//     if (isFetchingRef.current) {
+//       return;
+//     }
+
+//     if (!hasMore && !isNewFilter) {
+//       return;
+//     }
+
+//     isFetchingRef.current = true;
+//     try {
+//       setLoading(true);
+//       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
+
+//       const sub_category =
+//         filter === "Services" ? "Service" :
+//           filter === "Items" ? "Item" :
+//             filter !== "All" ? filter : null;
+
+//       const { data: listingResponse } = await api.get("/listings/nearby", {
+//         params: {
+//           category: "MARKETPLACE",
+//           sub_category,
+//           search: query,
+//           limit: 10,
+//           numberOfShownListings: shownCount,
+//           lat: lat,
+//           lng: lng,
+//           radius: radius,
+//           listing_cutoff_time: isNewFilter ? undefined : listingCutoffTime.current,
+//         },
+//       });
+
+//       const data = listingResponse.data;
+
+//       if (data.listings && data.listings.length > 0) {
+//         let newListings;
+//         if (isNewFilter || shownCount === 0) {
+//           newListings = data.listings;
+//           setListings(newListings);
+//           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
+//           setOldFilter(filter);
+//         } else {
+//           newListings = [...listings, ...data.listings];
+//           setListings(newListings);
+//           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
+//         }
+
+//         // Store in sessionStorage
+//         sessionStorage.setItem(storageKey, JSON.stringify({
+//           listings: newListings,
+//           hasMore: data.hasMore,
+//           listingCutoffTime: data.listing_cutoff_time || "",
+//           numberOfShownListings: numberOfShownListings.current
+//         }));
+
+//         setHasMore(data.hasMore);
+//         listingCutoffTime.current = data.listing_cutoff_time || "";
+//       } else {
+//         if (isNewFilter || shownCount === 0) {
+//           setListings([]);
+//           numberOfShownListings.current = 0;
+//           sessionStorage.setItem(storageKey, JSON.stringify({
+//             listings: [],
+//             hasMore: false,
+//             listingCutoffTime: "",
+//             numberOfShownListings: 0
+//           }));
+//         }
+//         setHasMore(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching accommodations:", error);
+//       setHasMore(false);
+//     } finally {
+//       setLoading(false);
+//       isFetchingRef.current = false;
+//       setIsInitialLoad(false);
+//       // Restore scroll position after data is loaded
+//       if (!scrollRestored) {
+//         setTimeout(restoreScrollPosition, 100);
+//       }
+//     }
+//   }, [lat, lng, radius, hasMore, listings, storageKey, scrollRestored, restoreScrollPosition]);
+
+//   const handleHide = (id: string) => {
+//     const updatedListings = listings.filter(listing => listing.id !== id);
+//     setListings(updatedListings);
+//     // Update sessionStorage
+//     sessionStorage.setItem(storageKey, JSON.stringify({
+//       listings: updatedListings,
+//       hasMore,
+//       listingCutoffTime: listingCutoffTime.current,
+//       numberOfShownListings: numberOfShownListings.current
+//     }));
+//   };
+
+//   // Load from sessionStorage on mount or filter/search/location change
+//   useEffect(() => {
+//     // Reset state
+//     numberOfShownListings.current = 0;
+//     setListings([]);
+//     setHasMore(true);
+//     setIsInitialLoad(true);
+//     setScrollRestored(false);
+
+//     // Check sessionStorage
+//     const storedData = sessionStorage.getItem(storageKey);
+//     if (storedData) {
+//       const parsedData = JSON.parse(storedData);
+//       setListings(parsedData.listings || []);
+//       setHasMore(parsedData.hasMore !== false);
+//       listingCutoffTime.current = parsedData.listingCutoffTime || "";
+//       numberOfShownListings.current = parsedData.numberOfShownListings || 0;
+//       setIsInitialLoad(false);
+//       // Restore scroll position after listings are set
+//       setTimeout(restoreScrollPosition, 100);
+//     } else {
+//       // Fetch if no stored data
+//       fetchNearByListings(activeFilter, searchQuery, true);
+//     }
+//   }, [activeFilter, searchQuery, lat, lng, radius, storageKey, restoreScrollPosition]);
+
+//   useEffect(() => {
+//     const queryParam = new URLSearchParams(location.search).get("q") || "";
+//     setSearchQuery(queryParam);
+//     setSearchInput(queryParam);
+//   }, [location.search]);
+
+//   const handleFilterClick = (filter: string) => {
+//     const currentParams = new URLSearchParams(location.search);
+//     currentParams.set('tab', 'true');
+
+//     // Clear scroll position when changing filter
+//     const newScrollStorageKey = `marketplace_scroll_${location.pathname}_${filter}_${searchQuery}`;
+//     sessionStorage.removeItem(newScrollStorageKey);
+//     setScrollRestored(false);
+
+//     navigate(`${location.pathname}?${currentParams.toString()}`);
+//     window.scrollTo(0, isMobile ? 200 : 0);
+//     setIsTabChanging(true);
+//     setActiveFilter(filter);
+//     setTimeout(() => {
+//       setIsTabChanging(false);
+//     }, 500);
+//   };
+
+//   useEffect(() => {
+//     if (observerRef.current) {
+//       observerRef.current.disconnect();
+//     }
+
+//     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+//       const first = entries[0];
+//       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
+//         fetchNearByListings(activeFilter, searchQuery, false);
+//       }
+//     };
+
+//     observerRef.current = new IntersectionObserver(handleIntersection, {
+//       threshold: 0.1,
+//       rootMargin: '50px'
+//     });
+
+//     const currentElement = loadMoreRef.current;
+//     if (currentElement) {
+//       observerRef.current.observe(currentElement);
+//     }
+
+//     return () => {
+//       if (observerRef.current) {
+//         observerRef.current.disconnect();
+//       }
+//     };
+//   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
+
+//   useEffect(() => {
+//     // Only scroll to top on initial load if there's no saved scroll position
+//     if (isInitialLoad && !sessionStorage.getItem(scrollStorageKey)) {
+//       window.scrollTo(0, 0);
+//     }
+//   }, [isInitialLoad, scrollStorageKey]);
+
+//   const handleItemsClicks = () => {
+//     // Save current scroll position before navigating
+//     // saveScrollPosition();
+//     sessionStorage.setItem('lastPath', location.pathname);
+//   };
+
+//   const yourTrackingFunction = async (listing: any) => {
+//     try {
+//       await api.post(`/ads/${listing.id}/track-click`);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+//     if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+//       await yourTrackingFunction(listing);
+//       return;
+//     }
+
+//     e.preventDefault();
+//     await yourTrackingFunction(listing);
+//     // Save scroll position before opening ad
+//     saveScrollPosition();
+//     window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+//   };
+
+//   return (
+//     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
+//       <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+
+//       {!isTabChanging ? (
+//         <div className="px-4 my-4 space-y-4">
+//           {listings.map((listing, index) => (
+//             <div key={`${listing.id}-${index}`}>
+//               {listing?.type === "listing" && (
+//                 <div onClick={handleItemsClicks}>
+//                   <ListingItem
+//                     listing={listing}
+//                     onToggleSave={() => { }}
+//                     isUsa={false}
+//                     onHide={() => handleHide(listing.id)}
+//                     openModal={openModal}
+//                   />
+//                 </div>
+//               )}
+//               {listing?.type === "ad" && (
+//                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
+//                   onClick={(e) => handleAdClick(e, listing)}
+//                   onAuxClick={(e) => handleAdClick(e, listing)}
+//                 >
+//                   <div
+//                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+//                     style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+//                   >
+//                     <img
+//                       src={listing.image_url}
+//                       alt={listing.title}
+//                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
+//                     />
+//                   </div>
+//                 </a>
+//               )}
+//             </div>
+//           ))}
+
+//           {hasMore && (
+//             <div
+//               ref={loadMoreRef}
+//               className="w-full flex justify-center py-6 text-gray-400 text-sm"
+//             >
+//               {isLoading ? 'Loading more...' : 'Scroll for more...'}
+//             </div>
+//           )}
+
+//           {!hasMore && listings.length === 0 && <NoListingsFound />}
+//         </div>
+//       ) : (
+//         <ListingSkeleton />
+//       )}
+//     </main>
+//   );
+// }
+
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "@/lib/axois";
@@ -1581,10 +2768,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
       setDistanceFromTop(window.scrollY + rect.top);
     };
 
-    // Calculate immediately
     calculateDistance();
-
-    // Re-calculate on resize/scroll
     window.addEventListener('resize', calculateDistance);
     window.addEventListener('scroll', calculateDistance);
 
@@ -1615,22 +2799,21 @@ export default function Marketplace({ openModal }) {
   const numberOfShownListings = useRef(0);
   const listingCutoffTime = useRef("");
   const isFetchingRef = useRef(false);
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState(sessionStorage.getItem('selectedTabMarketplace') || "All");
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
-
-  const [isRestoringScroll, setIsRestoringScroll] = useState(false);
-
-  // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [scrollRestored, setScrollRestored] = useState(false);
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
-  const tabParam = searchParams.get('tab'); // returns "true" or null
-
-  // If you want a boolean value
+  const tabParam = searchParams.get('tab');
   const isTabActive = tabParam === 'true';
+
+  // Session storage key based on current path and filter
+  const storageKey = `marketplace_listings_${location.pathname}_${activeFilter}_${searchQuery}`;
+  const scrollStorageKey = `marketplace_scroll_${location.pathname}_${activeFilter}_${searchQuery}`;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -1641,14 +2824,77 @@ export default function Marketplace({ openModal }) {
     }
   };
 
+  // Save scroll position when leaving the page
+  const saveScrollPosition = useCallback(() => {
+    if (scrollRestored) {
+      console.log(window.scrollY.toString(), window.scrollY, 'scroll')
+      sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+      localStorage.setItem(scrollStorageKey, window.scrollY.toString());
+    }
+  }, [scrollStorageKey, scrollRestored]);
+
+  // Restore scroll position
+  const restoreScrollPosition = useCallback(() => {
+    if (scrollRestored) return;
+    
+    const savedScrollPosition = sessionStorage.getItem(scrollStorageKey);
+    if (savedScrollPosition) {
+      const scrollY = parseInt(savedScrollPosition, 10) || parseInt(localStorage.getItem(scrollStorageKey), 10);
+      if (!isNaN(scrollY)) {
+        // Use requestAnimationFrame to ensure DOM is ready
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollY);
+          setScrollRestored(true);
+        });
+      }
+    } else {
+      setScrollRestored(true);
+    }
+  }, []);
+
+  // Save scroll position on scroll - only after restoration is complete
   useEffect(() => {
-    console.log('Distance from top:', distanceFromTop, 'px');
-  }, [distanceFromTop]);
+    if (!scrollRestored) return;
+
+    const handleScroll = () => {
+      // Throttle scroll saving to avoid excessive sessionStorage writes
+      clearTimeout((window as any).scrollSaveTimeout);
+      (window as any).scrollSaveTimeout = setTimeout(() => {
+        sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+        localStorage.setItem(scrollStorageKey, window.scrollY.toString());
+      }, 200);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if ((window as any).scrollSaveTimeout) {
+        clearTimeout((window as any).scrollSaveTimeout);
+      }
+    };
+  }, [scrollStorageKey, scrollRestored]);
+
+  // Save scroll position when component unmounts or before navigation
+  useEffect(() => {
+    return () => {
+      if (scrollRestored) {
+        sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+      }
+    };
+  }, [scrollStorageKey, scrollRestored]);
+
+  // useEffect(() => {
+  //   console.log('Distance from top:', distanceFromTop, 'px');
+  // }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = searchInput.trim();
     if (trimmed) {
+      // Clear scroll position when searching
+      sessionStorage.removeItem(scrollStorageKey);
+      setScrollRestored(false);
       navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
       setSearchQuery(trimmed);
     } else {
@@ -1657,31 +2903,24 @@ export default function Marketplace({ openModal }) {
     }
   };
 
-  // Use useCallback to prevent unnecessary re-renders
   const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
-    // Prevent multiple simultaneous requests
     if (isFetchingRef.current) {
-      // console.log('Already fetching, skipping request');
       return;
     }
 
-    // Don't fetch if no more items and it's not a new filter
     if (!hasMore && !isNewFilter) {
-      // console.log('No more items to fetch');
       return;
     }
 
     isFetchingRef.current = true;
-    // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
-
     try {
       setLoading(true);
       const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
       const sub_category =
         filter === "Services" ? "Service" :
-          filter === "Items" ? "Item" :
-            filter !== "All" ? filter : null;
+        filter === "Items" ? "Item" :
+        filter !== "All" ? filter : null;
 
       const { data: listingResponse } = await api.get("/listings/nearby", {
         params: {
@@ -1698,62 +2937,94 @@ export default function Marketplace({ openModal }) {
       });
 
       const data = listingResponse.data;
-      console.log('Fetch response:', {
-        listingsCount: data.listings?.length || 0,
-        hasMore: data.hasMore,
-        totalCount: data.totalCount,
-        numberOfShownListings: data.numberOfShownListings
-      });
-
+      
       if (data.listings && data.listings.length > 0) {
+        let newListings;
         if (isNewFilter || shownCount === 0) {
-          // Reset for new filter or initial load
-          setListings(data.listings);
+          newListings = data.listings;
+          setListings(newListings);
           numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
           setOldFilter(filter);
         } else {
-          // Append to existing listings
-          setListings(prev => [...prev, ...data.listings]);
+          newListings = [...listings, ...data.listings];
+          setListings(newListings);
           numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
         }
+
+        // Store in sessionStorage
+        sessionStorage.setItem(storageKey, JSON.stringify({
+          listings: newListings,
+          hasMore: data.hasMore,
+          listingCutoffTime: data.listing_cutoff_time || "",
+          numberOfShownListings: numberOfShownListings.current
+        }));
 
         setHasMore(data.hasMore);
         listingCutoffTime.current = data.listing_cutoff_time || "";
       } else {
-        // No listings returned
         if (isNewFilter || shownCount === 0) {
           setListings([]);
           numberOfShownListings.current = 0;
+          sessionStorage.setItem(storageKey, JSON.stringify({
+            listings: [],
+            hasMore: false,
+            listingCutoffTime: "",
+            numberOfShownListings: 0
+          }));
         }
         setHasMore(false);
       }
     } catch (error) {
       console.error("Error fetching accommodations:", error);
-      setHasMore(false); // Stop trying to fetch more on error
+      setHasMore(false);
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
       setIsInitialLoad(false);
+      // Restore scroll position after data is loaded
+      if (!scrollRestored && !isNewFilter) {
+        setTimeout(restoreScrollPosition, 300);
+      }
     }
-  }, [lat, lng, radius, hasMore]);
+  }, [lat, lng, radius, hasMore, listings, storageKey, scrollRestored, restoreScrollPosition]);
 
   const handleHide = (id: string) => {
-    setListings(listings.filter(listing => listing.id !== id));
+    const updatedListings = listings.filter(listing => listing.id !== id);
+    setListings(updatedListings);
+    // Update sessionStorage
+    sessionStorage.setItem(storageKey, JSON.stringify({
+      listings: updatedListings,
+      hasMore,
+      listingCutoffTime: listingCutoffTime.current,
+      numberOfShownListings: numberOfShownListings.current
+    }));
   };
 
-  // Reset and fetch on filter/search/location change
+  // Load from sessionStorage on mount or filter/search/location change
   useEffect(() => {
-    console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
-
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
+    setScrollRestored(false);
 
-    // Fetch with new filter flag
-    fetchNearByListings(activeFilter, searchQuery, true);
-  }, [activeFilter, searchQuery, lat, lng, radius]);
+    // Check sessionStorage
+    const storedData = sessionStorage.getItem(storageKey);
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setListings(parsedData.listings || []);
+      setHasMore(parsedData.hasMore !== false);
+      listingCutoffTime.current = parsedData.listingCutoffTime || "";
+      numberOfShownListings.current = parsedData.numberOfShownListings || 0;
+      setIsInitialLoad(false);
+      // Restore scroll position after listings are set
+      setTimeout(restoreScrollPosition, 100);
+    } else {
+      // Fetch if no stored data
+      fetchNearByListings(activeFilter, searchQuery, true);
+    }
+  }, [activeFilter, searchQuery, lat, lng, radius, storageKey, restoreScrollPosition]);
 
   useEffect(() => {
     const queryParam = new URLSearchParams(location.search).get("q") || "";
@@ -1762,17 +3033,16 @@ export default function Marketplace({ openModal }) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
-    // Get the current query parameters from the URL
     const currentParams = new URLSearchParams(location.search);
-
-    // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
     currentParams.set('tab', 'true');
-
-    // Navigate to the same path but with the updated query parameters
+    
+    // Clear scroll position when changing filter
+    const newScrollStorageKey = `marketplace_scroll_${location.pathname}_${filter}_${searchQuery}`;
+    sessionStorage.removeItem(newScrollStorageKey);
+    setScrollRestored(false);
+    
     navigate(`${location.pathname}?${currentParams.toString()}`);
-
     window.scrollTo(0, isMobile ? 200 : 0);
-
     setIsTabChanging(true);
     setActiveFilter(filter);
     setTimeout(() => {
@@ -1780,33 +3050,21 @@ export default function Marketplace({ openModal }) {
     }, 500);
   };
 
-  // Improved intersection observer with better cleanup
   useEffect(() => {
-    // Clean up existing observer
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      // console.log('Intersection observed:', {
-      //   isIntersecting: first.isIntersecting,
-      //   hasMore,
-      //   isLoading,
-      //   isFetching: isFetchingRef.current,
-      //   isTabChanging,
-      //   isInitialLoad
-      // });
-
       if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
-        console.log('Triggering load more');
         fetchNearByListings(activeFilter, searchQuery, false);
       }
     };
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: '50px' // Trigger 50px before the element is visible
+      threshold: 0.1,
+      rootMargin: '50px'
     });
 
     const currentElement = loadMoreRef.current;
@@ -1821,92 +3079,48 @@ export default function Marketplace({ openModal }) {
     };
   }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
 
-  // useEffect(() => {
-  //   // Scroll to top on filter change
-  //   // console.log(isTabActive)
-  //   if (isTabActive && isMobile) {
-  //     window.scrollTo(0, isMobile ? 200 : 0);
-  //   }
-  //   // window.scrollTo(0, isMobile ? 200 : 0);
-  // }); 
-
   useEffect(() => {
-    if (isInitialLoad) {
+    // Only scroll to top on initial load if there's no saved scroll position
+    if (isInitialLoad && !sessionStorage.getItem(scrollStorageKey)) {
       window.scrollTo(0, 0);
-    } 
-  }, []);
+    }
+  }, [isInitialLoad, scrollStorageKey]);
 
-  // // Debug logging
-  // useEffect(() => {
-  //   console.log('State update:', {
-  //     listings: listings.length,
-  //     hasMore,
-  //     isLoading,
-  //     numberOfShownListings: numberOfShownListings.current,
-  //     isTabChanging,
-  //     isInitialLoad
-  //   });
-  // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+  // window.addEventListener('beforeunload', saveScrollPosition);
 
   const handleItemsClicks = () => {
-    // Store the current scroll position and path
-    sessionStorage.setItem('scrollPosition', window.scrollY.toString());
-    sessionStorage.setItem('lastPath', location.pathname);  // Store the current path
-    console.log("window scrollY => ", window.scrollY)
+    // Save current scroll position before navigating
+    // saveScrollPosition();
+    // console.log('Scroll position saved', window.scrollY);
+//     console.log("Before save:", sessionStorage.getItem(scrollStorageKey));
+// sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+// console.log("After save:", sessionStorage.getItem(scrollStorageKey));
+    localStorage.setItem(scrollStorageKey, window.scrollY.toString());
+    // sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+    sessionStorage.setItem('lastPath', location.pathname);
+    sessionStorage.setItem('selectedTabMarketplace', activeFilter);
   };
-
-  // useEffect(() => {
-  //   const storedPath = sessionStorage.getItem('lastPath');
-  //   const storedScrollPosition = sessionStorage.getItem('scrollPosition');
-  //   console.log("storedPath => ", storedPath)
-  //   console.log("storedScrollPosition => ", storedScrollPosition)
-  //   // Check if we are returning to the marketplace page
-  //   //  if (storedPath === location.pathname && storedScrollPosition) {
-  //   //   window.scrollTo(0, parseInt(storedScrollPosition)); // Scroll to the stored position
-  //   //  }
-
-  //   if (storedPath === location.pathname && storedScrollPosition) {
-  //     setIsRestoringScroll(true);
-      
-  //     // Use setTimeout to ensure the state update is processed before scrolling
-  //     setTimeout(() => {
-  //       window.scrollTo(0, parseInt(storedScrollPosition));
-  //       setIsRestoringScroll(false);
-        
-  //       // Clear the stored values after restoring
-  //       // sessionStorage.removeItem('scrollPosition');
-  //       // sessionStorage.removeItem('lastPath');
-  //     }, 0);
-  //   }
-  // });  // Dependency to ensure the effect runs when the pathname changes
-  
-  
 
   const yourTrackingFunction = async (listing: any) => {
     try {
-      await api.post(`/ads/${listing.id}/track-click`)
+      await api.post(`/ads/${listing.id}/track-click`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
-  const handleAdClick = async (e: React.MouseEvent, listing: any) => {
-    // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
-    if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
-      console.log(e)
-      // For new tab/window opens
-      await yourTrackingFunction(listing)
-      return; // Let default browser behavior proceed
-    }
-
-    // Regular left click
-    e.preventDefault();
-    await yourTrackingFunction(listing)
-
-    // Programmatic navigation after tracking
-    window.open(listing.target_url, '_blank', 'noopener,noreferrer');
   };
 
+  const handleAdClick = async (e: React.MouseEvent, listing: any) => {
+    if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
+      await yourTrackingFunction(listing);
+      return;
+    }
+
+    e.preventDefault();
+    await yourTrackingFunction(listing);
+    // Save scroll position before opening ad
+    saveScrollPosition();
+    window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
@@ -1919,19 +3133,18 @@ export default function Marketplace({ openModal }) {
               {listing?.type === "listing" && (
                 <div onClick={handleItemsClicks}>
                   <ListingItem
-                  listing={listing}
-                  onToggleSave={() => { }}
-                  isUsa={false}
-                  onHide={() => handleHide(listing.id)}
-                  openModal={openModal}
-                />
+                    listing={listing}
+                    onToggleSave={() => {}}
+                    isUsa={false}
+                    onHide={() => handleHide(listing.id)}
+                    openModal={openModal}
+                  />
                 </div>
               )}
               {listing?.type === "ad" && (
                 <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
                   onClick={(e) => handleAdClick(e, listing)}
-                  onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                  // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                  onAuxClick={(e) => handleAdClick(e, listing)}
                 >
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
@@ -1958,12 +3171,6 @@ export default function Marketplace({ openModal }) {
           )}
 
           {!hasMore && listings.length === 0 && <NoListingsFound />}
-
-          {/* Debug info - remove in production */}
-          {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
-            Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
-            Shown: {numberOfShownListings.current}, TabChanging: {isTabChanging.toString()}
-          </div> */}
         </div>
       ) : (
         <ListingSkeleton />

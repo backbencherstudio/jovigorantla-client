@@ -1063,7 +1063,7 @@ export default function Home({ openModal }) {
       console.log(e)
       // For new tab/window opens
       await yourTrackingFunction(listing)
-      return; // Let default browser behavior proceed
+      return; // Let default browser behavior proceed 
     }
 
     // Regular left click
