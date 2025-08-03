@@ -487,7 +487,7 @@ If you’re interested or have any questions, please reach out for pictures, ren
           <div className="w-full relative">
             <div
               // style={{ width: width }}
-              className="my-8 p-4 bg-white  mx-auto fixed left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
+              className={`my-8 p-4 bg-white  mx-auto fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full`}
             >
               <Button
                 onClick={handleContact}
