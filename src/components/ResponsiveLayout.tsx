@@ -214,7 +214,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
 
 
   return (
-    <div className={`flex flex-col  bg-gray-50`}>
+    <div className={`flex flex-col bg-gray-50`}>
       <Header />
 
       {isVisiblef ? isDesktop ? null : <PageSkeleton /> : <div className="flex flex-1 min-h-[calc(100vh-67px)] ">
@@ -225,17 +225,20 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
           </div>
         )}
 
+        {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
+            }  flex flex-col flex-1 min-h-[100%]`} */}
+
         {!isValidPage && <main
-          className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl"
-            } bg-white flex flex-col flex-1 min-h-[100%]`}
+          className={`w-full mx-auto ${fullWidth ? "" : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+            }  flex flex-col flex-1 min-h-[100%]`}
         >
           {/* Page Header with back button */}
           {title && (
             <div className="relative">
               <div
-                className="fixed z-20 bg-white  border-b border-gray-100 px-4 py-3 flex items-center"
+                className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
                 style={{
-                  width: width,
+                  // width: width, 
                   top: "60px" /* Header height */,
                 }}
               >
@@ -302,7 +305,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children, title, hi
                   {/* <LocationWithRadius /> */}
                   {/* </div> */}
 
-                  <div className="mt-2 mr-[-18px] flex items-center justify-end">
+
+                  {/* mr-[-18px] */}
+                  <div className="mt-2 flex items-center justify-end">
                     <LocationWithRadius popupStyle="mr-2" />
                   </div>
                 </div>

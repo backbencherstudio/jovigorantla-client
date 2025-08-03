@@ -15,7 +15,6 @@
 // import SidebarAds from "@/components/ui/Sidebar-Ads";
 // import FilterTabs from "@/components/FilterTabs";
 
-
 // export default function Marketplace() {
 //   const isMobile = useIsMobile();
 //   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
@@ -31,8 +30,6 @@
 //   const isFetchingRef = useRef(false);
 //   const [activeFilter, setActiveFilter] = useState("All");
 //   const [oldFilter, setOldFilter] = useState("");
-
-
 
 //   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
 //   const rightSidebarWidth = isDesktop ? "300px" : "0px";
@@ -89,9 +86,6 @@
 // //     }
 // //   };
 
-
-
-
 // //   useEffect(() => {
 // //     fetchNearByListings();
 // //   }, []);
@@ -104,12 +98,11 @@
 //       setLoading(true);
 //       const shownCount = Number(numberOfShownListings.current) || 0;
 
-//       const sub_category = filter === "Services" ? "Service" : 
-//                     filter === "Items" ? "Item" : 
-//                     filter !== "All" ? filter : 
+//       const sub_category = filter === "Services" ? "Service" :
+//                     filter === "Items" ? "Item" :
+//                     filter !== "All" ? filter :
 //                     null;
 //       // slice the string to length -1
-
 
 //       const { data: listingResponse } = await api.get('/listings/nearby', {
 //         params: {
@@ -148,7 +141,6 @@
 //     }
 //   };
 
-
 //   useEffect(() => {
 //     // Reset pagination and listings before fetching new filter
 //     numberOfShownListings.current = 0;
@@ -158,12 +150,10 @@
 //     fetchNearByListings(activeFilter);
 //   }, [activeFilter]);
 
-
 // const handleFilterClick = (filter: string) => {
 //     setActiveFilter(filter);
 //     console.log(filter)
 //   };
-
 
 //   useEffect(() => {
 //     const observer = new IntersectionObserver(
@@ -290,7 +280,6 @@
 //   );
 // }
 
-
 // import { useState, useEffect, useRef } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 
@@ -341,7 +330,7 @@
 // //     e.preventDefault();
 // //     const currentPath = location.pathname;
 // //     if (searchQuery.trim()) {
-// //         console.log(searchQuery)  
+// //         console.log(searchQuery)
 // //       navigate(`${currentPath}?query=${encodeURIComponent(searchQuery)}`);
 // //     } else {
 // //       navigate(currentPath);
@@ -361,7 +350,6 @@
 //         navigate(currentPath);
 //         }
 //     };
-
 
 //   const fetchNearByListings = async (filter: string, query: string) => {
 //     if (isFetchingRef.current) return;
@@ -649,8 +637,6 @@
 //         }
 //     };
 
-
-
 //     const fetchNearByListings = async (filter: string, query: string) => {
 //         if (isFetchingRef.current) return;
 //         isFetchingRef.current = true;
@@ -724,7 +710,6 @@
 //         setSearchInput(queryParam); // keep input updated too
 //     }, [location.search]);
 
-
 //     const handleFilterClick = (filter: string) => {
 //         setActiveFilter(filter);
 //     };
@@ -751,7 +736,7 @@
 //     return (
 //         <div className="flex flex-col min-h-screen bg-gray-50">
 //             {/* <Header   searchQuery={searchQuery}
-//   onSearchChange={setSearchQuery} 
+//   onSearchChange={setSearchQuery}
 //   /> */}
 
 //             <Header
@@ -768,7 +753,6 @@
 //                     }
 //                 }}
 //             />
-
 
 //             <div className="flex flex-1">
 //                 {!isMobile && (
@@ -859,7 +843,6 @@
 //     );
 // }
 
-
 // import { useState, useEffect, useRef } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 
@@ -907,7 +890,6 @@
 //     const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
 //     const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
-
 //     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //         const value = e.target.value;
 //         setSearchInput(value);
@@ -918,7 +900,6 @@
 //             setSearchQuery(""); // clear fetched results
 //         }
 //     };
-
 
 //     const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 //         e.preventDefault();
@@ -932,8 +913,6 @@
 //             setSearchQuery(""); // reset to default
 //         }
 //     };
-
-
 
 //     const fetchNearByListings = async (filter: string, query: string) => {
 //         if (isFetchingRef.current) return;
@@ -962,7 +941,6 @@
 //             });
 
 //             const data = listingResponse.data;
-
 
 //             if (data.listings && data.listings.length > 0) {
 //                 if (shownCount === 0 || oldFilter !== filter) {
@@ -993,13 +971,11 @@
 //         fetchNearByListings(activeFilter, searchQuery);
 //     }, [activeFilter, searchQuery, lat, lng, radius]);
 
-
 //     useEffect(() => {
 //         const queryParam = new URLSearchParams(location.search).get("query") || "";
 //         setSearchQuery(queryParam);
 //         setSearchInput(queryParam); // keep input updated too
 //     }, [location.search]);
-
 
 //     const handleFilterClick = (filter: string) => {
 //         setActiveFilter(filter);
@@ -1024,7 +1000,6 @@
 //         };
 //     }, [hasMore, isLoading]);
 
-
 //     return (
 //         <div className="flex flex-col min-h-screen bg-gray-50">
 //             <Header
@@ -1041,7 +1016,6 @@
 //                     }
 //                 }}
 //             />
-
 
 //             <div className="flex flex-1">
 //                 {!isMobile && (
@@ -1084,8 +1058,6 @@
 //                         <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
 //                             <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
 //                         </div>
-
-
 
 //                         <div className="px-4 my-4 space-y-4">
 //                             {listings.map((listing, index) => (
@@ -1136,7 +1108,6 @@
 //         </div>
 //     );
 // }
-
 
 // // src/pages/Marketplace.tsx
 // import { useState, useEffect, useRef } from "react";
@@ -1347,8 +1318,6 @@
 //   );
 // }
 
-
-
 // import { useState, useEffect, useRef } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import { api } from "@/lib/axois";
@@ -1544,20 +1513,10 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
 ///
 
-
-
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "@/lib/axois";
 import { Search } from "lucide-react";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -1585,12 +1544,12 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
     calculateDistance();
 
     // Re-calculate on resize/scroll
-    window.addEventListener('resize', calculateDistance);
-    window.addEventListener('scroll', calculateDistance);
+    window.addEventListener("resize", calculateDistance);
+    window.addEventListener("scroll", calculateDistance);
 
     return () => {
-      window.removeEventListener('resize', calculateDistance);
-      window.removeEventListener('scroll', calculateDistance);
+      window.removeEventListener("resize", calculateDistance);
+      window.removeEventListener("scroll", calculateDistance);
     };
   }, [ref]);
 
@@ -1625,10 +1584,10 @@ export default function Marketplace({ openModal }) {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
-  const tabParam = searchParams.get('tab'); // returns "true" or null
+  const tabParam = searchParams.get("tab"); // returns "true" or null
 
   // If you want a boolean value
-  const isTabActive = tabParam === 'true';
+  const isTabActive = tabParam === "true";
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -1640,7 +1599,7 @@ export default function Marketplace({ openModal }) {
   };
 
   useEffect(() => {
-    console.log('Distance from top:', distanceFromTop, 'px');
+    console.log("Distance from top:", distanceFromTop, "px");
   }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -1656,92 +1615,111 @@ export default function Marketplace({ openModal }) {
   };
 
   // Use useCallback to prevent unnecessary re-renders
-  const fetchNearByListings = useCallback(async (filter: string, query: string, isNewFilter = false) => {
-    // Prevent multiple simultaneous requests
-    if (isFetchingRef.current) {
-      // console.log('Already fetching, skipping request');
-      return;
-    }
-
-    // Don't fetch if no more items and it's not a new filter
-    if (!hasMore && !isNewFilter) {
-      // console.log('No more items to fetch');
-      return;
-    }
-
-    isFetchingRef.current = true;
-    // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
-
-    try {
-      setLoading(true);
-      const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
-
-      const sub_category =
-        filter === "Services" ? "Service" :
-          filter === "Items" ? "Item" :
-            filter !== "All" ? filter : null;
-
-      const { data: listingResponse } = await api.get("/listings/nearby", {
-        params: {
-          category: "MARKETPLACE",
-          sub_category,
-          search: query,
-          limit: 10,
-          numberOfShownListings: shownCount,
-          lat: lat,
-          lng: lng,
-          radius: radius,
-          listing_cutoff_time: isNewFilter ? undefined : listingCutoffTime.current,
-        },
-      });
-
-      const data = listingResponse.data;
-      console.log('Fetch response:', {
-        listingsCount: data.listings?.length || 0,
-        hasMore: data.hasMore,
-        totalCount: data.totalCount,
-        numberOfShownListings: data.numberOfShownListings
-      });
-
-      if (data.listings && data.listings.length > 0) {
-        if (isNewFilter || shownCount === 0) {
-          // Reset for new filter or initial load
-          setListings(data.listings);
-          numberOfShownListings.current = data.listings.filter(listing => listing.type === "listing").length;
-          setOldFilter(filter);
-        } else {
-          // Append to existing listings
-          setListings(prev => [...prev, ...data.listings]);
-          numberOfShownListings.current += data.listings.filter(listing => listing.type === "listing").length;
-        }
-
-        setHasMore(data.hasMore);
-        listingCutoffTime.current = data.listing_cutoff_time || "";
-      } else {
-        // No listings returned
-        if (isNewFilter || shownCount === 0) {
-          setListings([]);
-          numberOfShownListings.current = 0;
-        }
-        setHasMore(false);
+  const fetchNearByListings = useCallback(
+    async (filter: string, query: string, isNewFilter = false) => {
+      // Prevent multiple simultaneous requests
+      if (isFetchingRef.current) {
+        // console.log('Already fetching, skipping request');
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching accommodations:", error);
-      setHasMore(false); // Stop trying to fetch more on error
-    } finally {
-      setLoading(false);
-      isFetchingRef.current = false;
-      setIsInitialLoad(false);
-    }
-  }, [lat, lng, radius, hasMore]);
+
+      // Don't fetch if no more items and it's not a new filter
+      if (!hasMore && !isNewFilter) {
+        // console.log('No more items to fetch');
+        return;
+      }
+
+      isFetchingRef.current = true;
+      // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+
+      try {
+        setLoading(true);
+        const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
+
+        const sub_category =
+          filter === "Services"
+            ? "Service"
+            : filter === "Items"
+            ? "Item"
+            : filter !== "All"
+            ? filter
+            : null;
+
+        const { data: listingResponse } = await api.get("/listings/nearby", {
+          params: {
+            category: "MARKETPLACE",
+            sub_category,
+            search: query,
+            limit: 10,
+            numberOfShownListings: shownCount,
+            lat: lat,
+            lng: lng,
+            radius: radius,
+            listing_cutoff_time: isNewFilter
+              ? undefined
+              : listingCutoffTime.current,
+          },
+        });
+
+        const data = listingResponse.data;
+        console.log("Fetch response:", {
+          listingsCount: data.listings?.length || 0,
+          hasMore: data.hasMore,
+          totalCount: data.totalCount,
+          numberOfShownListings: data.numberOfShownListings,
+        });
+
+        if (data.listings && data.listings.length > 0) {
+          if (isNewFilter || shownCount === 0) {
+            // Reset for new filter or initial load
+            setListings(data.listings);
+            numberOfShownListings.current = data.listings.filter(
+              (listing) => listing.type === "listing"
+            ).length;
+            setOldFilter(filter);
+          } else {
+            // Append to existing listings
+            setListings((prev) => [...prev, ...data.listings]);
+            numberOfShownListings.current += data.listings.filter(
+              (listing) => listing.type === "listing"
+            ).length;
+          }
+
+          setHasMore(data.hasMore);
+          listingCutoffTime.current = data.listing_cutoff_time || "";
+        } else {
+          // No listings returned
+          if (isNewFilter || shownCount === 0) {
+            setListings([]);
+            numberOfShownListings.current = 0;
+          }
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching accommodations:", error);
+        setHasMore(false); // Stop trying to fetch more on error
+      } finally {
+        setLoading(false);
+        isFetchingRef.current = false;
+        setIsInitialLoad(false);
+      }
+    },
+    [lat, lng, radius, hasMore]
+  );
 
   const handleHide = (id: string) => {
-    setListings(listings.filter(listing => listing.id !== id));
+    setListings(listings.filter((listing) => listing.id !== id));
   };
 
   // Reset and fetch on filter/search/location change
   useEffect(() => {
-    console.log('Effect triggered:', { activeFilter, searchQuery, lat, lng, radius });
+    console.log("Effect triggered:", {
+      activeFilter,
+      searchQuery,
+      lat,
+      lng,
+      radius,
+    });
 
     // Reset state
     numberOfShownListings.current = 0;
@@ -1764,7 +1742,7 @@ export default function Marketplace({ openModal }) {
     const currentParams = new URLSearchParams(location.search);
 
     // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-    currentParams.set('tab', 'true');
+    currentParams.set("tab", "true");
 
     // Navigate to the same path but with the updated query parameters
     navigate(`${location.pathname}?${currentParams.toString()}`);
@@ -1796,15 +1774,22 @@ export default function Marketplace({ openModal }) {
       //   isInitialLoad
       // });
 
-      if (first.isIntersecting && hasMore && !isLoading && !isFetchingRef.current && !isTabChanging && !isInitialLoad) {
-        console.log('Triggering load more');
+      if (
+        first.isIntersecting &&
+        hasMore &&
+        !isLoading &&
+        !isFetchingRef.current &&
+        !isTabChanging &&
+        !isInitialLoad
+      ) {
+        console.log("Triggering load more");
         fetchNearByListings(activeFilter, searchQuery, false);
       }
     };
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: '50px' // Trigger 50px before the element is visible
+      rootMargin: "50px", // Trigger 50px before the element is visible
     });
 
     const currentElement = loadMoreRef.current;
@@ -1817,7 +1802,15 @@ export default function Marketplace({ openModal }) {
         observerRef.current.disconnect();
       }
     };
-  }, [hasMore, isLoading, activeFilter, searchQuery, fetchNearByListings, isTabChanging, isInitialLoad]);
+  }, [
+    hasMore,
+    isLoading,
+    activeFilter,
+    searchQuery,
+    fetchNearByListings,
+    isTabChanging,
+    isInitialLoad,
+  ]);
 
   // useEffect(() => {
   //   // Scroll to top on filter change
@@ -1826,7 +1819,7 @@ export default function Marketplace({ openModal }) {
   //     window.scrollTo(0, isMobile ? 200 : 0);
   //   }
   //   // window.scrollTo(0, isMobile ? 200 : 0);
-  // }); 
+  // });
 
   useEffect(() => {
     if (isInitialLoad) {
@@ -1848,32 +1841,39 @@ export default function Marketplace({ openModal }) {
 
   const yourTrackingFunction = async (listing: any) => {
     try {
-      await api.post(`/ads/${listing.id}/track-click`)
+      await api.post(`/ads/${listing.id}/track-click`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleAdClick = async (e: React.MouseEvent, listing: any) => {
     // Middle-click (wheel), right-click, or Ctrl/Cmd+click (open in new tab)
     if (e.ctrlKey || e.metaKey || e.button === 1 || e.button === 2) {
-      console.log(e)
+      console.log(e);
       // For new tab/window opens
-      await yourTrackingFunction(listing)
+      await yourTrackingFunction(listing);
       return; // Let default browser behavior proceed
     }
 
     // Regular left click
     e.preventDefault();
-    await yourTrackingFunction(listing)
+    await yourTrackingFunction(listing);
 
     // Programmatic navigation after tracking
-    window.open(listing.target_url, '_blank', 'noopener,noreferrer');
+    window.open(listing.target_url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <main className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500" ref={filterTabsRef}>
-      <FilterTabs tabs={["All", "Services", "Items"]} activeTab={activeFilter} onTabClick={handleFilterClick} />
+    <main
+      className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500"
+      ref={filterTabsRef}
+    >
+      <FilterTabs
+        tabs={["All", "Services", "Items"]}
+        activeTab={activeFilter}
+        onTabClick={handleFilterClick}
+      />
 
       {!isTabChanging ? (
         <div className="px-4 my-4 space-y-4">
@@ -1882,21 +1882,38 @@ export default function Marketplace({ openModal }) {
               {listing?.type === "listing" && (
                 <ListingItem
                   listing={listing}
-                  onToggleSave={() => { }}
+                  onToggleSave={() => {}}
                   isUsa={false}
                   onHide={() => handleHide(listing.id)}
                   openModal={openModal}
                 />
               )}
-              {listing?.type === "ad" && (
-                <a href={listing.target_url} target="_blank" className="block" rel="noreferrer"
-                  onClick={(e) => handleAdClick(e, listing)}
-                  onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                  // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
-                >
+              {listing?.type === "ad" &&
+                (listing.url ? (
+                  <Link
+                    to={listing.target_url}
+                    target="_blank"
+                    className="block"
+                    rel="noreferrer"
+                    onClick={(e) => handleAdClick(e, listing)}
+                    onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                    // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                  >
+                    <div
+                      className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                      style={{ aspectRatio: "574/300", maxWidth: "100%" }}
+                    >
+                      <img
+                        src={listing.image_url}
+                        alt={listing.title}
+                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                  </Link>
+                ) : (
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                    style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                    style={{ aspectRatio: "574/300", maxWidth: "100%" }}
                   >
                     <img
                       src={listing.image_url}
@@ -1904,8 +1921,7 @@ export default function Marketplace({ openModal }) {
                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
                     />
                   </div>
-                </a>
-              )}
+                ))}
             </div>
           ))}
 
@@ -1914,7 +1930,7 @@ export default function Marketplace({ openModal }) {
               ref={loadMoreRef}
               className="w-full flex justify-center py-6 text-gray-400 text-sm"
             >
-              {isLoading ? 'Loading more...' : 'Scroll for more...'}
+              {isLoading ? "Loading more..." : "Scroll for more..."}
             </div>
           )}
 

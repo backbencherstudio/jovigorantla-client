@@ -117,8 +117,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
 
 
   return (
-    <aside className={`h-full ${collapsed ? "w-[70px]" : "w-[240px]"}`}>
-      <div className="flex flex-col h-full py-4">
+    // Previous w-[70px]
+    <aside className={`h-full ${collapsed ? "w-[85px]" : "w-[240px]"}`}>
+      <div className="flex flex-col h-full py-4 pl-2">
         <nav className="flex-1 px-2 space-y-1">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;

@@ -702,7 +702,12 @@
 // }
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
 import { api } from "@/lib/axois";
 import { Search } from "lucide-react";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -839,64 +844,25 @@ export default function Home({ openModal }) {
       try {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
+
         const isUsa = filter === "USA";
 
-        const cacheKey = `listings-${filter}-${query}-${lat}-${lng}-${radius}`;
-        const cached: any = cache.get(cacheKey);
-        let data;
-        let listingResponse;
+        const { data: listingResponse } = await api.get("/listings/nearby", {
+          params: {
+            is_usa: isUsa,
+            search: query,
+            limit: 10,
+            numberOfShownListings: shownCount,
+            lat: lat,
+            lng: lng,
+            radius: radius,
+            listing_cutoff_time: isNewFilter
+              ? undefined
+              : listingCutoffTime.current,
+          },
+        });
 
-        if ((isNewFilter || shownCount === 0) && cached) {
-          data = cached;
-          listingResponse = cached;
-        } else {
-          // data = listingResponse.data;
-          const listingResponseData = await api.get("/listings/nearby", {
-            params: {
-              is_usa: isUsa,
-              search: query,
-              limit: 10,
-              numberOfShownListings: shownCount,
-              lat: lat,
-              lng: lng,
-              radius: radius,
-              listing_cutoff_time: isNewFilter
-                ? undefined
-                : listingCutoffTime.current,
-            },
-          });
-          listingResponse = listingResponseData.data;
-          data = listingResponse.data;
-
-          cacheData.hasMore = listingResponse.data.hasMore;
-          cacheData.listing_cutoff_time =
-            listingResponse.data.listing_cutoff_time;
-          cacheData.numberOfShownListings =
-            listingResponse.data.numberOfShownListings;
-          cacheData.totalCount = listingResponse.data.totalCount;
-          cacheData.totalItems = listingResponse.data.totalItems;
-          cacheData.listings.push(...listingResponse.data.listings);
-          console.log("cacheData", cacheData);
-          cache.set(cacheKey, cacheData, 1000 * 60 * 60 * 24);
-        }
-
-        // const { data: listingResponse } = await api.get("/listings/nearby", {
-        //   params: {
-        //     is_usa: isUsa,
-        //     search: query,
-        //     limit: 10,
-        //     numberOfShownListings: shownCount,
-        //     lat: lat,
-        //     lng: lng,
-        //     radius: radius,
-        //     listing_cutoff_time: isNewFilter
-        //       ? undefined
-        //       : listingCutoffTime.current,
-        //   },
-        // });
-
-
-
+        const data = listingResponse.data;
         // console.log('Fetch response:', {
         //   listingsCount: data.listings?.length || 0,
         //   hasMore: data.hasMore,
@@ -1146,7 +1112,8 @@ export default function Home({ openModal }) {
 
   return (
     <main
-      className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto bg-red-500"
+      className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto"
+      style={{ padding: "0 8px" }}
       ref={filterTabsRef}
     >
       <FilterTabs
@@ -1168,19 +1135,32 @@ export default function Home({ openModal }) {
                   openModal={openModal}
                 />
               )}
-              {listing?.type === "ad" && (
-                <a
-                  href={listing.target_url}
-                  target="_blank"
-                  className="block"
-                  rel="noreferrer"
-                  onClick={(e) => handleAdClick(e, listing)}
-                  onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                  // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
-                >
+              {listing?.type === "ad" &&
+                (listing.target_url ? (
+                  <Link
+                    to={listing.target_url}
+                    target="_blank"
+                    className="block"
+                    rel="noreferrer"
+                    onClick={(e) => handleAdClick(e, listing)}
+                    onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                    // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                  >
+                    <div
+                      className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                      style={{ aspectRatio: "574/300", maxWidth: "100%" }}
+                    >
+                      <img
+                        src={listing.image_url}
+                        alt={listing.title}
+                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                  </Link>
+                ) : (
                   <div
                     className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                    style={{ aspectRatio: "574/300", maxWidth: "574px" }}
+                    style={{ aspectRatio: "574/300", maxWidth: "100%" }}
                   >
                     <img
                       src={listing.image_url}
@@ -1188,8 +1168,7 @@ export default function Home({ openModal }) {
                       className="absolute inset-0 w-full h-full object-cover rounded-lg"
                     />
                   </div>
-                </a>
-              )}
+                ))}
             </div>
           ))}
 
