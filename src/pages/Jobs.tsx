@@ -734,6 +734,17 @@ export default function Jobs({ openModal }) {
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [filterOptions, setFilterOptions] = useState([
+    "All",
+    "Hiring",
+    "Looking",
+  ]);
+
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const isFirstLoadDone = useRef(false);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+  const [autoSwitched, setAutoSwitched] = useState(false);
+  const [locationChanged, setLocationChanged] = useState(false);
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
 
@@ -840,6 +851,21 @@ export default function Jobs({ openModal }) {
             numberOfShownListings.current = 0;
           }
           setHasMore(false);
+
+          if (!initialLoadDone && filter === "All" && !autoSwitched) {
+            setAutoSwitched(true);
+          }
+        }
+
+        if (!isFirstLoadDone.current) {
+          isFirstLoadDone.current = true;
+          /*   if (
+            filter === "All" &&
+            !isNearbyEmpty.current &&
+            listings.length === 0
+          ) {
+            isNearbyEmpty.current = true;
+          } */
         }
       } catch (error) {
         console.error("Error fetching accommodations:", error);
@@ -848,6 +874,11 @@ export default function Jobs({ openModal }) {
         setLoading(false);
         isFetchingRef.current = false;
         setIsInitialLoad(false);
+
+        // Reset location changed flag after handling
+        if (locationChanged) {
+          setLocationChanged(false);
+        }
       }
     },
     [lat, lng, radius, hasMore]
@@ -857,15 +888,154 @@ export default function Jobs({ openModal }) {
     setListings(listings.filter((listing) => listing.id !== id));
   };
 
+  // ================ New Code Start ============
+
+  // Add session storage management
+  const isReturningFromListing = useRef(false);
+
+  // Check if we're returning from a listing page
+  useEffect(() => {
+    // Check if we have cached data
+    const cachedData = sessionStorage.getItem("home_cached_data");
+    const savedScrollPosition = sessionStorage.getItem("home_scroll_position");
+
+    // Only restore from session storage if we have scroll position (indicating we came from a listing)
+    if (cachedData && savedScrollPosition) {
+      try {
+        const parsed = JSON.parse(cachedData);
+        if (parsed.listings && parsed.listings.length > 0) {
+          // Restore cached data
+          setListings(parsed.listings);
+          setActiveFilter(parsed.activeFilter || "All");
+          setSearchQuery(parsed.searchQuery || "");
+          setSearchInput(parsed.searchQuery || "");
+          setHasMore(parsed.hasMore !== undefined ? parsed.hasMore : true);
+          numberOfShownListings.current = parsed.numberOfShownListings || 0;
+          listingCutoffTime.current = parsed.listingCutoffTime || "";
+          setFilterOptions(
+            parsed.filterOptions || ["All", "Hiring", "Looking"]
+          );
+          setInitialLoadDone(parsed.initialLoadDone || false);
+          setAutoSwitched(parsed.autoSwitched || false);
+
+          // Mark as returning and set proper loading states
+          isReturningFromListing.current = true;
+          setIsInitialLoad(false);
+          setInitialLoadComplete(true);
+
+          // Clear cache
+          sessionStorage.removeItem("home_cached_data");
+        }
+      } catch (error) {
+        console.error("Error parsing cached data:", error);
+        sessionStorage.removeItem("home_cached_data");
+      }
+    } else if (cachedData) {
+      // Clear cache if no scroll position (not from listing page)
+      sessionStorage.removeItem("home_cached_data");
+    }
+
+    // Restore scroll position if available
+    if (savedScrollPosition) {
+      const scrollY = parseInt(savedScrollPosition);
+      console.log("Restoring scroll position from session storage:", scrollY);
+
+      setTimeout(() => {
+        window.scrollTo(0, scrollY);
+        sessionStorage.removeItem("home_scroll_position");
+      }, 100);
+    }
+  }, []);
+
+  // Restore scroll position when returning from listing page
+  useEffect(() => {
+    if (location.state?.scrollY && isReturningFromListing.current) {
+      console.log(
+        "Restoring scroll position from location state:",
+        location.state.scrollY
+      );
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        window.scrollTo(0, location.state.scrollY);
+        isReturningFromListing.current = false;
+      }, 100); // Delay for DOM load
+    }
+  }, [location.state, listings.length]);
+
+  // Save data before navigating away
+  useEffect(() => {
+    const saveData = () => {
+      if (listings.length > 0) {
+        const dataToCache = {
+          listings,
+          activeFilter,
+          searchQuery,
+          hasMore,
+          numberOfShownListings: numberOfShownListings.current,
+          listingCutoffTime: listingCutoffTime.current,
+          filterOptions,
+          initialLoadDone,
+          autoSwitched,
+        };
+        sessionStorage.setItem("home_cached_data", JSON.stringify(dataToCache));
+      }
+    };
+
+    // Save on beforeunload
+    const handleBeforeUnload = () => {
+      saveData();
+    };
+
+    // Save on page visibility change
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        saveData();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Save periodically
+    const interval = setInterval(saveData, 1000);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearInterval(interval);
+      // Save on unmount
+      saveData();
+    };
+  }, [
+    listings,
+    activeFilter,
+    searchQuery,
+    hasMore,
+    filterOptions,
+    initialLoadDone,
+    autoSwitched,
+  ]);
+
+  // =============== New Code End ================
+
   // Reset and fetch on filter/search/location change
   useEffect(() => {
-    console.log("Effect triggered:", {
-      activeFilter,
-      searchQuery,
-      lat,
-      lng,
-      radius,
-    });
+    // Don't reset if we're returning from a listing page
+    if (isReturningFromListing.current) {
+      // Reset the flag after a short delay to allow proper initialization
+      setTimeout(() => {
+        isReturningFromListing.current = false;
+      }, 100);
+      return;
+    }
+
+    // console.log("Effect triggered:", {
+    //   activeFilter,
+    //   searchQuery,
+    //   lat,
+    //   lng,
+    //   radius,
+    // });
 
     // Reset state
     numberOfShownListings.current = 0;
@@ -1015,7 +1185,7 @@ export default function Jobs({ openModal }) {
       ref={filterTabsRef}
     >
       <FilterTabs
-        tabs={["All", "Hiring", "Looking"]}
+        tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
       />

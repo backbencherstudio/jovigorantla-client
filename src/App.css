@@ -198,9 +198,9 @@ html {
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform;
 
-     /* iOS fixes */
-  transform: translateZ(0); /* Creates new stacking context */
-  -webkit-backface-visibility: hidden; /* Prevents flickering */
+    /* iOS fixes */
+    transform: translateZ(0); /* Creates new stacking context */
+    -webkit-backface-visibility: hidden; /* Prevents flickering */
   }
 }
 
@@ -255,12 +255,16 @@ main.w-full.mx-auto.max-w-3xl {
   perspective: 1000;
 }
 
-
-html, body {
+html,
+body {
   overscroll-behavior-y: none;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
