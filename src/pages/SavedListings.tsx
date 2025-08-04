@@ -607,7 +607,7 @@ const SavedListings = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="bg-gray-50 py-5 w-full h-[100%] bg-white">
+      <div className="bg-gray-50 py-5 w-full h-[100%] bg-white ">
         <div className="space-y-4 p-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse bg-white p-4 rounded-lg">
@@ -625,7 +625,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-gray-50 py-5 w-full h-[100%] bg-white">
+    <div className="py-5 w-full min-h-[calc(100vh-130px)] bg-white">
       {listings.length === 0 ? (
         <div className="bg-white p-8 text-center">
           <h3 className="text-lg font-medium mb-2">No saved listings</h3>

@@ -2201,7 +2201,7 @@ function PostListingForm() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-lg max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-lg max-w-3xl mx-auto min-h-[calc(100vh-130px)]">
         {/* <h2 className="text-xl font-bold">
         {isEditMode ? "Edit Listing" : "Create New Listing"}
       </h2> */}
@@ -2431,6 +2431,7 @@ function PostListingForm() {
             </div>
           </div>
         </div>
+        
 
         {(selectedCategory === "Marketplace" && selectedSubCategory === "Service") ||
           (selectedCategory === "Jobs" && selectedSubCategory === "Hiring") ? (
@@ -2471,6 +2472,7 @@ function PostListingForm() {
                   Also post in USA Listings
                 </label>
               </div>
+              
               <Controller
                 name="isUSA"
                 control={control}
