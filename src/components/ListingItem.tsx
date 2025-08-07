@@ -47,8 +47,6 @@ const ListingItem = ({
       e.preventDefault();
     } else {
       const currentScrollY = window.scrollY;
-      //console.log("Saving scroll position:", currentScrollY);
-
       // Save scroll position to session storage immediately
       sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
     }

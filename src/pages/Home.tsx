@@ -269,7 +269,7 @@ export default function Home({ openModal }) {
           sessionStorage.removeItem("home_cached_data");
         }
       } catch (error) {
-        console.error("Error parsing cached data:", error);
+        //console.error("Error parsing cached data:", error);
         sessionStorage.removeItem("home_cached_data");
       }
     } else if (cachedData) {
@@ -280,7 +280,8 @@ export default function Home({ openModal }) {
     // Restore scroll position if available
     if (savedScrollPosition) {
       const scrollY = parseInt(savedScrollPosition);
-      console.log("Restoring scroll position from session storage:", scrollY);
+
+      //console.log("Restoring scroll position from session storage:", scrollY);
 
       setTimeout(() => {
         window.scrollTo(0, scrollY);
@@ -292,10 +293,11 @@ export default function Home({ openModal }) {
   // Restore scroll position when returning from listing page
   useEffect(() => {
     if (location.state?.scrollY && isReturningFromListing.current) {
-      console.log(
+      /* console.log(
         "Restoring scroll position from location state:",
         location.state.scrollY
-      );
+      ); */
+
       // Use setTimeout to ensure DOM is ready
       setTimeout(() => {
         window.scrollTo(0, location.state.scrollY);
@@ -555,7 +557,7 @@ export default function Home({ openModal }) {
 
   return (
     <main
-      className="w-full mx-auto max-w-3xl bg-transparent  min-h-[100vh] sm:h-auto"
+      className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
       ref={filterTabsRef}
     >
       <FilterTabs

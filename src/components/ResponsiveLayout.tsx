@@ -241,16 +241,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {!isValidPage && (
             <main
               className={`w-full mx-auto ${
-                fullWidth
-                  ? ""
-                  : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+                fullWidth ? "" : "max-w-3xl bg-white"
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
+                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center w-full max-w-3xl"
                     style={{
                       // width: width,
                       top: "60px" /* Header height */,
