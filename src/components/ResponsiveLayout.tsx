@@ -292,7 +292,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     ref={mobileHeaderRef}
                     className=" z-10 transition-transform bg-white pt-3"
                   >
-                    <div className="px-4 pt-2 pb-2">
+                    <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -425,7 +425,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
       )}
 
       {!isDesktop && !user && (
-        <footer className="bg-gray-50 py-4 fixed bottom-0 left-0 right-0 z-[10]">
+        <footer className="bg-gray-50 py-4 fixed bottom-[-1px] left-0 right-0 z-[10]">
           <div className="container mx-auto text-center">
             <p
               className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]"

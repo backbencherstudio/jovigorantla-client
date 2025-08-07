@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const AboutUs = () => {
   const navigate = useNavigate();
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 bg-white ">
+    <div className="max-w-3xl mx-auto px-4 py-8 bg-white  min-h-[calc(100vh-130px)]">
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">
           Connecting the South Asian Community Abroad

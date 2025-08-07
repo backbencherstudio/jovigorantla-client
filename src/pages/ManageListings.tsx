@@ -125,7 +125,7 @@ const ManageListings = () => {
 
   if (!user) return null;
   return (
-    <div className="bg-gray-50">
+    <div className="bg-white  min-h-[calc(100vh-130px)]">
       <div className="bg-white p-4">
         {isLoading ? (
           <div className="space-y-4">
