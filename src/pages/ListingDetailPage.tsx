@@ -29,7 +29,7 @@ import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
 import { useMessages } from "@/context/MessageContext";
-
+import { RxCross2 } from "react-icons/rx";
 
 const renderDescriptionWithPhoneLinks = (text: string) => {
   const phoneRegex = /(\b\d{10,}\b)/g;
@@ -61,7 +61,9 @@ const ListingDetailPage = ({ openModal }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
   const [listing, setListing] = useState<any>({});
-  const  {handleConversationCreated} = useMessages();
+  const { handleConversationCreated } = useMessages();
+
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   // In a real app, you would fetch the listing details from an API
   // For now, we'll use mock data
@@ -71,7 +73,7 @@ const ListingDetailPage = ({ openModal }) => {
     try {
       setLoading(true);
       const { data } = await api.get(`/listings/${id}`);
-      if(data?.success) {
+      if (data?.success) {
         setListing(data?.data);
       }
     } catch (error) {
@@ -79,11 +81,9 @@ const ListingDetailPage = ({ openModal }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   // console.log(listing)
-
-
 
   // // Format time consistently as "2m ago", "2h ago", "2d ago" to match listings
   // const formatTime = (date: Date) => {
@@ -120,10 +120,10 @@ const ListingDetailPage = ({ openModal }) => {
 
   useEffect(() => {
     const scrollToTop = () => {
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      window.scrollTo({ top: 0, behavior: "auto" });
       document.documentElement.scrollTo(0, 0);
     };
-  
+
     // Initial scroll
     scrollToTop();
 
@@ -140,14 +140,14 @@ const ListingDetailPage = ({ openModal }) => {
     updateWidth();
     // Add event listener for window resize
     window.addEventListener("resize", updateWidth);
-    fetchListingsDetails()
+    fetchListingsDetails();
     // Clean up event listener
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
 
-  const handleContact = async() => {
+  const handleContact = async () => {
     try {
       if (user) {
         // console.log("user", user);
@@ -159,25 +159,20 @@ const ListingDetailPage = ({ openModal }) => {
         //   listing_id: listing?.id,
         // })
 
-        const conversation = await api.post('/chat/conversation', {
+        const conversation = await api.post("/chat/conversation", {
           creator_id: user?.id,
           participant_id: listing?.user?.id,
           listing_id: listing?.id,
-        })
-
-
-
-
+        });
 
         console.log("conversation", conversation);
 
         if (conversation?.data?.success) {
-          handleConversationCreated({data: conversation?.data?.data});
+          handleConversationCreated({ data: conversation?.data?.data });
           // console.log("conversation", conversation?.data?.data.id);
           navigate(`/messages/${conversation?.data?.data.id}`);
           // navigate(`/messages/${1}`);
         }
-
 
         // Redirect to the specific conversation
         // navigate(`/messages/${conversationId}`);
@@ -295,23 +290,29 @@ const ListingDetailPage = ({ openModal }) => {
   // const city = locationParts[0]?.trim() || "";
   // const state = locationParts[1]?.trim() || "";
 
-
+  // Handle Image Click
+  const handleImageClick = () => {
+    setIsImageModalOpen(true);
+  };
 
   return (
-    <div className="flex flex-col bg-white">
-      {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
-      {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-      <div className="flex-1 py-[10px] overflow-y-auto pb-24 mx-auto w-full p-0 pl-2 lg:pl-4">
-        {/* Category, status and action buttons */}
-        <div className="px-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center text-gray-500 text-sm gap-1">
-            <span>{formatCategory(listing.category)}</span>
-            <span className="mx-2">•</span>
-            <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              {/* <Button
+    <>
+      <div className="flex flex-col bg-white">
+        {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
+        {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
+        <div className="flex-1 py-[10px] overflow-y-auto pb-24 mx-auto w-full p-0 pl-2 lg:pl-4">
+          {/* Category, status and action buttons */}
+          <div className="px-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center text-gray-500 text-sm gap-1">
+                <span>{formatCategory(listing.category)}</span>
+                <span className="mx-2">•</span>
+                <span>
+                  {formatSubCategory(listing.category, listing.sub_category)}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {/* <Button
                 variant="ghost"
                 size="icon"
                 onClick={toggleSaveListing}
@@ -351,184 +352,210 @@ const ListingDetailPage = ({ openModal }) => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu> */}
-               <ListingActions
-                listingId={listing.id}
-                listingTitle={listing.title}
-                isUsa={false}
-                // saved={listing.saved || false}
-                // saved={false}
-                // onToggleSave={onToggleSave}
-                onToggleSave={(e) => {
-                  e.preventDefault(); // ✅ prevent default link navigation
-                  e.stopPropagation(); // ✅ stop event bubbling
-                }}
-                onHide={() => {}}
-                openModal={openModal}
-          />
-
+                <ListingActions
+                  listingId={listing.id}
+                  listingTitle={listing.title}
+                  isUsa={false}
+                  // saved={listing.saved || false}
+                  // saved={false}
+                  // onToggleSave={onToggleSave}
+                  onToggleSave={(e) => {
+                    e.preventDefault(); // ✅ prevent default link navigation
+                    e.stopPropagation(); // ✅ stop event bubbling
+                  }}
+                  onHide={() => {}}
+                  openModal={openModal}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Title */}
-          <h1 className="text-2xl font-bold mb-4  line-2" style={{ lineHeight: 1.4}}>
-            {listing.title}
-            {/* Private accommodation available in Irving from August 1st for 2 males in 2bed 2bath */}
+            {/* Title */}
+            <h1
+              className="text-2xl font-bold mb-4  line-2"
+              style={{ lineHeight: 1.4 }}
+            >
+              {listing.title}
+              {/* Private accommodation available in Irving from August 1st for 2 males in 2bed 2bath */}
             </h1>
 
-          {/* User info and metadata - updated format */}
-          <div className="flex items-center text-sm text-gray-500 mb-4">
-            <span>{listing?.user?.name}</span>
-            <span className="mx-2">•</span>
-            <span>{formatTime(listing?.created_at)}</span>
-            {listing?.address && (
-              <>
-                <span className="mx-2">•</span>
-                <div className="flex items-center">
-                  <span>
-                    {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
-                  </span>
-                </div>
-              </>
+            {/* User info and metadata - updated format */}
+            <div className="flex items-center text-sm text-gray-500 mb-4">
+              <span>{listing?.user?.name}</span>
+              <span className="mx-2">•</span>
+              <span>{formatTime(listing?.created_at)}</span>
+              {listing?.address && (
+                <>
+                  <span className="mx-2">•</span>
+                  <div className="flex items-center">
+                    <span>
+                      {listing.address
+                        ?.split(",")
+                        .filter((_, i) => i === 0 || i === 1)
+                        .join(", ")}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
+              // <PhotoGallery images={[listing.image]} listingId={listing.id} />
+              <div
+                className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                style={{ aspectRatio: "574/300" }}
+              >
+                <img
+                  src={listing.image_url}
+                  alt={listing.title}
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  onClick={handleImageClick}
+                />
+                {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
+              </div>
             )}
-          </div>
 
-          {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
-            // <PhotoGallery images={[listing.image]} listingId={listing.id} />
-            <div
-            className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-            style={{ aspectRatio: "574/300" }}
-        >
-            <img
-                src={listing.image_url}
-                alt={listing.title}
-                className="absolute inset-0 w-full h-full object-cover rounded-lg"
-            />
-            {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
-        </div>
-          )}
+            {/* Description - only show if it exists */}
+            {listing.description && (
+              <Card className="mb-6 border-none shadow-none mt-4">
+                <CardContent className="p-0">
+                  <h2 className="text-lg font-bold mb-2">Description</h2>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {renderDescriptionWithPhoneLinks(listing.description)}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Description - only show if it exists */}
-          {listing.description && (
-            <Card className="mb-6 border-none shadow-none mt-4">
-              <CardContent className="p-0">
-                <h2 className="text-lg font-bold mb-2">Description</h2>
-                <p className="text-gray-700 whitespace-pre-line">
-                  {renderDescriptionWithPhoneLinks(listing.description)}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-
-
-          {/* <Card className="mb-6 border-none shadow-none">
+            {/* <Card className="mb-6 border-none shadow-none">
               <CardContent className="p-0">
                 <h2 className="text-lg font-bold mb-2">Description</h2>
                 <p className="text-gray-700 whitespace-pre-line">
                 🏠 Private Accommodation Available in Irving – 2BHK for 2 Males from August 1st
 
-Looking for comfortable and private living in a great neighborhood? We’re offering a 2 bedroom, 2 bathroom apartment in Irving, Texas, available for 2 males starting August 1st. Whether you're a working professional or a student, this spacious and well-maintained home offers the privacy, convenience, and amenities you need for a comfortable stay.
+                    Looking for comfortable and private living in a great neighborhood? We’re offering a 2 bedroom, 2 bathroom apartment in Irving, Texas, available for 2 males starting August 1st. Whether you're a working professional or a student, this spacious and well-maintained home offers the privacy, convenience, and amenities you need for a comfortable stay.
 
-Located in a peaceful and secure community, this apartment is ideal for individuals who value a clean and quiet living environment with easy access to major highways, public transportation, grocery stores, and restaurants.
+                    Located in a peaceful and secure community, this apartment is ideal for individuals who value a clean and quiet living environment with easy access to major highways, public transportation, grocery stores, and restaurants.
 
-🏡 Apartment Details:
+                    🏡 Apartment Details:
 
-– Type: 2 Bedroom | 2 Bathroom
-– Availability: From August 1st
-– Ideal for: 2 Males
-– Rent: Competitive and affordable (Contact for details)
-– Lease Type: Flexible (short-term/long-term options)
+                    – Type: 2 Bedroom | 2 Bathroom
+                    – Availability: From August 1st
+                    – Ideal for: 2 Males
+                    – Rent: Competitive and affordable (Contact for details)
+                    – Lease Type: Flexible (short-term/long-term options)
 
-🛏️ Room Features:
+                    🛏️ Room Features:
 
-– Private bedroom with closet space
-– Attached and shared bathroom options
-– Semi-furnished with essentials
-– Natural lighting and good ventilation
-– Carpeted/wood floors (based on unit)
-– High-speed internet and utilities available
+                    – Private bedroom with closet space
+                    – Attached and shared bathroom options
+                    – Semi-furnished with essentials
+                    – Natural lighting and good ventilation
+                    – Carpeted/wood floors (based on unit)
+                    – High-speed internet and utilities available
 
-🍽️ Common Areas:
+                    🍽️ Common Areas:
 
-– Spacious living room with seating and TV setup
-– Dining area for shared meals
-– Fully-equipped kitchen with refrigerator, microwave, stove, and utensils
-– Washer & Dryer in-unit or in-building
+                    – Spacious living room with seating and TV setup
+                    – Dining area for shared meals
+                    – Fully-equipped kitchen with refrigerator, microwave, stove, and utensils
+                    – Washer & Dryer in-unit or in-building
 
-🌳 Community Amenities (Varies by complex):
+                    🌳 Community Amenities (Varies by complex):
 
-– Swimming pool and gym access
-– 24/7 maintenance and security patrol
-– Designated parking spots
-– Pet-friendly policy (check for details)
-– Clubhouse and recreational areas
+                    – Swimming pool and gym access
+                    – 24/7 maintenance and security patrol
+                    – Designated parking spots
+                    – Pet-friendly policy (check for details)
+                    – Clubhouse and recreational areas
 
-📍 Prime Location in Irving:
+                    📍 Prime Location in Irving:
 
-– Walking distance to Walmart, Indian groceries, and restaurants
-– Quick access to DART station and bus lines
-– Close to Las Colinas, DFW Airport, and major corporate hubs
-– Peaceful neighborhood with parks and green spaces nearby
+                    – Walking distance to Walmart, Indian groceries, and restaurants
+                    – Quick access to DART station and bus lines
+                    – Close to Las Colinas, DFW Airport, and major corporate hubs
+                    – Peaceful neighborhood with parks and green spaces nearby
 
-This accommodation is perfect for roommates, offering equal privacy in a shared 2BHK setup. Both bedrooms are designed to offer comfort and personal space, and bathrooms are conveniently located for easy access.
+                    This accommodation is perfect for roommates, offering equal privacy in a shared 2BHK setup. Both bedrooms are designed to offer comfort and personal space, and bathrooms are conveniently located for easy access.
 
-We’re looking for clean, respectful, and responsible individuals to occupy this space. Whether you're new to the city or simply looking for a better living option, this is a great opportunity to move into a welcoming and convenient environment.
+                    We’re looking for clean, respectful, and responsible individuals to occupy this space. Whether you're new to the city or simply looking for a better living option, this is a great opportunity to move into a welcoming and convenient environment.
 
-📞 Contact Information:
+                    📞 Contact Information:
 
-If you’re interested or have any questions, please reach out for pictures, rent details, or to schedule a visit. Early applications are encouraged as availability may be limited.
+                    If you’re interested or have any questions, please reach out for pictures, rent details, or to schedule a visit. Early applications are encouraged as availability may be limited.
                 </p>
               </CardContent>
           </Card> */}
 
-
-          
-
-          {/* Photo Gallery - only show if there are images and not for jobs/rides */}
-
-          
-          
+            {/* Photo Gallery - only show if there are images and not for jobs/rides */}
+          </div>
+          {/* Contact button - only show on desktop */}
+          {!isMobile && user?.id !== listing?.user_id && (
+            <div className="w-full relative">
+              <div
+                // style={{ width: width }}
+                className={`my-8 p-4 bg-white  mx-auto fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full`}
+              >
+                <Button
+                  onClick={handleContact}
+                  className="bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+                >
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Message
+                </Button>
+              </div>
+              <div className="h-16"></div>
+            </div>
+          )}
         </div>
-        {/* Contact button - only show on desktop */}
-        {!isMobile && user?.id !== listing?.user_id && (
-          <div className="w-full relative">
-            <div
-              // style={{ width: width }}
-              className={`my-8 p-4 bg-white  mx-auto fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full`}
-            >
+
+        {/* Fixed button at the bottom only for mobile */}
+        {isMobile && user?.id !== listing?.user_id && (
+          <div
+            className={`fixed ${
+              user ? "bottom-0" : "bottom-10"
+            } left-0 right-0 py-4 px-4 bg-white border-t shadow-md`}
+          >
+            <div className="max-w-3xl mx-auto">
               <Button
                 onClick={handleContact}
-                className="bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+                className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
                 Message
               </Button>
             </div>
-            <div className="h-16"></div>
           </div>
         )}
+        <AuthModal
+          open={isOpen}
+          onOpenChange={closeModal}
+          defaultTab={defaultTab as "login" | "signup"}
+        />
       </div>
 
-      {/* Fixed button at the bottom only for mobile */}
-      {isMobile && user?.id !== listing?.user_id && (
-        <div className={`fixed ${user? 'bottom-0': 'bottom-10'} left-0 right-0 py-4 px-4 bg-white border-t shadow-md`}>
-          <div className="max-w-3xl mx-auto">
-            <Button
-              onClick={handleContact}
-              className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+      {/* Modal for full image display */}
+      {isImageModalOpen && (
+        <div
+          className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div className="w-fulll min-h-full md:min-h-[88%] max-w-3xl flex items-center justify-center bg-black py-10 px-5 rounded-md relative">
+            <img
+              src="https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=612x612&w=0&k=20&c=A63koPKaCyIwQWOTFBRWXj_PwCrR4cEoOw2S9Q7yVl8="
+              alt="Image"
+              className="w-full h-full object-contain rounded-md"
+            />
+
+            <button
+              className="absolute top-8 right-8 text-slate-200"
+              onClick={() => setIsImageModalOpen(false)}
             >
-              <MessageSquare className="h-5 w-5 mr-2" />
-              Message
-            </Button>
+              <RxCross2 className="text-xl" />
+            </button>
           </div>
         </div>
       )}
-      <AuthModal
-        open={isOpen}
-        onOpenChange={closeModal}
-        defaultTab={defaultTab as "login" | "signup"}
-      />
-    </div>
+    </>
   );
 };
 

@@ -96,7 +96,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
     if (searchQuery.trim()) {
       // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-      currentParams.set("q", encodeURIComponent(searchQuery));
+
+      //currentParams.set("q", encodeURIComponent(searchQuery));
+      currentParams.set("q", searchQuery.trim());
 
       // Navigate to the same path but with the updated query parameters
       navigate(`${location.pathname}?${currentParams.toString()}`);
@@ -113,6 +115,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const queryParam = params.get("q");
+
     if (queryParam) {
       setSearchQuery(queryParam);
     }

@@ -60,7 +60,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
           </Button>
         </form>
       </div>
-      <div className="h-5"></div>
+
+      {/*   <div className="h-5"></div> */}
     </div>
   );
 };

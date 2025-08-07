@@ -20,11 +20,6 @@ const ListingSkeleton = () => {
                 </div> */}
       {/* </div> */}
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-        consequatur.
-      </p>
-
       <div className="space-y-2  ml-4 mr-4 rounded-lg shadow-md p-4">
         <div className="h-4 bg-gray-200 w-3/4 rounded"></div>
         <div className="h-4 bg-gray-200 w-1/2 rounded"></div>
