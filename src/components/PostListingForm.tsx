@@ -1784,11 +1784,14 @@ function PostListingForm() {
         // console.log("type => ", typeof data.image);
         // console.log("instanceof File => ", data.image instanceof File);
         formData.append('image', data.image, data.image.name);
+        
         // localStorage.setItem('image', data.image)
       } else if (isEditMode && typeof imagePreview === 'string' && imagePreview.startsWith('http')) {
         // Preserve existing image URL if not changed
         formData.append('image_url', imagePreview);
       }
+
+      
 
       formData.append('category', data.category.toUpperCase());
       formData.append('sub_category', data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase());
@@ -1847,6 +1850,9 @@ function PostListingForm() {
 
 
       if (isEditMode) {
+        if(!imagePreview) {
+          formData.append('image', null)
+        }
         const response = await api.patch(`/listings/${listingId}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
