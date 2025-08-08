@@ -406,18 +406,19 @@
 
 // export default Messages;
 
-import React, { useState, useEffect } from 'react';
-import { useMessages } from '@/context/MessageContext';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { formatTime } from '@/lib/utils';
+import React, { useState, useEffect } from "react";
+import { useMessages } from "@/context/MessageContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { formatDistanceToNow } from "date-fns";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { formatTime } from "@/lib/utils";
 
 const Messages = () => {
-  const { conversations, setActiveConversation, unreadMessages } = useMessages();
+  const { conversations, setActiveConversation, unreadMessages } =
+    useMessages();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -429,16 +430,15 @@ const Messages = () => {
   //   return formatDistanceToNow(date, { addSuffix: true });
   // };
 
-
-
-
   const handleConversationSelect = (conversationId: string) => {
-    setActiveConversation(conversations.find(conv => conv.id === conversationId) || null);
+    setActiveConversation(
+      conversations.find((conv) => conv.id === conversationId) || null
+    );
     navigate(`/messages/${conversationId}`);
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col bg-white">
+    <div className="min-h-[85vh] flex flex-col bg-white px-2 lg:px-4">
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">
@@ -449,13 +449,21 @@ const Messages = () => {
           ) : (
             <ul className="divide-y divide-gray-100">
               {conversations.map((conv) => (
-                <li key={conv.id} className="cursor-pointer" onClick={() => handleConversationSelect(conv.id)}>
+                <li
+                  key={conv.id}
+                  className="cursor-pointer"
+                  onClick={() => handleConversationSelect(conv.id)}
+                >
                   {/* <div className={`p-3 hover:bg-gray-50 ${unreadMessages?.[conv?.id] > 0 && 'bg-blue-200 hover:bg-blue-100'}`}> */}
-                  <div className="p-3 hover:bg-gray-50">
+                  <div className="p-4 hover:bg-gray-50">
                     <div className="flex justify-between items-start">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{conv.listing.title}</p>
-                        <p className="text-xs text-gray-500 mt-1">{conv?.other?.name}</p>
+                        <p className="text-sm font-medium truncate">
+                          {conv.listing.title}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {conv?.other?.name}
+                        </p>
                         {/* <p className={`text-sm mt-1 truncate ${!conv.message?.read ? 'font-medium' : 'text-gray-600'}`}>
                           {conv.lastMessage?.senderId ? "You: " : ""}{conv.lastMessage?.content}
                         </p> */}
@@ -464,33 +472,50 @@ const Messages = () => {
                             No messages yet
                           </span>
                         )} */}
-                        {
-                          conv?.messages?.length > 0 ? (
-                            <span className={`text-xs ${(conv.messages[conv.messages.length - 1]?.isRead || conv.messages[conv.messages.length - 1]?.senderId == user.id) ? 'text-gray-' : 'text-black font-bold'}`}>
-                              {conv.messages[conv.messages.length - 1]?.senderId == user?.id ? "You: " : ""}{conv.messages[conv.messages.length - 1]?.content}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-gray-500">
-                              No messages yet
-                            </span>
-                          )
-                        }
+                        {conv?.messages?.length > 0 ? (
+                          <span
+                            className={`text-xs ${
+                              conv.messages[conv.messages.length - 1]?.isRead ||
+                              conv.messages[conv.messages.length - 1]
+                                ?.senderId == user.id
+                                ? "text-gray-"
+                                : "text-black font-bold"
+                            }`}
+                          >
+                            {conv.messages[conv.messages.length - 1]
+                              ?.senderId == user?.id
+                              ? "You: "
+                              : ""}
+                            {conv.messages[conv.messages.length - 1]?.content}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-500">
+                            No messages yet
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col items-end ml-2">
-                        {
-                          conv?.messages?.length > 0 ? (
-                            <span className="text-xs text-gray-500 flex justify-center items-center">{formatTime(new Date(conv?.messages?.[conv?.messages?.length - 1]?.timestamp).toString())}</span>
-                          ) : (
-                            // <span className="text-xs text-gray-500">
-                            // </span>
-                            ''
-                          )
-                        }
+                        {conv?.messages?.length > 0 ? (
+                          <span className="text-xs text-gray-500 flex justify-center items-center">
+                            {formatTime(
+                              new Date(
+                                conv?.messages?.[
+                                  conv?.messages?.length - 1
+                                ]?.timestamp
+                              ).toString()
+                            )}
+                          </span>
+                        ) : (
+                          // <span className="text-xs text-gray-500">
+                          // </span>
+                          ""
+                        )}
 
                         {unreadMessages?.[conv?.id] > 0 && (
                           <span className="mt-1 text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center">
-                            {unreadMessages[conv.id] < 10 ? unreadMessages[conv.id] : '9+'}
-                            
+                            {unreadMessages[conv.id] < 10
+                              ? unreadMessages[conv.id]
+                              : "9+"}
                           </span>
                         )}
 

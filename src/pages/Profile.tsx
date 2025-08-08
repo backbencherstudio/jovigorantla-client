@@ -250,12 +250,11 @@ const Profile = () => {
     }, 300); // Delay to account for keyboard animation
   };
 
- 
   if (!user) return null;
 
   return (
-    <div className="bg-white min-h-[calc(100vh-130px)]">
-      <div className="p-3 space-y-6 bg-white">
+    <div className="bg-white min-h-[calc(100vh-130px)] p-2 lg:p-4">
+      <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>

@@ -96,7 +96,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
     if (searchQuery.trim()) {
       // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-      currentParams.set("q", encodeURIComponent(searchQuery));
+      //currentParams.set("q", encodeURIComponent(searchQuery));
+      currentParams.set("q", searchQuery.trim());
 
       // Navigate to the same path but with the updated query parameters
       navigate(`${location.pathname}?${currentParams.toString()}`);
@@ -147,7 +148,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     setSearchQuery(queryParam);
   }, [location.search]);
 
-  const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
+  //const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
+  const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "85px" : "0px";
+
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
   const [width, setWidth] = useState("768px");
@@ -261,12 +264,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         variant="ghost"
                         size="icon"
                         onClick={handleBack}
-                        className="mr-2"
+                        className="absolute left-5 md:left-6 lg:left-8 top-1/2 -translate-y-1/2"
                       >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1 className="text-xl font-bold">{title}</h1>
+                    <h1 className="text-xl font-medium text-center w-full">
+                      {title}
+                    </h1>
                   </div>
                   <div className="h-[65px] bg-white border-b "></div>
                 </div>

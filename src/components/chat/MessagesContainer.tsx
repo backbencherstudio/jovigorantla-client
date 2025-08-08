@@ -41,7 +41,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   }, [messages]);
 
   return (
-    <ScrollArea className="flex-1 pb-4 bg-gray-100">
+    // pb-8
+    <ScrollArea className="flex-1 bg-gray-100">
       <div className="space-y-6 p-4 mt-6">
         {dateKeys.map((dateKey) => {
           const dateMessages = groupedMessages[dateKey];

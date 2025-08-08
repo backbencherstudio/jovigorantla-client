@@ -51,7 +51,6 @@
 //   const [resetEmail, setResetEmail] = useState("");
 //   const [signupSuccessfull, setSignupSuccessfull] = useState("")
 
-
 //   useEffect(() => {
 //     if (!open) {
 //       setSignupStep("email");
@@ -107,8 +106,6 @@
 //     email: z.string().email({ message: "Please enter a valid email address" }),
 //   });
 
-
-
 // const resetPasswordWithOtpSchema = z
 //   .object({
 //     otp: z.string().min(6, "OTP must be at least 4 characters"),
@@ -121,7 +118,6 @@
 //     path: ["confirmPassword"],
 //     message: "Passwords do not match",
 //   });
-
 
 //   // Create forms
 //   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -152,8 +148,6 @@
 //       confirmPassword: "",
 //     },
 //   });
-
-
 
 //   // Login handler
 //   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
@@ -263,7 +257,6 @@
 //     // }
 
 //     try {
-    
 
 //       const isSignInOrSingUp = await signUpWithGoogle()
 //       if (!isSignInOrSingUp) {
@@ -279,9 +272,6 @@
 //     } finally {
 //       setIsLoading(false);
 //     }
-
-
-
 
 //   };
 
@@ -386,7 +376,7 @@
 
 //     // Show Reset Password form
 //     if (openResetPassword) {
-//       return <ResetPasswordWithOTPForm 
+//       return <ResetPasswordWithOTPForm
 //         resetForm={resetForm}
 //         handleReset={handleReset}
 //         isLoading={isLoading}
@@ -558,7 +548,6 @@
 
 // export default AuthModal;
 
-
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -592,7 +581,14 @@ const AuthModal = ({
   onOpenChange,
   defaultTab = "login",
 }: AuthModalProps) => {
-  const { signIn, signUp, signUpWithGoogle, resetPassword, forgotPassword: handleForgotPassword, setIsModalOpen} = useAuth();
+  const {
+    signIn,
+    signUp,
+    signUpWithGoogle,
+    resetPassword,
+    forgotPassword: handleForgotPassword,
+    setIsModalOpen,
+  } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -600,12 +596,14 @@ const AuthModal = ({
   const [activeTab, setActiveTab] = useState<"login" | "signup">(defaultTab);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  
+
   // State for managing viewport height
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  
+
   // State for signup steps
-  const [signupStep, setSignupStep] = useState<"email" | "verify" | "details">("email");
+  const [signupStep, setSignupStep] = useState<"email" | "verify" | "details">(
+    "email"
+  );
   const [signupEmail, setSignupEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState<number>(60);
@@ -628,14 +626,14 @@ const AuthModal = ({
     setViewportHeight(window.innerHeight);
 
     // Listen for resize events
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', () => {
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", () => {
       setTimeout(() => setViewportHeight(window.innerHeight), 100);
     });
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", () => {
         setTimeout(() => setViewportHeight(window.innerHeight), 100);
       });
     };
@@ -661,7 +659,7 @@ const AuthModal = ({
       signupEmailForm.clearErrors();
       signupDetailsForm.clearErrors();
       resetPasswordForm.clearErrors();
-    }else{
+    } else {
       setIsModalOpen(true);
     }
   }, [open]);
@@ -764,7 +762,9 @@ const AuthModal = ({
   };
 
   // Handle email submission
-  const handleEmailSubmit = async (values: z.infer<typeof signupEmailSchema>) => {
+  const handleEmailSubmit = async (
+    values: z.infer<typeof signupEmailSchema>
+  ) => {
     setIsLoading(true);
     try {
       setSignupEmail(values.email);
@@ -795,7 +795,9 @@ const AuthModal = ({
   };
 
   // Handle final signup
-  const handleDetailsSubmit = async (values: z.infer<typeof signupDetailsSchema>) => {
+  const handleDetailsSubmit = async (
+    values: z.infer<typeof signupDetailsSchema>
+  ) => {
     setIsLoading(true);
     try {
       // Signup logic here
@@ -819,7 +821,7 @@ const AuthModal = ({
         onOpenChange(false);
       }
     } catch (error) {
-      toast.error(`${activeTab === 'login'? 'Login':  'Sign Up'} failed`, {
+      toast.error(`${activeTab === "login" ? "Login" : "Sign Up"} failed`, {
         description: "Something went wrong",
       });
     } finally {
@@ -828,7 +830,9 @@ const AuthModal = ({
   };
 
   // Handle password reset
-  const handleResetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
+  const handleResetPassword = async (
+    values: z.infer<typeof resetPasswordSchema>
+  ) => {
     setSignupStep("verify");
     setIsLoading(true);
     setResendDisabled(true);
@@ -845,7 +849,9 @@ const AuthModal = ({
     }
   };
 
-  const handleOpenResetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
+  const handleOpenResetPassword = async (
+    values: z.infer<typeof resetPasswordSchema>
+  ) => {
     try {
       setOpenResetPassword(true);
       setForgotPassword(false);
@@ -861,39 +867,39 @@ const AuthModal = ({
     setResendDisabled(true);
     setResendTimer(100);
     resetForm.reset();
-   
-    const res = await api.post('/auth/forgot-password', {
-      email: resetEmail
-    });
 
-    
+    const res = await api.post("/auth/forgot-password", {
+      email: resetEmail,
+    });
   };
 
   const handleSignResend = async () => {
     setResendDisabled(true);
     setResendTimer(100);
-    const res = await api.post('/auth/send-otp', {
-      email: signupEmail
+    const res = await api.post("/auth/send-otp", {
+      email: signupEmail,
     });
     // console.log(res);
   };
 
-  const handleReset = async (values: z.infer<typeof resetPasswordWithOtpSchema>) => {
+  const handleReset = async (
+    values: z.infer<typeof resetPasswordWithOtpSchema>
+  ) => {
     try {
-      const { data } = await api.post('/auth/reset-password', {
-        "email": resetEmail,
-        "token": values.otp,
-        "password": values.password
+      const { data } = await api.post("/auth/reset-password", {
+        email: resetEmail,
+        token: values.otp,
+        password: values.password,
       });
 
-      if(data.success){
+      if (data.success) {
         setOpenResetPassword(false);
 
-        setActiveTab('login');
-        setResetEmail('');
-        setSignupSuccessfull("Password changed successfully!")
+        setActiveTab("login");
+        setResetEmail("");
+        setSignupSuccessfull("Password changed successfully!");
         resetForm.reset();
-      }else{
+      } else {
         resetForm.setError("otp", {
           type: "manual",
           message: "Invalid OTP",
@@ -908,7 +914,7 @@ const AuthModal = ({
   const redirectToLogin = () => {
     setSignupSuccessfull("Account created! You can now log in");
     setSignupStep("email");
-    setActiveTab('login');
+    setActiveTab("login");
   };
 
   // Timer effect for resend button
@@ -926,7 +932,7 @@ const AuthModal = ({
   }, [resendTimer, resendDisabled]);
 
   const handleOpenChange = (newOpen: boolean) => {
-    console.log("new open => ", newOpen)
+    console.log("new open => ", newOpen);
     onOpenChange(newOpen);
     setIsModalOpen?.(newOpen); // Call if provided
   };
@@ -935,40 +941,42 @@ const AuthModal = ({
     const handleFocus = (e: Event) => {
       const activeElement = e.target as HTMLElement;
       if (
-        activeElement.tagName === 'INPUT' || 
-        activeElement.tagName === 'TEXTAREA' ||
-        activeElement.tagName === 'SELECT'
+        activeElement.tagName === "INPUT" ||
+        activeElement.tagName === "TEXTAREA" ||
+        activeElement.tagName === "SELECT"
       ) {
         setTimeout(() => {
           activeElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
+            behavior: "smooth",
+            block: "center",
           });
         }, 300);
       }
     };
-  
-    document.addEventListener('focusin', handleFocus);
-    return () => document.removeEventListener('focusin', handleFocus);
+
+    document.addEventListener("focusin", handleFocus);
+    return () => document.removeEventListener("focusin", handleFocus);
   });
-  
+
   const renderMainContent = () => {
     // Show Reset Password form
     if (openResetPassword) {
-      return <ResetPasswordWithOTPForm 
-        resetForm={resetForm}
-        handleReset={handleReset}
-        isLoading={isLoading}
-        setBackToEmailForm={() => {
-          setOpenResetPassword(false);
-          setForgotPassword(true);
-        }}
-        resendTimer={resendTimer}
-        resendDisabled={resendDisabled}
-        handleResend={handleResend}
-      />;
+      return (
+        <ResetPasswordWithOTPForm
+          resetForm={resetForm}
+          handleReset={handleReset}
+          isLoading={isLoading}
+          setBackToEmailForm={() => {
+            setOpenResetPassword(false);
+            setForgotPassword(true);
+          }}
+          resendTimer={resendTimer}
+          resendDisabled={resendDisabled}
+          handleResend={handleResend}
+        />
+      );
     }
-    
+
     // Show forgot password form
     if (forgotPassword) {
       return (
@@ -984,7 +992,6 @@ const AuthModal = ({
     // Show signup steps (verify email or enter details)
     if (signupStep === "verify" || signupStep === "details") {
       return (
-
         <AuthSteps
           signupStep={signupStep}
           setSignupStep={setSignupStep}
@@ -1025,8 +1032,8 @@ const AuthModal = ({
             </Link>{" "}
             and acknowledge that you understand the{" "}
             <Link
-            to={"/privacy-policy"}
-             target="_blank"
+              to={"/privacy-policy"}
+              target="_blank"
               // onClick={() => navigate("/privacy-policy")}
               className="text-blue-500 inline hover:underline cursor-pointer"
             >
@@ -1098,33 +1105,34 @@ const AuthModal = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={handleOpenChange}>
-        <DrawerContent 
-          className="justify-center bg-white"
-          style={{ 
+        <DrawerContent
+          className="justify-center bg-white h-[80vh]"
+          /* style={{
             height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
             maxHeight: Math.min(viewportHeight * 0.85, 600),
-          }}
+          }} */
 
-          // style={{ 
+          // style={{
           //   // height: '90vh',
           //   // maxHeight: '90vh',
           // }}
         >
-          
-          <div className="absolute right-4 top-4 z-10">
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon">
-                <X className="h-4 w-4" />
-              </Button>
-            </DrawerClose>
-          </div>
-          <div className="px-4 py-8 h-full  flex overflow-y-auto"
-           style={{
-            paddingBottom: '60px', // Extra padding for keyboard
-            scrollBehavior: 'smooth',
-            overscrollBehavior: 'contain',
-          }}
+          <div
+            className="px-4 py-8 h-full flex overflow-y-auto relative"
+            /* style={{
+              paddingBottom: "60px", // Extra padding for keyboard
+              scrollBehavior: "smooth",
+              overscrollBehavior: "contain",
+            }} */
           >
+            <div className="absolute right-4 top-4 z-10">
+              <DrawerClose asChild>
+                <Button variant="ghost" size="icon">
+                  <X className="h-4 w-4" />
+                </Button>
+              </DrawerClose>
+            </div>
+
             {authContent}
           </div>
         </DrawerContent>
@@ -1133,7 +1141,7 @@ const AuthModal = ({
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange} >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto p-3 bg-white">
         <DialogClose className="absolute right-4 top-4 z-10">
           <Button
