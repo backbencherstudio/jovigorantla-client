@@ -39,6 +39,7 @@ import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
 import { useEffect, useState } from "react";
+import RouteChangeListener from "./hooks/RouteChangeListener";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -385,6 +386,7 @@ function App() {
             <LocationProvider>
               <SocketProvider>
                 <MessageProvider>
+                <RouteChangeListener />
                   <AppRoutes />
                 </MessageProvider>
               </SocketProvider>
