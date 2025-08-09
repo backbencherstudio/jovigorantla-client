@@ -11,7 +11,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
 
   return (
     <div className="filter-tabs-container border-b border-gray-100">
-      <div className="flex gap-2 px-4 overflow-x-auto thin-scrollbar py-3 bg-background">
+      <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 bg-background">
         {tabs.map((tab) => (
           <div
             key={tab}
@@ -22,7 +22,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
             } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
             onClick={() => onTabClick?.(tab)}
           >
-            {tab} 
+            {tab}
           </div>
         ))}
       </div>
@@ -31,8 +31,6 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
 };
 
 export default FilterTabs;
-
-
 
 // const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
 //   const isMobile = useMediaQuery("(max-width: 767px)");

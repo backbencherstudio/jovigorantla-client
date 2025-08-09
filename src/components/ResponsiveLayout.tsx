@@ -237,23 +237,21 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               <Sidebar collapsed={isCollapsed} />
             </div>
           )}
-
           {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
             }  flex flex-col flex-1 min-h-[100%]`} */}
-
           {!isValidPage && (
             <main
               className={`w-full mx-auto ${
                 fullWidth
                   ? ""
-                  : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+                  : "max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
+                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl"
                     style={{
                       // width: width,
                       top: "60px" /* Header height */,
@@ -273,7 +271,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       {title}
                     </h1>
                   </div>
-                  <div className="h-[65px] bg-white border-b "></div>
+                  <div className="h-[50px] bg-white border-b"></div>
                 </div>
               )}
 
@@ -281,23 +279,23 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
             </main>
           )}
-
           {/* Main Content Area */}
           {isValidPage && (
             <div
               className="flex-1 listings-container"
-              style={{
+              /*  style={{
                 marginLeft: !isMobile ? leftSidebarWidth : "0",
                 marginRight: isDesktop ? rightSidebarWidth : "0",
-              }}
+              }} */
             >
               {/* Center Content Container */}
-              <main className="w-full mx-auto max-w-3xl bg-transparent">
+
+              <main className="w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto bg-transparent">
                 {/* Mobile: Search, Location and Categories */}
                 {isMobile && (
                   <div
                     ref={mobileHeaderRef}
-                    className=" z-10 transition-transform bg-white pt-3"
+                    className="z-10 transition-transform bg-white pt-3"
                   >
                     <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
@@ -349,7 +347,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
-
           {isMobile && !isModalOpen && isValidPage && (
             <div
               ref={mobileHeaderRef}
@@ -418,7 +415,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </div>
             </div>
           )}
-
           {/* Right sidebar with ad banners - only visible on desktop */}
           {isDesktop && (
             <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">

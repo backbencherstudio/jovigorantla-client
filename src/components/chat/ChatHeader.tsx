@@ -68,9 +68,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   }, []);
 
   return (
-    <div
-      className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
-    >
+    // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
+    <div className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
       <div className="flex items-center flex-1">
         <Button
           variant="ghost"
@@ -91,7 +90,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         <div className="ml-3 flex-1">
           <h3 className="font-medium text-base">{otherUserName}</h3>
           <p
-            className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-sm cursor-pointer hover:underline"
+            className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-sm cursor-pointer hover:underline whitespace-pre-wrap"
             onClick={handleListingClick}
           >
             {listingTitle}

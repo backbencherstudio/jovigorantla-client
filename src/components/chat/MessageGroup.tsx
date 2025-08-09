@@ -339,7 +339,7 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
   flushGroup(); // flush any remaining group
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 pt-10 ">
       <div className="flex justify-center">
         <span className="text-xs bg-white px-3 py-1 rounded-full text-gray-500 shadow-sm">
           {dateLabel}

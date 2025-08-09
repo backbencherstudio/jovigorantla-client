@@ -554,8 +554,9 @@ export default function Home({ openModal }) {
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
   return (
+    // w-full mx-auto max-w-3xl
     <main
-      className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
+      className="w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
       ref={filterTabsRef}
     >
       <FilterTabs
@@ -565,7 +566,8 @@ export default function Home({ openModal }) {
       />
 
       {!isTabChanging ? (
-        <div className="px-4 my-4 space-y-4">
+        //  px-4 -- only it was before
+        <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (

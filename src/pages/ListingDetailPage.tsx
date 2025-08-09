@@ -61,6 +61,7 @@ const ListingDetailPage = ({ openModal }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [defaultTab, setDefaultTab] = useState<"login" | "signup">("login");
   const [listing, setListing] = useState<any>({});
+
   const { handleConversationCreated } = useMessages();
 
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -76,6 +77,9 @@ const ListingDetailPage = ({ openModal }) => {
       const { data } = await api.get(`/listings/${id}`);
       if (data?.success) {
         setListing(data?.data);
+      } else {
+        // if data not found redirect to home
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
@@ -299,7 +303,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      <div className="flex flex-col bg-white">
+      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
         <div className="flex-1 py-[10px] overflow-y-auto pb-24 mx-auto w-full p-2 lg:p-4">

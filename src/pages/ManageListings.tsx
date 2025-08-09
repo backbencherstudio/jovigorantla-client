@@ -85,11 +85,12 @@ const ManageListings = () => {
     setListingToDelete(id);
   };
 
-
   const deleteListing = async () => {
     if (!listingToDelete) return;
     try {
-      const { data: listing } = await api.delete(`/listings/${listingToDelete}`);
+      const { data: listing } = await api.delete(
+        `/listings/${listingToDelete}`
+      );
       if (listing?.success) {
         const updatedListings = listings.filter(
           (listing) => listing.id !== listingToDelete
@@ -104,29 +105,28 @@ const ManageListings = () => {
   };
 
   const fetchMyListing = async () => {
-    try{
-      const {data: listing} = await api.get('/listings')
+    try {
+      const { data: listing } = await api.get("/listings");
       if (listing?.success) {
-        setListings(listing?.data)
-      }else{
-        throw new Error(listing?.message)
+        setListings(listing?.data);
+      } else {
+        throw new Error(listing?.message);
       }
-    }catch(error){
-      console.error(error)
-    }finally{
-      setIsLoading(false)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchMyListing()
-  }, [])
-
+    fetchMyListing();
+  }, []);
 
   if (!user) return null;
   return (
-    <div className="bg-white  min-h-[calc(100vh-130px)]">
-      <div className="bg-white p-4">
+    <div className="bg-white min-h-[calc(100vh-110px)]">
+      <div className="bg-white px-4">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
@@ -167,22 +167,29 @@ const ManageListings = () => {
                         </h3>
                         <div className="flex flex-wrap text-sm text-gray-500 gap-x-4 gap-y-1">
                           <div className="flex items-center">
-                            <span>Category: {formatCategory(listing?.category)}</span>
+                            <span>
+                              Category: {formatCategory(listing?.category)}
+                            </span>
                           </div>
                           {/* <div className="flex items-center">
                             <span>Status: {formatSubCategory(listing.category, listing.sub_category)}</span>
                           </div> */}
                           <div className="flex items-center">
-                            <span>Created: {formatTime(listing.created_at)}</span>
+                            <span>
+                              Created: {formatTime(listing.created_at)}
+                            </span>
                           </div>
                           {listing?.address && (
-                              <div className="flex items-center">
-                                <span>
-                                  Location: {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
-                                </span>
-                              </div>
-                            )}
-
+                            <div className="flex items-center">
+                              <span>
+                                Location:{" "}
+                                {listing.address
+                                  ?.split(",")
+                                  .filter((_, i) => i === 0 || i === 1)
+                                  .join(", ")}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex space-x-2">

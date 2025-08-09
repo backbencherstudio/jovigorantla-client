@@ -438,7 +438,7 @@ const Messages = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col bg-white px-2 lg:px-4">
+    <div className="min-h-[calc(100vh-110px)] flex flex-col bg-white px-2 lg:px-4">
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">

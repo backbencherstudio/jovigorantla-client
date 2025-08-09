@@ -1997,7 +1997,7 @@ export default function Marketplace({ openModal }) {
   useEffect(() => {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
-    } 
+    }
   }, []);
 
   // // Debug logging
@@ -2014,9 +2014,9 @@ export default function Marketplace({ openModal }) {
 
   const handleItemsClicks = () => {
     // Store the current scroll position and path
-    sessionStorage.setItem('scrollPosition', window.scrollY.toString());
-    sessionStorage.setItem('lastPath', location.pathname);  // Store the current path
-    console.log("window scrollY => ", window.scrollY)
+    sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    sessionStorage.setItem("lastPath", location.pathname); // Store the current path
+    console.log("window scrollY => ", window.scrollY);
   };
 
   // useEffect(() => {
@@ -2031,20 +2031,18 @@ export default function Marketplace({ openModal }) {
 
   //   if (storedPath === location.pathname && storedScrollPosition) {
   //     setIsRestoringScroll(true);
-      
+
   //     // Use setTimeout to ensure the state update is processed before scrolling
   //     setTimeout(() => {
   //       window.scrollTo(0, parseInt(storedScrollPosition));
   //       setIsRestoringScroll(false);
-        
+
   //       // Clear the stored values after restoring
   //       // sessionStorage.removeItem('scrollPosition');
   //       // sessionStorage.removeItem('lastPath');
   //     }, 0);
   //   }
   // });  // Dependency to ensure the effect runs when the pathname changes
-  
-  
 
   const yourTrackingFunction = async (listing: any) => {
     try {
@@ -2071,10 +2069,10 @@ export default function Marketplace({ openModal }) {
     window.open(listing.target_url, "_blank", "noopener,noreferrer");
   };
 
-
   return (
+    // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
-      className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500"
+      className="w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
       ref={filterTabsRef}
     >
       <FilterTabs
@@ -2083,18 +2081,18 @@ export default function Marketplace({ openModal }) {
         onTabClick={handleFilterClick}
       />
       {!isTabChanging ? (
-        <div className="px-4 my-4 space-y-4">
+        <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
           {listings.map((listing, index) => (
             <div key={`${listing.id}-${index}`}>
               {listing?.type === "listing" && (
                 <div onClick={handleItemsClicks}>
                   <ListingItem
-                  listing={listing}
-                  onToggleSave={() => {}}
-                  isUsa={false}
-                  onHide={() => handleHide(listing.id)}
-                  openModal={openModal}
-                />
+                    listing={listing}
+                    onToggleSave={() => {}}
+                    isUsa={false}
+                    onHide={() => handleHide(listing.id)}
+                    openModal={openModal}
+                  />
                 </div>
               )}
               {listing?.type === "ad" &&
