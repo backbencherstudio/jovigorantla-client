@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +10,16 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
       onSendMessage(newMessage);
       setNewMessage("");
+
+      // Re-focus the input field to keep the keyboard open
+      inputRef.current?.focus();
     }
   };
   const [width, setWidth] = useState("768px");
@@ -47,6 +52,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
+            ref={inputRef}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"

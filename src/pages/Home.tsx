@@ -19,6 +19,32 @@ import ListingSkeleton from "@/components/ListingSkeleton";
 import useScrollRestoration from "@/hooks/useScrollRestoration";
 import { cache } from "@/lib/cache";
 
+const PageSkeleton = () => {
+  return (
+    <div className="space-y-6 p-6">
+      {/* Title Skeleton */}
+      <div className="h-8 bg-gray-300 w-3/4 rounded"></div>
+
+      {/* Description Skeleton */}
+      <div className="h-6 bg-gray-300 w-full rounded"></div>
+      <div className="h-6 bg-gray-300 w-5/6 rounded"></div>
+
+      {/* Image Placeholder Skeleton */}
+      <div className="w-full h-48 bg-gray-200 rounded-md"></div>
+
+      {/* Text Content Skeleton */}
+      <div className="space-y-4">
+        <div className="h-4 bg-gray-300 w-3/4 rounded"></div>
+        <div className="h-4 bg-gray-300 w-2/3 rounded"></div>
+        <div className="h-4 bg-gray-300 w-full rounded"></div>
+      </div>
+
+      {/* Button Skeleton */}
+      <div className="h-10 bg-gray-300 w-32 rounded-full"></div>
+    </div>
+  );
+};
+
 const cacheData: any = {
   listings: [],
 };
@@ -296,6 +322,7 @@ export default function Home({ openModal }) {
         "Restoring scroll position from location state:",
         location.state.scrollY
       );
+
       // Use setTimeout to ensure DOM is ready
       setTimeout(() => {
         window.scrollTo(0, location.state.scrollY);

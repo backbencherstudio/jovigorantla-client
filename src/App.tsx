@@ -40,6 +40,8 @@ import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
 import { useEffect, useState } from "react";
 
+import Chatbox from "./pages/TestMessage/Chatbox";
+
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -191,6 +193,14 @@ function AppRoutes() {
                 <ChatPage />
               </ResponsiveLayout>
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/messages2"
+          element={
+            <ResponsiveLayout>
+              <Chatbox />
+            </ResponsiveLayout>
           }
         />
         <Route

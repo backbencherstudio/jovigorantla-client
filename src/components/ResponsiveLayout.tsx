@@ -17,7 +17,7 @@ import useRedirectNav from "@/hooks/useRedirectNav";
 
 const PageSkeleton = () => {
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
       {/* Title Skeleton */}
       <div className="h-8 bg-gray-300 w-3/4 rounded"></div>
 
@@ -210,16 +210,24 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   //   }
   // }, [isMobile]);
 
+  const pathname = location.pathname;
   const isHome = location.pathname === "/";
-  const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
+  //const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
+  const [isVisiblef, setIsVisiblef] = useState(true);
 
   useEffect(() => {
-    if (isHome) {
+    setTimeout(() => {
+      setIsVisiblef(false);
+    }, 300); // Adjust the delay as needed
+
+    setIsVisiblef(true);
+
+    /* if (isHome) {
       setTimeout(() => {
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
-    }
-  });
+    } */
+  }, [pathname]);
 
   return (
     <div className={`flex flex-col bg-gray-50`}>
