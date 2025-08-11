@@ -212,25 +212,24 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   const pathname = location.pathname;
   const isHome = location.pathname === "/";
-  //const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
-  const [isVisiblef, setIsVisiblef] = useState(true);
+  const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
+  // const [isVisiblef, setIsVisiblef] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
+    /* setTimeout(() => {
       setIsVisiblef(false);
-    }, 300); // Adjust the delay as needed
+    }, 300);
+    setIsVisiblef(true); */
 
-    setIsVisiblef(true);
-
-    /* if (isHome) {
+    if (isHome) {
       setTimeout(() => {
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
-    } */
-  }, [pathname]);
+    }
+  }, [isHome]);
 
   return (
-    <div className={`flex flex-col bg-gray-50`}>
+    <div className={`flex flex-col bg-gray-50 relative`}>
       <Header />
 
       {isVisiblef ? (

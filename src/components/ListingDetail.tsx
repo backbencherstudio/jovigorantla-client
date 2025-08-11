@@ -26,7 +26,6 @@ interface ListingDetailProps {
   onContact?: () => void;
 }
 
-
 const renderDescriptionWithPhoneLinks = (text: string) => {
   const phoneRegex = /(\b\d{10}\b)/g;
   const parts = text.split(phoneRegex);
@@ -46,7 +45,6 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
     return <React.Fragment key={index}>{part}</React.Fragment>;
   });
 };
-
 
 const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -133,7 +131,7 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
         <h1 className="text-2xl font-bold mb-4">
           {/* {title} */}
           ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVW
-          </h1>
+        </h1>
 
         {/* User info and metadata - using the same format as listings */}
         <div className="flex items-center text-sm text-gray-500 mb-4">
@@ -153,16 +151,16 @@ const ListingDetail = ({ listing, onBack, onContact }: ListingDetailProps) => {
           </Card>
         )} */}
 
-      {description && (
-        <Card className="mb-4 border-none shadow-none">
-          <CardContent className="p-0">
-            <h2 className="text-lg font-bold mb-2">Description</h2>
-            <p className="text-gray-700">
-              {renderDescriptionWithPhoneLinks(description)}
-            </p>
-          </CardContent>
-        </Card>
-      )}
+        {description && (
+          <Card className="mb-4 border-none shadow-none">
+            <CardContent className="p-0">
+              <h2 className="text-lg font-bold mb-2">Description</h2>
+              <p className="text-gray-700">
+                {renderDescriptionWithPhoneLinks(description)}
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {image && (
           <div className="my-4 overflow-hidden rounded-[100px]">
