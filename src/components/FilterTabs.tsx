@@ -10,8 +10,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   return (
-    // bg-[#F9FAFB]
-    <div className="filter-tabs-container border-b border-gray-100">
+    <div className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB]">
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
         {tabs.map((tab) => (
           <div

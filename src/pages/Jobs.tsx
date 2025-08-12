@@ -1240,7 +1240,7 @@ export default function Jobs({ openModal }) {
               </div>
             </div>
           )}
-          <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
+          <div className="pb-5 lg:pb-0 px-4 md:px-2 my-4 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
                 {listing?.type === "listing" && (

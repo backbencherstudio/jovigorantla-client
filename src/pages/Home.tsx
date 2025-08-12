@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, act } from "react";
 import {
   useNavigate,
   useLocation,
@@ -142,7 +142,13 @@ export default function Home({ openModal }) {
       }
 
       isFetchingRef.current = true;
-      // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
+
+      console.log("Starting fetch:", {
+        filter,
+        query,
+        isNewFilter,
+        numberOfShownListings: numberOfShownListings.current,
+      });
 
       try {
         setLoading(true);
@@ -381,7 +387,6 @@ export default function Home({ openModal }) {
     initialLoadDone,
     autoSwitched,
   ]);
-
   // =============== New Code End ================
 
   // Reset and fetch on filter/search/location change
@@ -442,6 +447,7 @@ export default function Home({ openModal }) {
 
   // Add this effect for handling the initial auto-switch
   useEffect(() => {
+    // when active filter is Nearby
     if (
       autoSwitched &&
       !initialLoadDone &&
@@ -459,7 +465,6 @@ export default function Home({ openModal }) {
       navigate(`${location.pathname}?${currentParams.toString()}`, {
         replace: true,
       });
-
       // Trigger fetch for USA listings
       numberOfShownListings.current = 0;
       setListings([]);
@@ -615,7 +620,7 @@ export default function Home({ openModal }) {
             </div>
           )}
           {/*  px-4 -- only it was before */}
-          <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
+          <div className="pb-5 lg:pb-0 px-4 md:px-2 my-4 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
                 {listing?.type === "listing" && (
