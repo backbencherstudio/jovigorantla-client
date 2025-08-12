@@ -564,6 +564,7 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
+import useScrollRestoration from "@/hooks/useScrollRestoration";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -593,6 +594,8 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Accommodations({ openModal }) {
+  useScrollRestoration();
+
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -629,6 +632,13 @@ export default function Accommodations({ openModal }) {
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [autoSwitched, setAutoSwitched] = useState(false);
   const [locationChanged, setLocationChanged] = useState(false);
+
+  const [isRestoringFromSession, setIsRestoringFromSession] = useState(() => {
+    // Check for session data immediately on mount to prevent flash
+    const cachedData = sessionStorage.getItem("home_cached_data");
+    const savedScrollPosition = sessionStorage.getItem("home_scroll_position");
+    return !!(cachedData && savedScrollPosition);
+  });
 
   const distanceFromTop = useElementDistanceFromTop(filterTabsRef);
   const tabParam = searchParams.get("tab"); // returns "true" or null
@@ -788,6 +798,9 @@ export default function Accommodations({ openModal }) {
       try {
         const parsed = JSON.parse(cachedData);
         if (parsed.listings && parsed.listings.length > 0) {
+          // Show loader to hide the process
+          setIsRestoringFromSession(true);
+
           // Restore cached data
           setListings(parsed.listings);
           setActiveFilter(parsed.activeFilter || "All");
@@ -813,6 +826,8 @@ export default function Accommodations({ openModal }) {
       } catch (error) {
         console.error("Error parsing cached data:", error);
         sessionStorage.removeItem("home_cached_data");
+
+        setIsRestoringFromSession(false);
       }
     } else if (cachedData) {
       // Clear cache if no scroll position (not from listing page)
@@ -827,6 +842,11 @@ export default function Accommodations({ openModal }) {
       setTimeout(() => {
         window.scrollTo(0, scrollY);
         sessionStorage.removeItem("home_scroll_position");
+
+        // Hide loader after scroll position is set with extra delay to prevent FilterTabs flash
+        setTimeout(() => {
+          setIsRestoringFromSession(false);
+        }, 400);
       }, 100);
     }
   }, []);
@@ -842,6 +862,11 @@ export default function Accommodations({ openModal }) {
       setTimeout(() => {
         window.scrollTo(0, location.state.scrollY);
         isReturningFromListing.current = false;
+
+        // Hide loader after scroll position is set with extra delay to prevent FilterTabs flash
+        setTimeout(() => {
+          setIsRestoringFromSession(false);
+        }, 400);
       }, 100); // Delay for DOM load
     }
   }, [location.state, listings.length]);
@@ -947,7 +972,8 @@ export default function Accommodations({ openModal }) {
     // Navigate to the same path but with the updated query parameters
     navigate(`${location.pathname}?${currentParams.toString()}`);
 
-    window.scrollTo(0, isMobile ? 200 : 0);
+    //window.scrollTo(0, isMobile ? 200 : 0);
+    window.scrollTo(0, 0);
 
     setIsTabChanging(true);
     setActiveFilter(filter);
@@ -1064,8 +1090,9 @@ export default function Accommodations({ openModal }) {
   };
 
   return (
+    // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
-      className="w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500"
+      className="w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
       ref={filterTabsRef}
     >
       <FilterTabs
@@ -1075,29 +1102,66 @@ export default function Accommodations({ openModal }) {
       />
 
       {!isTabChanging ? (
-        <div className="px-4 my-4 space-y-4">
-          {listings.map((listing, index) => (
-            <div key={`${listing.id}-${index}`}>
-              {listing?.type === "listing" && (
-                <ListingItem
-                  listing={listing}
-                  onToggleSave={() => {}}
-                  isUsa={false}
-                  onHide={() => handleHide(listing.id)}
-                  openModal={openModal}
-                />
-              )}
-              {listing?.type === "ad" &&
-                (listing.target_url ? (
-                  <Link
-                    to={listing.target_url}
-                    target="_blank"
-                    className="block"
-                    rel="noreferrer"
-                    onClick={(e) => handleAdClick(e, listing)}
-                    onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
-                    // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
-                  >
+        <>
+          {/* Loader Skeleton For Content and Position of FilterTabs */}
+          {isRestoringFromSession && (
+            <div className="fixed inset-0 bg-white z-[50] flex items-center justify-center w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
+              <div className="space-y-4 p-2 w-full h-full mt-[120px]">
+                <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
+                </div>
+
+                <div className="space-y-2 rounded-lg shadow-md p-4">
+                  <div className="h-4 bg-gray-200 w-3/4 rounded"></div>
+                  <div className="h-4 bg-gray-200 w-1/2 rounded"></div>
+                  <div className="h-4 bg-gray-200 w-2/3 rounded"></div>
+                </div>
+                <div className="space-y-2  rounded-lg shadow-md p-4">
+                  <div className="h-4 bg-gray-200 w-3/4 rounded"></div>
+                  <div className="h-4 bg-gray-200 w-1/2 rounded"></div>
+                  <div className="h-4 bg-gray-200 w-2/3 rounded"></div>
+                </div>
+              </div>
+            </div>
+          )}
+          {/*  px-4 -- only it was before */}
+          <div className="pb-5 lg:pb-0 px-4 md:px-2 my-4 space-y-4">
+            {listings.map((listing, index) => (
+              <div key={`${listing.id}-${index}`}>
+                {listing?.type === "listing" && (
+                  <ListingItem
+                    listing={listing}
+                    onToggleSave={() => {}}
+                    isUsa={false}
+                    onHide={() => handleHide(listing.id)}
+                    openModal={openModal}
+                  />
+                )}
+                {listing?.type === "ad" &&
+                  (listing.target_url ? (
+                    <Link
+                      to={listing.target_url}
+                      target="_blank"
+                      className="block"
+                      rel="noreferrer"
+                      onClick={(e) => handleAdClick(e, listing)}
+                      onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                      // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+                    >
+                      <div
+                        className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                        style={{ aspectRatio: "574/300", maxWidth: "100%" }}
+                      >
+                        <img
+                          src={listing.image_url}
+                          alt={listing.title}
+                          className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    </Link>
+                  ) : (
                     <div
                       className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
                       style={{ aspectRatio: "574/300", maxWidth: "100%" }}
@@ -1108,39 +1172,28 @@ export default function Accommodations({ openModal }) {
                         className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       />
                     </div>
-                  </Link>
-                ) : (
-                  <div
-                    className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                    style={{ aspectRatio: "574/300", maxWidth: "100%" }}
-                  >
-                    <img
-                      src={listing.image_url}
-                      alt={listing.title}
-                      className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                ))}
-            </div>
-          ))}
+                  ))}
+              </div>
+            ))}
 
-          {hasMore && (
-            <div
-              ref={loadMoreRef}
-              className="w-full flex justify-center py-6 text-gray-400 text-sm"
-            >
-              {isLoading ? "Loading more..." : "Scroll for more..."}
-            </div>
-          )}
+            {hasMore && (
+              <div
+                ref={loadMoreRef}
+                className="w-full flex justify-center py-6 text-gray-400 text-sm"
+              >
+                {isLoading ? "Loading more..." : "Scroll for more..."}
+              </div>
+            )}
 
-          {!hasMore && listings.length === 0 && <NoListingsFound />}
+            {!hasMore && listings.length === 0 && <NoListingsFound />}
 
-          {/* Debug info - remove in production */}
-          {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+            {/* Debug info - remove in production */}
+            {/* <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
             Debug: Listings: {listings.length}, HasMore: {hasMore.toString()}, Loading: {isLoading.toString()}, 
             Shown: {numberOfShownListings.current}, TabChanging: {isTabChanging.toString()}
           </div> */}
-        </div>
+          </div>
+        </>
       ) : (
         <ListingSkeleton />
       )}

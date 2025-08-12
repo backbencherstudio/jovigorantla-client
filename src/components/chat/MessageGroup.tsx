@@ -60,7 +60,6 @@
 
 // export default MessageGroup;
 
-
 // import React from "react";
 // import { Message } from "@/components/chat/types";
 // import MessageBubble from "@/components/chat/MessageBubble";
@@ -167,7 +166,6 @@
 
 // export default MessageGroup;
 
-
 // import React from "react";
 // import { Message } from "@/components/chat/types";
 // import MessageBubble from "@/components/chat/MessageBubble";
@@ -273,7 +271,6 @@
 
 // export default MessageGroup;
 
-
 import React from "react";
 import { Message } from "@/components/chat/types";
 import MessageBubble from "@/components/chat/MessageBubble";
@@ -329,7 +326,8 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
     if (
       !prevMessage ||
       message.senderId !== prevMessage.senderId ||
-      Math.abs(currentTimestamp - new Date(prevMessage.timestamp).getTime()) > 60 * 1000
+      Math.abs(currentTimestamp - new Date(prevMessage.timestamp).getTime()) >
+        60 * 1000
     ) {
       flushGroup();
     }
@@ -341,14 +339,14 @@ const MessageGroup: React.FC<MessageGroupProps> = ({
   flushGroup(); // flush any remaining group
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 pt-10 ">
       <div className="flex justify-center">
         <span className="text-xs bg-white px-3 py-1 rounded-full text-gray-500 shadow-sm">
           {dateLabel}
         </span>
       </div>
       {groupedBubbles}
-    </div> 
+    </div>
   );
 };
 

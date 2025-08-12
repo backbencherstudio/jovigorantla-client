@@ -17,7 +17,7 @@ import useRedirectNav from "@/hooks/useRedirectNav";
 
 const PageSkeleton = () => {
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
       {/* Title Skeleton */}
       <div className="h-8 bg-gray-300 w-3/4 rounded"></div>
 
@@ -96,7 +96,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
     if (searchQuery.trim()) {
       // Set the 'tab' parameter to true (this will add it if it doesn't exist, or update it)
-      currentParams.set("q", encodeURIComponent(searchQuery));
+      //currentParams.set("q", encodeURIComponent(searchQuery));
+      currentParams.set("q", searchQuery.trim());
 
       // Navigate to the same path but with the updated query parameters
       navigate(`${location.pathname}?${currentParams.toString()}`);
@@ -147,7 +148,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     setSearchQuery(queryParam);
   }, [location.search]);
 
-  const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
+  //const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
+  const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "85px" : "0px";
+
   const rightSidebarWidth = isDesktop ? "300px" : "0px";
 
   const [width, setWidth] = useState("768px");
@@ -207,19 +210,26 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   //   }
   // }, [isMobile]);
 
+  const pathname = location.pathname;
   const isHome = location.pathname === "/";
   const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
+  // const [isVisiblef, setIsVisiblef] = useState(true);
 
   useEffect(() => {
+    /* setTimeout(() => {
+      setIsVisiblef(false);
+    }, 300);
+    setIsVisiblef(true); */
+
     if (isHome) {
       setTimeout(() => {
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
     }
-  });
+  }, [isHome]);
 
   return (
-    <div className={`flex flex-col bg-gray-50`}>
+    <div className={`flex flex-col bg-gray-50 relative`}>
       <Header />
 
       {isVisiblef ? (
@@ -234,23 +244,21 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               <Sidebar collapsed={isCollapsed} />
             </div>
           )}
-
           {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
             }  flex flex-col flex-1 min-h-[100%]`} */}
-
           {!isValidPage && (
             <main
               className={`w-full mx-auto ${
                 fullWidth
                   ? ""
-                  : "max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+                  : "max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full"
+                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl"
                     style={{
                       // width: width,
                       top: "60px" /* Header height */,
@@ -261,14 +269,16 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         variant="ghost"
                         size="icon"
                         onClick={handleBack}
-                        className="mr-2"
+                        className="absolute left-5 md:left-6 lg:left-8 top-1/2 -translate-y-1/2"
                       >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1 className="text-xl font-bold">{title}</h1>
+                    <h1 className="text-xl font-medium text-center w-full">
+                      {title}
+                    </h1>
                   </div>
-                  <div className="h-[65px] bg-white border-b "></div>
+                  <div className="h-[50px] bg-white border-b"></div>
                 </div>
               )}
 
@@ -276,23 +286,23 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
             </main>
           )}
-
           {/* Main Content Area */}
           {isValidPage && (
             <div
               className="flex-1 listings-container"
-              style={{
+              /*  style={{
                 marginLeft: !isMobile ? leftSidebarWidth : "0",
                 marginRight: isDesktop ? rightSidebarWidth : "0",
-              }}
+              }} */
             >
               {/* Center Content Container */}
-              <main className="w-full mx-auto max-w-3xl bg-transparent">
+
+              <main className="w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto bg-transparent">
                 {/* Mobile: Search, Location and Categories */}
                 {isMobile && (
                   <div
                     ref={mobileHeaderRef}
-                    className=" z-10 transition-transform bg-white pt-3"
+                    className="z-10 transition-transform bg-white pt-3"
                   >
                     <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
@@ -344,7 +354,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
-
           {isMobile && !isModalOpen && isValidPage && (
             <div
               ref={mobileHeaderRef}
@@ -413,7 +422,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </div>
             </div>
           )}
-
           {/* Right sidebar with ad banners - only visible on desktop */}
           {isDesktop && (
             <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">

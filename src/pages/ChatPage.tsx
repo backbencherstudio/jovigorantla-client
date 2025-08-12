@@ -945,7 +945,8 @@ const ChatPage = () => {
   };
 
   if (!activeConversation) {
-    return <div>Loading...</div>; // Show a loading state until the conversation is available
+    //return <div>Loading...</div>; // Show a loading state until the conversation is available
+    return <div></div>;
   }
 
   return (

@@ -1,9 +1,11 @@
 import React from "react";
 
 const PrivacyPolicy = () => {
-  return <div className=" min-h-[calc(100vh-130px)] bg-white">
-
-  </div>;
+  return (
+    <div className="p-2 lg:p-4 min-h-[calc(100vh-110px)] bg-white">
+      <div className="px-4"></div>
+    </div>
+  );
 };
 
 export default PrivacyPolicy;

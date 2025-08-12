@@ -171,7 +171,6 @@
 //   //   }));
 //   // }, [user]);
 
-
 //   // const formatCategory = (category: string) => {
 //   //   // Convert category to singular for display
 //   //   let displayCategory = category;
@@ -193,16 +192,12 @@
 //   //   return displayStatus;
 //   // }
 
-
-
-
 //   // Custom event listener for real-time updates
 //   useEffect(() => {
 //     if (!user) {
 //       navigate("/auth");
 //       return;
 //     }
-
 
 //     // const fetchSavedListings = async () => {
 //     //   setIsLoading(true);
@@ -264,7 +259,6 @@
 
 //     setListings(listings.filter((l) => l.id !== listingId));
 
-
 //     // Update localStorage with the new list of saved listing IDs
 //     // const savedListingsIds = updatedListings.map((listing) => listing.id);
 //     // localStorage.setItem(
@@ -274,7 +268,6 @@
 
 //     // Dispatch event for immediate updates
 //     // window.dispatchEvent(new Event("savedListingsUpdated"));
-
 
 //   };
 
@@ -391,8 +384,6 @@
 //                         {/* <span>Denton, TX</span> */}
 //                       </div>
 
-
-
 //                       {/* <div className="flex items-center">
 //                         <Button
 //                           variant="ghost"
@@ -455,8 +446,6 @@
 
 // export default SavedListings;
 
-
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -475,7 +464,12 @@ import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
 
 const SavedListings = () => {
-  const { user, favoritesListings, deleteFavoritesListing, fetchFavoritesListings } = useAuth();
+  const {
+    user,
+    favoritesListings,
+    deleteFavoritesListing,
+    fetchFavoritesListings,
+  } = useAuth();
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -486,22 +480,22 @@ const SavedListings = () => {
   // Fetch saved listings from API
   const fetchSavedListings = useCallback(async () => {
     if (!user) return;
-    
+
     try {
       setIsLoading(true);
-      
+
       // If fetchFavoritesListings exists in context, use it
       if (fetchFavoritesListings) {
         await fetchFavoritesListings();
       } else {
         // Otherwise fetch directly
-        const response = await api.get('/favorites');
+        const response = await api.get("/favorites");
         const savedListings = response.data.data || [];
         setListings(savedListings);
       }
     } catch (error) {
-      console.error('Error fetching saved listings:', error);
-      toast.error('Failed to load saved listings');
+      console.error("Error fetching saved listings:", error);
+      toast.error("Failed to load saved listings");
     } finally {
       setIsLoading(false);
       setIsInitialized(true);
@@ -531,7 +525,11 @@ const SavedListings = () => {
     if (favoritesListings && favoritesListings.length > 0) {
       setListings(favoritesListings);
       setIsLoading(false);
-    } else if (isInitialized && favoritesListings && favoritesListings.length === 0) {
+    } else if (
+      isInitialized &&
+      favoritesListings &&
+      favoritesListings.length === 0
+    ) {
       // If initialized and favoritesListings is explicitly empty array
       setListings([]);
       setIsLoading(false);
@@ -564,10 +562,10 @@ const SavedListings = () => {
     try {
       await deleteFavoritesListing(listingId);
       setListings(listings.filter((l) => l.id !== listingId));
-      toast.success('Listing removed from saved');
+      toast.success("Listing removed from saved");
     } catch (error) {
-      console.error('Error removing listing:', error);
-      toast.error('Failed to remove listing');
+      console.error("Error removing listing:", error);
+      toast.error("Failed to remove listing");
     }
   };
 
@@ -589,12 +587,12 @@ const SavedListings = () => {
           navigator.clipboard.writeText(
             `${window.location.origin}/listing/${listingId}`
           );
-          toast.success('Link copied to clipboard');
+          toast.success("Link copied to clipboard");
         }
         break;
       case "hide":
         setListings(listings.filter((l) => l.id !== listingId));
-        toast.success('Listing hidden');
+        toast.success("Listing hidden");
         break;
       case "report":
         toast.success(`Listing reported: "${listing.title}"`);
@@ -625,7 +623,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="py-5 w-full min-h-[calc(100vh-130px)] bg-white">
+    <div className="p-2 lg:p-4 w-full min-h-[calc(100vh-110px)] bg-white">
       {listings.length === 0 ? (
         <div className="bg-white p-8 text-center">
           <h3 className="text-lg font-medium mb-2">No saved listings</h3>
@@ -649,7 +647,12 @@ const SavedListings = () => {
                   <div className="flex items-center text-sm text-gray-500 mb-1">
                     <span>{formatCategory(listing.category)}</span>
                     <span className="mx-2">•</span>
-                    <span>{formatSubCategory(listing.category, listing.sub_category)}</span>
+                    <span>
+                      {formatSubCategory(
+                        listing.category,
+                        listing.sub_category
+                      )}
+                    </span>
                   </div>
 
                   <ListingActions
@@ -662,7 +665,9 @@ const SavedListings = () => {
                       toggleSaveListing(e, listing.id);
                     }}
                     onHide={() => handleListingAction(null, "hide", listing.id)}
-                    openModal={() => handleListingAction(null, "report", listing.id)}
+                    openModal={() =>
+                      handleListingAction(null, "report", listing.id)
+                    }
                   />
                 </div>
 
@@ -677,7 +682,10 @@ const SavedListings = () => {
                     <span>{formatTime(listing.created_at)}</span>
                     <span className="mx-2">•</span>
                     <span>
-                      {listing.address?.split(',').filter((_, i) => i === 0 || i === 1).join(', ')}
+                      {listing.address
+                        ?.split(",")
+                        .filter((_, i) => i === 0 || i === 1)
+                        .join(", ")}
                     </span>
                   </div>
                 </div>
