@@ -369,7 +369,7 @@ function App() {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "#ff6b00",
+            backgroundColor: "white",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -381,8 +381,8 @@ function App() {
             style={{
               width: "50px",
               height: "50px",
-              border: "4px solid rgba(255, 255, 255, 0.3)",
-              borderTop: "4px solid white",
+              border: "4px solid rgba(0,0,0, .2)",
+              borderTop: "4px solid #ff6b00",
               borderRadius: "50%",
               animation: "spin 1s linear infinite",
               marginBottom: "20px",
@@ -390,7 +390,7 @@ function App() {
           />
           <p
             style={{
-              color: "white",
+              color: "#ff6b00",
               fontSize: "18px",
               fontWeight: "600",
               margin: 0,
