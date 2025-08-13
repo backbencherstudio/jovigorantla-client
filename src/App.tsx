@@ -42,6 +42,7 @@ import { useEffect, useState } from "react";
 import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
+import useDataLoad from "./hooks/useDataLoad";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -301,6 +302,11 @@ function AppRoutes() {
 function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+
+
+  useDataLoad();
+
+
   // Add this to your App.jsx or main component
   useEffect(() => {
     let startY = 0;
@@ -336,6 +342,10 @@ function App() {
       }
       isDragging = false;
     };
+
+    document.addEventListener("loadeddata",(e) => {
+      console.log(document.getElementById('root'))
+    })
 
     document.addEventListener("touchstart", handleTouchStart, {
       passive: true,
