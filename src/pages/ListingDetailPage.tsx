@@ -54,7 +54,7 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 const ListingDetailPage = ({ openModal }) => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isMobile = !useMediaQuery("(min-width: 768px)");
   const [isSaved, setIsSaved] = useState(false);
@@ -73,11 +73,12 @@ const ListingDetailPage = ({ openModal }) => {
 
   const fetchListingsDetails = async () => {
     try {
-      setLoading(true);
       const { data } = await api.get(`/listings/${id}`);
       if (data?.success) {
+        setLoading(false);
         setListing(data?.data);
       } else {
+        setLoading(false);
         // if data not found redirect to home
         navigate("/");
       }
