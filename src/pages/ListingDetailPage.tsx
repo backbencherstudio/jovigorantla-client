@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   MessageSquare,
@@ -54,7 +54,7 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 const ListingDetailPage = ({ openModal }) => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isMobile = !useMediaQuery("(min-width: 768px)");
   const [isSaved, setIsSaved] = useState(false);
@@ -71,9 +71,8 @@ const ListingDetailPage = ({ openModal }) => {
   // For now, we'll use mock data
   // const listing = mockListings.find((l) => l.id === id) || mockListings[0];
 
-  const fetchListingsDetails = async () => {
+  const fetchListingsDetails = useCallback(async () => {
     try {
-      setLoading(true);
       const { data } = await api.get(`/listings/${id}`);
       if (data?.success) {
         setListing(data?.data);
@@ -86,7 +85,7 @@ const ListingDetailPage = ({ openModal }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
 
   // console.log(listing)
 
@@ -148,7 +147,7 @@ const ListingDetailPage = ({ openModal }) => {
     fetchListingsDetails();
     // Clean up event listener
     return () => window.removeEventListener("resize", updateWidth);
-  }, []);
+  }, [id, navigate]);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
 
@@ -263,7 +262,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   const closeModal = () => setIsOpen(false);
 
-  if (loading) {
+  if (loading || !listing) {
     return (
       <div className="flex items-center justify-center h-[70vh]">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -300,6 +299,8 @@ const ListingDetailPage = ({ openModal }) => {
     setIsImageModalOpen(true);
     setImageUrl(imageUrl);
   };
+
+
 
   return (
     <>
@@ -432,70 +433,9 @@ const ListingDetailPage = ({ openModal }) => {
               </Card>
             )}
 
-            {/* <Card className="mb-6 border-none shadow-none">
-              <CardContent className="p-0">
-                <h2 className="text-lg font-bold mb-2">Description</h2>
-                <p className="text-gray-700 whitespace-pre-line">
-                🏠 Private Accommodation Available in Irving – 2BHK for 2 Males from August 1st
-
-                Looking for comfortable and private living in a great neighborhood? We’re offering a 2 bedroom, 2 bathroom apartment in Irving, Texas, available for 2 males starting August 1st. Whether you're a working professional or a student, this spacious and well-maintained home offers the privacy, convenience, and amenities you need for a comfortable stay.
-
-                Located in a peaceful and secure community, this apartment is ideal for individuals who value a clean and quiet living environment with easy access to major highways, public transportation, grocery stores, and restaurants.
-
-                🏡 Apartment Details:
-
-                – Type: 2 Bedroom | 2 Bathroom
-                – Availability: From August 1st
-                – Ideal for: 2 Males
-                – Rent: Competitive and affordable (Contact for details)
-                – Lease Type: Flexible (short-term/long-term options)
-
-                🛏️ Room Features:
-
-                – Private bedroom with closet space
-                – Attached and shared bathroom options
-                – Semi-furnished with essentials
-                – Natural lighting and good ventilation
-                – Carpeted/wood floors (based on unit)
-                – High-speed internet and utilities available
-
-                🍽️ Common Areas:
-
-                – Spacious living room with seating and TV setup
-                – Dining area for shared meals
-                – Fully-equipped kitchen with refrigerator, microwave, stove, and utensils
-                – Washer & Dryer in-unit or in-building
-
-                🌳 Community Amenities (Varies by complex):
-
-                – Swimming pool and gym access
-                – 24/7 maintenance and security patrol
-                – Designated parking spots
-                – Pet-friendly policy (check for details)
-                – Clubhouse and recreational areas
-
-                📍 Prime Location in Irving:
-
-                – Walking distance to Walmart, Indian groceries, and restaurants
-                – Quick access to DART station and bus lines
-                – Close to Las Colinas, DFW Airport, and major corporate hubs
-                – Peaceful neighborhood with parks and green spaces nearby
-
-                This accommodation is perfect for roommates, offering equal privacy in a shared 2BHK setup. Both bedrooms are designed to offer comfort and personal space, and bathrooms are conveniently located for easy access.
-
-                We’re looking for clean, respectful, and responsible individuals to occupy this space. Whether you're new to the city or simply looking for a better living option, this is a great opportunity to move into a welcoming and convenient environment.
-
-                📞 Contact Information:
-
-                If you’re interested or have any questions, please reach out for pictures, rent details, or to schedule a visit. Early applications are encouraged as availability may be limited.
-                </p>
-              </CardContent>
-          </Card> */}
-
-            {/* Photo Gallery - only show if there are images and not for jobs/rides */}
           </div>
           {/* Contact button - only show on desktop */}
-          {!isMobile && user?.id !== listing?.user_id && (
+          {!isMobile && user?.id !== listing?.user_id && listing && (
             <div className="w-full relative">
               <div
                 // style={{ width: width }}
@@ -515,7 +455,7 @@ const ListingDetailPage = ({ openModal }) => {
         </div>
 
         {/* Fixed button at the bottom only for mobile */}
-        {isMobile && user?.id !== listing?.user_id && (
+        {isMobile && user?.id !== listing?.user_id && listing &&(
           <div
             className={`fixed ${
               user ? "bottom-0" : "bottom-10"
