@@ -937,26 +937,26 @@ const AuthModal = ({
     setIsModalOpen?.(newOpen); // Call if provided
   };
 
-  useEffect(() => {
-    const handleFocus = (e: Event) => {
-      const activeElement = e.target as HTMLElement;
-      if (
-        activeElement.tagName === "INPUT" ||
-        activeElement.tagName === "TEXTAREA" ||
-        activeElement.tagName === "SELECT"
-      ) {
-        setTimeout(() => {
-          activeElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }, 300);
-      }
-    };
+  // useEffect(() => {
+  //   const handleFocus = (e: Event) => {
+  //     const activeElement = e.target as HTMLElement;
+  //     if (
+  //       activeElement.tagName === "INPUT" ||
+  //       activeElement.tagName === "TEXTAREA" ||
+  //       activeElement.tagName === "SELECT"
+  //     ) {
+  //       setTimeout(() => {
+  //         activeElement.scrollIntoView({
+  //           behavior: "smooth",
+  //           block: "center",
+  //         });
+  //       }, 300);
+  //     }
+  //   };
 
-    document.addEventListener("focusin", handleFocus);
-    return () => document.removeEventListener("focusin", handleFocus);
-  });
+  //   document.addEventListener("focusin", handleFocus);
+  //   return () => document.removeEventListener("focusin", handleFocus);
+  // });
 
   const renderMainContent = () => {
     // Show Reset Password form
@@ -1106,11 +1106,11 @@ const AuthModal = ({
     return (
       <Drawer open={open} onOpenChange={handleOpenChange}>
         <DrawerContent
-          className="justify-center bg-white max-h-[80vh]"
-          /* style={{
+          className="justify-center bg-white "
+          style={{
             height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
             maxHeight: Math.min(viewportHeight * 0.85, 600),
-          }} */
+          }} 
 
           // style={{
           //   // height: '90vh',
