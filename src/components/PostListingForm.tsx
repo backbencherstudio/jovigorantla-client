@@ -1783,6 +1783,7 @@ function PostListingForm() {
       formDataAfterLogin['description'] = data.description || '';
       formDataAfterLogin['post_to_usa'] = data.isUSA ? 'true' : 'false';
 
+
       // Location fields
       formData.append('address', currentLocation?.search);
       formData.append('latitude', String(currentLocation?.lat));
@@ -1798,14 +1799,14 @@ function PostListingForm() {
       formDataAfterLogin["post_to_usa"] = data.isUSA ? "true" : "false";
 
       // Location fields
-      formData.append("address", currentLocation?.search);
-      formData.append("latitude", String(currentLocation?.lat));
-      formData.append("longitude", String(currentLocation?.lng));
+      // formData.append("address", currentLocation?.search);
+    // formData.append("latitude", String(currentLocation?.lat));
+      // formData.append("longitude", String(currentLocation?.lng));
 
-      // after login
-      formDataAfterLogin["address"] = currentLocation?.search;
-      formDataAfterLogin["latitude"] = String(currentLocation?.lat);
-      formDataAfterLogin["longitude"] = String(currentLocation?.lng);
+      // // after login
+      // formDataAfterLogin["address"] = currentLocation?.search;
+      // formDataAfterLogin["latitude"] = String(currentLocation?.lat);
+      // formDataAfterLogin["longitude"] = String(currentLocation?.lng);
 
       const fomatedCities = cities?.map((location: any) => ({
         address: location.search,

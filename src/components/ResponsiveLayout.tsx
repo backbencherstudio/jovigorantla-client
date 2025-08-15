@@ -354,6 +354,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
+          {/* 
           {isMobile && !isModalOpen && isValidPage && (
             <div
               ref={mobileHeaderRef}
@@ -422,6 +423,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </div>
             </div>
           )}
+
+          */}
           {/* Right sidebar with ad banners - only visible on desktop */}
           {isDesktop && (
             <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
