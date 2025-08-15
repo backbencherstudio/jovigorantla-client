@@ -1,4 +1,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { MoveUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
 
 interface FilterTabsProps {
   tabs: string[];
@@ -8,9 +11,33 @@ interface FilterTabsProps {
 
 const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showArrow, setShowArrow] = useState(false);
+  useEffect(() => {
+   document.addEventListener('scroll', () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      // console.log("Element position relative to viewport:", {
+      //   top: rect.top,
+      //   right: rect.right,
+      //   bottom: rect.bottom,
+      //   left: rect.left,
+      //   width: rect.width,
+      //   height: rect.height,
+      // });
+      if (rect.top == 60) {
+        setShowArrow(true)
+      } else {
+        setShowArrow(false)
+      }
+    }
+   })
+  }, []);
 
   return (
-    <div className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB]">
+    <div className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between"
+    ref={containerRef}
+    >
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
         {tabs.map((tab) => (
           <div
@@ -26,6 +53,59 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
           </div>
         ))}
       </div>
+      {showArrow && (
+  <div className="mr-5 flex items-center relative group sm:hidden">
+    <button 
+      className="
+        p-2 rounded-sm 
+        bg-brand border border-[bg-brand]
+      
+        transition-all duration-200 ease-in-out
+        shadow-sm hover:shadow-md
+        focus:outline-none focus:ring-2 focus:ring-brand/50
+        flex items-center justify-center
+        w-8 h-8
+      "
+      onClick={() => {
+        // Cross-browser smooth scroll to top
+        try {
+          // Modern browsers (Safari 12+, Chrome 61+, Firefox 64+)
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        } catch (error) {
+          // Fallback for older browsers
+          const scrollStep = -window.scrollY / (500 / 15);
+          const scrollInterval = setInterval(() => {
+            if (window.scrollY !== 0) {
+              window.scrollBy(0, scrollStep);
+            } else {
+              clearInterval(scrollInterval);
+            }
+          }, 15);
+        }
+      }}
+      aria-label="Scroll tabs"
+    >
+      <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
+    </button>
+    
+    {/* Optional tooltip */}
+    {/* <span className="
+      absolute right-full top-1/2 -translate-y-1/2
+      mr-2 px-2 py-1
+      bg-gray-800 text-white text-xs
+      rounded whitespace-nowrap
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-200
+      pointer-events-none
+    ">
+      Scroll tabs
+      <span className="absolute top-1/2 right-0 w-2 h-2 bg-gray-800 transform translate-x-1/2 -translate-y-1/2 rotate-45" />
+    </span> */}
+  </div>
+)}
     </div>
   );
 };

@@ -258,7 +258,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-4 py-3 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl"
+                    className="fixed z-20 bg-white border-b border-gray-100 px-5 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl"
                     style={{
                       // width: width,
                       top: "60px" /* Header height */,
@@ -269,12 +269,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         variant="ghost"
                         size="icon"
                         onClick={handleBack}
-                        className="absolute left-5 md:left-6 lg:left-8 top-1/2 -translate-y-1/2"
+                        className=""
                       >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1 className="text-xl font-medium text-center w-full">
+                    <h1 className={`text-xl font-bold sm:font-medium text-center w-full`}>
                       {title}
                     </h1>
                   </div>
@@ -354,6 +354,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
+          {/* 
           {isMobile && !isModalOpen && isValidPage && (
             <div
               ref={mobileHeaderRef}
@@ -422,6 +423,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </div>
             </div>
           )}
+
+          */}
           {/* Right sidebar with ad banners - only visible on desktop */}
           {isDesktop && (
             <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">

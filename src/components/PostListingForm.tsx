@@ -1756,7 +1756,8 @@ function PostListingForm() {
         // console.log("image => ", data.image);
         // console.log("type => ", typeof data.image);
         // console.log("instanceof File => ", data.image instanceof File);
-        formData.append("image", data.image, data.image.name);
+        formData.append('image', data.image, data.image.name);
+        
         // localStorage.setItem('image', data.image)
       } else if (
         isEditMode &&
@@ -1767,15 +1768,26 @@ function PostListingForm() {
         formData.append("image_url", imagePreview);
       }
 
-      formData.append("category", data.category.toUpperCase());
-      formData.append(
-        "sub_category",
-        data.subCategory.slice(0, 1).toUpperCase() +
-          data.subCategory.slice(1).toLowerCase()
-      );
-      formData.append("title", data.title);
-      formData.append("description", data.description || "");
-      formData.append("post_to_usa", data.isUSA ? "true" : "false");
+      
+
+      formData.append('category', data.category.toUpperCase());
+      formData.append('sub_category', data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase());
+      formData.append('title', data.title);
+      formData.append('description', data.description || '');
+      formData.append('post_to_usa', data.isUSA ? 'true' : 'false');
+
+      // after login 
+      formDataAfterLogin['category'] = data.category.toUpperCase();
+      formDataAfterLogin['sub_category'] = data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase();
+      formDataAfterLogin['title'] = data.title;
+      formDataAfterLogin['description'] = data.description || '';
+      formDataAfterLogin['post_to_usa'] = data.isUSA ? 'true' : 'false';
+
+
+      // Location fields
+      formData.append('address', currentLocation?.search);
+      formData.append('latitude', String(currentLocation?.lat));
+      formData.append('longitude', String(currentLocation?.lng));
 
       // after login
       formDataAfterLogin["category"] = data.category.toUpperCase();
@@ -1787,14 +1799,14 @@ function PostListingForm() {
       formDataAfterLogin["post_to_usa"] = data.isUSA ? "true" : "false";
 
       // Location fields
-      formData.append("address", currentLocation?.search);
-      formData.append("latitude", String(currentLocation?.lat));
-      formData.append("longitude", String(currentLocation?.lng));
+      // formData.append("address", currentLocation?.search);
+    // formData.append("latitude", String(currentLocation?.lat));
+      // formData.append("longitude", String(currentLocation?.lng));
 
-      // after login
-      formDataAfterLogin["address"] = currentLocation?.search;
-      formDataAfterLogin["latitude"] = String(currentLocation?.lat);
-      formDataAfterLogin["longitude"] = String(currentLocation?.lng);
+      // // after login
+      // formDataAfterLogin["address"] = currentLocation?.search;
+      // formDataAfterLogin["latitude"] = String(currentLocation?.lat);
+      // formDataAfterLogin["longitude"] = String(currentLocation?.lng);
 
       const fomatedCities = cities?.map((location: any) => ({
         address: location.search,
@@ -1828,6 +1840,9 @@ function PostListingForm() {
       }
 
       if (isEditMode) {
+        if(!imagePreview) {
+          formData.append('image', null)
+        }
         const response = await api.patch(`/listings/${listingId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",

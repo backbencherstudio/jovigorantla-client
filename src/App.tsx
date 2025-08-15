@@ -39,8 +39,10 @@ import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
 import { useEffect, useState } from "react";
+import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
+import useDataLoad from "./hooks/useDataLoad";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -300,6 +302,11 @@ function AppRoutes() {
 function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+
+
+  useDataLoad();
+
+
   // Add this to your App.jsx or main component
   useEffect(() => {
     let startY = 0;
@@ -336,6 +343,10 @@ function App() {
       isDragging = false;
     };
 
+    document.addEventListener("loadeddata",(e) => {
+      console.log(document.getElementById('root'))
+    })
+
     document.addEventListener("touchstart", handleTouchStart, {
       passive: true,
     });
@@ -358,7 +369,7 @@ function App() {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "#ff6b00",
+            backgroundColor: "white",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -370,8 +381,8 @@ function App() {
             style={{
               width: "50px",
               height: "50px",
-              border: "4px solid rgba(255, 255, 255, 0.3)",
-              borderTop: "4px solid white",
+              border: "4px solid rgba(0,0,0, .2)",
+              borderTop: "4px solid #ff6b00",
               borderRadius: "50%",
               animation: "spin 1s linear infinite",
               marginBottom: "20px",
@@ -379,7 +390,7 @@ function App() {
           />
           <p
             style={{
-              color: "white",
+              color: "#ff6b00",
               fontSize: "18px",
               fontWeight: "600",
               margin: 0,
@@ -395,6 +406,7 @@ function App() {
             <LocationProvider>
               <SocketProvider>
                 <MessageProvider>
+                <RouteChangeListener />
                   <AppRoutes />
                 </MessageProvider>
               </SocketProvider>
