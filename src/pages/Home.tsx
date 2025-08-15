@@ -387,6 +387,15 @@ export default function Home({ openModal }) {
     initialLoadDone,
     autoSwitched,
   ]);
+
+  // For Reverese Switch
+  /*  useEffect(() => {
+    setFilterOptions(["Nearby", "USA"]);
+    setActiveFilter("Nearby");
+
+    fetchNearByListings("Nearby", searchQuery, true);
+  }, [lat, lng, radius]); */
+
   // =============== New Code End ================
 
   // Reset and fetch on filter/search/location change
