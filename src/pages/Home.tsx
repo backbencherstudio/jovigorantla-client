@@ -586,7 +586,7 @@ export default function Home({ openModal }) {
   return (
     // w-full mx-auto max-w-3xl
     <main
-      className="w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-transparent min-h-[100vh] sm:h-auto"
+      className="w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-transparent  sm:h-auto"
       ref={filterTabsRef}
     >
     <FilterTabs

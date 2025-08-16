@@ -28,6 +28,19 @@ const LoginForm = ({
     }
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Prevent default focus behavior that causes jumping
+    e.preventDefault();
+    setTimeout(() => {
+      e.target.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'center'
+      });
+    }, 300);
+  };
+  
+
   return (
     <Form {...loginForm}>
       <form
@@ -45,6 +58,7 @@ const LoginForm = ({
                   <FormControl>
                     <FloatingInput
                       label="Email"
+                      onFocus={handleFocus}
                       {...field}
                       disabled={isLoading}
                       className="pl-3"
@@ -66,6 +80,7 @@ const LoginForm = ({
                 <div className="relative">
                   <FormControl>
                     <FloatingInput
+                      onFocus={handleFocus}
                       type={showPassword ? "text" : "password"}
                       label="Password"
                       {...field}
