@@ -1106,7 +1106,7 @@ const AuthModal = ({
     return (
       <Drawer open={open} onOpenChange={handleOpenChange}>
         <DrawerContent
-          className="justify-center bg-white h-[80vh]"
+          className="justify-center bg-white max-h-[80vh]"
           /* style={{
             height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
             maxHeight: Math.min(viewportHeight * 0.85, 600),

@@ -89,14 +89,13 @@ const LoginForm = ({
                 <div className="h-5">
                   <FormMessage className="text-xs text-[#b3261e] font-normal ml-3 -mt-[6.5px]" />
                 </div>
-                
               </FormItem>
-            )}  
+            )}
           />
 
-          {signupSuccessfull && <p className="text-center text-brand pb-4">{signupSuccessfull}</p>}
-
-          
+          {signupSuccessfull && (
+            <p className="text-center text-brand pb-4">{signupSuccessfull}</p>
+          )}
         </div>
         <Button
           ref={loginButtonRef}
@@ -108,21 +107,20 @@ const LoginForm = ({
         </Button>
 
         <div className="text-center md:w-full mb-4">
-            <Button
-              variant="link"
-              className="text-sm text-[#3b82f6] p-0 hover:text-blue-600 font-normal"
-              onClick={() => setForgotPassword(true)}
-            >
-              Forgot your password?
-            </Button>
-          </div>
+          <Button
+            variant="link"
+            className="text-sm text-[#3b82f6] p-0 hover:text-blue-600 font-normal"
+            onClick={() => setForgotPassword(true)}
+          >
+            Forgot your password?
+          </Button>
+        </div>
       </form>
     </Form>
   );
 };
 
 export default LoginForm;
-
 
 // import React, { useRef } from "react";
 // import { Button } from "@/components/ui/button";
@@ -222,7 +220,7 @@ export default LoginForm;
 //           {signupSuccessfull && (
 //             <p className="text-center text-brand">{signupSuccessfull}</p>
 //           )}
-          
+
 //           {/* Moved forgot password link to be part of the normal flow */}
 //           <div className="text-center w-full mt-2"> {/* Removed absolute positioning */}
 //             <Button
@@ -250,7 +248,6 @@ export default LoginForm;
 // };
 
 // export default LoginForm;
-
 
 // import React, { useRef } from "react";
 // import { Button } from "@/components/ui/button";
@@ -363,7 +360,7 @@ export default LoginForm;
 //               Forgot your password?
 //             </Button>
 //           </div>
-          
+
 //           <Button
 //             ref={loginButtonRef}
 //             type="submit"

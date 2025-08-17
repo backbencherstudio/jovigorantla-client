@@ -274,7 +274,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1 className={`text-xl font-bold sm:font-medium text-center w-full`}>
+                    <h1
+                      className={`text-xl font-bold sm:font-medium text-center w-full`}
+                    >
                       {title}
                     </h1>
                   </div>

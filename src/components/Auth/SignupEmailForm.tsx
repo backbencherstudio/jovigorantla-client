@@ -21,7 +21,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
         // Store email in localStorage after successful OTP sending
         localStorage.setItem("signupEmail", values.email);
         handleEmailSubmit(values);
-      }else{
+      } else {
         signupEmailForm.setError("email", {
           type: "manual",
           message: "Email already exists",
@@ -53,6 +53,8 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
                     className="pl-3"
                   />
                 </FormControl>
+
+                <input type="text" name="" id="" />
               </div>
               <div className="h-5">
                 <FormMessage className="text-xs text-[#b3261e] font-normal ml-3 -mt-[6.5px]" />
