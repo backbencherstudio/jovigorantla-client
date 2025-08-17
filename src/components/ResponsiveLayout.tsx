@@ -258,7 +258,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-5 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl"
+                    className="fixed z-20 bg-white border-b border-gray-100 px-5 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl "
                     style={{
                       // width: width,
                       top: "60px" /* Header height */,
@@ -274,9 +274,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1
-                      className={`text-xl font-bold sm:font-medium text-center w-full`}
-                    >
+                    <h1 className={`text-xl font-bold sm:font-medium text-center w-full flex-1  mr-10 `}>
                       {title}
                     </h1>
                   </div>

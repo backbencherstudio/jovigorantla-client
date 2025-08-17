@@ -277,7 +277,7 @@ const Header = ({
   return (
     <>
       <header
-        className={`bg-white px-4 md:px-6 border-b fixed  right-0 left-0 pt-6 -top-4 flex flex-1 shadow-sm py-[13px] ${
+        className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex flex-1 shadow-sm py-[13px] ${
           !isModalOpen ? "z-[102]" : "z-[20]"
         }`}
       >

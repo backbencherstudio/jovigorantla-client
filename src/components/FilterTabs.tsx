@@ -14,39 +14,38 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showArrow, setShowArrow] = useState(false);
   useEffect(() => {
-   document.addEventListener('scroll', () => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      // console.log("Element position relative to viewport:", {
-      //   top: rect.top,
-      //   right: rect.right,
-      //   bottom: rect.bottom,
-      //   left: rect.left,
-      //   width: rect.width,
-      //   height: rect.height,
-      // });
-      if (rect.top == 60) {
-        setShowArrow(true)
-      } else {
-        setShowArrow(false)
+    document.addEventListener('scroll', () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        // console.log("Element position relative to viewport:", {
+        //   top: rect.top,
+        //   right: rect.right,
+        //   bottom: rect.bottom,
+        //   left: rect.left,
+        //   width: rect.width,
+        //   height: rect.height,
+        // });
+        if (rect.top == 60) {
+          setShowArrow(true)
+        } else {
+          setShowArrow(false)
+        }
       }
-    }
-   })
+    })
   }, []);
 
   return (
     <div className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between"
-    ref={containerRef}
+      ref={containerRef}
     >
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
         {tabs.map((tab) => (
           <div
             key={tab}
-            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${
-              activeTab === tab
+            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${activeTab === tab
                 ? "bg-brand text-white"
                 : "bg-gray-100 text-gray-800"
-            } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
+              } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
             onClick={() => onTabClick?.(tab)}
           >
             {tab}
@@ -54,9 +53,9 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         ))}
       </div>
       {showArrow && (
-  <div className="mr-5 flex items-center relative group sm:hidden">
-    <button 
-      className="
+        <div className="mr-5 flex items-center relative group sm:hidden">
+          <button
+            className="
         p-2 rounded-sm 
         bg-brand border border-[bg-brand]
       
@@ -66,33 +65,33 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         flex items-center justify-center
         w-8 h-8
       "
-      onClick={() => {
-        // Cross-browser smooth scroll to top
-        try {
-          // Modern browsers (Safari 12+, Chrome 61+, Firefox 64+)
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        } catch (error) {
-          // Fallback for older browsers
-          const scrollStep = -window.scrollY / (500 / 15);
-          const scrollInterval = setInterval(() => {
-            if (window.scrollY !== 0) {
-              window.scrollBy(0, scrollStep);
-            } else {
-              clearInterval(scrollInterval);
-            }
-          }, 15);
-        }
-      }}
-      aria-label="Scroll tabs"
-    >
-      <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
-    </button>
-    
-    {/* Optional tooltip */}
-    {/* <span className="
+            onClick={() => {
+              // Cross-browser smooth scroll to top
+              try {
+                // Modern browsers (Safari 12+, Chrome 61+, Firefox 64+)
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                });
+              } catch (error) {
+                // Fallback for older browsers
+                const scrollStep = -window.scrollY / (500 / 15);
+                const scrollInterval = setInterval(() => {
+                  if (window.scrollY !== 0) {
+                    window.scrollBy(0, scrollStep);
+                  } else {
+                    clearInterval(scrollInterval);
+                  }
+                }, 15);
+              }
+            }}
+            aria-label="Scroll tabs"
+          >
+            <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
+          </button>
+
+          {/* Optional tooltip */}
+          {/* <span className="
       absolute right-full top-1/2 -translate-y-1/2
       mr-2 px-2 py-1
       bg-gray-800 text-white text-xs
@@ -104,8 +103,8 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       Scroll tabs
       <span className="absolute top-1/2 right-0 w-2 h-2 bg-gray-800 transform translate-x-1/2 -translate-y-1/2 rotate-45" />
     </span> */}
-  </div>
-)}
+        </div>
+      )}
     </div>
   );
 };

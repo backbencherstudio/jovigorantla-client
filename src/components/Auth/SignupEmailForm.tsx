@@ -37,7 +37,7 @@ const SignupEmailForm = ({ signupEmailForm, handleEmailSubmit, isLoading }) => {
     <Form {...signupEmailForm}>
       <form
         onSubmit={signupEmailForm.handleSubmit(onSubmit)}
-        className="h-full"
+        className=""
       >
         <FormField
           control={signupEmailForm.control}
