@@ -14,7 +14,7 @@ export default function useScrollRestoration() {
     if (savedPosition !== undefined) {
       timeout = setTimeout(() => {
         console.log("setting scroll values");
-        window.scrollTo(0, savedPosition);
+        // window.scrollTo(0, savedPosition);
       }, 500);
     }
 

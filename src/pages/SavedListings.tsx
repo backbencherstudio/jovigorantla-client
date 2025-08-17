@@ -635,11 +635,11 @@ const SavedListings = () => {
           </Button>
         </div>
       ) : (
-        <div className="space-y-4 thin-scrollbar max-h-[calc(100vh-200px)] overflow-y-auto md:thin-scrollbar">
+        <div className="space-y-4 thin-scrollbar max-h-[calc(100vh-110px)] overflow-y-auto md:thin-scrollbar">
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="bg-white border-b border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => handleListingClick(listing.id)}
             >
               <div className="pb-4 px-4">

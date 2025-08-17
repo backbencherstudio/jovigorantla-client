@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Star,
@@ -196,10 +196,17 @@ const Header = ({
   //     navigate(location.pathname);
   //   }
   // };
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleClearInput = () => {
     // onSearchInputChange(""); // Clear the search input value
     // Clear the search input value
     setSearchValue("");
+
+    // Do Focus On clear search input
+    searchInputRef.current?.focus();
+
     // Navigate to the current path without the query parameter
     // navigate(location.pathname);
   };
@@ -300,11 +307,12 @@ const Header = ({
             >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search"
                 value={searchValue}
                 onChange={handleSearchChange}
-                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
+                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:bg-transparent focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
               />
               {searchValue && (
                 <X

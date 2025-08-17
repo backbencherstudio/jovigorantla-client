@@ -8,6 +8,7 @@ import {
   Flag,
   EyeOff,
   ArrowLeft,
+  Expand,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -302,8 +303,6 @@ const ListingDetailPage = ({ openModal }) => {
     setImageUrl(imageUrl);
   };
 
-
-
   return (
     <>
       <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
@@ -313,7 +312,7 @@ const ListingDetailPage = ({ openModal }) => {
           {/* Category, status and action buttons */}
           <div className="px-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center text-gray-500 text-sm gap-1">
+              <div className="flex items-center text-gray-500 text-base gap-1">
                 <span>{formatCategory(listing.category)}</span>
                 <span className="mx-2">•</span>
                 <span>
@@ -388,7 +387,7 @@ const ListingDetailPage = ({ openModal }) => {
             </h1>
 
             {/* User info and metadata - updated format */}
-            <div className="flex items-center text-sm text-gray-500 mb-4">
+            <div className="flex flex-wrap items-center text-base text-gray-500 mb-4">
               <span>{listing?.user?.name}</span>
               <span className="mx-2">•</span>
               <span>{formatTime(listing?.created_at)}</span>
@@ -419,6 +418,11 @@ const ListingDetailPage = ({ openModal }) => {
                   alt={listing.title}
                   className="absolute inset-0 w-full h-full object-cover rounded-lg"
                 />
+
+                <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#4C4746] rounded-full flex items-center justify-center pointer-events-none">
+                  <Expand />
+                </span>
+
                 {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
               </div>
             )}
@@ -434,7 +438,6 @@ const ListingDetailPage = ({ openModal }) => {
                 </CardContent>
               </Card>
             )}
-
           </div>
           {/* Contact button - only show on desktop */}
           {!isMobile && user?.id !== listing?.user_id && listing && (
@@ -457,7 +460,7 @@ const ListingDetailPage = ({ openModal }) => {
         </div>
 
         {/* Fixed button at the bottom only for mobile */}
-        {isMobile && user?.id !== listing?.user_id && listing &&(
+        {isMobile && user?.id !== listing?.user_id && listing && (
           <div
             className={`fixed ${
               user ? "bottom-0" : "bottom-10"
@@ -487,7 +490,7 @@ const ListingDetailPage = ({ openModal }) => {
           className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
           onClick={() => setIsImageModalOpen(false)}
         >
-          <div className="p-4 bg-white  h-auto  max-h-[90vh] w-full mx-auto max-w-xl lg:max-w-[30rem] xl:max-w-3xl flex items-center justify-center relative rounded-md overflow-hidden">
+          <div className="h-auto max-h-[90vh] max-w-[500px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-hidden">
             <img
               src={image_url}
               alt="Image"
@@ -495,7 +498,7 @@ const ListingDetailPage = ({ openModal }) => {
             />
 
             <button
-              className="absolute top-6 right-6 text-black h-[30px] w-[30px] bg-slate-100 rounded-full flex items-center justify-center"
+              className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#4C4746] rounded-full flex items-center justify-center"
               onClick={() => setIsImageModalOpen(false)}
             >
               <RxCross2 className="text-xl" />

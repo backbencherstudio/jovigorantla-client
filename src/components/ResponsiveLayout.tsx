@@ -139,8 +139,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     };
   }, [lastScrollY]);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleClearInput = () => {
     setSearchQuery("");
+
+    // Do Focus On clear search input
+    searchInputRef.current?.focus();
+
     // navigate(location.pathname); // Navigate to home without query
   };
   useEffect(() => {
@@ -261,7 +267,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     className="fixed z-20 bg-white border-b border-gray-100 px-5 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl "
                     style={{
                       // width: width,
-                      top: "60px" /* Header height */,
+                      top: "65px" /* Header height */,
                     }}
                   >
                     {!hideBackButton && (
@@ -274,7 +280,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
                     )}
-                    <h1 className={`text-xl font-bold sm:font-medium text-center w-full flex-1  mr-10 `}>
+                    <h1
+                      className={`text-xl font-bold sm:font-medium text-center w-full flex-1  mr-10 `}
+                    >
                       {title}
                     </h1>
                   </div>
@@ -283,7 +291,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[60px]">{children}</div>
+              <div className="flex-1 h-full bg-white mt-[65px]">{children}</div>
             </main>
           )}
           {/* Main Content Area */}
@@ -309,11 +317,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                           <Input
+                            ref={searchInputRef}
                             type="text"
                             placeholder="Search"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
+                            className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10  focus:bg-transparent"
                           />
                           {searchQuery && (
                             <X

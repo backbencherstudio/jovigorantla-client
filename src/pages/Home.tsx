@@ -388,14 +388,6 @@ export default function Home({ openModal }) {
     autoSwitched,
   ]);
 
-  // For Reverese Switch
-  /*  useEffect(() => {
-    setFilterOptions(["Nearby", "USA"]);
-    setActiveFilter("Nearby");
-
-    fetchNearByListings("Nearby", searchQuery, true);
-  }, [lat, lng, radius]); */
-
   // =============== New Code End ================
 
   // Reset and fetch on filter/search/location change
@@ -609,7 +601,7 @@ export default function Home({ openModal }) {
           {/* Loader Skeleton For Content and Position of FilterTabs */}
           {isRestoringFromSession && (
             <div className="fixed inset-0 bg-white z-[50] flex items-center justify-center w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
-              <div className="space-y-4 p-2 w-full h-full mt-[120px]">
+              <div className="space-y-4 w-full h-full mt-[120px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>

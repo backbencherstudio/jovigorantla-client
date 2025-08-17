@@ -64,6 +64,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   ];
 
   const handleSetCategory = (menu: string) => {
+    sessionStorage.removeItem("home_cached_data");
+    sessionStorage.removeItem("home_scroll_position");
+
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
       setIsUsa(false);

@@ -34,7 +34,6 @@
 //   const isOnListingPage = location.pathname.startsWith("/listing");
 //   const [showReportModal, setShowReportModal] = useState(false);
 
-  
 //   // console.log("favoritesListings => ", favoritesListings);
 
 //   useEffect(() => {
@@ -68,7 +67,7 @@
 //         }
 //         break;
 //       case "hide":
-       
+
 //         hideListing(listingId);
 //         break;
 //       case "report":
@@ -184,7 +183,6 @@
 // };
 
 // export default ListingActions;
-
 
 // import { useEffect, useState } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
@@ -315,7 +313,7 @@
 //           </Button>
 //         </DropdownMenuTrigger>
 //         <DropdownMenuContent align="end" className="bg-white">
-//           <DropdownMenuItem 
+//           <DropdownMenuItem
 //             onClick={(e) => handleListingAction(e, "share")}
 //             onSelect={(e) => e.preventDefault()}
 //           >
@@ -323,7 +321,7 @@
 //             <span>Share</span>
 //           </DropdownMenuItem>
 //           {!isOnListingPage && (
-//             <DropdownMenuItem 
+//             <DropdownMenuItem
 //               onClick={(e) => handleListingAction(e, "hide")}
 //               onSelect={(e) => e.preventDefault()}
 //             >
@@ -331,7 +329,7 @@
 //               <span>Hide</span>
 //             </DropdownMenuItem>
 //           )}
-//           <DropdownMenuItem 
+//           <DropdownMenuItem
 //             onClick={(e) => handleListingAction(e, "report")}
 //             onSelect={(e) => e.preventDefault()}
 //           >
@@ -342,11 +340,11 @@
 //       </DropdownMenu>
 
 //       {showReportModal && (
-//         <div 
+//         <div
 //           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
 //           onClick={closeReportModal}
 //         >
-//           <div 
+//           <div
 //             className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg z-100"
 //             onClick={(e) => e.stopPropagation()}
 //           >
@@ -376,7 +374,16 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Star, MoreVertical, Share2, EyeOff, Flag, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import {
+  Star,
+  MoreVertical,
+  Share2,
+  EyeOff,
+  Flag,
+  CheckCircle,
+  XCircle,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -390,8 +397,7 @@ import { useListing } from "@/context/ListingContext";
 import { api } from "@/lib/axois";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import AuthModal from "./AuthModal";
-import { createPortal } from 'react-dom';
-
+import { createPortal } from "react-dom";
 
 interface ListingActionsProps {
   listingId: string;
@@ -413,20 +419,25 @@ const ListingActions = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
-  const { favoritesListings, addFavoritesListing, deleteFavoritesListing } = useAuth();
+  const { favoritesListings, addFavoritesListing, deleteFavoritesListing } =
+    useAuth();
   // const { hideListing } = useListing();
   const location = useLocation();
-  const isOnListingPage = location.pathname.startsWith("/listing") || location.pathname.startsWith("/saved-listings");
+  const isOnListingPage =
+    location.pathname.startsWith("/listing") ||
+    location.pathname.startsWith("/saved-listings");
   const [showReportModal, setShowReportModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [reportStatus, setReportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [reportStatus, setReportStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const ModalPortal = ({ children }) => {
     return createPortal(children, document.body);
   };
 
   useEffect(() => {
     if (user) {
-      setSaved(favoritesListings.some(listing => listing.id === listingId));
+      setSaved(favoritesListings.some((listing) => listing.id === listingId));
     }
   }, [user, listingId, favoritesListings]);
 
@@ -457,7 +468,7 @@ const ListingActions = ({
         break;
       case "report":
         if (!user) {
-          openModal()
+          openModal();
           break;
         }
         setShowReportModal(true);
@@ -478,8 +489,8 @@ const ListingActions = ({
       }
       setSaved(!saved);
     } else {
-      console.log('clicked')
-      openModal()
+      console.log("clicked");
+      openModal();
     }
   };
 
@@ -492,32 +503,27 @@ const ListingActions = ({
     setReportStatus("loading");
 
     try {
-     
-      let response: any
-      if(isUsa){
+      let response: any;
+      if (isUsa) {
         response = await api.post(`/listings/${listingId}/report`, {
-          report_type: 'POST_TO_USA'
-        })
-      }else{
-        response =await api.post(`/listings/${listingId}/report`, {
-          report_type: 'NORMAL'
-        })
+          report_type: "POST_TO_USA",
+        });
+      } else {
+        response = await api.post(`/listings/${listingId}/report`, {
+          report_type: "NORMAL",
+        });
       }
-      
-      console.log(response)
 
-     
+      console.log(response);
+
       // Mock success response
-    setReportStatus("success");
-    
-    // Auto-close after 2 seconds
-    setTimeout(() => {
-      setShowReportModal(false);
-      setReportStatus("idle");
-    }, 2000);
-      
-     
+      setReportStatus("success");
 
+      // Auto-close after 2 seconds
+      setTimeout(() => {
+        setShowReportModal(false);
+        setReportStatus("idle");
+      }, 2000);
     } catch (error) {
       console.error("Error reporting listing:", error);
       setReportStatus("error");
@@ -534,155 +540,164 @@ const ListingActions = ({
   };
 
   // if(!user)return null;
-  
 
   return (
     <>
-    
-    <div className="flex items-center">
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 w-8 p-0"
-        type="button"
-        onClick={(e) => {
-          onToggleSave(e, listingId);
-          handleToggleSave(e);
-        }}
-      >
-        <Star
-          className={`h-5 w-5 ${
-            saved ? "fill-[#ff6b00] text-[#ff6b00]" : "text-gray-400"
-          }`}
-        />
-      </Button>
+      <div className="flex items-center">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
+          type="button"
+          onClick={(e) => {
+            onToggleSave(e, listingId);
+            handleToggleSave(e);
+          }}
+        >
+          <Star
+            className={`h-5 w-5 ${
+              saved ? "fill-[#ff6b00] text-[#ff6b00]" : "text-gray-400"
+            }`}
+            style={{ height: "23px", width: "23px" }}
+          />
+        </Button>
 
-      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" 
-             onClick={(e) => {
-              e.preventDefault(); // Prevent default link behavior
-              e.stopPropagation(); // Prevent event propagation to the parent
-              // setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
-            }}
-          >
-            <MoreVertical className="h-5 w-5 text-gray-400" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-white">
-          <DropdownMenuItem 
-            onClick={(e) => handleListingAction(e, "share")}
-            onSelect={(e) => e.preventDefault()}
-          >
-            <Share2 className="h-4 w-4 mr-2" />
-            <span>Share</span>
-          </DropdownMenuItem>
-          {!isOnListingPage && (
-            <DropdownMenuItem 
-              onClick={(e) => handleListingAction(e, "hide")}
+        <DropdownMenu
+          open={dropdownOpen}
+          onOpenChange={setDropdownOpen}
+          modal={false}
+        >
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default link behavior
+                e.stopPropagation(); // Prevent event propagation to the parent
+                // setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
+              }}
+            >
+              <MoreVertical
+                className="h-5 w-5 text-gray-400"
+                style={{ height: "23px", width: "23px" }}
+              />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-white">
+            <DropdownMenuItem
+              onClick={(e) => handleListingAction(e, "share")}
               onSelect={(e) => e.preventDefault()}
             >
-              <EyeOff className="h-4 w-4 mr-2" />
-              <span>Hide</span>
+              <Share2 className="h-4 w-4 mr-2" />
+              <span>Share</span>
             </DropdownMenuItem>
-          )}
-          <DropdownMenuItem 
-            onClick={(e) => handleListingAction(e, "report")}
-            onSelect={(e) => e.preventDefault()}
-          >
-            <Flag className="h-4 w-4 mr-2" />
-            <span>Report</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {showReportModal && (
-        <ModalPortal>
-
-        <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
-          onClick={closeReportModal}
-        >
-          <div 
-            className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg z-[1001]"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-            }
-            }
-          >
-            {reportStatus === "success" ? (
-              <div className="flex flex-col items-center text-center">
-                <CheckCircle className="h-12 w-12 text-green-500 mb-4" />
-                <h2 className="text-lg font-semibold mb-2">Report Submitted</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  Thank you for helping improve our community.
-                </p>
-                <Button 
-                  onClick={closeReportModal}
-                  className="mt-2"
-                >
-                  Close
-                </Button>
-              </div>
-            ) : reportStatus === "error" ? (
-              <div className="flex flex-col items-center text-center">
-                <XCircle className="h-12 w-12 text-red-500 mb-4" />
-                <h2 className="text-lg font-semibold mb-2">Report Failed</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  Please try again later.
-                </p>
-                <div className="flex gap-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={closeReportModal}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleReportListing}
-                  >
-                    Retry
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <h2 className="text-lg font-semibold mb-4">Report Listing</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  Are you sure you want to report this listing?
-                </p>
-                <div className="flex justify-end gap-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={closeReportModal}
-                    disabled={reportStatus === "loading"}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    // variant="destructive"
-                    onClick={handleReportListing}
-                    disabled={reportStatus === "loading"}
-                  >
-                    {reportStatus === "loading" ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Reporting...
-                      </>
-                    ) : "Report"}
-                  </Button>
-                </div>
-              </>
+            {!isOnListingPage && (
+              <DropdownMenuItem
+                onClick={(e) => handleListingAction(e, "hide")}
+                onSelect={(e) => e.preventDefault()}
+              >
+                <EyeOff className="h-4 w-4 mr-2" />
+                <span>Hide</span>
+              </DropdownMenuItem>
             )}
-          </div>
-        </div>
-        </ModalPortal>
-      )}
-    </div>
+            <DropdownMenuItem
+              onClick={(e) => handleListingAction(e, "report")}
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Flag className="h-4 w-4 mr-2" />
+              <span>Report</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-    {/* <AuthModal
+        {showReportModal && (
+          <ModalPortal>
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
+              onClick={closeReportModal}
+            >
+              <div
+                className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg z-[1001]"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                {reportStatus === "success" ? (
+                  <div className="flex flex-col items-center text-center">
+                    <CheckCircle className="h-12 w-12 text-green-500 mb-4" />
+                    <h2 className="text-lg font-semibold mb-2">
+                      Report Submitted
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Thank you for helping improve our community.
+                    </p>
+                    <Button onClick={closeReportModal} className="mt-2">
+                      Close
+                    </Button>
+                  </div>
+                ) : reportStatus === "error" ? (
+                  <div className="flex flex-col items-center text-center">
+                    <XCircle className="h-12 w-12 text-red-500 mb-4" />
+                    <h2 className="text-lg font-semibold mb-2">
+                      Report Failed
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Please try again later.
+                    </p>
+                    <div className="flex gap-3">
+                      <Button variant="outline" onClick={closeReportModal}>
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={handleReportListing}
+                      >
+                        Retry
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-lg font-semibold mb-4">
+                      Report Listing
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Are you sure you want to report this listing?
+                    </p>
+                    <div className="flex justify-end gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={closeReportModal}
+                        disabled={reportStatus === "loading"}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        // variant="destructive"
+                        onClick={handleReportListing}
+                        disabled={reportStatus === "loading"}
+                      >
+                        {reportStatus === "loading" ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Reporting...
+                          </>
+                        ) : (
+                          "Report"
+                        )}
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </ModalPortal>
+        )}
+      </div>
+
+      {/* <AuthModal
         open={isOpen}
         onOpenChange={closeModal}
         defaultTab={defaultTab as "login" | "signup"}

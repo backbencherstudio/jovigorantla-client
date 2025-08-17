@@ -2,7 +2,6 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { MoveUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-
 interface FilterTabsProps {
   tabs: string[];
   activeTab: string;
@@ -14,7 +13,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showArrow, setShowArrow] = useState(false);
   useEffect(() => {
-    document.addEventListener('scroll', () => {
+    document.addEventListener("scroll", () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         // console.log("Element position relative to viewport:", {
@@ -26,26 +25,28 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         //   height: rect.height,
         // });
         if (rect.top == 60) {
-          setShowArrow(true)
+          setShowArrow(true);
         } else {
-          setShowArrow(false)
+          setShowArrow(false);
         }
       }
-    })
+    });
   }, []);
 
   return (
-    <div className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between"
+    <div
+      className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between"
       ref={containerRef}
     >
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
         {tabs.map((tab) => (
           <div
             key={tab}
-            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${activeTab === tab
+            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${
+              activeTab === tab
                 ? "bg-brand text-white"
                 : "bg-gray-100 text-gray-800"
-              } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
+            } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
             onClick={() => onTabClick?.(tab)}
           >
             {tab}
@@ -55,35 +56,18 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       {showArrow && (
         <div className="mr-5 flex items-center relative group sm:hidden">
           <button
-            className="
-        p-2 rounded-sm 
+            className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
-      
         transition-all duration-200 ease-in-out
         shadow-sm hover:shadow-md
         focus:outline-none focus:ring-2 focus:ring-brand/50
         flex items-center justify-center
-        w-8 h-8
-      "
+        w-8 h-8"
             onClick={() => {
-              // Cross-browser smooth scroll to top
-              try {
-                // Modern browsers (Safari 12+, Chrome 61+, Firefox 64+)
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-              } catch (error) {
-                // Fallback for older browsers
-                const scrollStep = -window.scrollY / (500 / 15);
-                const scrollInterval = setInterval(() => {
-                  if (window.scrollY !== 0) {
-                    window.scrollBy(0, scrollStep);
-                  } else {
-                    clearInterval(scrollInterval);
-                  }
-                }, 15);
-              }
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
             }}
             aria-label="Scroll tabs"
           >
