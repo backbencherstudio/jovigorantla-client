@@ -600,7 +600,7 @@ export default function Home({ openModal }) {
         <>
           {/* Loader Skeleton For Content and Position of FilterTabs */}
           {isRestoringFromSession && (
-            <div className="fixed inset-0 bg-white z-[50] flex items-center justify-center w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
+            <div className="fixed inset-0 p-2 md:p-0 bg-white z-[50] flex items-center justify-center w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
               <div className="space-y-4 w-full h-full mt-[120px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
@@ -621,7 +621,7 @@ export default function Home({ openModal }) {
             </div>
           )}
           {/*  px-4 -- only it was before */}
-          <div className="pb-5 lg:pb-0 px-4 md:px-2 my-4 space-y-4">
+          <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
                 {listing?.type === "listing" && (
@@ -653,6 +653,10 @@ export default function Home({ openModal }) {
                           alt={listing.title}
                           className="absolute inset-0 w-full h-full object-cover rounded-lg"
                         />
+
+                        <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+                          Sponsored
+                        </span>
                       </div>
                     </Link>
                   ) : (
@@ -665,6 +669,9 @@ export default function Home({ openModal }) {
                         alt={listing.title}
                         className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       />
+                      <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+                        Sponsored
+                      </span>
                     </div>
                   ))}
               </div>

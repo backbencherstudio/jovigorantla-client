@@ -139,7 +139,7 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
           <Link to={ad.target_url} key={ad.id} target="_blank">
             <Card
               key={ad.id}
-              className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
+              className={`relative overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
               onClick={() => handleClick(ad)}
             >
               <img
@@ -147,12 +147,15 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
                 alt={ad.name || "Advertisement"}
                 className="w-full h-full object-cover"
               />
+              <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+                Sponsored
+              </span>
             </Card>
           </Link>
         ) : (
           <Card
             key={ad.id}
-            className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
+            className={`relative overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
             onClick={() => handleClick(ad)}
           >
             <img
@@ -160,6 +163,9 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
               alt={ad.name || "Advertisement"}
               className="w-full h-full object-cover"
             />
+            <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+              Sponsored
+            </span>
           </Card>
         )
       )}

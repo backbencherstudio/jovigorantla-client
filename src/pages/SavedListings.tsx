@@ -642,7 +642,7 @@ const SavedListings = () => {
               className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => handleListingClick(listing.id)}
             >
-              <div className="pb-4 px-4">
+              <div className="py-4 px-4">
                 <div className="flex justify-between">
                   <div className="flex items-center text-sm text-gray-500 mb-1">
                     <span>{formatCategory(listing.category)}</span>
