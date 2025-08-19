@@ -308,7 +308,7 @@ const ListingDetailPage = ({ openModal }) => {
       <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-        <div className="flex-1 py-[10px] overflow-y-auto pb-24 mx-auto w-full p-2 lg:p-4">
+        <div className="flex-1 overflow-y-auto pb-24 mx-auto w-full p-2 py-4 lg:p-4">
           {/* Category, status and action buttons */}
           <div className="px-4">
             <div className="flex items-center justify-between mb-2">
@@ -420,7 +420,7 @@ const ListingDetailPage = ({ openModal }) => {
                 />
 
                 <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#4C4746] rounded-full flex items-center justify-center pointer-events-none">
-                  <Expand />
+                  <Expand className="h-5 w-5" />
                 </span>
 
                 {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
@@ -431,7 +431,7 @@ const ListingDetailPage = ({ openModal }) => {
             {listing.description && (
               <Card className="mb-6 border-none shadow-none mt-4">
                 <CardContent className="p-0">
-                  <h2 className="text-lg font-bold mb-2">Description</h2>
+                  <h2 className="text-lg font-bold mb-0">Description</h2>
                   <p className="text-gray-700 whitespace-pre-line">
                     {renderDescriptionWithPhoneLinks(listing.description)}
                   </p>

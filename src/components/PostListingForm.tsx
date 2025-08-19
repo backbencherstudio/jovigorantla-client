@@ -1756,8 +1756,8 @@ function PostListingForm() {
         // console.log("image => ", data.image);
         // console.log("type => ", typeof data.image);
         // console.log("instanceof File => ", data.image instanceof File);
-        formData.append('image', data.image, data.image.name);
-        
+        formData.append("image", data.image, data.image.name);
+
         // localStorage.setItem('image', data.image)
       } else if (
         isEditMode &&
@@ -1768,26 +1768,29 @@ function PostListingForm() {
         formData.append("image_url", imagePreview);
       }
 
-      
+      formData.append("category", data.category.toUpperCase());
+      formData.append(
+        "sub_category",
+        data.subCategory.slice(0, 1).toUpperCase() +
+          data.subCategory.slice(1).toLowerCase()
+      );
+      formData.append("title", data.title);
+      formData.append("description", data.description || "");
+      formData.append("post_to_usa", data.isUSA ? "true" : "false");
 
-      formData.append('category', data.category.toUpperCase());
-      formData.append('sub_category', data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase());
-      formData.append('title', data.title);
-      formData.append('description', data.description || '');
-      formData.append('post_to_usa', data.isUSA ? 'true' : 'false');
-
-      // after login 
-      formDataAfterLogin['category'] = data.category.toUpperCase();
-      formDataAfterLogin['sub_category'] = data.subCategory.slice(0, 1).toUpperCase() + data.subCategory.slice(1).toLowerCase();
-      formDataAfterLogin['title'] = data.title;
-      formDataAfterLogin['description'] = data.description || '';
-      formDataAfterLogin['post_to_usa'] = data.isUSA ? 'true' : 'false';
-
+      // after login
+      formDataAfterLogin["category"] = data.category.toUpperCase();
+      formDataAfterLogin["sub_category"] =
+        data.subCategory.slice(0, 1).toUpperCase() +
+        data.subCategory.slice(1).toLowerCase();
+      formDataAfterLogin["title"] = data.title;
+      formDataAfterLogin["description"] = data.description || "";
+      formDataAfterLogin["post_to_usa"] = data.isUSA ? "true" : "false";
 
       // Location fields
-      formData.append('address', currentLocation?.search);
-      formData.append('latitude', String(currentLocation?.lat));
-      formData.append('longitude', String(currentLocation?.lng));
+      formData.append("address", currentLocation?.search);
+      formData.append("latitude", String(currentLocation?.lat));
+      formData.append("longitude", String(currentLocation?.lng));
 
       // after login
       formDataAfterLogin["category"] = data.category.toUpperCase();
@@ -1800,7 +1803,7 @@ function PostListingForm() {
 
       // Location fields
       // formData.append("address", currentLocation?.search);
-    // formData.append("latitude", String(currentLocation?.lat));
+      // formData.append("latitude", String(currentLocation?.lat));
       // formData.append("longitude", String(currentLocation?.lng));
 
       // // after login
@@ -1840,8 +1843,8 @@ function PostListingForm() {
       }
 
       if (isEditMode) {
-        if(!imagePreview) {
-          formData.append('image', null)
+        if (!imagePreview) {
+          formData.append("image", null);
         }
         const response = await api.patch(`/listings/${listingId}`, formData, {
           headers: {
@@ -2192,7 +2195,7 @@ function PostListingForm() {
 
   return (
     <>
-      <div className="p-2 lg:p-4">
+      <div className="p-2 py-4 lg:p-4">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6 bg-white px-4 rounded-lg max-w-3xl mx-auto min-h-[calc(100vh-130px)]"
@@ -2201,7 +2204,7 @@ function PostListingForm() {
         {isEditMode ? "Edit Listing" : "Create New Listing"}
       </h2> */}
 
-          <div className="space-y-2">
+          <div className="space-y-2 pt-2">
             <label
               htmlFor="category"
               className="block text-black font-medium text-sm  "

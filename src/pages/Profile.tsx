@@ -253,10 +253,10 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-white min-h-[calc(100vh-110px)] p-2 lg:p-4">
+    <div className="bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4">
       <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
+          <div className="space-y-2 pt-1">
             <Label htmlFor="name">Name</Label>
             <div className="relative">
               <User className="absolute left-3 top-3 h-4 w-4 text-gray-500" />

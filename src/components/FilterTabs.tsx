@@ -12,6 +12,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
   const containerRef = useRef<HTMLDivElement>(null);
   const [showArrow, setShowArrow] = useState(false);
+
   useEffect(() => {
     document.addEventListener("scroll", () => {
       if (containerRef.current) {
@@ -26,6 +27,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         // });
         if (rect.top == 60) {
           setShowArrow(true);
+          console.log("ohello");
         } else {
           setShowArrow(false);
         }

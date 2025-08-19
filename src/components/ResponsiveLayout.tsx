@@ -291,7 +291,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[65px]">{children}</div>
+              <div className="flex-1 h-full bg-white mt-[70px]">{children}</div>
             </main>
           )}
           {/* Main Content Area */}
@@ -315,14 +315,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
                           <Input
                             ref={searchInputRef}
                             type="text"
                             placeholder="Search"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10  focus:bg-transparent"
+                            className="relative z-1 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 focus:bg-gray-100"
                           />
                           {searchQuery && (
                             <X
@@ -436,7 +436,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           */}
           {/* Right sidebar with ad banners - only visible on desktop */}
           {isDesktop && (
-            <div className="w-[260px] fixed z-10 right-0 top-[60px] bottom-0 bg-white shadow-sm">
+            <div className="w-[240px] 2xl:w-[260px] fixed z-5 right-0 top-[60px] bottom-0 bg-white shadow-sm">
               <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
                 {/* <AdBanner position="right_top" className="mb-4" /> */}
                 <SidebarAds className="mb-4" />

@@ -1,8 +1,8 @@
-import { Plus, Search } from "lucide-react";
+import { CircleCheck, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import useRedirectNav from "@/hooks/useRedirectNav";
 
-const NoListingsFound = () => {
+const AllCaughtUp = () => {
   const { redirectNavLink } = useRedirectNav();
 
   const handlePostAd = () => {
@@ -12,9 +12,9 @@ const NoListingsFound = () => {
   return (
     <div className="text-center py-8 rounded-lg">
       <div className="text-4xl mb-2 flex justify-center items-center font-bold">
-        <Search className="text-[#ff7417] text-center font-bold" />
+        <CircleCheck className="text-[#ff7417] text-center font-bold" />
       </div>
-      <h3 className="text-lg font-medium">No listings found</h3>
+      <h3 className="text-lg font-medium">You're all caught up</h3>
       <p className="text-gray-500">
         Try new keywords, cities, or a wider radius
       </p>
@@ -32,4 +32,4 @@ const NoListingsFound = () => {
   );
 };
 
-export default NoListingsFound;
+export default AllCaughtUp;

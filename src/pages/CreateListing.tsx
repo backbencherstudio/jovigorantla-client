@@ -26,9 +26,9 @@ const CreateListing = ({ isEditing }) => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
-  const [pendingFormData, setPendingFormData] = useState<ListingFormData | null>(null);
+  const [pendingFormData, setPendingFormData] =
+    useState<ListingFormData | null>(null);
   const [initialValues, setInitialValues] = useState<any>({});
-
 
   // Effect to handle post-login listing creation
   useEffect(() => {
@@ -46,7 +46,10 @@ const CreateListing = ({ isEditing }) => {
           apiFormData.append("category", pendingFormData.category || "");
           apiFormData.append("sub_category", pendingFormData.subCategory || "");
           apiFormData.append("address", pendingFormData.address || "");
-          apiFormData.append("post_to_usa", (pendingFormData.postToUSA || false).toString());
+          apiFormData.append(
+            "post_to_usa",
+            (pendingFormData.postToUSA || false).toString()
+          );
           apiFormData.append("radius", pendingFormData.radius.toString());
 
           if (pendingFormData.images.length > 0) {
@@ -64,7 +67,8 @@ const CreateListing = ({ isEditing }) => {
         } catch (error) {
           console.error("Error creating listing:", error);
           toast.error("Failed to create listing", {
-            description: "There was an error creating your listing. Please try again.",
+            description:
+              "There was an error creating your listing. Please try again.",
           });
         } finally {
           setIsSubmitting(false);
@@ -98,7 +102,10 @@ const CreateListing = ({ isEditing }) => {
       apiFormData.append("category", formData.category || "");
       apiFormData.append("sub_category", formData.subCategory || "");
       apiFormData.append("address", formData.address || "");
-      apiFormData.append("post_to_usa", (formData.postToUSA || false).toString());
+      apiFormData.append(
+        "post_to_usa",
+        (formData.postToUSA || false).toString()
+      );
       apiFormData.append("radius", formData.radius.toString());
 
       if (formData.images.length > 0) {
@@ -116,7 +123,8 @@ const CreateListing = ({ isEditing }) => {
     } catch (error) {
       console.error("Error creating listing:", error);
       toast.error("Failed to create listing", {
-        description: "There was an error creating your listing. Please try again.",
+        description:
+          "There was an error creating your listing. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -126,14 +134,15 @@ const CreateListing = ({ isEditing }) => {
   const fetchEditListing = async (id: string) => {
     try {
       const { data: response } = await api.get(`/listings/${id}`);
-      const listing = response.data
+      const listing = response.data;
 
       const categoryStr = listing.category?.toLowerCase();
       const formData = {
         title: listing.title,
         description: listing.description,
         price: listing.price,
-        category: categoryStr?.slice(0, 1).toUpperCase() + categoryStr?.slice(1),
+        category:
+          categoryStr?.slice(0, 1).toUpperCase() + categoryStr?.slice(1),
         subCategory: listing.sub_category,
         address: listing.address,
         postToUSA: listing.post_to_usa,
@@ -152,7 +161,7 @@ const CreateListing = ({ isEditing }) => {
 
   useEffect(() => {
     if (isEditing) {
-      const id = searchParams.get('edit');
+      const id = searchParams.get("edit");
       // console.log(id);
       fetchEditListing(id);
     }
@@ -160,11 +169,15 @@ const CreateListing = ({ isEditing }) => {
 
   return (
     <div className="pb-6">
-      {isEditing ? <ListingEditForm user={user} isSubmitting={isSubmitting} /> : <ListingForm
-        user={user}
-        // onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />}
+      {isEditing ? (
+        <ListingEditForm user={user} isSubmitting={isSubmitting} />
+      ) : (
+        <ListingForm
+          user={user}
+          // onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
 
       {/* <ListingForm
         user={user}
@@ -172,7 +185,6 @@ const CreateListing = ({ isEditing }) => {
         isSubmitting={isSubmitting}
         initialValues={initialValues}
       /> */}
-
 
       <AuthModal
         open={isOpen}

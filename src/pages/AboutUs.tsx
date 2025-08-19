@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
 // Call the function to clear content based on the date
 
 const AboutUs = () => {
@@ -10,8 +8,8 @@ const AboutUs = () => {
   // Function to check if the current date has passed the custom date
 
   return (
-    <div className="max-w-3xl mx-auto p-2 lg:p-4 bg-white  min-h-[calc(100vh-110px)]">
-      <div className="px-4">
+    <div className="max-w-3xl mx-auto p-2 py-4 lg:p-4 bg-white  min-h-[calc(100vh-110px)]">
+      <div className="px-4 pt-1">
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-3">
             Connecting the South Asian Community Abroad

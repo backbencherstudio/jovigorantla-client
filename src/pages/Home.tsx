@@ -18,6 +18,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import useScrollRestoration from "@/hooks/useScrollRestoration";
 import { cache } from "@/lib/cache";
+import AllCaughtUp from "@/components/AllCaughtUp";
 
 const cacheData: any = {
   listings: [],
@@ -654,7 +655,7 @@ export default function Home({ openModal }) {
                           className="absolute inset-0 w-full h-full object-cover rounded-lg"
                         />
 
-                        <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+                        <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                           Sponsored
                         </span>
                       </div>
@@ -669,7 +670,7 @@ export default function Home({ openModal }) {
                         alt={listing.title}
                         className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       />
-                      <span className="bg-[#474849cc] text-sm sm:text-base font-medium text-white px-3 py-1 rounded-[20px] absolute bottom-2 right-2">
+                      <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                         Sponsored
                       </span>
                     </div>
@@ -685,6 +686,8 @@ export default function Home({ openModal }) {
                 {isLoading ? "Loading more..." : "Scroll for more..."}
               </div>
             )}
+
+            {!hasMore && listings.length > 0 && <AllCaughtUp />}
 
             {!hasMore && listings.length === 0 && <NoListingsFound />}
 

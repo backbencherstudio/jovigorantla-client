@@ -623,7 +623,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="p-2 lg:p-4 w-full min-h-[calc(100vh-110px)] bg-white">
+    <div className="p-2 py-4 lg:p-4 w-full min-h-[calc(100vh-110px)] bg-white">
       {listings.length === 0 ? (
         <div className="bg-white p-8 text-center">
           <h3 className="text-lg font-medium mb-2">No saved listings</h3>

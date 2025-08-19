@@ -541,13 +541,25 @@ const ListingActions = ({
 
   // if(!user)return null;
 
+  // Getting path name for change Icon
+  const [isListingPage, setIsListingPage] = useState(false);
+  const pathname = useLocation().pathname;
+
+  useEffect(() => {
+    if (pathname.startsWith("/listing")) {
+      setIsListingPage(true);
+    } else {
+      setIsListingPage(false);
+    }
+  }, [pathname]);
+
   return (
     <>
       <div className="flex items-center">
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0"
+          className={`h-8 w-8 p-0 ${isListingPage ? "mr-1" : ""}`}
           type="button"
           onClick={(e) => {
             onToggleSave(e, listingId);
@@ -558,7 +570,7 @@ const ListingActions = ({
             className={`h-5 w-5 ${
               saved ? "fill-[#ff6b00] text-[#ff6b00]" : "text-gray-400"
             }`}
-            style={{ height: "23px", width: "23px" }}
+            style={isListingPage ? { height: "23px", width: "23px" } : {}}
           />
         </Button>
 
@@ -580,7 +592,7 @@ const ListingActions = ({
             >
               <MoreVertical
                 className="h-5 w-5 text-gray-400"
-                style={{ height: "23px", width: "23px" }}
+                style={isListingPage ? { height: "23px", width: "23px" } : {}}
               />
             </Button>
           </DropdownMenuTrigger>

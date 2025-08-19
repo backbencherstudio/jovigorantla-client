@@ -281,16 +281,22 @@ const Header = ({
   // Check if current path matches any of the valid paths
   const isValidPage = validPaths.includes(location.pathname);
 
+  // Handle Logo Click
+  const handleLogo = () => {
+    sessionStorage.removeItem("home_cached_data");
+    sessionStorage.removeItem("home_scroll_position");
+  };
+
   return (
     <>
       <header
         className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex flex-1 shadow-sm py-[13px] ${
-          !isModalOpen ? "z-[102]" : "z-[20]"
+          !isModalOpen ? "z-[102]" : "z-[22]"
         }`}
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <Link to={"/"} className="flex items-center">
+          <Link to={"/"} onClick={handleLogo} className="flex items-center">
             <img
               src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
@@ -305,14 +311,14 @@ const Header = ({
               className=" mx-4 w-[25vw] relative hidden md:block"
               // style={{ display: isValidPage ? (isMobile ? 'none' : 'block') : 'none' }}
             >
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
               <Input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search"
                 value={searchValue}
                 onChange={handleSearchChange}
-                className="pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:bg-transparent focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
+                className="relative z-1 pl-9 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 w-full focus:bg-gray-100 focus:ring-2 focus:border-none focus-visible:ring-2 focus-visible:ring-offset-0"
               />
               {searchValue && (
                 <X
