@@ -78,7 +78,8 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         ))}
       </div>
 
-      <div className={`mr-5 flex items-center relative group`}>
+      {/* This is filter top with arrow */}
+      <div className={`mr-5 flex items-center relative group sm:hidden`}>
         <button
           className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
