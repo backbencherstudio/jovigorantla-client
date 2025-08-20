@@ -50,7 +50,18 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
   const handleClick = async (ad: AdData) => {
     try {
       await api.post(`/ads/sidebar/${ad.id}/track-click`);
-      window.open(ad.target_url, "_blank");
+
+      //window.open(ad.target_url, "_blank");
+
+      const isSafari = /^((?!chrome|android).)*safari/i.test(
+        navigator.userAgent
+      );
+      if (isSafari) {
+        window.location.href = ad.target_url;
+      } else {
+        // For other browsers, open in a new tab
+        window.open(ad.target_url, "_blank", "noopener,noreferrer");
+      }
     } catch (error) {
       setIsError(true);
     }
@@ -156,7 +167,6 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
           <Card
             key={ad.id}
             className={`relative overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${className} h-[250px] w-[230px] mx-auto mb-4`}
-            onClick={() => handleClick(ad)}
           >
             <img
               src={ad.image_url}

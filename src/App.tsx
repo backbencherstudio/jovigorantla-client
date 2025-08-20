@@ -50,7 +50,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   // If still loading auth state, don't redirect yet
   if (loading) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   // If not authenticated, redirect to auth page
@@ -303,9 +303,7 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
-
   useDataLoad();
-
 
   // Add this to your App.jsx or main component
   useEffect(() => {
@@ -343,9 +341,9 @@ function App() {
       isDragging = false;
     };
 
-    document.addEventListener("loadeddata",(e) => {
-      console.log(document.getElementById('root'))
-    })
+    document.addEventListener("loadeddata", (e) => {
+      console.log(document.getElementById("root"));
+    });
 
     document.addEventListener("touchstart", handleTouchStart, {
       passive: true,
@@ -406,7 +404,7 @@ function App() {
             <LocationProvider>
               <SocketProvider>
                 <MessageProvider>
-                <RouteChangeListener />
+                  <RouteChangeListener />
                   <AppRoutes />
                 </MessageProvider>
               </SocketProvider>

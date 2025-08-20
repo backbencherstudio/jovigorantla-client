@@ -935,6 +935,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import useScrollRestoration from "@/hooks/useScrollRestoration";
+import AllCaughtUp from "@/components/AllCaughtUp";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -1454,7 +1455,15 @@ export default function Rides({ openModal }) {
     await yourTrackingFunction(listing);
 
     // Programmatic navigation after tracking
-    window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    //window.open(listing.target_url, "_blank", "noopener,noreferrer");
+
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      window.location.href = listing.target_url;
+    } else {
+      // For other browsers, open in a new tab
+      window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -1559,6 +1568,7 @@ export default function Rides({ openModal }) {
               </div>
             )}
 
+            {!hasMore && listings.length > 0 && <AllCaughtUp />}
             {!hasMore && listings.length === 0 && <NoListingsFound />}
 
             {/* Debug info - remove in production */}

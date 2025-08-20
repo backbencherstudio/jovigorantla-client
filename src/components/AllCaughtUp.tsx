@@ -22,7 +22,7 @@ const AllCaughtUp = () => {
       <div className="flex items-center justify-center mt-4">
         <Button
           onClick={handlePostAd}
-          className="bg-brand gap-0 text-white flex items-center justify-center rounded-full px-3 py-1.5 h-8 md:h-8 text-xs md:text-xs"
+          className="ml-1 bg-brand gap-0 text-white flex items-center justify-center rounded-full px-3 py-1.5 h-8 md:h-8 text-xs md:text-xs"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Post</span>

@@ -12,28 +12,51 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const isMobile = useMediaQuery("(max-width: 767px)");
   const containerRef = useRef<HTMLDivElement>(null);
   const [showArrow, setShowArrow] = useState(false);
+  const [hasCrossed60, setHasCrossed60] = useState(false);
+
+  // useEffect(() => {
+  //   document.addEventListener("scroll", () => {
+  //     if (containerRef.current) {
+  //       const rect = containerRef.current.getBoundingClientRect();
+  //       // console.log("Element position relative to viewport:", {
+  //       //   top: rect.top,
+  //       //   right: rect.right,
+  //       //   bottom: rect.bottom,
+  //       //   left: rect.left,
+  //       //   width: rect.width,
+  //       //   height: rect.height,
+  //       // });
+  //       if (rect.top == 60) {
+  //         setShowArrow(true);
+  //       } else {
+  //         setShowArrow(false);
+  //       }
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
-    document.addEventListener("scroll", () => {
+    const handleScroll = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        // console.log("Element position relative to viewport:", {
-        //   top: rect.top,
-        //   right: rect.right,
-        //   bottom: rect.bottom,
-        //   left: rect.left,
-        //   width: rect.width,
-        //   height: rect.height,
-        // });
-        if (rect.top == 60) {
+
+        // Trigger when the element crosses 60px for the first time
+        if (rect.top <= 60 && !hasCrossed60) {
           setShowArrow(true);
           console.log("ohello");
-        } else {
-          setShowArrow(false);
+          setHasCrossed60(true); // Set flag to true so it doesn't log again
+        } else if (rect.top > 60 && hasCrossed60) {
+          setShowArrow(false); // Hide arrow if it's scrolled past 60px
+          setHasCrossed60(false); // Reset flag if scrolled back above 60px
         }
       }
-    });
-  }, []);
+    };
+
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll); // Clean up event listener on unmount
+    };
+  }, [hasCrossed60]);
 
   return (
     <div

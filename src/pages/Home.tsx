@@ -570,7 +570,15 @@ export default function Home({ openModal }) {
     await yourTrackingFunction(listing);
 
     // Programmatic navigation after tracking
-    window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    // window.open(listing.target_url, "_blank", "noopener,noreferrer");
+
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      window.location.href = listing.target_url;
+    } else {
+      // For other browsers, open in a new tab
+      window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    }
   };
 
   // Debug logging
