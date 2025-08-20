@@ -77,29 +77,29 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
           </div>
         ))}
       </div>
-       
-        <div className={`mr-5 flex items-center relative group sm:hidden ${showArrow ? "block" : "hidden"}`}>
-          <button
-            className="p-2 rounded-sm 
+
+      <div className={`mr-5 flex items-center relative group`}>
+        <button
+          className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
         transition-all duration-200 ease-in-out
         shadow-sm hover:shadow-md
         focus:outline-none focus:ring-2 focus:ring-brand/50
         flex items-center justify-center
         w-8 h-8"
-            onClick={() => {
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
-            }}
-            aria-label="Scroll tabs"
-          >
-            <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
-          </button>
+          onClick={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+          aria-label="Scroll tabs"
+        >
+          <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
+        </button>
 
-          {/* Optional tooltip */}
-          {/* <span className="
+        {/* Optional tooltip */}
+        {/* <span className="
       absolute right-full top-1/2 -translate-y-1/2
       mr-2 px-2 py-1
       bg-gray-800 text-white text-xs
@@ -111,8 +111,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       Scroll tabs
       <span className="absolute top-1/2 right-0 w-2 h-2 bg-gray-800 transform translate-x-1/2 -translate-y-1/2 rotate-45" />
     </span> */}
-        </div>
-      
+      </div>
     </div>
   );
 };
