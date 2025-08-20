@@ -43,7 +43,6 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         // Trigger when the element crosses 60px for the first time
         if (rect.top <= 60 && !hasCrossed60) {
           setShowArrow(true);
-          console.log("ohello");
           setHasCrossed60(true); // Set flag to true so it doesn't log again
         } else if (rect.top > 60 && hasCrossed60) {
           setShowArrow(false); // Hide arrow if it's scrolled past 60px
@@ -78,8 +77,8 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
           </div>
         ))}
       </div>
-      {showArrow && (
-        <div className="mr-5 flex items-center relative group sm:hidden">
+       
+        <div className={`mr-5 flex items-center relative group sm:hidden ${showArrow ? "block" : "hidden"}`}>
           <button
             className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
@@ -113,7 +112,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       <span className="absolute top-1/2 right-0 w-2 h-2 bg-gray-800 transform translate-x-1/2 -translate-y-1/2 rotate-45" />
     </span> */}
         </div>
-      )}
+      
     </div>
   );
 };
