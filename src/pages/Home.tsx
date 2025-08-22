@@ -663,7 +663,7 @@ export default function Home({ openModal }) {
                           className="absolute inset-0 w-full h-full object-cover rounded-lg"
                         />
 
-                        <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
+                        <span className="bg-[#474849a6] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                           Sponsored
                         </span>
                       </div>
@@ -678,7 +678,7 @@ export default function Home({ openModal }) {
                         alt={listing.title}
                         className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       />
-                      <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
+                      <span className="bg-[#474849a6] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                         Sponsored
                       </span>
                     </div>
