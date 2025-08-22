@@ -14,48 +14,59 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
   const [showArrow, setShowArrow] = useState(false);
   const [hasCrossed60, setHasCrossed60] = useState(false);
 
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      // if (containerRef.current) {
+      //   // const rect = containerRef.current.getBoundingClientRect();
+      //   // console.log("Element position relative to viewport:", {
+      //   //   top: rect.top,
+      //   //   right: rect.right,
+      //   //   bottom: rect.bottom,
+      //   //   left: rect.left,
+      //   //   width: rect.width,
+      //   //   height: rect.height,
+      //   // });
+      //   if (rect.top == 60) {
+      //     setShowArrow(true);
+      //   } else {
+      //     setShowArrow(false);
+      //   }
+      // }
+
+      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      if (scrollPosition > 200) {
+          setShowArrow(true);
+      } else {
+          setShowArrow(false);
+      }
+
+      console.log(document.documentElement.scrollTop)
+    });
+  }, []);
+
+
   // useEffect(() => {
-  //   document.addEventListener("scroll", () => {
+  //   const handleScroll = () => {
   //     if (containerRef.current) {
   //       const rect = containerRef.current.getBoundingClientRect();
-  //       // console.log("Element position relative to viewport:", {
-  //       //   top: rect.top,
-  //       //   right: rect.right,
-  //       //   bottom: rect.bottom,
-  //       //   left: rect.left,
-  //       //   width: rect.width,
-  //       //   height: rect.height,
-  //       // });
-  //       if (rect.top == 60) {
+
+  //       // Trigger when the element crosses 60px for the first time
+  //       if (rect.top <= 60 && !hasCrossed60) {
   //         setShowArrow(true);
-  //       } else {
-  //         setShowArrow(false);
+  //         setHasCrossed60(true); // Set flag to true so it doesn't log again
+  //       } else if (rect.top > 60 && hasCrossed60) {
+  //         setShowArrow(false); // Hide arrow if it's scrolled past 60px
+  //         setHasCrossed60(false); // Reset flag if scrolled back above 60px
   //       }
   //     }
-  //   });
-  // }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+  //   };
 
-        // Trigger when the element crosses 60px for the first time
-        if (rect.top <= 60 && !hasCrossed60) {
-          setShowArrow(true);
-          setHasCrossed60(true); // Set flag to true so it doesn't log again
-        } else if (rect.top > 60 && hasCrossed60) {
-          setShowArrow(false); // Hide arrow if it's scrolled past 60px
-          setHasCrossed60(false); // Reset flag if scrolled back above 60px
-        }
-      }
-    };
-
-    document.addEventListener("scroll", handleScroll);
-    return () => {
-      document.removeEventListener("scroll", handleScroll); // Clean up event listener on unmount
-    };
-  }, [hasCrossed60]);
+  //   document.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     document.removeEventListener("scroll", handleScroll); // Clean up event listener on unmount
+  //   };
+  // }, [hasCrossed60]);
 
   return (
     <div
@@ -79,14 +90,14 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       </div>
 
       {/* This is filter top with arrow */}
-      <div className={`mr-5 flex items-center relative group sm:hidden`}>
+       <div className={`mr-5 flex items-center relative group sm:hidden ${!showArrow? "hidden": ''}`}>
         <button
           className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
         transition-all duration-200 ease-in-out
         shadow-sm hover:shadow-md
         focus:outline-none focus:ring-2 focus:ring-brand/50
-        flex items-center justify-center
+        flex items-center justify-center 
         w-8 h-8"
           onClick={() => {
             window.scrollTo({
@@ -98,6 +109,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         >
           <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
         </button>
+        
 
         {/* Optional tooltip */}
         {/* <span className="
