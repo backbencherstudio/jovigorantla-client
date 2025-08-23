@@ -158,7 +158,7 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
                 alt={ad.name || "Advertisement"}
                 className="w-full h-full object-cover"
               />
-              <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
+              <span className="bg-[#474849a6] text-[10px] font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                 Sponsored
               </span>
             </Card>
@@ -173,7 +173,7 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
               alt={ad.name || "Advertisement"}
               className="w-full h-full object-cover"
             />
-            <span className="bg-[#474849cc] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
+            <span className="bg-[#474849a6] text-[10px] font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
               Sponsored
             </span>
           </Card>

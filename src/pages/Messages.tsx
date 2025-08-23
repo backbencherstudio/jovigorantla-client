@@ -443,8 +443,11 @@ const Messages = () => {
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">
           {conversations.length === 0 ? (
-            <div className="flex items-center justify-center h-full p-4 text-gray-500">
-              No messages yet
+            <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
+              <p className="text-gray-500 mb-4">No messages yet</p>
+              <Button onClick={() => navigate("/")} variant="default">
+                Browse Listings
+              </Button>
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">

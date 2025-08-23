@@ -53,16 +53,17 @@ const ListingItem = ({
       sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
 
       // Navigate with scroll position in state
-      navigate(`/listing/${listing.slug}`, {
+      /* navigate(`/listing/${listing.slug}`, {
         state: {
           scrollY: currentScrollY,
         },
-      });
+      }); */
     }
   };
 
   return (
-    <div
+    <Link
+      to={`/listing/${listing.slug}`}
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}
@@ -125,7 +126,7 @@ const ListingItem = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

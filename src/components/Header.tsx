@@ -259,6 +259,9 @@ const Header = ({
     if (isLogout) {
       navigate("/");
       toast.warning("Logout successful");
+
+      sessionStorage.removeItem("home_cached_data");
+      sessionStorage.removeItem("home_scroll_position");
     } else {
       toast.error("Something went wrong", {
         className: "bg-red-500 text-white border-none text-center",
