@@ -1792,6 +1792,10 @@ function PostListingForm() {
       formData.append("latitude", String(currentLocation?.lat));
       formData.append("longitude", String(currentLocation?.lng));
 
+      formDataAfterLogin["address"] = currentLocation?.search;
+      formDataAfterLogin["latitude"] =  String(currentLocation?.lat);
+      formDataAfterLogin["longitude"] = String(currentLocation?.lng);
+
       // after login
       formDataAfterLogin["category"] = data.category.toUpperCase();
       formDataAfterLogin["sub_category"] =

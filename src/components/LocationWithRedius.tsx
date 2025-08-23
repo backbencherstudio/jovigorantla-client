@@ -1191,13 +1191,13 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
               type="submit"
               size="sm"
               onClick={handleUpdate}
-              disabled={
-                loading ||
-                !selectedOption ||
-                !radius ||
-                (selectedOption?.search === dispalySelectedOption?.search &&
-                  radius === parseInt(displayRadius))
-              }
+              // disabled={
+              //   loading ||
+              //   !selectedOption ||
+              //   !radius ||
+              //   (selectedOption?.search === dispalySelectedOption?.search &&
+              //     radius === parseInt(displayRadius))
+              // }
             >
               {loading ? (
                 <>
