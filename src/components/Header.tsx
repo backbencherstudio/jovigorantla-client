@@ -285,10 +285,11 @@ const Header = ({
   const isValidPage = validPaths.includes(location.pathname);
 
   // Handle Logo Click
-  const handleLogo = () => {
+  /* const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-  };
+    window.location.reload();
+  }; */
 
   return (
     <>
@@ -299,13 +300,13 @@ const Header = ({
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <Link to={"/"} onClick={handleLogo} className="flex items-center">
+          <a href="/"  className="flex items-center">
             <img
               src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
               className="h-10"
             />
-          </Link>
+          </a>
 
           {/* Search - Only on Tablet and Desktop */}
           {isValidPage && (

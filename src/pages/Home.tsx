@@ -574,7 +574,6 @@ export default function Home({ openModal }) {
 
     // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-   
     // if (isSafari) {
     //   window.location.href = listing.target_url;
     // } else {

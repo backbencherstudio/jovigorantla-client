@@ -48,6 +48,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
               <Button
                 className="w-full bg-[#ff6b00] text-white rounded-full py-6"
                 onClick={() => {
+                  sessionStorage.removeItem("home_cached_data");
+                  sessionStorage.removeItem("home_scroll_position");
                   onOpenChange(false);
                   navigate("/");
                 }}

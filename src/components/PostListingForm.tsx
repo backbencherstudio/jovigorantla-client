@@ -1793,7 +1793,7 @@ function PostListingForm() {
       formData.append("longitude", String(currentLocation?.lng));
 
       formDataAfterLogin["address"] = currentLocation?.search;
-      formDataAfterLogin["latitude"] =  String(currentLocation?.lat);
+      formDataAfterLogin["latitude"] = String(currentLocation?.lat);
       formDataAfterLogin["longitude"] = String(currentLocation?.lng);
 
       // after login

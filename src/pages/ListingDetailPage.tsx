@@ -419,7 +419,7 @@ const ListingDetailPage = ({ openModal }) => {
                   className="absolute inset-0 w-full h-full object-cover rounded-lg"
                 />
 
-                <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#4C4746] rounded-full flex items-center justify-center pointer-events-none">
+                <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#474849a6] rounded-full flex items-center justify-center pointer-events-none">
                   <Expand className="h-5 w-5" />
                 </span>
 

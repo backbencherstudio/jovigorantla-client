@@ -1188,7 +1188,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
               Cancel
             </Button>
             <Button
-              type="submit"
+              type="button"
               size="sm"
               onClick={handleUpdate}
               // disabled={

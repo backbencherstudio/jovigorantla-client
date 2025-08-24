@@ -41,7 +41,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         setShowArrow(false);
       }
 
-      console.log(document.documentElement.scrollTop);
+      //console.log(document.documentElement.scrollTop);
     });
   }, []);
 
