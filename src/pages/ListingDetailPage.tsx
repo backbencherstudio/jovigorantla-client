@@ -499,7 +499,7 @@ const ListingDetailPage = ({ openModal }) => {
             />
 
             <button
-              className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#4C4746] rounded-full flex items-center justify-center"
+              className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#474849a6] rounded-full flex items-center justify-center"
               onClick={() => setIsImageModalOpen(false)}
             >
               <RxCross2 className="text-xl" />
