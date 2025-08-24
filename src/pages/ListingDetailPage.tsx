@@ -267,7 +267,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   if (loading || !listing) {
     return (
-      <div className="flex items-center justify-center h-[70vh]">
+      <div className="flex items-center justify-center h-[100vh]">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
@@ -440,11 +440,12 @@ const ListingDetailPage = ({ openModal }) => {
             )}
           </div>
           {/* Contact button - only show on desktop */}
+          {/* max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
           {!isMobile && user?.id !== listing?.user_id && listing && (
             <div className="w-full relative">
               <div
                 // style={{ width: width }}
-                className={`my-8 p-4 bg-white  mx-auto fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full`}
+                className={`my-8 p-4 bg-white  fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] lg:max-w-[29rem] xl:max-w-[47rem]`}
               >
                 <Button
                   onClick={handleContact}

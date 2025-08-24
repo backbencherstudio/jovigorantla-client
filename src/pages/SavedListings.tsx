@@ -626,7 +626,8 @@ const SavedListings = () => {
     <div className="p-2 py-4 lg:p-4 w-full min-h-[calc(100vh-110px)] bg-white">
       <div className="bg-white">
         {isLoading ? (
-          <div className="space-y-4">
+          <>
+            {/* <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse bg-white p-4 rounded-lg">
                 <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
@@ -634,7 +635,8 @@ const SavedListings = () => {
                 <div className="h-4 bg-gray-200 rounded w-2/3"></div>
               </div>
             ))}
-          </div>
+          </div> */}
+          </>
         ) : (
           <>
             {listings.length === 0 ? (
