@@ -605,7 +605,7 @@ const SavedListings = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="bg-gray-50 py-5 w-full h-[100%] bg-white ">
+      <div className="bg-gray-50 py-5 w-full h-[100%]">
         <div className="space-y-4 p-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse bg-white p-4 rounded-lg">

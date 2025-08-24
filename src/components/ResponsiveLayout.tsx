@@ -243,7 +243,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
-        <div className="flex flex-1 min-h-[calc(100vh-67px)] ">
+        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -261,10 +261,11 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
+              {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl "
+                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 lg:max-w-[29rem] xl:max-w-[47rem] "
                     style={{
                       // width: width,
                       top: "65px" /* Header height */,
@@ -291,7 +292,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px]">{children}</div>
+              <div className="flex-1 h-full bg-white mt-[70px] md:mx-2">
+                {children}
+              </div>
             </main>
           )}
           {/* Main Content Area */}

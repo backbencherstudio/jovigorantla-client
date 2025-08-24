@@ -1457,13 +1457,13 @@ export default function Rides({ openModal }) {
     // Programmatic navigation after tracking
     //window.open(listing.target_url, "_blank", "noopener,noreferrer");
 
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    /*  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     if (isSafari) {
       window.location.href = listing.target_url;
     } else {
       // For other browsers, open in a new tab
       window.open(listing.target_url, "_blank", "noopener,noreferrer");
-    }
+    } */
   };
 
   return (
@@ -1504,7 +1504,7 @@ export default function Rides({ openModal }) {
             </div>
           )}
           {/*  px-4 -- only it was before */}
-          <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 space-y-4">
+          <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 md:mx-2 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
                 {listing?.type === "listing" && (
@@ -1522,9 +1522,18 @@ export default function Rides({ openModal }) {
                       to={listing.target_url}
                       target="_blank"
                       className="block"
-                      rel="noreferrer"
-                      onClick={(e) => handleAdClick(e, listing)}
-                      onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent the default anchor click behavior
+                        window.open(listing.target_url, "_blank"); // Open in a new tab
+                        handleAdClick(e, listing); // Your custom tracking
+                      }}
+                      onAuxClick={(e) => {
+                        e.preventDefault(); // Prevent default behavior for middle mouse button
+                        window.open(listing.target_url, "_blank");
+                        handleAdClick(e, listing);
+                      }}
+                      /* onClick={(e) => handleAdClick(e, listing)}
+                      onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button */
                       // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
                     >
                       <div

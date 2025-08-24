@@ -33,17 +33,17 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       //   }
       // }
 
-      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      const scrollPosition =
+        window.scrollY || document.documentElement.scrollTop;
       if (scrollPosition > 200) {
-          setShowArrow(true);
+        setShowArrow(true);
       } else {
-          setShowArrow(false);
+        setShowArrow(false);
       }
 
-      console.log(document.documentElement.scrollTop)
+      console.log(document.documentElement.scrollTop);
     });
   }, []);
-
 
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -70,7 +70,7 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
 
   return (
     <div
-      className="filter-tabs-container border-b border-gray-100 md:px-0 bg-[#F9FAFB] flex items-center justify-between"
+      className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between"
       ref={containerRef}
     >
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
@@ -90,7 +90,11 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
       </div>
 
       {/* This is filter top with arrow */}
-       <div className={`mr-5 flex items-center relative group sm:hidden ${!showArrow? "hidden": ''}`}>
+      <div
+        className={`mr-5 flex items-center relative group sm:hidden ${
+          !showArrow ? "hidden" : ""
+        }`}
+      >
         <button
           className="p-2 rounded-sm 
         bg-brand border border-[bg-brand]
@@ -109,7 +113,6 @@ const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
         >
           <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
         </button>
-        
 
         {/* Optional tooltip */}
         {/* <span className="
