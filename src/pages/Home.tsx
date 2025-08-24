@@ -572,13 +572,15 @@ export default function Home({ openModal }) {
     // Programmatic navigation after tracking
     // window.open(listing.target_url, "_blank", "noopener,noreferrer");
 
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari) {
-      window.location.href = listing.target_url;
-    } else {
-      // For other browsers, open in a new tab
-      window.open(listing.target_url, "_blank", "noopener,noreferrer");
-    }
+    // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+   
+    // if (isSafari) {
+    //   window.location.href = listing.target_url;
+    // } else {
+    //   // For other browsers, open in a new tab
+    //   window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    // }
   };
 
   // Debug logging
@@ -648,10 +650,21 @@ export default function Home({ openModal }) {
                       to={listing.target_url}
                       target="_blank"
                       className="block"
-                      rel="noreferrer"
-                      onClick={(e) => handleAdClick(e, listing)}
-                      onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
+                      // rel="noreferrer"
+                      // onClick={(e) => handleAdClick(e, listing)}
+                      // onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button
                       // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
+
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent the default anchor click behavior
+                        window.open(listing.target_url, "_blank"); // Open in a new tab
+                        handleAdClick(e, listing); // Your custom tracking
+                      }}
+                      onAuxClick={(e) => {
+                        e.preventDefault(); // Prevent default behavior for middle mouse button
+                        window.open(listing.target_url, "_blank");
+                        handleAdClick(e, listing);
+                      }}
                     >
                       <div
                         className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
