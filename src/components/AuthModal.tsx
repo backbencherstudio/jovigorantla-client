@@ -1053,7 +1053,7 @@
 
 //         <Card className="w-full shadow-none border-none bg-white">
 //           <CardContent className={`grid gap-4 p-0 bg-white`}>
-   
+
 //             <Tabs
 //               defaultValue={defaultTab}
 //               value={activeTab}
@@ -1120,7 +1120,7 @@
 //           // style={{
 //           //   height: Math.min(viewportHeight * 0.85, 600), // Use fixed height based on initial viewport
 //           //   maxHeight: Math.min(viewportHeight * 0.85, 600),
-//           // }} 
+//           // }}
 //           // style={{
 //           //   height: 'fit-content', // Let content determine height
 //           //   maxHeight: Math.min(viewportHeight * 0.85, 600), // Still enforce maximum
@@ -1175,8 +1175,6 @@
 // };
 
 // export default AuthModal;
-
-
 
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
@@ -1342,11 +1340,11 @@ const AuthModal: React.FC<AuthModalProps> = ({
   //       }
   //     }
   //   };
-  
+
   //   if (typeof window.visualViewport !== 'undefined') {
   //     window.visualViewport.addEventListener('resize', handleResize);
   //   }
-  
+
   //   return () => {
   //     if (typeof window.visualViewport !== 'undefined') {
   //       window.visualViewport.removeEventListener('resize', handleResize);
@@ -1391,6 +1389,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
           message: "Incorrect email or password",
         });
       } else {
+        window.scrollTo(0, 0);
         onOpenChange(false);
       }
     } catch (error) {
@@ -1600,9 +1599,11 @@ const AuthModal: React.FC<AuthModalProps> = ({
     }
 
     return (
-      <div className="auth-modal-content" >
+      <div className="auth-modal-content">
         <div className="auth-header">
-          <h1 className="text-xl md:text-2xl font-bold mt-2 text-center">Login or Signup</h1>
+          <h1 className="text-xl md:text-2xl font-bold mt-2 text-center">
+            Login or Signup
+          </h1>
           <p className="auth-terms">
             By continuing, you agree to our{" "}
             <Link to="/user-agreement" target="_blank" className="auth-link">
@@ -1619,13 +1620,17 @@ const AuthModal: React.FC<AuthModalProps> = ({
         <div className="auth-tabs">
           <div className="tab-buttons inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-2 mb-4">
             <button
-              className={`tab-button rounded-sm ${activeTab === "login" ? "active" : ""}`}
+              className={`tab-button rounded-sm ${
+                activeTab === "login" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("login")}
             >
               Login
             </button>
             <button
-              className={`tab-button rounded-sm ${activeTab === "signup" ? "active" : ""}`}
+              className={`tab-button rounded-sm ${
+                activeTab === "signup" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("signup")}
             >
               Sign Up
@@ -1639,7 +1644,9 @@ const AuthModal: React.FC<AuthModalProps> = ({
               disabled={isLoading}
             >
               <img src="/google.svg" alt="Google" />
-              <span className="font-medium text-black">Continue with Google</span>
+              <span className="font-medium text-black">
+                Continue with Google
+              </span>
             </button>
           </div>
           {/* <SocialAuthButtons
@@ -1680,19 +1687,22 @@ const AuthModal: React.FC<AuthModalProps> = ({
   // Handle overlay click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         handleClose();
       }
     };
 
     if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open]);
 
@@ -1721,14 +1731,18 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <>
-      <div 
-        className={`auth-modal-overlay ${open ? 'open' : ''} ${isAnimating ? 'animating' : ''}`}
+      <div
+        className={`auth-modal-overlay ${open ? "open" : ""} ${
+          isAnimating ? "animating" : ""
+        }`}
         onClick={handleClose}
       />
 
-      <div 
+      <div
         ref={modalRef}
-        className={`auth-modal ${open ? 'open' : ''} ${isAnimating ? 'animating' : ''}`}
+        className={`auth-modal ${open ? "open" : ""} ${
+          isAnimating ? "animating" : ""
+        }`}
       >
         <button className="close-button" onClick={handleClose}>
           <X className="h-4 w-4 text-black" />
@@ -1762,7 +1776,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 //       {signupSuccessfull && (
 //         <div className="success-message">{signupSuccessfull}</div>
 //       )}
-      
+
 //       <div className="form-group">
 //         <label htmlFor="email">Email</label>
 //         <div className="input-wrapper">
@@ -2214,7 +2228,5 @@ const AuthModal: React.FC<AuthModalProps> = ({
 //     </form>
 //   );
 // };
-
-
 
 export default AuthModal;

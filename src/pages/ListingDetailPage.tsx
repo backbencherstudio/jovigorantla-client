@@ -491,11 +491,18 @@ const ListingDetailPage = ({ openModal }) => {
           className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
           onClick={() => setIsImageModalOpen(false)}
         >
-          <div className="h-auto max-h-[90vh] max-w-[500px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-hidden">
+          <div
+            className="h-auto max-h-[90vh] max-w-[768px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            /* style={{
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }} */
+          >
             <img
               src={image_url}
               alt="Image"
-              className="w-full max-h-[calc(90vh-2rem)] object-contain rounded-md"
+              className="w-full object-contain rounded-md"
             />
 
             <button
