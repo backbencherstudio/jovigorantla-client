@@ -422,6 +422,10 @@ const Messages = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const fileterConversations = conversations.filter(
+    (conversation) => conversation?.messages?.length > 0
+  );
+
   // console.log('conversations', conversations);
   // console.log(unreadMessages)
 
@@ -432,7 +436,7 @@ const Messages = () => {
 
   const handleConversationSelect = (conversationId: string) => {
     setActiveConversation(
-      conversations.find((conv) => conv.id === conversationId) || null
+      fileterConversations.find((conv) => conv.id === conversationId) || null
     );
     navigate(`/messages/${conversationId}`);
   };
@@ -442,7 +446,7 @@ const Messages = () => {
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">
-          {conversations.length === 0 ? (
+          {fileterConversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
               <p className="text-gray-500 mb-4">No messages yet</p>
               <Button onClick={() => navigate("/")} variant="default">
@@ -451,7 +455,7 @@ const Messages = () => {
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">
-              {conversations.map((conv) => (
+              {fileterConversations.map((conv) => (
                 <li
                   key={conv.id}
                   className="cursor-pointer"

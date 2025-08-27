@@ -6,6 +6,7 @@ const baseURL = import.meta.env.VITE_BASE_URL; // Use VITE_ prefix as required b
 //   baseURL,
 // });
 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+console.log(userTimezone);
 
 export const api = axios.create({
   baseURL,

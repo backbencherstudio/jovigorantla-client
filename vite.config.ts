@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     allowedHosts: [
       'localhost',
       '127.0.0.1',
-      '23422f7a9b8b.ngrok-free.app'
+      'faq-troops-pubs-spirit.trycloudflare.com'
     ],
   },
   plugins: [

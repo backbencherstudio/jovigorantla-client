@@ -997,6 +997,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   // }, [user?.id]);
 
   const handleConversationCreated = ({ data }: any) => {
+    console.log("conv => ", data)
     setConversations((prev) => {
       const exists = prev.find((c) => c.id === data.id);
   

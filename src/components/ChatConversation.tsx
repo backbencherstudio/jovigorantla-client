@@ -161,7 +161,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
-  const { conversations, markMessagesAsRead } = useMessages(); // <-- using context
+  const { conversations, markMessagesAsRead, setActiveConversation } = useMessages(); // <-- using context
 
   const conversation = conversations.find((c) => c.id === conversationId);
   const isBlocked = conversation?.isBlocked;
@@ -242,6 +242,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
         `/chat/conversation/${conversationId}/soft-delete`
       );
       if (res.data.success) {
+        setActiveConversation(null);
         toast.success("Conversation deleted");
         window.history.back();
         window.history.back();
