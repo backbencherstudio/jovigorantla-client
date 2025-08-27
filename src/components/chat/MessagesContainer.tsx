@@ -49,7 +49,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   return (
     <ScrollArea className="flex-1 bg-gray-100 ">
       <div
-        className="px-4 pb-8 md:pb-3  max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+        className="px-4 pb-3 mb-8 md:mb-0 max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
          [&::-webkit-scrollbar]:hidden flex flex-col-reverse"
       >
         {dateKeys.map((dateKey) => {

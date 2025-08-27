@@ -28,7 +28,6 @@
 //   const [conversations, setConversations] = useState<Conversation[]>([]);
 //   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
 
-
 //   const addMessage = (conversationId: string, message: Message) => {
 //     setConversations((prev) =>
 //       prev.map((conv) =>
@@ -60,8 +59,6 @@
 //     addMessage(data.conversationId, newMessage);
 //   };
 
-
-
 //   const handleConversationCreated = ({ data }: any) => {
 //     console.log("socket conversation => ", data)
 //     setConversations((prev) => {
@@ -85,7 +82,6 @@
 //       )
 //     );
 //   };
-
 
 // const getExistingConversations = useCallback(async () => {
 //   try {
@@ -123,8 +119,6 @@
 //     };
 //   }, [socket, user?.id]);
 
-
-
 //   return (
 //     <MessageContext.Provider
 //       value={{
@@ -139,7 +133,6 @@
 //     </MessageContext.Provider>
 //   );
 // };
-
 
 // import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 // // import { Conversation, Message } from '@/types/chat'; // Define types if not already
@@ -306,7 +299,6 @@
 //   );
 // };
 
-
 // import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 // import { useSocket } from './SocketContext';
 // import { useAuth } from './AuthContext';
@@ -331,7 +323,6 @@
 // };
 
 // type UnReadMessages = Record<string, number>;
-
 
 // export const MessageProvider = ({ children }: { children: React.ReactNode }) => {
 //   const { socket } = useSocket();
@@ -428,7 +419,6 @@
 //     }
 //   };
 
-
 //   const handleIncomingMessage = async ({ from, data }: any) => {
 //     console.log("socket message => ", data)
 //     data = data?.message
@@ -519,7 +509,6 @@
 
 //       setUnreadMessages(unreadMap);
 
-
 //       // format the messages
 //       // conversations.forEach((conv: any) => {
 
@@ -539,7 +528,6 @@
 //       console.error("Failed to fetch conversations:", error);
 //     }
 //   }, [user?.id]); // Re-fetch if user changes
-
 
 //   const fetchConversationData = useCallback(async () => {
 //     try {
@@ -603,7 +591,6 @@
 //     }
 //   }, [activeConversation?.id]); // Dependency array ensures it only runs when activeConversation changes
 
-
 //   // Effect to subscribe to socket events
 //   useEffect(() => {
 //     if (!socket || !user?.id) return; // Only run when user is defined and socket is available
@@ -623,9 +610,6 @@
 //     };
 //   }, [socket, user?.id, getExistingConversations]);
 
-
-
-
 //   return (
 //     <MessageContext.Provider
 //       value={{
@@ -641,8 +625,6 @@
 //     </MessageContext.Provider>
 //   );
 // };
-
-
 
 // import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 // import { useSocket } from './SocketContext';
@@ -725,14 +707,14 @@
 //   }, [activeConversation?.id, user?.id]);
 
 //   const markMessagesAsRead = useCallback((conversationId: string) => {
-//     setConversations(prev => 
-//       prev.map(conv => 
+//     setConversations(prev =>
+//       prev.map(conv =>
 //         conv.id === conversationId
 //           ? {
 //               ...conv,
-//               messages: conv.messages.map(msg => 
-//                 msg.receiver_id === user?.id 
-//                   ? { ...msg, isRead: true } 
+//               messages: conv.messages.map(msg =>
+//                 msg.receiver_id === user?.id
+//                   ? { ...msg, isRead: true }
 //                   : msg
 //               )
 //             }
@@ -856,7 +838,6 @@
 //       // Remove completely if admin-deleted
 //     });
 
-
 //     return () => {
 //       socket.off('message', handleIncomingMessage);
 //       socket.off('conversation', handleConversationCreated);
@@ -882,14 +863,18 @@
 //   );
 // };
 
-
-
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { useSocket } from './SocketContext';
-import { useAuth } from './AuthContext';
-import { api } from '@/lib/axois';
-import { Message } from '@/types/chat';
-import utcToLocalDate from '@/utils/utcToLocalDate';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import { useSocket } from "./SocketContext";
+import { useAuth } from "./AuthContext";
+import { api } from "@/lib/axois";
+import { Message } from "@/types/chat";
+import utcToLocalDate from "@/utils/utcToLocalDate";
 
 type UnReadMessages = Record<string, number>;
 
@@ -904,87 +889,120 @@ type MessageContextType = {
   getUnreadCount: (conversationId: string) => number;
   handleSetUnreadMessages: (conversationId: string, count: number) => void;
   handleConversationCreated: (data: any) => void;
+  loading: boolean;
 };
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
 
 export const useMessages = () => {
   const ctx = useContext(MessageContext);
-  if (!ctx) throw new Error('useMessages must be used within MessageProvider');
+  if (!ctx) throw new Error("useMessages must be used within MessageProvider");
   return ctx;
 };
 
-export const MessageProvider = ({ children }: { children: React.ReactNode }) => {
+export const MessageProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { socket } = useSocket();
   const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   const [conversations, setConversations] = useState<any[]>([]);
-  const [activeConversation, setActiveConversation] = useState<any | null>(null);
+  const [activeConversation, setActiveConversation] = useState<any | null>(
+    null
+  );
   const [unreadMessages, setUnreadMessages] = useState<UnReadMessages>({});
 
-  const getUnreadCount = useCallback((conversationId: string) => unreadMessages[conversationId] || 0, [unreadMessages]);
+  const getUnreadCount = useCallback(
+    (conversationId: string) => unreadMessages[conversationId] || 0,
+    [unreadMessages]
+  );
 
-  const handleSetUnreadMessages = useCallback((conversationId: string, count: number) => {
-    setUnreadMessages(prev => ({ ...prev, [conversationId]: count }));
-  }, []);
+  const handleSetUnreadMessages = useCallback(
+    (conversationId: string, count: number) => {
+      setUnreadMessages((prev) => ({ ...prev, [conversationId]: count }));
+    },
+    []
+  );
 
-  const addMessage = useCallback(async (conversationId: string, message: Message) => {
-    // console.log("message inside context: ", message)
-    setConversations(prev => {
-      const target = prev.find(c => c.id === conversationId);
-      if (!target) return prev;
+  const addMessage = useCallback(
+    async (conversationId: string, message: Message) => {
+      // console.log("message inside context: ", message)
+      setConversations((prev) => {
+        const target = prev.find((c) => c.id === conversationId);
+        if (!target) return prev;
 
-      const others = prev.filter(c => c.id !== conversationId);
-      const updated = {
-        ...target,
-        messages: [...(target.messages || []), message],
-        lastMessage: message,
-      };
+        const others = prev.filter((c) => c.id !== conversationId);
+        const updated = {
+          ...target,
+          messages: [...(target.messages || []), message],
+          lastMessage: message,
+        };
 
-      return [updated, ...others];
-    });
+        return [updated, ...others];
+      });
 
-    if (activeConversation?.id === conversationId) {
-      setActiveConversation(prev => prev ? {
-        ...prev,
-        messages: [...(prev.messages || []), message],
-      } : null);
-      await api.patch(`chat/conversation/${conversationId}/read`);
-    } else {
-      setUnreadMessages(prev => ({ ...prev, [conversationId]: (prev[conversationId] || 0) + 1 }));
-    }
-  }, [activeConversation?.id]);
-
-  const markMessagesAsRead = useCallback((conversationId: string) => {
-    setConversations(prev => prev.map(conv => conv.id === conversationId
-      ? {
-        ...conv,
-        messages: conv.messages.map(msg =>
-          msg.receiver_id === user?.id ? { ...msg, isRead: true } : msg
-        ),
+      if (activeConversation?.id === conversationId) {
+        setActiveConversation((prev) =>
+          prev
+            ? {
+                ...prev,
+                messages: [...(prev.messages || []), message],
+              }
+            : null
+        );
+        await api.patch(`chat/conversation/${conversationId}/read`);
+      } else {
+        setUnreadMessages((prev) => ({
+          ...prev,
+          [conversationId]: (prev[conversationId] || 0) + 1,
+        }));
       }
-      : conv
-    ));
+    },
+    [activeConversation?.id]
+  );
 
-    setUnreadMessages(prev => {
-      const { [conversationId]: _, ...rest } = prev;
-      return rest;
-    });
-  }, [user?.id]);
+  const markMessagesAsRead = useCallback(
+    (conversationId: string) => {
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === conversationId
+            ? {
+                ...conv,
+                messages: conv.messages.map((msg) =>
+                  msg.receiver_id === user?.id ? { ...msg, isRead: true } : msg
+                ),
+              }
+            : conv
+        )
+      );
 
-  const handleIncomingMessage = useCallback(({ from, data }: any) => {
-    data = data?.message;
-    const newMessage: Message = {
-      id: data.id,
-      senderId: from,
-      content: data.body_text,
-      receiver_id: data.receiver_id,
-      timestamp: utcToLocalDate(data.created_at) || new Date(),
-      created_at: data.created_at,
-      isRead: data.conversation_id === activeConversation?.id,
-    };
-    addMessage(data.conversation_id, newMessage);
-  }, [addMessage, activeConversation?.id]);
+      setUnreadMessages((prev) => {
+        const { [conversationId]: _, ...rest } = prev;
+        return rest;
+      });
+    },
+    [user?.id]
+  );
+
+  const handleIncomingMessage = useCallback(
+    ({ from, data }: any) => {
+      data = data?.message;
+      const newMessage: Message = {
+        id: data.id,
+        senderId: from,
+        content: data.body_text,
+        receiver_id: data.receiver_id,
+        timestamp: utcToLocalDate(data.created_at) || new Date(),
+        created_at: data.created_at,
+        isRead: data.conversation_id === activeConversation?.id,
+      };
+      addMessage(data.conversation_id, newMessage);
+    },
+    [addMessage, activeConversation?.id]
+  );
 
   // const handleConversationCreated = useCallback(({ data }: any) => {
   //   setConversations(prev => {
@@ -997,10 +1015,10 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
   // }, [user?.id]);
 
   const handleConversationCreated = ({ data }: any) => {
-    console.log("conv => ", data)
+    console.log("conv => ", data);
     setConversations((prev) => {
       const exists = prev.find((c) => c.id === data.id);
-  
+
       if (exists) {
         // Case: previously soft-deleted by current user
         // return prev.map((c) =>
@@ -1023,10 +1041,14 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       });
 
       // const readMessages = data.messages.filter((msg: any) => !msg.isRead && msg.receiverId === user?.id).length;
-      
+
       // Compute block states
-      const blockedByMe = isCreator ? data.blocked_by_creator : data.blocked_by_participant;
-      const blockedByOther = isCreator ? data.blocked_by_participant : data.blocked_by_creator;
+      const blockedByMe = isCreator
+        ? data.blocked_by_creator
+        : data.blocked_by_participant;
+      const blockedByOther = isCreator
+        ? data.blocked_by_participant
+        : data.blocked_by_creator;
       const isBlocked = blockedByMe || blockedByOther;
 
       // Add fields
@@ -1034,20 +1056,16 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       data.blockedByOther = blockedByOther;
       data.isBlocked = isBlocked;
 
-      
-  
       // Add .other field for UI
       if (data.creator.id !== user?.id) {
         data.other = data.creator;
       } else if (data.participant.id !== user?.id) {
         data.other = data.participant;
       }
-  
+
       return [data, ...prev];
     });
   };
-  
-
 
   const getExistingConversations = useCallback(async () => {
     if (!user?.id) return;
@@ -1071,25 +1089,32 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
           msg.timestamp = new Date(msg.created_at);
           msg.isRead = msg.is_read;
         });
-        const unread = conv.messages.filter((msg: any) => !msg.isRead && msg.receiverId === user?.id).length;
+        const unread = conv.messages.filter(
+          (msg: any) => !msg.isRead && msg.receiverId === user?.id
+        ).length;
         if (unread > 0) unreadMap[conv.id] = unread;
 
         // Compute block states
-        const blockedByMe = isCreator ? conv.blocked_by_creator : conv.blocked_by_participant;
-        const blockedByOther = isCreator ? conv.blocked_by_participant : conv.blocked_by_creator;
+        const blockedByMe = isCreator
+          ? conv.blocked_by_creator
+          : conv.blocked_by_participant;
+        const blockedByOther = isCreator
+          ? conv.blocked_by_participant
+          : conv.blocked_by_creator;
         const isBlocked = blockedByMe || blockedByOther;
 
         // Add fields
         conv.blockedByMe = blockedByMe;
         conv.blockedByOther = blockedByOther;
         conv.isBlocked = isBlocked;
-
       });
 
       setUnreadMessages(unreadMap);
       setConversations(convs);
     } catch (err) {
       // console.error("Failed to fetch conversations:", err);
+    } finally {
+      setLoading(false);
     }
   }, [user?.id]);
 
@@ -1099,7 +1124,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       await api.patch(`chat/conversation/${activeConversation.id}/read`);
       markMessagesAsRead(activeConversation.id);
     } catch (err) {
-      console.error('Error marking as read:', err);
+      console.error("Error marking as read:", err);
     }
   }, [activeConversation?.id, markMessagesAsRead]);
 
@@ -1112,45 +1137,51 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
 
     // getExistingConversations();
 
-    socket.on('message', handleIncomingMessage);
-    socket.on('conversation', handleConversationCreated);
-    socket.on('deleted-conversation', ({ from, data }) => {
+    socket.on("message", handleIncomingMessage);
+    socket.on("conversation", handleConversationCreated);
+    socket.on("deleted-conversation", ({ from, data }) => {
       // console.log("deleted conversation: ", data)
       const isCreator = data.creator.id === user?.id;
-        const other = isCreator ? data.participant : data.creator;
-        data.other = other;
+      const other = isCreator ? data.participant : data.creator;
+      data.other = other;
 
-        data.messages.forEach((msg: any) => {
-          msg.id = msg.id;
-          msg.senderId = msg.sender_id;
-          msg.receiverId = msg.receiver_id;
-          msg.content = msg.message;
-          msg.timestamp = new Date(msg.created_at);
-          msg.isRead = msg.is_read;
-        });
-        const unread = data.messages.filter((msg: any) => !msg.isRead && msg.receiverId === user?.id).length;
-        // if (unread > 0) unreadMap[data.id] = unread;
+      data.messages.forEach((msg: any) => {
+        msg.id = msg.id;
+        msg.senderId = msg.sender_id;
+        msg.receiverId = msg.receiver_id;
+        msg.content = msg.message;
+        msg.timestamp = new Date(msg.created_at);
+        msg.isRead = msg.is_read;
+      });
+      const unread = data.messages.filter(
+        (msg: any) => !msg.isRead && msg.receiverId === user?.id
+      ).length;
+      // if (unread > 0) unreadMap[data.id] = unread;
 
-        // Compute block states
-        const blockedByMe = isCreator ? data.blocked_by_creator : data.blocked_by_participant;
-        const blockedByOther = isCreator ? data.blocked_by_participant : data.blocked_by_creator;
-        const isBlocked = blockedByMe || blockedByOther;
+      // Compute block states
+      const blockedByMe = isCreator
+        ? data.blocked_by_creator
+        : data.blocked_by_participant;
+      const blockedByOther = isCreator
+        ? data.blocked_by_participant
+        : data.blocked_by_creator;
+      const isBlocked = blockedByMe || blockedByOther;
 
-        // Add fields
-        data.blockedByMe = blockedByMe;
-        data.blockedByOther = blockedByOther;
-        data.isBlocked = isBlocked;
+      // Add fields
+      data.blockedByMe = blockedByMe;
+      data.blockedByOther = blockedByOther;
+      data.isBlocked = isBlocked;
 
-        setConversations(prev => {
-          const exists = prev?.find(c => c.id === data.id);
-          if (exists) return prev;
-          return [data,...prev];
-        });
-    })
+      setConversations((prev) => {
+        const exists = prev?.find((c) => c.id === data.id);
+        if (exists) return prev;
+        return [data, ...prev];
+      });
+    });
 
-    socket.on('conversation-blocked', ({ conversation_id, by }) => {
-      setConversations(prev =>
-        prev.map(conv => {
+    socket.on("conversation-blocked", ({ conversation_id, by }) => {
+      setConversations((prev) =>
+        prev.map((conv) => {
           if (conv.id !== conversation_id) return conv;
 
           const isCreator = conv.creator.id === user?.id;
@@ -1168,9 +1199,9 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       );
     });
 
-    socket.on('conversation-unblocked', ({ conversation_id, by }) => {
-      setConversations(prev =>
-        prev.map(conv => {
+    socket.on("conversation-unblocked", ({ conversation_id, by }) => {
+      setConversations((prev) =>
+        prev.map((conv) => {
           if (conv.id !== conversation_id) return conv;
 
           const isCreator = conv.creator.id === user?.id;
@@ -1188,29 +1219,32 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
       );
     });
 
-
-    socket.on('conversation-soft-deleted', ({ conversation_id }) => {
-      setConversations(prev => prev.filter(conv => conv.id !== conversation_id));
+    socket.on("conversation-soft-deleted", ({ conversation_id }) => {
+      setConversations((prev) =>
+        prev.filter((conv) => conv.id !== conversation_id)
+      );
     });
 
-    socket.on('delete-conversation', ({ conversation_id }) => {
-      setConversations(prev => prev.filter(conv => conv.id !== conversation_id));
+    socket.on("delete-conversation", ({ conversation_id }) => {
+      setConversations((prev) =>
+        prev.filter((conv) => conv.id !== conversation_id)
+      );
     });
 
     return () => {
-      socket.off('message', handleIncomingMessage);
-      socket.off('conversation', handleConversationCreated);
-      socket.off('conversation-blocked');
-      socket.off('conversation-unblocked');
-      socket.off('conversation-soft-deleted');
-      socket.off('delete-conversation');
+      socket.off("message", handleIncomingMessage);
+      socket.off("conversation", handleConversationCreated);
+      socket.off("conversation-blocked");
+      socket.off("conversation-unblocked");
+      socket.off("conversation-soft-deleted");
+      socket.off("delete-conversation");
     };
   }, [socket, user?.id, handleIncomingMessage, handleConversationCreated]);
 
   useEffect(() => {
     if (!user?.id) return;
     getExistingConversations();
-  }, [user?.id, getExistingConversations])
+  }, [user?.id, getExistingConversations]);
 
   return (
     <MessageContext.Provider
@@ -1225,6 +1259,7 @@ export const MessageProvider = ({ children }: { children: React.ReactNode }) => 
         getUnreadCount,
         handleSetUnreadMessages,
         handleConversationCreated,
+        loading,
       }}
     >
       {children}
