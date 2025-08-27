@@ -445,7 +445,9 @@ const ListingDetailPage = ({ openModal }) => {
             <div className="w-full relative">
               <div
                 // style={{ width: width }}
-                className={`my-8 p-4 bg-white  fixed md:bottom-1 lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] lg:max-w-[29rem] xl:max-w-[47rem]`}
+                className={`my-8 p-4 bg-white  fixed ${
+                  user ? "" : "md:bottom-1 "
+                } lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] lg:max-w-[29rem] xl:max-w-[47rem]`}
               >
                 <Button
                   onClick={handleContact}

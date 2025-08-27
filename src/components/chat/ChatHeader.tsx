@@ -68,8 +68,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   }, []);
 
   return (
-    // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
-    <div className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
+    //  max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl
+    <div className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 w-full mx-auto max-w-3xl md:max-w-[35rem]  lg:max-w-[29rem] xl:max-w-[47rem]">
       <div className="flex items-center flex-1">
         <Button
           variant="ghost"

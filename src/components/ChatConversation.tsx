@@ -161,7 +161,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
-  const { conversations, markMessagesAsRead, setActiveConversation } = useMessages(); // <-- using context
+  const { conversations, markMessagesAsRead, setActiveConversation } =
+    useMessages(); // <-- using context
 
   const conversation = conversations.find((c) => c.id === conversationId);
   const isBlocked = conversation?.isBlocked;
