@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Message } from "@/components/chat/types";
 import { UserRound } from "lucide-react";
+import dayjs from 'dayjs';
 
 interface MessageBubbleProps {
   message: Message;
@@ -98,10 +99,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                 isCurrentUser ? "text-right" : "text-right"
               )}
             >
-              {new Date(message.timestamp).toLocaleTimeString([], {
+              {/* {new Date(message.timestamp).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
-              })}
+              })} */}
+
+              {dayjs(message.timestamp).format('hh:mm A')}
             </div>
           )}
 

@@ -2,6 +2,9 @@ import React, { useRef, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Message } from "@/components/chat/types";
 import MessageGroup from "@/components/chat/MessageGroup";
+import dayjs from 'dayjs';
+
+
 
 interface MessagesContainerProps {
   messages: Message[];
@@ -22,9 +25,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   const groupedMessages: { [key: string]: Message[] } = {};
 
   messages.forEach((message) => {
-    const date = new Date(message.timestamp);
-    // const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-    const dateKey = date.toLocaleDateString().split("T")[0];
+    // const date = new Date(message.timestamp);
+    // // const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    // const dateKey = date.toLocaleDateString().split("T")[0];
+
+    // From your timestamp (automatically uses local timezone)
+  const date = dayjs(message.timestamp);
+  const dateKey = date.format('YYYY-MM-DD'); // Converted to your local timezone
+
 
     if (!groupedMessages[dateKey]) {
       groupedMessages[dateKey] = [];
