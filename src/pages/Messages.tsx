@@ -417,8 +417,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatTime } from "@/lib/utils";
 
 const Messages = () => {
-  const { conversations, setActiveConversation, unreadMessages } =
+  const { conversations, setActiveConversation, unreadMessages, loading } =
     useMessages();
+
+  // const [lodingMessage, setLoadingMessage] = useState(true);
+
+  // useEffect(() => {
+  //   if (conversations) {
+  //     setLoadingMessage(false);
+  //   }
+  // }, [conversations]);
+
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -441,19 +450,14 @@ const Messages = () => {
     navigate(`/messages/${conversationId}`);
   };
 
+  if (loading) return null;
+
   return (
     <div className="min-h-[calc(100vh-110px)] flex flex-col bg-white px-2 py-4 lg:px-4">
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">
-          {fileterConversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
-              <p className="text-gray-500 mb-4">No messages yet</p>
-              <Button onClick={() => navigate("/")} variant="default">
-                Browse Listings
-              </Button>
-            </div>
-          ) : (
+          {fileterConversations.length !== 0 ? (
             <ul className="divide-y divide-gray-100">
               {fileterConversations.map((conv) => (
                 <li
@@ -472,13 +476,13 @@ const Messages = () => {
                           {conv?.other?.name}
                         </p>
                         {/* <p className={`text-sm mt-1 truncate ${!conv.message?.read ? 'font-medium' : 'text-gray-600'}`}>
-                          {conv.lastMessage?.senderId ? "You: " : ""}{conv.lastMessage?.content}
-                        </p> */}
+                       {conv.lastMessage?.senderId ? "You: " : ""}{conv.lastMessage?.content}
+                     </p> */}
                         {/* {!conv.lastMessage && (
-                          <span className="text-sm">
-                            No messages yet
-                          </span>
-                        )} */}
+                       <span className="text-sm">
+                         No messages yet
+                       </span>
+                     )} */}
                         {conv?.messages?.length > 0 ? (
                           <span
                             className={`text-xs ${
@@ -527,16 +531,23 @@ const Messages = () => {
                         )}
 
                         {/* {conv.unreadCount > 0 && (
-                          <span className="mt-1 pt-2 text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center ">
-                            {conv.unreadCount}
-                          </span>
-                        )} */}
+                       <span className="mt-1 pt-2 text-[10px] font-bold bg-[#bf072c] text-white rounded-full h-5 w-5 flex items-center justify-center ">
+                         {conv.unreadCount}
+                       </span>
+                     )} */}
                       </div>
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
+              <p className="text-gray-500 mb-4">No messages yet</p>
+              <Button onClick={() => navigate("/")} variant="default">
+                Browse Listings
+              </Button>
+            </div>
           )}
         </div>
       </div>

@@ -300,7 +300,7 @@ const Header = ({
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <a href="/"  className="flex items-center">
+          <a href="/" className="flex items-center">
             <img
               src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
@@ -380,7 +380,7 @@ const Header = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-8 w-8 bg-[#f1f5f9]"
+                    className="rounded-full h-8 w-8 bg-[#f1f5f9] focus-visible:ring-0 focus-visible:ring-transparent"
                   >
                     <MessageCircle
                       className={`text-brand ${
@@ -403,7 +403,7 @@ const Header = ({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full bg-gray-100 w-8 h-8 md:w-8 md:h-8"
+                      className="rounded-full bg-gray-100 w-8 h-8 md:w-8 md:h-8  focus-visible:ring-0 focus-visible:ring-transparent"
                     >
                       <UserRound
                         className={

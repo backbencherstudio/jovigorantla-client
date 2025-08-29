@@ -43,9 +43,9 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
 
   // const dateKeys = Object.keys(groupedMessages).sort();
   const dateKeys = Object.keys(groupedMessages).sort((a, b) => {
-    const dateA = new Date(a);  // Convert dateKey to Date object
-    const dateB = new Date(b);  // Convert dateKey to Date object
-    return  dateB.getTime() - dateA.getTime(); // Compare based on time (numeric comparison)
+    const dateA = new Date(a); // Convert dateKey to Date object
+    const dateB = new Date(b); // Convert dateKey to Date object
+    return dateB.getTime() - dateA.getTime(); // Compare based on time (numeric comparison)
   });
 
   // Scroll to bottom of messages
@@ -57,7 +57,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   return (
     <ScrollArea className="flex-1 bg-gray-100 ">
       <div
-        className="px-4 pb-3 pb-0  max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+        className="px-4 pb-3 mb-8 md:mb-0 max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
          [&::-webkit-scrollbar]:hidden flex flex-col-reverse"
       >
         {dateKeys.map((dateKey) => {
@@ -144,7 +144,7 @@ export default MessagesContainer;
 //   return (
 //     <ScrollArea className="flex-1 bg-gray-100 ">
 //       <div
-//         className="space-y-6 p-4 pb-0 mt-6 max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+//         className="space-y-6 p-4 pb-0 mt-6 max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none]
 //          [&::-webkit-scrollbar]:hidden"
 //       >
 //         {dateKeys.map((dateKey) => {
@@ -177,4 +177,3 @@ export default MessagesContainer;
 // };
 
 // export default MessagesContainer;
-
