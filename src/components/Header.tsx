@@ -301,7 +301,14 @@ const Header = ({
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a
+            href="/"
+            onClick={(event) => {
+              event.preventDefault();
+              redirectNavLink("/");
+            }}
+            className="flex items-center cursor-pointer"
+          >
             <img
               src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
