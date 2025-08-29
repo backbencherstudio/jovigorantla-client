@@ -286,11 +286,12 @@ const Header = ({
   const isValidPage = validPaths.includes(location.pathname);
 
   // Handle Logo Click
-  /* const handleLogo = () => {
+  const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-    window.location.reload();
-  }; */
+    window.location.href = "/";
+    scrollTo(0, 0);
+  };
 
   return (
     <>
@@ -305,7 +306,7 @@ const Header = ({
             href="/"
             onClick={(event) => {
               event.preventDefault();
-              redirectNavLink("/");
+              handleLogo();
             }}
             className="flex items-center cursor-pointer"
           >
