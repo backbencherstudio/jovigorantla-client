@@ -55,9 +55,9 @@ export default function AboutFooter() {
               ].map((city, index, array) => (
                 <span key={city} className="flex items-center">
                   <button
-                    onClick={() =>
+                    /* onClick={() =>
                       navigate(`/?location=${encodeURIComponent(city)}`)
-                    }
+                    } */
                     className="text-muted-foreground hover:text-primary hover:underline transition-all duration-200 font-medium px-1 py-0.5 rounded"
                   >
                     {city}
