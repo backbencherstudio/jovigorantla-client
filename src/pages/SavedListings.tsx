@@ -462,6 +462,7 @@ import { api } from "@/lib/axois";
 import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
+import AboutFooter from "./AboutFooter";
 
 const SavedListings = () => {
   const {
@@ -623,7 +624,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="p-2 py-4 lg:p-4 w-full min-h-[calc(100vh-110px)] bg-white">
+    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-110px)] bg-white flex flex-col justify-between gap-4">
       <div className="bg-white">
         {isLoading ? (
           <>
@@ -714,6 +715,9 @@ const SavedListings = () => {
           </>
         )}
       </div>
+
+      {/* About Footer */}
+      <AboutFooter />
     </div>
   );
 };

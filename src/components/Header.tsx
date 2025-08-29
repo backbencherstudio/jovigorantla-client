@@ -11,6 +11,7 @@ import {
   Info,
   Users,
   X,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -470,10 +471,10 @@ const Header = ({
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem
-                      onClick={() => redirectNavLink("/about-us")}
+                      onClick={() => redirectNavLink("/discover-desieasy")}
                     >
-                      <Info className="h-4 w-4 mr-2" />
-                      <span>About Us</span>
+                      <Compass className="h-4 w-4 mr-2" />
+                      <span>Discover desieasy</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

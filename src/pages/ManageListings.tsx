@@ -18,6 +18,7 @@ import { api } from "@/lib/axois";
 import { ListingType } from "@/types/listing";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import { formatTime } from "@/lib/utils";
+import AboutFooter from "./AboutFooter";
 // type ListingType = {
 //   id: string;
 //   title: string;
@@ -125,7 +126,7 @@ const ManageListings = () => {
 
   if (!user) return null;
   return (
-    <div className="p-2 py-4 lg:p-4 bg-white min-h-[calc(100vh-110px)]">
+    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-110px)] flex flex-col justify-between gap-4">
       <div className="bg-white">
         {isLoading ? (
           <div className="space-y-4">
@@ -243,6 +244,9 @@ const ManageListings = () => {
           </AlertDialogContent>
         </AlertDialog>
       </div>
+
+      {/* About Footer */}
+      <AboutFooter />
     </div>
   );
 };

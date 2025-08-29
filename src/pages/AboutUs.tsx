@@ -33,6 +33,7 @@ import heroAbstract from "@/assets/hero-abstract.jpg";
 import community3d from "@/assets/community-3d.jpg";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import AboutFooter from "./AboutFooter";
 
 // Call the function to clear content based on the date
 
@@ -274,17 +275,17 @@ const AboutUs = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60"></div>
 
           <div className="relative z-10 text-center px-4 sm:px-6 md:px-8 w-full">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-8xl font-bold mb-6 sm:mb-8 leading-tight">
+            <h1 className="text-6xl sm:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 leading-tight">
               <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
                 Discover
               </span>
               <br />
               <span className="bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
-                Desieasy
+                desieasy
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-10 md:mb-12 leading-relaxed text-white/90 px-2 lg:px-4 xl:px-2">
+            <p className="text-lg sm:text-xl  mb-8 sm:mb-10 md:mb-12 leading-relaxed text-white/90 px-2 lg:px-4 xl:px-2">
               Whether you're looking for accommodation, a ride, a job, or local
               services, Desieasy makes it easy for South Asians in the U.S. to
               post and find listings that matter — simple, local, and free.
@@ -593,96 +594,7 @@ const AboutUs = () => {
         </section>
 
         {/* Footer */}
-        <footer className="py-6 sm:pt-8 pb-[70px] lg:pb-8 bg-background border-t border-border/50">
-          <div className="w-full px-4 sm:px-6">
-            <div className="text-center space-y-4 sm:space-y-6">
-              {/* Social Media Icons */}
-              <div>
-                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                  {[
-                    { icon: FaXTwitter, href: "#", label: "X" },
-                    { icon: Facebook, href: "#", label: "Facebook" },
-                    { icon: Youtube, href: "#", label: "YouTube" },
-                    { icon: Instagram, href: "#", label: "Instagram" },
-                  ].map((social, index) => (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
-                      aria-label={social.label}
-                    >
-                      <social.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Top Cities Section */}
-              <div>
-                <h3 className="text-sm sm:text-base font-medium text-foreground">
-                  Top Cities
-                </h3>
-                <div className="flex flex-wrap items-center justify-center gap-1 text-xs sm:text-sm leading-relaxed">
-                  {[
-                    "Fremont",
-                    "San Jose",
-                    "Dallas",
-                    "Houston",
-                    "Jersey City",
-                    "Tampa",
-                    "Austin",
-                    "Overland Park",
-                    "Edison",
-                  ].map((city, index, array) => (
-                    <span key={city} className="flex items-center">
-                      <button
-                        onClick={() =>
-                          navigate(`/?location=${encodeURIComponent(city)}`)
-                        }
-                        className="text-muted-foreground hover:text-primary hover:underline transition-all duration-200 font-medium px-1 py-0.5 rounded"
-                      >
-                        {city}
-                      </button>
-                      {index < array.length - 1 && (
-                        <span className="mx-1 sm:mx-1.5 text-muted-foreground/40">
-                          ·
-                        </span>
-                      )}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Legal Links & Copyright */}
-              <div
-                className={`flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground ${
-                  user ? "flex" : "lg:flex hidden"
-                }`}
-              >
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <a
-                    href="/privacy"
-                    className="hover:text-primary transition-colors cursor-pointer"
-                  >
-                    Privacy Policy
-                  </a>
-                  <a
-                    href="/terms"
-                    className="hover:text-primary transition-colors cursor-pointer"
-                  >
-                    User Agreement
-                  </a>
-                </div>
-                <span className="hidden sm:inline text-muted-foreground/40">
-                  |
-                </span>
-                <span>Desieasy © 2025. All rights reserved.</span>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <AboutFooter />
       </div>
     </div>
   );
