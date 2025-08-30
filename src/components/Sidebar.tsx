@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Facebook, Youtube, Instagram } from "lucide-react";
+
 import { useListing } from "@/context/ListingContext";
 import useRedirectNav from "@/hooks/useRedirectNav";
+import { FaXTwitter } from "react-icons/fa6";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg
@@ -21,19 +23,19 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const socialIcons = [
   {
-    icon: <XIcon className="w-4 h-4 text-white" />,
+    icon: <FaXTwitter className="h-4 w-4  text-primary" />,
     link: "https://x.com/desieasyteam",
   },
   {
-    icon: <Facebook className="w-4 h-4 text-white" />,
+    icon: <Facebook className="h-4 w-4 text-primary" />,
     link: "https://www.facebook.com/desieasy",
   },
   {
-    icon: <Youtube className="w-4 h-4 text-white" />,
+    icon: <Youtube className="h-4 w-4  text-primary" />,
     link: "https://www.youtube.com/@desieasy",
   },
   {
-    icon: <Instagram className="w-4 h-4 text-white" />,
+    icon: <Instagram className="h-4 w-4 text-primary" />,
     link: "https://www.instagram.com/desieasyofficial/",
   },
 ];
@@ -188,14 +190,15 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       </div>
       <div className="fixed bottom-5 left-4 hidden xl:block">
         {/* icons for x, facebook, youtube instagram */}
-        <div className="flex justify-center gap-2 py-4">
+        <div className="flex justify-center gap-3 py-4">
           {socialIcons.map((item, index) => (
             <a
               key={index}
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300"
+              /* className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300" */
+              className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
             >
               {item.icon}
             </a>

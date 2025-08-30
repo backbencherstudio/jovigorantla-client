@@ -1,8 +1,9 @@
 import { Mail } from "lucide-react";
+import AboutFooter from "./AboutFooter";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4">
+    <div className="bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0">
       <div className="px-4 pt-1 space-y-6 bg-white">
         {/* Header */}
         <div className="mb-8">
@@ -490,6 +491,9 @@ const PrivacyPolicy = () => {
             </div>
           </div>
         </div>
+
+        {/* Footer */}
+        <AboutFooter />
       </div>
     </div>
   );

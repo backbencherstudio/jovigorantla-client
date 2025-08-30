@@ -456,7 +456,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]"
               style={{ fontSize: "11px" }}
             >
-              Desieasy &copy; {new Date().getFullYear()}
+              <span
+                className="cursor-pointer hover:underline"
+                onClick={() => redirectNavLink("/discover-desieasy")}
+              >
+                Discover desieasy
+              </span>
               <span className="inline-flex gap-1">
                 •{" "}
                 <span

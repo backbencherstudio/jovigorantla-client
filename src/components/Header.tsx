@@ -11,6 +11,7 @@ import {
   Info,
   Users,
   X,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -285,11 +286,12 @@ const Header = ({
   const isValidPage = validPaths.includes(location.pathname);
 
   // Handle Logo Click
-  /* const handleLogo = () => {
+  const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-    window.location.reload();
-  }; */
+    window.location.href = "/";
+    scrollTo(0, 0);
+  };
 
   return (
     <>
@@ -300,7 +302,14 @@ const Header = ({
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a
+            href="/"
+            onClick={(event) => {
+              event.preventDefault();
+              handleLogo();
+            }}
+            className="flex items-center cursor-pointer"
+          >
             <img
               src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
               alt="DesiEasy Logo"
@@ -470,10 +479,10 @@ const Header = ({
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem
-                      onClick={() => redirectNavLink("/about-us")}
+                      onClick={() => redirectNavLink("/discover-desieasy")}
                     >
-                      <Info className="h-4 w-4 mr-2" />
-                      <span>About Us</span>
+                      <Compass className="h-4 w-4 mr-2" />
+                      <span>Discover desieasy</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

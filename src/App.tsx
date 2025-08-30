@@ -256,9 +256,9 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/about-us"
+          path="/discover-desieasy"
           element={
-            <ResponsiveLayout title="About Us">
+            <ResponsiveLayout title="Discover desieasy">
               <AboutUs />
             </ResponsiveLayout>
           }
