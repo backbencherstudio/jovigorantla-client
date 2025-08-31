@@ -31,6 +31,7 @@ import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
 import { useMessages } from "@/context/MessageContext";
 import { RxCross2 } from "react-icons/rx";
+import usStates from "@/data/states";
 
 const renderDescriptionWithPhoneLinks = (text: string) => {
   const phoneRegex = /(\b\d{10,}\b)/g;
@@ -89,6 +90,9 @@ const ListingDetailPage = ({ openModal }) => {
       setLoading(false);
     }
   }, [id, navigate]);
+
+  const [city, stateAbbr] =
+    listing.address?.split(",").map((part) => part.trim()) || [];
 
   // console.log(listing)
 
@@ -388,7 +392,7 @@ const ListingDetailPage = ({ openModal }) => {
 
             {/* User info and metadata - updated format */}
             <div className="flex flex-wrap items-center text-base text-gray-500 mb-4">
-              <span>{listing?.user?.name}</span>
+              <span>{listing?.user?.name?.slice(0, 15)}</span>
               <span className="mx-2">•</span>
               <span>{formatTime(listing?.created_at)}</span>
               {listing?.address && (
@@ -396,10 +400,13 @@ const ListingDetailPage = ({ openModal }) => {
                   <span className="mx-2">•</span>
                   <div className="flex items-center">
                     <span>
-                      {listing.address
+                      {/* {listing.address
                         ?.split(",")
                         .filter((_, i) => i === 0 || i === 1)
-                        .join(", ")}
+                        .join(", ")} */}
+                      {city +
+                        ", " +
+                        (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)}
                     </span>
                   </div>
                 </>

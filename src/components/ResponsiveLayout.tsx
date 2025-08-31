@@ -460,7 +460,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 className="cursor-pointer hover:underline"
                 onClick={() => redirectNavLink("/discover-desieasy")}
               >
-                Discover desieasy
+                Discover Desieasy
               </span>
               <span className="inline-flex gap-1">
                 •{" "}

@@ -482,15 +482,12 @@ const Header = ({
                       onClick={() => redirectNavLink("/discover-desieasy")}
                     >
                       <Compass className="h-4 w-4 mr-2" />
-                      <span>Discover desieasy</span>
+                      <span>Discover Desieasy</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={handleSignOut}
-                      className="text-[#b3261e]"
-                    >
+                    <DropdownMenuItem onClick={handleSignOut}>
                       <LogOut className="h-4 w-4 mr-2" />
-                      <span>Sign Out</span>
+                      <span>Log Out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

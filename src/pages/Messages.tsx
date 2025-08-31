@@ -453,7 +453,7 @@ const Messages = () => {
   if (loading) return null;
 
   return (
-    <div className="min-h-[calc(100vh-110px)] flex flex-col bg-white px-2 py-4 lg:px-4">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col bg-white px-2 py-4 lg:px-4">
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">

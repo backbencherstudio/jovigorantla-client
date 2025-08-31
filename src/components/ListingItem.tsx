@@ -3,6 +3,7 @@ import { ListingType } from "@/types/listing";
 import ListingActions from "./ListingActions";
 import { formatTime } from "@/lib/utils";
 import { MouseEvent } from "react";
+import usStates from "@/data/states";
 
 interface ListingItemProps {
   listing: ListingType;
@@ -40,6 +41,9 @@ const ListingItem = ({
   );
 
   const navigate = useNavigate();
+
+  const [city, stateAbbr] =
+    listing.address?.split(",").map((part) => part.trim()) || [];
 
   const handleLinkClick = (e: MouseEvent) => {
     // If the click originated from within the actions container, prevent navigation
@@ -115,10 +119,14 @@ const ListingItem = ({
                 <span className="mx-2">•</span>
                 <div className="flex items-center">
                   <span>
-                    {listing.address
+                  {/*   {listing.address
                       ?.split(",")
                       .filter((_, i) => i === 0 || i === 1)
-                      .join(", ")}
+                      .join(", ")} */}
+
+                      {
+                        city + ", " + (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)
+                      }
                   </span>
                 </div>
               </>

@@ -19,6 +19,7 @@ import { ListingType } from "@/types/listing";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import { formatTime } from "@/lib/utils";
 import AboutFooter from "./AboutFooter";
+import usStates from "@/data/states";
 // type ListingType = {
 //   id: string;
 //   title: string;
@@ -126,8 +127,8 @@ const ManageListings = () => {
 
   if (!user) return null;
   return (
-    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-110px)] flex flex-col justify-between gap-4">
-      <div className="bg-white">
+    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-120px)] h-full flex flex-col justify-between gap-4">
+      <div className="bg-white h-full flex flex-col justify-between">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
@@ -156,69 +157,83 @@ const ManageListings = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {listings.map((listing) => (
-                  <div
-                    key={listing.id}
-                    className=" rounded-lg p-4 w-full hover:bg-gray-50 border-b transition-colors"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-lg mb-1">
-                          {listing.title}
-                        </h3>
-                        <div className="flex flex-wrap text-sm text-gray-500 gap-x-4 gap-y-1">
-                          <div className="flex items-center">
-                            <span>
-                              Category: {formatCategory(listing?.category)}
-                            </span>
-                          </div>
-                          {/* <div className="flex items-center">
-                            <span>Status: {formatSubCategory(listing.category, listing.sub_category)}</span>
-                          </div> */}
-                          <div className="flex items-center">
-                            <span>
-                              Created: {formatTime(listing.created_at)}
-                            </span>
-                          </div>
-                          {listing?.address && (
+                {listings.map((listing) => {
+                  const [city, stateAbbr] =
+                    listing.address?.split(",").map((part) => part.trim()) ||
+                    [];
+                  return (
+                    <div
+                      key={listing.id}
+                      className=" rounded-lg p-4 w-full hover:bg-gray-50 border-b transition-colors"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium text-lg mb-1">
+                            {listing.title}
+                          </h3>
+                          <div className="flex flex-wrap text-sm text-gray-500 gap-x-4 gap-y-1">
                             <div className="flex items-center">
                               <span>
-                                Location:{" "}
-                                {listing.address
-                                  ?.split(",")
-                                  .filter((_, i) => i === 0 || i === 1)
-                                  .join(", ")}
+                                Category: {formatCategory(listing?.category)}
                               </span>
                             </div>
-                          )}
+                            {/* <div className="flex items-center">
+                            <span>Status: {formatSubCategory(listing.category, listing.sub_category)}</span>
+                          </div> */}
+                            <div className="flex items-center">
+                              <span>
+                                Created: {formatTime(listing.created_at)}
+                              </span>
+                            </div>
+                            {listing?.address && (
+                              <div className="flex items-center">
+                                <span>
+                                  Location:{" "}
+                                  {/* {listing.address
+                                  ?.split(",")
+                                  .filter((_, i) => i === 0 || i === 1)
+                                  .join(", ")} */}
+                                  {city +
+                                    ", " +
+                                    (usStates[stateAbbr.toLocaleLowerCase()] ||
+                                      stateAbbr)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditListing(listing.id)}
+                            className="h-8"
+                            disabled={listing.post_to_usa}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => openDeleteDialog(e, listing.id)}
+                            className="h-8 text-[#bc0117] hover:text-[#bc0117] hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEditListing(listing.id)}
-                          className="h-8"
-                          disabled={listing.post_to_usa}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => openDeleteDialog(e, listing.id)}
-                          className="h-8 text-[#bc0117] hover:text-[#bc0117] hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
         )}
+
+        {/* About Footer */}
+        <div className="mt-4">
+          <AboutFooter />
+        </div>
 
         <AlertDialog
           open={!!listingToDelete}
@@ -244,9 +259,6 @@ const ManageListings = () => {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-
-      {/* About Footer */}
-      <AboutFooter />
     </div>
   );
 };

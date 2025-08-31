@@ -88,7 +88,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
         </Avatar>
 
         <div className="ml-3 flex-1">
-          <h3 className="font-medium text-base">{otherUserName}</h3>
+          <h3 className="font-medium text-base">{otherUserName.slice(0,15)}</h3>
           <p
             className="text-xs text-muted-foreground truncate max-w-[200px] md:max-w-sm cursor-pointer hover:underline whitespace-pre-wrap"
             onClick={handleListingClick}

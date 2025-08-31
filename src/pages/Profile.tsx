@@ -211,7 +211,9 @@ const Profile = () => {
     setIsNameDialogOpen(false);
   };
 
-  const saveName = async () => {
+  const saveName = async (e) => {
+    e.preventDefault();
+
     if (tempName.trim() === "") {
       toast.error("Name cannot be empty");
       return;
@@ -254,7 +256,7 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0 flex flex-col justify-between">
+    <div className="bg-white min-h-[calc(100vh-120px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0 flex flex-col justify-between">
       <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2 pt-1">
@@ -264,7 +266,7 @@ const Profile = () => {
               <Input
                 id="name"
                 type="text"
-                value={name}
+                value={name.slice(0, 15)}
                 readOnly
                 className="pl-10 pr-10 cursor-pointer"
                 onClick={openNameDialog}
@@ -299,42 +301,47 @@ const Profile = () => {
             <DialogHeader>
               <DialogTitle>Edit Name</DialogTitle>
             </DialogHeader>
-            <div className="space-y-8">
-              <div className="relative">
-                <Input
-                  value={tempName}
-                  onChange={(e) => setTempName(e.target.value)}
-                  placeholder="Enter your name"
-                  autoFocus
-                  maxLength={15}
-                  onFocus={handleInputFocus}
-                />
-                <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
-                  {tempName.length}/15
+
+            <form onSubmit={saveName}>
+              <div className="space-y-8">
+                <div className="relative">
+                  <Input
+                    value={tempName.slice(0, 15)}
+                    onChange={(e) => setTempName(e.target.value)}
+                    placeholder="Enter your name"
+                    autoFocus
+                    maxLength={15}
+                    onFocus={handleInputFocus}
+                  />
+                  <div className="absolute bottom-[-20px] right-2 bottom-0 text-xs text-gray-500 px-1 rounded">
+                    {tempName.slice(0, 15).length}/15
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={closeNameDialog}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    /* onClick={saveName} */
+                    disabled={isLoading || !tempName.trim()}
+                  >
+                    {isLoading ? "Saving..." : "Save"}
+                  </Button>
                 </div>
               </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={closeNameDialog}
-                  disabled={isLoading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={saveName}
-                  disabled={isLoading || !tempName.trim()}
-                >
-                  {isLoading ? "Saving..." : "Save"}
-                </Button>
-              </div>
-            </div>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
 
       {/* About Footer */}
-      <AboutFooter />
+      <div className="mt-4">
+        <AboutFooter />
+      </div>
     </div>
   );
 };

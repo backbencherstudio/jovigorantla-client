@@ -188,6 +188,8 @@ const AboutUs = () => {
     },
   ];
 
+
+
   return (
     <div className="max-w-3xl mx-auto  bg-white min-h-[calc(100vh-110px)]">
       <div>
@@ -260,6 +262,7 @@ const AboutUs = () => {
         </div> */}
 
         {/* ========================== New Code ========================== */}
+
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           <div
@@ -274,14 +277,14 @@ const AboutUs = () => {
 
           <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60"></div>
 
-          <div className="relative z-10 text-center px-4 sm:px-6 md:px-8 w-full">
+          <div className="relative z-[1px] text-center px-4 sm:px-6 md:px-8 w-full ">
             <h1 className="text-6xl sm:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 leading-tight">
               <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
                 Discover
               </span>
               <br />
               <span className="bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
-                desieasy
+                Desieasy
               </span>
             </h1>
 
@@ -318,8 +321,13 @@ const AboutUs = () => {
         <section className="py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-br from-background via-background to-accent/5">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="text-center mb-12 sm:mb-16 md:mb-20">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-foreground mb-4 sm:mb-6">
-                Why Desieasy?
+              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-foreground mb-4 sm:mb-6 flex items-center justify-center">
+                <span>Why</span>
+                <img
+                  src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
+                  alt="DesiEasy Logo"
+                  className="h-14 sm:h-20 lg:h-24"
+                />
               </h2>
               <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
             </div>

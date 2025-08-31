@@ -188,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           )}
         </nav>
       </div>
-      <div className="fixed bottom-5 left-4 hidden xl:block">
+      <div className="fixed bottom-5 left-4 hidden xl:block w-[200px] mx-auto">
         {/* icons for x, facebook, youtube instagram */}
         <div className="flex justify-center gap-3 py-4">
           {socialIcons.map((item, index) => (
@@ -198,14 +198,23 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               /* className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300" */
-              className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
+              className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
             >
               {item.icon}
             </a>
           ))}
         </div>
 
-        <div className="flex  gap-2">
+        <div className="flex justify-center">
+          <p
+            onClick={() => redirectNavLink("/discover-desieasy")}
+            className="text-xs text-gray-500 hover:underline cursor-pointer"
+          >
+            Discover Desieasy
+          </p>
+        </div>
+
+        <div className="flex gap-2 justify-center mt-1">
           <p
             onClick={() => redirectNavLink("/privacy-policy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
@@ -221,7 +230,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             User Agreement
           </p>
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-center text-gray-500 mt-1">
           Desieasy © 2025. All rights reserved.
         </p>
       </div>

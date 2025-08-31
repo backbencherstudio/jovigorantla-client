@@ -463,6 +463,7 @@ import { formatTime } from "@/lib/utils";
 import { formatCategory, formatSubCategory } from "@/lib/format";
 import ListingActions from "@/components/ListingActions";
 import AboutFooter from "./AboutFooter";
+import usStates from "@/data/states";
 
 const SavedListings = () => {
   const {
@@ -624,8 +625,8 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-110px)] bg-white flex flex-col justify-between gap-4">
-      <div className="bg-white">
+    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-120px)] h-full bg-white flex flex-col justify-between gap-4">
+      <div className="bg-white h-full flex flex-col justify-between">
         {isLoading ? (
           <>
             {/* <div className="space-y-4">
@@ -651,73 +652,85 @@ const SavedListings = () => {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4 thin-scrollbar max-h-[calc(100vh-110px)] overflow-y-auto md:thin-scrollbar">
-                {listings.map((listing) => (
-                  <div
-                    key={listing.id}
-                    className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => handleListingClick(listing.id)}
-                  >
-                    <div className="py-4 px-4">
-                      <div className="flex justify-between">
-                        <div className="flex items-center text-sm text-gray-500 mb-1">
-                          <span>{formatCategory(listing.category)}</span>
-                          <span className="mx-2">•</span>
-                          <span>
-                            {formatSubCategory(
-                              listing.category,
-                              listing.sub_category
-                            )}
-                          </span>
+              <div className="space-y-4 ">
+                {listings.map((listing) => {
+                  const [city, stateAbbr] =
+                    listing.address?.split(",").map((part) => part.trim()) ||
+                    [];
+
+                  return (
+                    <div
+                      key={listing.id}
+                      className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => handleListingClick(listing.id)}
+                    >
+                      <div className="py-4 px-4">
+                        <div className="flex justify-between">
+                          <div className="flex items-center text-sm text-gray-500 mb-1">
+                            <span>{formatCategory(listing.category)}</span>
+                            <span className="mx-2">•</span>
+                            <span>
+                              {formatSubCategory(
+                                listing.category,
+                                listing.sub_category
+                              )}
+                            </span>
+                          </div>
+
+                          <ListingActions
+                            listingId={listing.id}
+                            listingTitle={listing.title}
+                            isUsa={false}
+                            onToggleSave={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleSaveListing(e, listing.id);
+                            }}
+                            onHide={() =>
+                              handleListingAction(null, "hide", listing.id)
+                            }
+                            openModal={() =>
+                              handleListingAction(null, "report", listing.id)
+                            }
+                          />
                         </div>
 
-                        <ListingActions
-                          listingId={listing.id}
-                          listingTitle={listing.title}
-                          isUsa={false}
-                          onToggleSave={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleSaveListing(e, listing.id);
-                          }}
-                          onHide={() =>
-                            handleListingAction(null, "hide", listing.id)
-                          }
-                          openModal={() =>
-                            handleListingAction(null, "report", listing.id)
-                          }
-                        />
-                      </div>
+                        <h3 className="text-lg font-medium text-gray-900">
+                          {listing.title}
+                        </h3>
 
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {listing.title}
-                      </h3>
-
-                      <div className="flex justify-between items-center mt-2">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <span>{listing?.user?.name?.slice(0, 15)}</span>
-                          <span className="mx-2">•</span>
-                          <span>{formatTime(listing.created_at)}</span>
-                          <span className="mx-2">•</span>
-                          <span>
-                            {listing.address
+                        <div className="flex justify-between items-center mt-2">
+                          <div className="flex items-center text-sm text-gray-500">
+                            <span>{listing?.user?.name?.slice(0, 15)}</span>
+                            <span className="mx-2">•</span>
+                            <span>{formatTime(listing.created_at)}</span>
+                            <span className="mx-2">•</span>
+                            <span>
+                              {/*  {listing.address
                               ?.split(",")
                               .filter((_, i) => i === 0 || i === 1)
-                              .join(", ")}
-                          </span>
+                              .join(", ")} */}
+
+                              {city +
+                                ", " +
+                                (usStates[stateAbbr.toLocaleLowerCase()] ||
+                                  stateAbbr)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
         )}
+        {/* About Footer */}
+        <div className="mt-4">
+          <AboutFooter />
+        </div>
       </div>
-
-      {/* About Footer */}
-      <AboutFooter />
     </div>
   );
 };

@@ -10,17 +10,37 @@ export default function AboutFooter() {
   const { user } = useAuth();
 
   return (
-    <footer className="py-6 sm:pt-8 pb-[70px] lg:pb-8 bg-white border-t border-border/50">
+    <footer
+      className={`py-6 sm:pt-8 ${
+        user ? "pb-8" : "pb-[70px]"
+      } lg:pb-8 bg-white border-t border-border/50`}
+    >
       <div className="w-full px-2">
         <div className="text-center space-y-4 sm:space-y-6">
           {/* Social Media Icons */}
           <div>
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {[
-                { icon: FaXTwitter, href: "#", label: "X" },
-                { icon: Facebook, href: "#", label: "Facebook" },
-                { icon: Youtube, href: "#", label: "YouTube" },
-                { icon: Instagram, href: "#", label: "Instagram" },
+                {
+                  icon: FaXTwitter,
+                  href: "https://x.com/desieasyteam",
+                  label: "X",
+                },
+                {
+                  icon: Facebook,
+                  href: "https://www.facebook.com/desieasy",
+                  label: "Facebook",
+                },
+                {
+                  icon: Youtube,
+                  href: "https://www.youtube.com/@desieasy",
+                  label: "YouTube",
+                },
+                {
+                  icon: Instagram,
+                  href: "https://www.instagram.com/desieasyofficial/",
+                  label: "Instagram",
+                },
               ].map((social, index) => (
                 <a
                   key={social.label}
