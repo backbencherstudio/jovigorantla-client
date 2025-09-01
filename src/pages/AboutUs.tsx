@@ -321,13 +321,15 @@ const AboutUs = () => {
         <section className="py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-br from-background via-background to-accent/5">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="text-center mb-12 sm:mb-16 md:mb-20">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-foreground mb-4 sm:mb-6 flex items-center justify-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-foreground mb-4 sm:mb-6 flex items-center gap-2 justify-center">
                 <span>Why</span>
+              {/*   <span>desieasy</span> */}
                 <img
-                  src="/lovable-uploads/734bcb13-cbaa-4ead-b63a-d6fa46648627.png"
+                  src="/lovable-uploads/about-us-logo.png"
                   alt="DesiEasy Logo"
-                  className="h-14 sm:h-20 lg:h-24"
+                  className="h-14 sm:h-20 lg:h-24 -mt-[2px]"
                 />
+                <span>?</span>
               </h2>
               <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
             </div>

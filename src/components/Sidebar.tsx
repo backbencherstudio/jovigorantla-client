@@ -188,9 +188,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           )}
         </nav>
       </div>
-      <div className="fixed bottom-5 left-4 hidden xl:block w-[200px] mx-auto">
+      <div className="fixed bottom-5 left-4 hidden xl:block w-[200px] ml-[10px]">
         {/* icons for x, facebook, youtube instagram */}
-        <div className="flex justify-center gap-3 py-4">
+        <div className="flex gap-3 py-4">
           {socialIcons.map((item, index) => (
             <a
               key={index}
@@ -205,7 +205,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex ">
           <p
             onClick={() => redirectNavLink("/discover-desieasy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
@@ -214,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           </p>
         </div>
 
-        <div className="flex gap-2 justify-center mt-1">
+        <div className="flex gap-2 mt-1">
           <p
             onClick={() => redirectNavLink("/privacy-policy")}
             className="text-xs text-gray-500 hover:underline cursor-pointer"
@@ -230,9 +230,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             User Agreement
           </p>
         </div>
-        <p className="text-xs text-center text-gray-500 mt-1">
-          Desieasy © 2025. All rights reserved.
-        </p>
+        <p className="text-xs text-gray-500 mt-1">Desieasy © 2025. All rights reserved.</p>
       </div>
     </aside>
   );
