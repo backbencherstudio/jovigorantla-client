@@ -289,7 +289,8 @@ const Header = ({
   const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-    window.location.href = "/";
+    //window.location.href = "/";
+    navigate("/");
     scrollTo(0, 0);
   };
 

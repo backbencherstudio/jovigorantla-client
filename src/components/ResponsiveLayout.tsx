@@ -55,14 +55,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   fullWidth = false,
 }) => {
   const isMobile = useIsMobile();
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1101px)");
   const isCollapsed = useMediaQuery(
     "(min-width: 768px) and (max-width: 1100px)"
   );
 
   const { redirectNavLink } = useRedirectNav();
 
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isDesktop = useMediaQuery("(min-width: 1101px)"); 
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -255,9 +255,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {!isValidPage && (
             <main
               className={`w-full mx-auto ${
-                fullWidth
-                  ? ""
-                  : "max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl bg-white"
+                fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
@@ -265,7 +263,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {title && (
                 <div className="relative">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 lg:max-w-[29rem] xl:max-w-[47rem] "
+                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
                     style={{
                       // width: width,
                       top: "65px" /* Header height */,
@@ -308,7 +306,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
             >
               {/* Center Content Container */}
 
-              <main className="w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto bg-transparent">
+              <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
                 {/* Mobile: Search, Location and Categories */}
                 {isMobile && (
                   <div

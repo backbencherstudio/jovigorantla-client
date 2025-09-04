@@ -54,6 +54,8 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 };
 
 const ListingDetailPage = ({ openModal }) => {
+  const isDesktop = useMediaQuery("(min-width: 1101px)");
+
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -309,10 +311,10 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
+      <div className="flex flex-col bg-white min-h-[calc(100vh-120px)]">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-        <div className="flex-1 overflow-y-auto pb-24 mx-auto w-full p-2 py-4 lg:p-4">
+        <div className="flex-1 overflow-y-auto pb-24 mx-auto w-full p-2 py-4">
           {/* Category, status and action buttons */}
           <div className="px-4">
             <div className="flex items-center justify-between mb-2">
@@ -454,7 +456,9 @@ const ListingDetailPage = ({ openModal }) => {
                 // style={{ width: width }}
                 className={`my-8 p-4 bg-white  fixed ${
                   user ? "" : "md:bottom-1 "
-                } lg:-bottom-10 left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] lg:max-w-[29rem] xl:max-w-[47rem]`}
+                } ${
+                  isDesktop ? "lg:-bottom-10" : ""
+                } left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]`}
               >
                 <Button
                   onClick={handleContact}

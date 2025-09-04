@@ -7,6 +7,7 @@ import { Facebook, Youtube, Instagram } from "lucide-react";
 import { useListing } from "@/context/ListingContext";
 import useRedirectNav from "@/hooks/useRedirectNav";
 import { FaXTwitter } from "react-icons/fa6";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg
@@ -45,6 +46,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
+  const isDesktop = useMediaQuery("(min-width: 1101px)"); //1024px
+
   const { redirectNavLink } = useRedirectNav();
   const location = useLocation();
   const { user } = useAuth();
@@ -188,50 +191,55 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
           )}
         </nav>
       </div>
-      <div className="fixed bottom-5 left-4 hidden xl:block w-[200px] ml-[10px]">
-        {/* icons for x, facebook, youtube instagram */}
-        <div className="flex gap-3 py-4">
-          {socialIcons.map((item, index) => (
-            <a
-              key={index}
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              /* className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300" */
-              className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
+
+      {isDesktop && (
+        <div className="fixed bottom-5 left-4 w-[200px] ml-[10px]">
+          {/* icons for x, facebook, youtube instagram */}
+          <div className="flex gap-3 py-4">
+            {socialIcons.map((item, index) => (
+              <a
+                key={index}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                /* className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300" */
+                className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
+              >
+                {item.icon}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex ">
+            <p
+              onClick={() => redirectNavLink("/discover-desieasy")}
+              className="text-xs text-gray-500 hover:underline cursor-pointer"
             >
-              {item.icon}
-            </a>
-          ))}
-        </div>
+              Discover Desieasy
+            </p>
+          </div>
 
-        <div className="flex ">
-          <p
-            onClick={() => redirectNavLink("/discover-desieasy")}
-            className="text-xs text-gray-500 hover:underline cursor-pointer"
-          >
-            Discover Desieasy
+          <div className="flex gap-2 mt-1">
+            <p
+              onClick={() => redirectNavLink("/privacy-policy")}
+              className="text-xs text-gray-500 hover:underline cursor-pointer"
+            >
+              Privacy Policy
+            </p>
+            <p
+              onClick={() => {
+                redirectNavLink("/user-agreement");
+              }}
+              className="text-xs text-gray-500 hover:underline cursor-pointer"
+            >
+              User Agreement
+            </p>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Desieasy © 2025. All rights reserved.
           </p>
         </div>
-
-        <div className="flex gap-2 mt-1">
-          <p
-            onClick={() => redirectNavLink("/privacy-policy")}
-            className="text-xs text-gray-500 hover:underline cursor-pointer"
-          >
-            Privacy Policy
-          </p>
-          <p
-            onClick={() => {
-              redirectNavLink("/user-agreement");
-            }}
-            className="text-xs text-gray-500 hover:underline cursor-pointer"
-          >
-            User Agreement
-          </p>
-        </div>
-        <p className="text-xs text-gray-500 mt-1">Desieasy © 2025. All rights reserved.</p>
-      </div>
+      )}
     </aside>
   );
 };

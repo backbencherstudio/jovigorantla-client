@@ -625,7 +625,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsOpenSuccessAfterLogin,
     setIsOpenPendingAfterLogin,
     fetchFavoritesListings,
-    setIsModalOpen
+    setIsModalOpen,
+    setFavoritesListings
   };
 
   return <AuthContext.Provider value={value}>

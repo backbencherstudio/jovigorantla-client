@@ -92,7 +92,7 @@ export default function AboutFooter() {
 
           {/* Legal Links & Copyright */}
           <div
-            className={`flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground ${
+            className={`flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground ${
               user ? "flex" : "lg:flex hidden"
             }`}
           >

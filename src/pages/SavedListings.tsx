@@ -560,7 +560,6 @@ const SavedListings = () => {
 
   const toggleSaveListing = async (e, listingId) => {
     e.stopPropagation();
-
     try {
       await deleteFavoritesListing(listingId);
       setListings(listings.filter((l) => l.id !== listingId));
@@ -625,7 +624,7 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="p-2 py-4 lg:p-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-120px)] h-full bg-white flex flex-col justify-between gap-4">
+    <div className="p-2 py-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-120px)] h-full bg-white flex flex-col justify-between gap-4">
       <div className="bg-white h-full flex flex-col justify-between">
         {isLoading ? (
           <>
@@ -647,7 +646,15 @@ const SavedListings = () => {
                 <p className="text-gray-500 mb-4">
                   You haven't saved any listings yet.
                 </p>
-                <Button onClick={() => navigate("/")} variant="default">
+                <Button
+                  onClick={() => {
+                    sessionStorage.removeItem("home_cached_data");
+                    sessionStorage.removeItem("home_scroll_position");
+                    navigate("/");
+                    scrollTo(0, 0);
+                  }}
+                  variant="default"
+                >
                   Browse Listings
                 </Button>
               </div>

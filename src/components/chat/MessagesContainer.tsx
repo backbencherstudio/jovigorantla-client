@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Message } from "@/components/chat/types";
 import MessageGroup from "@/components/chat/MessageGroup";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
@@ -32,9 +32,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
     // const dateKey = date.toLocaleDateString().split("T")[0];
 
     // From your timestamp (automatically uses local timezone)
-  const date = dayjs(message.timestamp).local();
-  const dateKey = date.format('YYYY-MM-DD'); // Converted to your local timezone
-    console.log(dateKey, new Date(dateKey), new Date().toDateString(), dayjs().format('YYYY-MM-DD'))
+    const date = dayjs(message.timestamp).local();
+    const dateKey = date.format("YYYY-MM-DD"); // Converted to your local timezone
+    console.log(
+      dateKey,
+      new Date(dateKey),
+      new Date().toDateString(),
+      dayjs().format("YYYY-MM-DD")
+    );
 
     if (!groupedMessages[dateKey]) {
       groupedMessages[dateKey] = [];
@@ -65,7 +70,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   return (
     <ScrollArea className="flex-1 bg-gray-100 ">
       <div
-        className="px-4 pb-3 max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+        className="px-4 pb-3 pt-[10px] max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
          [&::-webkit-scrollbar]:hidden flex flex-col-reverse"
       >
         {dateKeys.map((dateKey) => {
@@ -86,10 +91,10 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
 
           const dateMessages = groupedMessages[dateKey];
           const date = dayjs(dateKey); // ✅ instead of new Date(dateKey)
-        
+
           const isToday = dayjs().isSame(date, "day");
           const isYesterday = dayjs().subtract(1, "day").isSame(date, "day");
-        
+
           let dateLabel = date.format("M/D/YYYY"); // e.g., 8/26/2025
           if (isToday) dateLabel = "Today";
           else if (isYesterday) dateLabel = "Yesterday";

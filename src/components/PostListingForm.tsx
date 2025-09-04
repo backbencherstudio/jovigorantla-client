@@ -2199,7 +2199,7 @@ function PostListingForm() {
 
   return (
     <>
-      <div className="p-2 py-4 lg:p-4">
+      <div className="p-2 py-4">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6 bg-white px-4 rounded-lg max-w-3xl mx-auto min-h-[calc(100vh-160px)]"

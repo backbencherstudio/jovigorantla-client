@@ -419,7 +419,7 @@ const ListingActions = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
-  const { favoritesListings, addFavoritesListing, deleteFavoritesListing } =
+  const { favoritesListings, addFavoritesListing, deleteFavoritesListing, setFavoritesListings } =
     useAuth();
   // const { hideListing } = useListing();
   const location = useLocation();
@@ -479,18 +479,30 @@ const ListingActions = ({
     }
   };
 
-  const handleToggleSave = (e: React.MouseEvent) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleToggleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (user) {
-      if (saved) {
-        deleteFavoritesListing(listingId);
+
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+      if (user) {
+        if (saved) {
+          await deleteFavoritesListing(listingId);
+        } else {
+          await addFavoritesListing(listingId);
+        }
+        setSaved(!saved);
       } else {
-        addFavoritesListing(listingId);
+        console.log("clicked");
+        openModal();
       }
-      setSaved(!saved);
-    } else {
-      console.log("clicked");
-      openModal();
+    } catch (error) {
+      console.error("Error handling the favorite action:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -562,7 +574,10 @@ const ListingActions = ({
           className={`h-8 w-8 p-0 ${isListingPage ? "mr-1" : ""}`}
           type="button"
           onClick={(e) => {
-            onToggleSave(e, listingId);
+            e.preventDefault();
+            e.stopPropagation();
+            //onToggleSave(e, listingId);
+            setFavoritesListings()
             handleToggleSave(e);
           }}
         >
