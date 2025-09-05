@@ -62,7 +62,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   const { redirectNavLink } = useRedirectNav();
 
-  const isDesktop = useMediaQuery("(min-width: 1101px)"); 
+  const isDesktop = useMediaQuery("(min-width: 1101px)");
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -290,7 +290,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px] md:mx-2">
+              <div className="flex-1 h-full bg-white mt-[70px] md:mx-2 ">
                 {children}
               </div>
             </main>

@@ -488,12 +488,13 @@ const SavedListings = () => {
 
       // If fetchFavoritesListings exists in context, use it
       if (fetchFavoritesListings) {
-        await fetchFavoritesListings();
+        
+        //await fetchFavoritesListings();
       } else {
         // Otherwise fetch directly
-        const response = await api.get("/favorites");
+        /* const response = await api.get("/favorites");
         const savedListings = response.data.data || [];
-        setListings(savedListings);
+        setListings(savedListings); */
       }
     } catch (error) {
       console.error("Error fetching saved listings:", error);

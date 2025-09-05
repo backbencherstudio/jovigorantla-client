@@ -67,12 +67,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
     // messagesEndRef.current?.;
   }, [messages]);
 
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
   return (
-    <ScrollArea className="flex-1 bg-gray-100 ">
-      <div
-        className="px-4 pb-3 pt-[10px] max-h-[80vh] sm:max-h-[82vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-         [&::-webkit-scrollbar]:hidden flex flex-col-reverse"
-      >
+   
+      <div className="px-4 pb-3 pt-[10px] w-full overflow-y-auto  flex flex-col-reverse [scrollbar-width:none] [-ms-overflow-style:none] 
+[&::-webkit-scrollbar]:hidden ">
         {dateKeys.map((dateKey) => {
           // const dateMessages = groupedMessages[dateKey];
           // const date = new Date(dateKey);
@@ -112,7 +114,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
         })}
         <div ref={messagesEndRef} />
       </div>
-    </ScrollArea>
+
   );
 };
 

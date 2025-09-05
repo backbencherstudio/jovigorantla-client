@@ -544,7 +544,15 @@ const Messages = () => {
           ) : (
             <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
               <p className="text-gray-500 mb-4">No messages yet</p>
-              <Button onClick={() => navigate("/")} variant="default">
+              <Button
+                onClick={() => {
+                  sessionStorage.removeItem("home_cached_data");
+                  sessionStorage.removeItem("home_scroll_position");
+                  navigate("/");
+                  scrollTo(0, 0);
+                }}
+                variant="default"
+              >
                 Browse Listings
               </Button>
             </div>

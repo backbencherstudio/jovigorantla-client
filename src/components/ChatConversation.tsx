@@ -289,7 +289,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto h-full flex items-end">
+      <div className="max-h-[calc(100vh-70px)] flex pt-[40px] pb-[60px] w-full ">
         {/* {isBlocked && (
           <div className="flex justify-center items-center text-center p-4">
             <Badge variant="destructive">You are blocked in this conversation</Badge>

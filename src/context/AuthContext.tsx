@@ -1,4 +1,3 @@
-
 // import React, { createContext, useContext, useEffect, useState } from 'react';
 // import { Session, User, Provider } from '@supabase/supabase-js';
 // import { supabase } from '@/integrations/supabase/client';
@@ -132,15 +131,13 @@
 //   return context;
 // };
 
-
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { api } from '../lib/axois'; // your axios instance with `withCredentials: true`
-import { useLocation, useNavigate } from 'react-router-dom';
-import CustomModal from '@/components/shared/CustomModal';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../lib/axois"; // your axios instance with `withCredentials: true`
+import { useLocation, useNavigate } from "react-router-dom";
+import CustomModal from "@/components/shared/CustomModal";
 import progress from "@/assets/progress.png";
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type User = {
   id: string;
@@ -155,7 +152,12 @@ type AuthContextType = {
   loading: boolean;
   favoritesListings: any[];
   signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (email: string, password: string, name: string, otp: string) => Promise<boolean>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+    otp: string
+  ) => Promise<boolean>;
   signOut: () => Promise<boolean>;
   updateMe: (name?: string) => Promise<boolean>;
   signUpWithGoogle: () => Promise<boolean>;
@@ -165,18 +167,22 @@ type AuthContextType = {
   verifyOtp: (email: string, otp: string) => Promise<boolean>;
   setFormData: (formData: any) => void;
   forgotPassword: (email: string) => Promise<boolean>;
-  resetPassword: (email: string, password: string, token: string) => Promise<boolean>;
-  isOpenSuccessAfterLogin: boolean,
-  isOpenPendingAfterLogin: boolean,
-  isOpenErrorAfterLogin: boolean,
-  isUploading: boolean,
-  isModalOpen: boolean,
+  resetPassword: (
+    email: string,
+    password: string,
+    token: string
+  ) => Promise<boolean>;
+  isOpenSuccessAfterLogin: boolean;
+  isOpenPendingAfterLogin: boolean;
+  isOpenErrorAfterLogin: boolean;
+  isUploading: boolean;
+  isModalOpen: boolean;
 
-  setIsOpenErrorAfterLogin: (boolean) => void,
-  setIsOpenSuccessAfterLogin: (boolean) => void,
-  setIsOpenPendingAfterLogin: (boolean) => void,
+  setIsOpenErrorAfterLogin: (boolean) => void;
+  setIsOpenSuccessAfterLogin: (boolean) => void;
+  setIsOpenPendingAfterLogin: (boolean) => void;
   fetchFavoritesListings: () => Promise<boolean>;
-  setIsModalOpen: (boolean) => void,
+  setIsModalOpen: (boolean) => void;
 };
 
 interface FileRecord {
@@ -194,7 +200,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [favoritesListings, setFavoritesListings] = useState([]);
-  const [formData, setFormData] = useState(null)
+  const [formData, setFormData] = useState(null);
   const [isOpenSuccessAfterLogin, setIsOpenSuccessAfterLogin] = useState(false);
   const [isOpenPendingAfterLogin, setIsOpenPendingAfterLogin] = useState(false);
   const [isOpenErrorAfterLogin, setIsOpenErrorAfterLogin] = useState(false);
@@ -206,7 +212,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const location = useLocation();
 
-
   let dbInstance: IDBDatabase | null = null;
 
   const openDB = (): Promise<IDBDatabase> => {
@@ -215,13 +220,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return resolve(dbInstance);
       }
 
-      const request = indexedDB.open('MyFileStorage', 1);
+      const request = indexedDB.open("MyFileStorage", 1);
 
       request.onupgradeneeded = (event) => {
         const target = event.target as IDBOpenDBRequest;
         dbInstance = target.result;
-        if (!dbInstance.objectStoreNames.contains('files')) {
-          dbInstance.createObjectStore('files', { keyPath: 'id' });
+        if (!dbInstance.objectStoreNames.contains("files")) {
+          dbInstance.createObjectStore("files", { keyPath: "id" });
         }
       };
 
@@ -244,7 +249,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         dbInstance = null;
       }
 
-      const request = indexedDB.deleteDatabase('MyFileStorage');
+      const request = indexedDB.deleteDatabase("MyFileStorage");
 
       request.onsuccess = () => resolve();
       request.onerror = (event) => reject((event.target as IDBRequest).error);
@@ -252,26 +257,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       request.onblocked = () => {
         // If blocked, wait and try again
         setTimeout(() => {
-          indexedDB.deleteDatabase('MyFileStorage').onsuccess = () => resolve();
+          indexedDB.deleteDatabase("MyFileStorage").onsuccess = () => resolve();
         }, 200);
       };
     });
   };
-
-
 
   const getFirstFile = async (): Promise<File | null> => {
     try {
       const db = await openDB();
 
       return new Promise<File | null>((resolve) => {
-        const transaction = db.transaction('files', 'readonly');
-        const store = transaction.objectStore('files');
+        const transaction = db.transaction("files", "readonly");
+        const store = transaction.objectStore("files");
 
         const request = store.openCursor();
 
         request.onsuccess = (event: Event) => {
-          const cursor = (event.target as IDBRequest<IDBCursorWithValue | null>).result;
+          const cursor = (event.target as IDBRequest<IDBCursorWithValue | null>)
+            .result;
           resolve(cursor ? (cursor.value as FileRecord).file : null);
         };
 
@@ -371,10 +375,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Continue without image if there's an error
         }
 
-        const response = await api.post('/listings', formData, {
+        const response = await api.post("/listings", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-          }
+            "Content-Type": "multipart/form-data",
+          },
         });
 
         localStorage.removeItem("afterLogin");
@@ -402,10 +406,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     saveListing();
   }, [navigate]);
 
-
   const fetchUser = async () => {
     try {
-      const res = await api.get('/auth/me', {
+      const res = await api.get("/auth/me", {
         withCredentials: true,
       });
       // console.log(res);
@@ -420,16 +423,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     fetchUser();
-    fetchFavoritesListings()
-    console.log(localStorage.getItem('image'))
+    fetchFavoritesListings();
+    console.log(localStorage.getItem("image"));
   }, []);
-
-
-
 
   const signIn = async (email: string, password: string) => {
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post("/auth/login", { email, password });
       if (res.data.success) {
         await fetchUser();
         return true;
@@ -442,7 +442,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUpWithGoogle = async () => {
     try {
-      localStorage.setItem("redirect", location.pathname)
+      localStorage.setItem("redirect", location.pathname);
       window.location.href = `${import.meta.env.VITE_BASE_URL}/auth/google`;
       return true;
 
@@ -458,18 +458,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-
-  const signUp = async (email: string, password: string, name: string, otp: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    name: string,
+    otp: string
+  ) => {
     try {
       // const otp = localStorage.getItem("otp");
-      const res = await api.post('/auth/register', {
+      const res = await api.post("/auth/register", {
         email,
         password,
         name,
         otp,
       });
 
-      console.log("from sign up=> ", res.data)
+      console.log("from sign up=> ", res.data);
 
       if (res.data.success) {
         await fetchUser();
@@ -483,7 +487,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
-      const res = await api.post('/auth/logout');
+      const res = await api.post("/auth/logout");
       if (res.data.success) {
         setUser(null);
         return true;
@@ -496,7 +500,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateMe = async (name?: string) => {
     try {
-      const res = await api.patch('/auth/update', { name });
+      const res = await api.patch("/auth/update", { name });
       console.log(res);
       if (res.data.success) {
         await fetchUser();
@@ -514,7 +518,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //   setFavoritesListings([]);
       //   return;
       // }
-      const res = await api.get('/favorites');
+      const res = await api.get("/favorites");
       if (res.data.success) {
         setFavoritesListings(res.data.data);
         return true;
@@ -527,15 +531,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteFavoritesListing = async (listingId: string) => {
     try {
-      const res = await api.post('/favorites', {
+      const res = await api.post("/favorites", {
         listing_id: listingId,
       });
 
       console.log("from => ", res.data);
       if (res.data.success) {
         // go throw favoritesListings and remove the listing with the id of listingId
-        setFavoritesListings(favoritesListings.filter((listing: any) => listing.id !== listingId));
-        return true
+        // setFavoritesListings(
+        //   favoritesListings.filter((listing: any) => listing.id !== listingId)
+        // );
+        return true;
       }
       return false;
     } catch {
@@ -545,11 +551,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addFavoritesListing = async (listingId: string) => {
     try {
-      const res = await api.post('/favorites', {
+      const res = await api.post("/favorites", {
         listing_id: listingId,
       });
       if (res.data.success) {
-        fetchFavoritesListings()
+        fetchFavoritesListings();
         return true;
       }
       return false;
@@ -560,11 +566,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // console.log(favoritesListings)
 
-
-
   const sendOtp = async (email: string) => {
     try {
-      const res = await api.post('/auth/send-otp', { email });
+      const res = await api.post("/auth/send-otp", { email });
       // console.log(res)
       return res.data.success;
     } catch {
@@ -574,31 +578,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const verifyOtp = async (email: string, otp: string) => {
     try {
-      const res = await api.post('/auth/verify-otp', { email, otp });
-      return res.data.success;
-    }
-    catch {
-      return false;
-    }
-  }
-
-  const forgotPassword = async (email: string) => {
-    try {
-      const res = await api.post('/auth/forgot-password', { email });
+      const res = await api.post("/auth/verify-otp", { email, otp });
       return res.data.success;
     } catch {
       return false;
     }
   };
 
-  const resetPassword = async (email: string, password: string, token: string) => {
+  const forgotPassword = async (email: string) => {
     try {
-      const res = await api.post('/auth/reset-password', { email, password, token });
+      const res = await api.post("/auth/forgot-password", { email });
       return res.data.success;
     } catch {
       return false;
     }
-  }
+  };
+
+  const resetPassword = async (
+    email: string,
+    password: string,
+    token: string
+  ) => {
+    try {
+      const res = await api.post("/auth/reset-password", {
+        email,
+        password,
+        token,
+      });
+      return res.data.success;
+    } catch {
+      return false;
+    }
+  };
 
   const value = {
     user,
@@ -626,12 +637,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsOpenPendingAfterLogin,
     fetchFavoritesListings,
     setIsModalOpen,
-    setFavoritesListings
+    setFavoritesListings,
   };
 
-  return <AuthContext.Provider value={value}>
-    {children}
-    {/* {isUploading && (
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      {/* {isUploading && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
           <div className="text-center">
@@ -653,54 +665,60 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       </div>
     )} */}
 
-    {isUploading && (
-      <Dialog open={isUploading} onOpenChange={(open) => { }} >
-       <div>
-       <DialogContent className="rounded-lg max-w-md w-full p-6 bg-white shadow-lg">
-          <div className="absolute h-8 w-8 flex justify-center items-center right-4 top-4 rounded-full hover:bg-gray-100 p-2">
-            ✕
+      {isUploading && (
+        <Dialog open={isUploading} onOpenChange={(open) => {}}>
+          <div>
+            <DialogContent className="rounded-lg max-w-md w-full p-6 bg-white shadow-lg">
+              <div className="absolute h-8 w-8 flex justify-center items-center right-4 top-4 rounded-full hover:bg-gray-100 p-2">
+                ✕
+              </div>
+
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="inline-flex items-center justify-center mb-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ff6b00]"></div>
+                </div>
+
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Creating Listing
+                </h3>
+                <p className="text-gray-600">
+                  Please wait while we process your listing...
+                </p>
+
+                <div className="mt-6 w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-brand h-2.5 rounded-full animate-pulse"
+                    style={{ width: "70%" }}
+                  ></div>
+                </div>
+
+                <Button
+                  className="w-full bg-[#ff6b00] text-white rounded-full py-6 mt-6 focus:border-none focus:outline-none focus:ring-0"
+                  onClick={() => {}}
+                  autoFocus={false}
+                  // tabIndex={-1}
+                >
+                  Please Wait
+                </Button>
+              </div>
+            </DialogContent>
           </div>
+        </Dialog>
+      )}
 
-          <div className="flex flex-col items-center justify-center space-y-6">
-            <div className="inline-flex items-center justify-center mb-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ff6b00]"></div>
-            </div>
-
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Creating Listing</h3>
-            <p className="text-gray-600">Please wait while we process your listing...</p>
-
-            <div className="mt-6 w-full bg-gray-200 rounded-full h-2.5">
-              <div className="bg-brand h-2.5 rounded-full animate-pulse" style={{ width: '70%' }}></div>
-            </div>
-
-            <Button
-              className="w-full bg-[#ff6b00] text-white rounded-full py-6 mt-6 focus:border-none focus:outline-none focus:ring-0"
-              onClick={() => { }}
-              autoFocus={false}
-              // tabIndex={-1}
-            >
-              Please Wait
-            </Button>
-          </div>
-        </DialogContent>
-       </div>
-      </Dialog>
-    )}
-
-
-    {/* <CustomModal
+      {/* <CustomModal
         open={isUploading}
         onOpenChange={(_)=> {}}
         title="Your listing is under review and will be live if approved."
         icon={<img className="" src={progress} alt="loading" />}
       /> */}
-  </AuthContext.Provider>;
+    </AuthContext.Provider>
+  );
 };
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
-

@@ -419,8 +419,12 @@ const ListingActions = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
-  const { favoritesListings, addFavoritesListing, deleteFavoritesListing, setFavoritesListings } =
-    useAuth();
+  const {
+    favoritesListings,
+    addFavoritesListing,
+    deleteFavoritesListing,
+    setFavoritesListings,
+  } = useAuth();
   // const { hideListing } = useListing();
   const location = useLocation();
   const isOnListingPage =
@@ -490,6 +494,7 @@ const ListingActions = ({
     try {
       if (user) {
         if (saved) {
+          setFavoritesListings((prev) => prev.filter((value) => value.id !== listingId));
           await deleteFavoritesListing(listingId);
         } else {
           await addFavoritesListing(listingId);
@@ -577,7 +582,7 @@ const ListingActions = ({
             e.preventDefault();
             e.stopPropagation();
             //onToggleSave(e, listingId);
-            setFavoritesListings()
+            //setFavoritesListings((prev) => prev.filter((value) => value.id !== listingId));
             handleToggleSave(e);
           }}
         >
