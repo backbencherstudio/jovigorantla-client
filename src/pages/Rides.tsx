@@ -1482,7 +1482,7 @@ export default function Rides({ openModal }) {
         <>
           {/* Loader Skeleton For Content and Position of FilterTabs */}
           {isRestoringFromSession && (
-            <div className="fixed inset-0 p-2 md:p-0 bg-white z-[50] flex items-center justify-center w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
+            <div className="fixed inset-0 p-2 md:p-0 bg-white z-[61] flex items-center justify-center w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto">
               <div className="space-y-4 w-full h-full mt-[120px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
                   <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>

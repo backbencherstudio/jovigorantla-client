@@ -2326,7 +2326,7 @@ function PostListingForm() {
               )}
             />
             {errors.title && (
-              <p className="text-red-500 text-sm">{errors.title.message}</p>
+              <p className="text-[#b3261e] text-xs font-normal">{errors.title.message}</p>
             )}
           </div>
 

@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "./card";
 import { Skeleton } from "./skeleton";
 import { api } from "@/lib/axois";
 import { Link } from "react-router-dom";
+
+// Check if API was already called
+let hasApiBeenCalled = false;
+// Cache to store the ads data
+let cachedAdsData: AdData[] | null = null;
 
 interface AdBannerProps {
   position?: string;
@@ -24,17 +29,27 @@ interface AdData {
 }
 
 const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
-  const [ads, setAds] = useState<AdData[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Initialize with cached data if available to prevent flash
+  const [ads, setAds] = useState<AdData[]>(cachedAdsData || []);
+  const [loading, setLoading] = useState(!hasApiBeenCalled || !cachedAdsData);
   const [isError, setIsError] = useState<boolean>(false);
-  // ... existing code ...
 
   useEffect(() => {
+    // If API was already called before, use cached data immediately
+    if (hasApiBeenCalled && cachedAdsData) {
+      setAds(cachedAdsData);
+      setLoading(false);
+      return;
+    }
+
     const fetchAd = async () => {
       try {
         setLoading(true);
         const res = await api.get("/ads/sidebar");
-        setAds(res.data.data);
+        const data = res.data.data;
+        setAds(data);
+        cachedAdsData = data; // Cache the data
+        hasApiBeenCalled = true; // Mark as called
       } catch (error) {
         console.error("Error fetching ads:", error);
         setIsError(true);
@@ -183,4 +198,4 @@ const SidebarAds: React.FC<AdBannerProps> = ({ className }) => {
   );
 };
 
-export default SidebarAds;
+export default React.memo(SidebarAds);

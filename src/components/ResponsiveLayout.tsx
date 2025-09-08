@@ -17,7 +17,7 @@ import useRedirectNav from "@/hooks/useRedirectNav";
 
 const PageSkeleton = () => {
   return (
-    <div className="space-y-6 p-6 w-full max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl mx-auto">
+    <div className="space-y-6 p-6 w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto">
       {/* Title Skeleton */}
       <div className="h-8 bg-gray-300 w-3/4 rounded"></div>
 
@@ -238,6 +238,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     <div className={`flex flex-col bg-gray-50 relative`}>
       <Header />
 
+
       {isVisiblef ? (
         isDesktop ? null : (
           <PageSkeleton />
@@ -435,17 +436,20 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           )}
 
           */}
-          {/* Right sidebar with ad banners - only visible on desktop */}
-          {isDesktop && (
-            <div className="w-[240px] 2xl:w-[260px] fixed z-5 right-0 top-[60px] bottom-0 bg-white shadow-sm">
-              <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
-                {/* <AdBanner position="right_top" className="mb-4" /> */}
-                <SidebarAds className="mb-4" />
-              </div>
-            </div>
-          )}
         </div>
       )}
+
+
+      {/* Right side ads */}
+       {isDesktop && (
+        <div className="w-[240px] 2xl:w-[260px] fixed z-5 right-0 top-[60px] bottom-0 bg-white shadow-sm">
+          <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
+            {/* <AdBanner position="right_top" className="mb-4" /> */}
+            <SidebarAds className="mb-4" />
+          </div>
+        </div>
+      )}
+      
 
       {!isDesktop && !user && (
         <footer className="bg-gray-50 py-4 fixed bottom-[-1px] left-0 right-0 z-[1]">

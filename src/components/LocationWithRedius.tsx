@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import locationsData from "../data/uscitiesLocation.json";
 import { getLocationFromCoordinates } from "@/hooks/getLocationFromCoordinates ";
 import { useLocationContext } from "@/context/LocationContext";
+import usStates from "@/data/states";
 
 const toRadians = (degree: number) => {
   return degree * (Math.PI / 180);
@@ -1013,6 +1014,12 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
     }
   }, [selectedOption, radius, setCities]);
 
+  // Location Abbribiation
+  function formatLocation(address: string) {
+    const [city, stateAbbr] = address?.split(",").map((part) => part.trim()) || [];
+    return  city + ", " + (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr);
+  }
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -1035,12 +1042,17 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
                         </span> */}
 
             <span className="truncate relative pb-0.1">
-              {dispalySelectedOption
+              {/* {dispalySelectedOption
                 ? `${dispalySelectedOption?.search?.replace(
                     /, [^,]+$/,
                     ""
                   )} • ${displayRadius} mi`
-                : "Select location"}
+                : "Select location"} */}
+
+                {dispalySelectedOption
+                ? `${formatLocation(dispalySelectedOption?.search || "")} • ${displayRadius} mi`
+                : "Select location"} 
+                
               <span className="absolute bottom-0 left-0 w-full h-px bg-current" />
             </span>
           </div>
