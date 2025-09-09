@@ -320,7 +320,7 @@ const AboutUs = () => {
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="text-center mb-12 sm:mb-16 md:mb-20">
               <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-foreground mb-4 sm:mb-6 text-center">
-                Why Desieasy ?
+                Why Desieasy?
               </h2>
               <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
             </div>
