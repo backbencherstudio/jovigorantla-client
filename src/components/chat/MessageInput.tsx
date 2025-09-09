@@ -12,6 +12,28 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Trying to body overflow hidden/auto on input focus
+  useEffect(() => {
+    const handleFocus = () => {
+      document.body.style.overflow = "hidden";
+    };
+
+    const handleBlur = () => {
+      document.body.style.overflow = "auto";
+    };
+
+    // Add focus and blur event listeners to the input element
+    const inputElement = inputRef.current;
+    inputElement.addEventListener("focus", handleFocus);
+    inputElement.addEventListener("blur", handleBlur);
+
+    // Clean up event listeners on component unmount
+    return () => {
+      inputElement.removeEventListener("focus", handleFocus);
+      inputElement.removeEventListener("blur", handleBlur);
+    };
+  }, []);
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
