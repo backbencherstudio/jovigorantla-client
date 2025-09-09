@@ -447,31 +447,37 @@ export default function Home({ openModal }) {
     }, 500);
   };
 
-  // Add this effect for handling the initial auto-switch
+  // Add this effect for handling the initial auto-switch (Working on both location readius & Search)
   useEffect(() => {
-    // when active filter is Nearby
-    if (
-      autoSwitched &&
-      !initialLoadDone &&
-      activeFilter === "Nearby" &&
-      listings.length === 0 &&
-      !isLoading
-    ) {
-      setInitialLoadDone(true);
-      setFilterOptions(["USA", "Nearby"]);
-      setActiveFilter("USA");
+    const urlParams = new URLSearchParams(window.location.search);
 
-      // Update URL without triggering navigation
-      const currentParams = new URLSearchParams(location.search);
-      currentParams.set("tab", "true");
-      navigate(`${location.pathname}?${currentParams.toString()}`, {
-        replace: true,
-      });
-      // Trigger fetch for USA listings
-      numberOfShownListings.current = 0;
-      setListings([]);
-      setHasMore(true);
-      fetchNearByListings("USA", searchQuery, true);
+    // (urlParams.size == 0 || urlParams.has('tab')) && !initialLoadDone
+
+    if (!urlParams.has("q")) {
+      // when active filter is Nearby
+      if (
+        autoSwitched &&
+        !initialLoadDone &&
+        activeFilter === "Nearby" &&
+        listings.length === 0 &&
+        !isLoading
+      ) {
+        setInitialLoadDone(true);
+        setFilterOptions(["USA", "Nearby"]);
+        setActiveFilter("USA");
+
+        // Update URL without triggering navigation
+        const currentParams = new URLSearchParams(location.search);
+        currentParams.set("tab", "true");
+        navigate(`${location.pathname}?${currentParams.toString()}`, {
+          replace: true,
+        });
+        // Trigger fetch for USA listings
+        numberOfShownListings.current = 0;
+        setListings([]);
+        setHasMore(true);
+        fetchNearByListings("USA", searchQuery, true);
+      }
     }
   }, [autoSwitched, initialLoadDone, activeFilter, listings.length, isLoading]);
 

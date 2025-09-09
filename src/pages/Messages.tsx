@@ -415,6 +415,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatTime } from "@/lib/utils";
+import AboutFooter from "./AboutFooter";
 
 const Messages = () => {
   const { conversations, setActiveConversation, unreadMessages, loading } =
@@ -453,7 +454,7 @@ const Messages = () => {
   if (loading) return null;
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex flex-col bg-white px-2 py-4">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col justify-between bg-white px-2 py-4">
       {/* Conversations List */}
       <div className="w-full h-full flex flex-col mb-8">
         <div className="flex-1 overflow-y-auto">
@@ -542,8 +543,8 @@ const Messages = () => {
               ))}
             </ul>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full p-4 text-gray-500">
-              <p className="text-gray-500 mb-4">No messages yet</p>
+            <div className="flex flex-col items-center justify-center h-full p-4 ">
+              <h3 className="text-lg font-medium mb-2">No messages yet</h3>
               <Button
                 onClick={() => {
                   sessionStorage.removeItem("home_cached_data");
@@ -558,6 +559,11 @@ const Messages = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* About Footer */}
+      <div className="mt-4">
+        <AboutFooter />
       </div>
     </div>
   );

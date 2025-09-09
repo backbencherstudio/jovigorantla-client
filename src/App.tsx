@@ -50,7 +50,45 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   // If still loading auth state, don't redirect yet
   if (loading) {
-    return null;
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+        }}
+      >
+        <div
+          style={{
+            width: "50px",
+            height: "50px",
+            border: "4px solid rgba(0,0,0, .2)",
+            borderTop: "4px solid #ff6b00",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+            marginBottom: "20px",
+          }}
+        />
+        <p
+          style={{
+            color: "#ff6b00",
+            fontSize: "18px",
+            fontWeight: "600",
+            margin: 0,
+          }}
+        >
+          Loading...
+        </p>
+      </div>
+    );
   }
 
   // If not authenticated, redirect to auth page
@@ -398,6 +436,7 @@ function App() {
           </p>
         </div>
       )}
+
       <Router>
         <AuthProvider>
           <ListingProvider>

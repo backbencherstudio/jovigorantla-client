@@ -554,3 +554,10 @@ input:focus {
   color: #9ca3af;
   cursor: not-allowed;
 }
+
+/* Messa */
+
+.scrollAreaWrapper > div 
+{
+  height: 100%;
+}

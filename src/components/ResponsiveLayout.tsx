@@ -70,7 +70,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   const [isVisible, setIsVisible] = useState(true);
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const [isMobileHeaderRendered, setIsMobileHeaderRendered] = useState(false);
-  const { user, isModalOpen } = useAuth();
+  const { user, isModalOpen, loading } = useAuth();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -234,10 +234,51 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     }
   }, [isHome]);
 
+  if (loading) {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+        }}
+      >
+        <div
+          style={{
+            width: "50px",
+            height: "50px",
+            border: "4px solid rgba(0,0,0, .2)",
+            borderTop: "4px solid #ff6b00",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+            marginBottom: "20px",
+          }}
+        />
+        <p
+          style={{
+            color: "#ff6b00",
+            fontSize: "18px",
+            fontWeight: "600",
+            margin: 0,
+          }}
+        >
+          Loading...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex flex-col bg-gray-50 relative`}>
       <Header />
-
 
       {isVisiblef ? (
         isDesktop ? null : (
@@ -291,7 +332,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px] md:mx-2 ">
+              <div className="flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 ">
                 {children}
               </div>
             </main>
@@ -439,9 +480,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
         </div>
       )}
 
-
       {/* Right side ads */}
-       {isDesktop && (
+      {isDesktop && (
         <div className="w-[240px] 2xl:w-[260px] fixed z-5 right-0 top-[60px] bottom-0 bg-white shadow-sm">
           <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
             {/* <AdBanner position="right_top" className="mb-4" /> */}
@@ -449,7 +489,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           </div>
         </div>
       )}
-      
 
       {!isDesktop && !user && (
         <footer className="bg-gray-50 py-4 fixed bottom-[-1px] left-0 right-0 z-[1]">
