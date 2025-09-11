@@ -55,7 +55,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   return (
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
-      <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
+      {/* fixed bottom-0   */}
+      <div className="p-[14px] bg-[#f0f2f5] border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
