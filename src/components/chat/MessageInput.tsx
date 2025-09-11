@@ -55,7 +55,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
       <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+        <form className="flex gap-2">
           <Input
             placeholder="Type a message..."
             ref={inputRef}
@@ -64,6 +64,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
+           onClick={handleSendMessage} 
             type="button"
             size="icon"
             disabled={!newMessage.trim()}

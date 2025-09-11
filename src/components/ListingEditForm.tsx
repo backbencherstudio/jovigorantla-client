@@ -1,8 +1,8 @@
-import errorImg from '@/assets/error.svg';
-import loadingImg from '@/assets/Loading.svg';
-import successImg from '@/assets/success.svg';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import errorImg from "@/assets/error.svg";
+import loadingImg from "@/assets/Loading.svg";
+import successImg from "@/assets/success.svg";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -10,33 +10,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useListing } from '@/context/ListingContext';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { api } from '@/lib/axois';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Info, Upload, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import * as z from 'zod';
-import LocationWithRadius from './LocationWithRedius';
-import CustomModal from './shared/CustomModal';
-import AutoExpandingInput from './ui/AutoExpandingInput';
+} from "@/components/ui/tooltip";
+import { useListing } from "@/context/ListingContext";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { api } from "@/lib/axois";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Info, Upload, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import * as z from "zod";
+import LocationWithRadius from "./LocationWithRedius";
+import CustomModal from "./shared/CustomModal";
+import AutoExpandingInput from "./ui/AutoExpandingInput";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 const MAX_TITLE_LENGTH = 55;
@@ -44,17 +44,17 @@ const MAX_TITLE_LENGTH = 55;
 const formSchema = z.object({
   title: z
     .string()
-    .min(5, { message: 'Title must be at least 5 characters' })
+    .min(5, { message: "Title must be at least 5 characters" })
     .max(MAX_TITLE_LENGTH, {
       message: `Title must not exceed ${MAX_TITLE_LENGTH} characters`,
     }),
   description: z.string().optional(),
   price: z.coerce
     .number()
-    .positive({ message: 'Price must be a positive number' })
+    .positive({ message: "Price must be a positive number" })
     .optional(),
-  category: z.string().min(1, { message: 'Please select a category' }),
-  subCategory: z.string().min(1, { message: 'Please select a subcategory' }),
+  category: z.string().min(1, { message: "Please select a category" }),
+  subCategory: z.string().min(1, { message: "Please select a subcategory" }),
   address: z.string().optional(),
   postToUSA: z.boolean().optional(),
 });
@@ -70,10 +70,10 @@ interface ListingFormProps {
 
 // Define the main categories and their corresponding subcategories
 const categoriesConfig = {
-  Marketplace: ['Item', 'Service'],
-  Rides: ['Available', 'Looking'],
-  Accommodations: ['Available', 'Looking'],
-  Jobs: ['Hiring', 'Looking'],
+  Marketplace: ["Item", "Service"],
+  Rides: ["Available", "Looking"],
+  Accommodations: ["Available", "Looking"],
+  Jobs: ["Hiring", "Looking"],
 };
 
 const categories = Object.keys(categoriesConfig);
@@ -95,10 +95,10 @@ const ListingEditForm = ({
   isSubmitting = false,
 }: ListingFormProps) => {
   const [selectedCategory, setSelectedCategory] = useState(
-    initialValues?.category || '',
+    initialValues?.category || ""
   );
   const [selectedSubCategory, setSelectedSubCategory] = useState(
-    initialValues?.subCategory || '',
+    initialValues?.subCategory || ""
   );
   const [availableSubCategories, setAvailableSubCategories] = useState<
     string[]
@@ -107,7 +107,7 @@ const ListingEditForm = ({
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [showUSAOption, setShowUSAOption] = useState(false);
   const [titleLength, setTitleLength] = useState(
-    initialValues?.title?.length || 0,
+    initialValues?.title?.length || 0
   );
   const navigate = useNavigate();
   const { locationString } = useGeolocation();
@@ -120,11 +120,11 @@ const ListingEditForm = ({
   const [defaultLocation, setDefaultLocation] = useState<Location | null>(null);
   const [defaultRadius, setDefaultRadius] = useState(0);
 
-  const [Loading, setLoading] = useState(false)
-  const [UILoaded, setUILoaded] = useState(false)
+  const [Loading, setLoading] = useState(false);
+  const [UILoaded, setUILoaded] = useState(false);
 
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('edit');
+  const id = searchParams.get("edit");
 
   const {
     createListing,
@@ -136,23 +136,23 @@ const ListingEditForm = ({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialValues || {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       price: undefined,
-      category: '',
-      subCategory: '',
-      address: locationString || 'this addres',
+      category: "",
+      subCategory: "",
+      address: locationString || "this addres",
       postToUSA: false,
     },
   });
 
   const fetchEditListing = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const { data: listing } = await api.get(`/listings/${id}`);
 
-      console.log('listing => ', listing);
-      setUILoaded(true)
+      console.log("listing => ", listing);
+      setUILoaded(true);
 
       if (listing?.success) {
         const category =
@@ -162,13 +162,13 @@ const ListingEditForm = ({
           listing.data.sub_category?.slice(0, 1)?.toUpperCase() +
           listing.data?.sub_category?.slice(1).toLowerCase();
 
-        form.setValue('title', listing.data.title);
-        form.setValue('description', listing.data.description || '');
-        form.setValue('category', category);
-        form.setValue('subCategory', subCategory);
-        form.setValue('postToUSA', listing.data.post_to_usa);
-        console.log('post to usa => ', listing.data.post_to_usa);
-        form.setValue('address', listing.data.address);
+        form.setValue("title", listing.data.title);
+        form.setValue("description", listing.data.description || "");
+        form.setValue("category", category);
+        form.setValue("subCategory", subCategory);
+        form.setValue("postToUSA", listing.data.post_to_usa);
+        console.log("post to usa => ", listing.data.post_to_usa);
+        form.setValue("address", listing.data.address);
         // console.log(listing)
         setCities(listing.cities);
         // console.log("listing radius => ", listing.data.radius)
@@ -176,8 +176,8 @@ const ListingEditForm = ({
         // console.log(radius)
         setDefaultRadius(listing.data.radius);
 
-        setSelectedCategory(category)
-        setSelectedSubCategory(subCategory)
+        setSelectedCategory(category);
+        setSelectedSubCategory(subCategory);
 
         // Set location data
         if (listing.data.lat && listing.data.lng) {
@@ -194,9 +194,9 @@ const ListingEditForm = ({
           lng: Number(listing.data.longitude),
           search: listing.data.address,
           zip: 123456,
-          city: listing?.data?.address?.split(',')?.[0],
-          state_id: listing?.data?.address?.split(',')?.[1],
-          state_name: listing?.data?.address?.split(',')?.[1],
+          city: listing?.data?.address?.split(",")?.[0],
+          state_id: listing?.data?.address?.split(",")?.[1],
+          state_name: listing?.data?.address?.split(",")?.[1],
         });
 
         // Update available subcategories based on category
@@ -214,10 +214,10 @@ const ListingEditForm = ({
         }
       }
     } catch (error) {
-      console.error('Error fetching listing:', error);
+      console.error("Error fetching listing:", error);
       setIsOpenError(true);
     } finally {
-      setLoading(true)
+      setLoading(true);
     }
   };
 
@@ -309,12 +309,16 @@ const ListingEditForm = ({
       selectedCategory &&
       categoriesConfig[selectedCategory as keyof typeof categoriesConfig] &&
       // !categoriesConfig[selectedCategory as keyof typeof categoriesConfig].includes(form.getValues("subCategory"));
-      !categoriesConfig[selectedCategory as keyof typeof categoriesConfig].includes(selectedSubCategory);
+      !categoriesConfig[
+        selectedCategory as keyof typeof categoriesConfig
+      ].includes(selectedSubCategory);
 
     const shouldClearSubCategory = !selectedCategory;
 
     if (shouldResetSubCategory) {
-      const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
+      const subcats =
+        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
+        [];
       // form.setValue("subCategory", subcats[0] || "");
       setSelectedSubCategory(subcats[0] || "");
       setAvailableSubCategories(subcats);
@@ -325,7 +329,8 @@ const ListingEditForm = ({
     } else if (selectedCategory) {
       // Just update available options without resetting value
       setAvailableSubCategories(
-        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || []
+        categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
+          []
       );
     }
   }, [selectedCategory, form]);
@@ -343,7 +348,8 @@ const ListingEditForm = ({
   // }, [selectedCategory, selectedSubCategory, form]);
   useEffect(() => {
     const shouldShowUSAOption =
-      (selectedCategory === "Marketplace" && selectedSubCategory === "Service") ||
+      (selectedCategory === "Marketplace" &&
+        selectedSubCategory === "Service") ||
       (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
 
     setShowUSAOption(shouldShowUSAOption);
@@ -355,31 +361,30 @@ const ListingEditForm = ({
 
   useEffect(() => {
     const shouldShowUSAOption =
-      (selectedCategory === 'Marketplace' &&
-        selectedSubCategory === 'Service') ||
-      (selectedCategory === 'Jobs' && selectedSubCategory === 'Hiring');
+      (selectedCategory === "Marketplace" &&
+        selectedSubCategory === "Service") ||
+      (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
 
     setShowUSAOption(shouldShowUSAOption);
 
     // Only reset postToUSA if not editing
     if (!shouldShowUSAOption && !id) {
-      form.setValue('postToUSA', false);
+      form.setValue("postToUSA", false);
     }
   }, [selectedCategory, selectedSubCategory]);
 
   useEffect(() => {
-    if (locationString && !form.getValues('address')) {
-      form.setValue('address', locationString);
+    if (locationString && !form.getValues("address")) {
+      form.setValue("address", locationString);
     }
   }, [locationString]);
-
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
     form.setValue("category", value);
     // form.setValue('subCategory', availableSubCategories[0] || '')
 
-    setSelectedSubCategory(availableSubCategories[0])
+    setSelectedSubCategory(availableSubCategories[0]);
   };
 
   const handleSubCategoryChange = (value: string) => {
@@ -395,7 +400,7 @@ const ListingEditForm = ({
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setTitleLength(value.length);
-    form.setValue('title', value);
+    form.setValue("title", value);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -437,13 +442,13 @@ const ListingEditForm = ({
       const formData = new FormData();
 
       // Append all form values
-      formData.append('title', values.title);
-      formData.append('description', values.description || ''); // Send empty string instead of null
-      formData.append('category', values.category.toUpperCase());
-      formData.append('sub_category', values.subCategory);
-      formData.append('post_to_usa', String(values.postToUSA || false));
-      console.log('While submitting => ', radius);
-      formData.append('radius', String(radius));
+      formData.append("title", values.title);
+      formData.append("description", values.description || ""); // Send empty string instead of null
+      formData.append("category", values.category.toUpperCase());
+      formData.append("sub_category", values.subCategory);
+      formData.append("post_to_usa", String(values.postToUSA || false));
+      console.log("While submitting => ", radius);
+      formData.append("radius", String(radius));
       // Append images
       // if (images.length > 0) {
       //   formData.append('image', images[0]);
@@ -461,16 +466,16 @@ const ListingEditForm = ({
 
       // Append the cities array as a JSON string
       const testCities = [
-        { latitude: 40.7831, longitude: -73.9712, address: 'Manhattan' },
-        { latitude: 40.6782, longitude: -73.9442, address: 'Brooklyn' },
-        { latitude: 40.7178, longitude: -74.0431, address: 'Jersey City' },
-        { latitude: 40.7357, longitude: -74.1724, address: 'Newark' },
-        { latitude: 40.743, longitude: -74.0324, address: 'Hoboken' },
-        { latitude: 40.7795, longitude: -74.0238, address: 'Union City' },
-        { latitude: 40.6687, longitude: -74.1143, address: 'Bayonne' },
-        { latitude: 40.8509, longitude: -73.9701, address: 'Fort Lee' },
+        { latitude: 40.7831, longitude: -73.9712, address: "Manhattan" },
+        { latitude: 40.6782, longitude: -73.9442, address: "Brooklyn" },
+        { latitude: 40.7178, longitude: -74.0431, address: "Jersey City" },
+        { latitude: 40.7357, longitude: -74.1724, address: "Newark" },
+        { latitude: 40.743, longitude: -74.0324, address: "Hoboken" },
+        { latitude: 40.7795, longitude: -74.0238, address: "Union City" },
+        { latitude: 40.6687, longitude: -74.1143, address: "Bayonne" },
+        { latitude: 40.8509, longitude: -73.9701, address: "Fort Lee" },
       ];
-      formData.append('cities', JSON.stringify(testCities));
+      formData.append("cities", JSON.stringify(testCities));
 
       // formData.append('user_id', user.id);
       // formData.append('address', values.address);
@@ -493,13 +498,13 @@ const ListingEditForm = ({
 
       // Handle image upload properly
       if (images[0]) {
-        formData.append('image', images[0]);
+        formData.append("image", images[0]);
       } else if (
         imagePreviewUrls[0] &&
-        imagePreviewUrls[0].startsWith('http')
+        imagePreviewUrls[0].startsWith("http")
       ) {
         // If we have an existing image URL, send it back
-        formData.append('image_url', imagePreviewUrls[0]);
+        formData.append("image_url", imagePreviewUrls[0]);
       }
 
       if (id) {
@@ -519,18 +524,17 @@ const ListingEditForm = ({
       //   navigate("/");
       // }, 2000);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       setIsOpenError(true);
     }
   };
 
   // Check if photo uploads should be hidden - Hide for both Rides and Jobs
   const showPhotoUpload =
-    selectedCategory !== 'Rides' && selectedCategory !== 'Jobs';
-
+    selectedCategory !== "Rides" && selectedCategory !== "Jobs";
 
   if (!UILoaded) {
-    return <>Loading... {`${UILoaded}`}</>
+    return <>Loading... {`${UILoaded}`}</>;
   }
 
   return (
@@ -619,20 +623,21 @@ const ListingEditForm = ({
                       <SelectContent>
                         {availableSubCategories.map((subCategory) => {
                           return (
-                            <SelectItem key={subCategory} value={subCategory} defaultValue={selectedSubCategory}>
+                            <SelectItem
+                              key={subCategory}
+                              value={subCategory}
+                              defaultValue={selectedSubCategory}
+                            >
                               {subCategory}
                             </SelectItem>
-                          )
+                          );
                         })}
                       </SelectContent>
                     </Select>
                     <FormMessage className="text-xs font-normal -mt-[6.5px] text-[#b3261e]" />
                   </FormItem>
-                )
-              }
-              }
-
-
+                );
+              }}
             />
           </div>
 
@@ -707,10 +712,10 @@ const ListingEditForm = ({
                   <Textarea
                     placeholder="Describe your listing in detail"
                     className="min-h-[120px] resize-none overflow-hidden bg-[#e5ebee] focus-visible:outline-none focus-visible:ring-[0.75px] rounded-xl"
-                    style={{ height: 'auto' }}
+                    style={{ height: "auto" }}
                     onInput={(e) => {
                       const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
+                      target.style.height = "auto";
                       target.style.height = `${target.scrollHeight}px`;
                     }}
                     {...field}
@@ -843,7 +848,7 @@ const ListingEditForm = ({
             <Button
               variant="outline"
               type="button"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               disabled={isSubmitting}
             >
               Cancel
@@ -854,10 +859,10 @@ const ListingEditForm = ({
               className="mb-6 md:mb-0"
             >
               {isSubmitting
-                ? 'Saving...'
+                ? "Saving..."
                 : isEditing
-                  ? 'Update Listing'
-                  : 'Post Listing'}
+                ? "Update Listing"
+                : "Post Listing"}
             </Button>
           </div>
         </form>
@@ -892,5 +897,4 @@ const ListingEditForm = ({
   );
 };
 
-
-export default ListingEditForm
+export default ListingEditForm;
