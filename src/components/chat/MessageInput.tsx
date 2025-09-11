@@ -11,20 +11,21 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
-  
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (newMessage.trim()) {
       onSendMessage(newMessage);
-      //setNewMessage("");
-
-      formRef.current?.reset();
+      setNewMessage("");
 
       // Re-focus the input field to keep the keyboard open
       //inputRef.current?.focus();
+
+
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 300); // Delay to let animation finish
+      
     }
   };
 
@@ -55,7 +56,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
       <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
-        <form ref={formRef} onSubmit={handleSendMessage} className="flex gap-2">
+        <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
             ref={inputRef}
@@ -69,6 +70,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
+            onMouseDown={(e) => e.preventDefault()} // Critical: prevent default on mouseDown
+            onTouchStart={(e) => e.preventDefault()} // Critical for mobile
             type="submit"
             size="icon"
             disabled={!newMessage.trim()}
