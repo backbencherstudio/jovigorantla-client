@@ -11,12 +11,17 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
+  
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (newMessage.trim()) {
       onSendMessage(newMessage);
-      setNewMessage("");
+      //setNewMessage("");
+
+      formRef.current?.reset();
 
       // Re-focus the input field to keep the keyboard open
       //inputRef.current?.focus();
@@ -50,7 +55,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
       <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+        <form ref={formRef} onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
             ref={inputRef}
