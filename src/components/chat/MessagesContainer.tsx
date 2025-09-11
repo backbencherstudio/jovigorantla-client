@@ -72,7 +72,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
   });
 
   return (
-    <ScrollArea className="flex-1 pb-4 bg-gray-100">
+   /*  <ScrollArea className="flex-1 pb-4 bg-gray-100"> */
       <div className="px-4 pb-3 pt-[10px] h-full w-full overflow-y-auto  flex flex-col-reverse [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {dateKeys.map((dateKey) => {
           // const dateMessages = groupedMessages[dateKey];
@@ -113,7 +113,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
         })}
         <div ref={messagesEndRef} />
       </div>
-    </ScrollArea>
+   /*  </ScrollArea> */
   );
 };
 
