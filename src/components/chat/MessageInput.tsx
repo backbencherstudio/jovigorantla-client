@@ -15,19 +15,20 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      onSendMessage(newMessage);
+      // onSendMessage(newMessage);
+      // setNewMessage("");
+
+      const trimmed = newMessage.trim();
+      if (!trimmed) return;
+
+      onSendMessage(trimmed);
       setNewMessage("");
 
       // Re-focus the input field to keep the keyboard open
-
-      inputRef.current?.focus();
-
-      // setTimeout(() => {
-      //   inputRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
-      //   inputRef.current?.focus();
-      // }, 50);
+      //inputRef.current?.focus();
     }
   };
+
   const [width, setWidth] = useState("768px");
   useEffect(() => {
     // Function to update width based on screen size
@@ -64,7 +65,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
-           onClick={handleSendMessage} 
+            onClick={handleSendMessage}
             type="button"
             size="icon"
             disabled={!newMessage.trim()}
