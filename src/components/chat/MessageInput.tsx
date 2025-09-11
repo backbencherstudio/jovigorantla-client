@@ -22,10 +22,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
 
       //inputRef.current?.focus();
 
-      setTimeout(() => {
-        inputRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
-        inputRef.current?.focus();
-      }, 50);
+      // setTimeout(() => {
+      //   inputRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+      //   inputRef.current?.focus();
+      // }, 50);
     }
   };
   const [width, setWidth] = useState("768px");
@@ -64,7 +64,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
-            type="submit"
+            type="button"
             size="icon"
             disabled={!newMessage.trim()}
             className="rounded-full bg-primary hover:bg-primary/90 h-10 w-10 flex items-center justify-center"
