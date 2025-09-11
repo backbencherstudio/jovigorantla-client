@@ -19,9 +19,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
       setNewMessage("");
 
       // Re-focus the input field to keep the keyboard open
-      
+
       //inputRef.current?.focus();
 
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+        inputRef.current?.focus();
+      }, 50);
     }
   };
   const [width, setWidth] = useState("768px");
