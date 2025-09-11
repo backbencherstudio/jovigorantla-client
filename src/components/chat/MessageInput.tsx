@@ -15,13 +15,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      // onSendMessage(newMessage);
-      // setNewMessage("");
-
-      const trimmed = newMessage.trim();
-      if (!trimmed) return;
-
-      onSendMessage(trimmed);
+      onSendMessage(newMessage);
       setNewMessage("");
 
       // Re-focus the input field to keep the keyboard open
@@ -56,24 +50,28 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
       <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
-        <div className="flex gap-2">
+        <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
             ref={inputRef}
             value={newMessage}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = "auto";
+              target.style.height = `${target.scrollHeight}px`;
+            }}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
-            onClick={handleSendMessage}
-            type="button"
+            type="submit"
             size="icon"
             disabled={!newMessage.trim()}
             className="rounded-full bg-primary hover:bg-primary/90 h-10 w-10 flex items-center justify-center"
           >
             <Send className="h-5 w-5" />
           </Button>
-        </div>
+        </form>
       </div>
       {/* <div className="h-5"></div> */}
     </div>
