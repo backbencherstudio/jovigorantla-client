@@ -338,7 +338,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div> */}
 
       {/* relative bottom-0 left-0 right-0 z-20 bg-gray-100 */}
-      <div className="fixed bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
+      <div className="sticky bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
         {!isBlocked ? (
           <MessageInput onSendMessage={handleSendMessage} />
         ) : blockedByMe ? (

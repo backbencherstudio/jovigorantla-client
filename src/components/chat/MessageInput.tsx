@@ -61,11 +61,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             placeholder="Type a message..."
             ref={inputRef}
             value={newMessage}
-            onInput={(e) => {
-              const target = e.target as HTMLTextAreaElement;
-              target.style.height = "auto";
-              target.style.height = `${target.scrollHeight}px`;
-            }}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
