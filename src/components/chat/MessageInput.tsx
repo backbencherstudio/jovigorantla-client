@@ -20,7 +20,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
 
       // Re-focus the input field to keep the keyboard open
 
-      //inputRef.current?.focus();
+      inputRef.current?.focus();
 
       // setTimeout(() => {
       //   inputRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
@@ -55,7 +55,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
       <div className="p-[14px] bg-[#f0f2f5] fixed bottom-0  border-t border-gray-200 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem] ">
-        <form className="flex gap-2">
+        <div className="flex gap-2">
           <Input
             placeholder="Type a message..."
             ref={inputRef}
@@ -72,7 +72,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
           >
             <Send className="h-5 w-5" />
           </Button>
-        </form>
+        </div>
       </div>
       {/* <div className="h-5"></div> */}
     </div>
