@@ -290,7 +290,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
 
       {/* Messages Area */}
       {/* max-h-[calc(100vh-70px)] pb-[60px] */}
-      <div className="max-h-[calc(100vh-130px)] h-full flex pt-[40px] w-full">
+      <div className="max-h-old h-full flex pt-[40px] w-full">
         {/* {isBlocked && (
           <div className="flex justify-center items-center text-center p-4">
             <Badge variant="destructive">You are blocked in this conversation</Badge>
@@ -337,7 +337,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div> */}
 
       {/* relative bottom-0 left-0 right-0 z-20 bg-gray-100 */}
-      <div className=" fixed bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
+      <div className="sticky bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
         {!isBlocked ? (
           <MessageInput onSendMessage={handleSendMessage} />
         ) : blockedByMe ? (

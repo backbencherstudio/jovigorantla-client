@@ -72,7 +72,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 24 100% 50%; /* Changed to #ff6b00 */
-    
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 24 100% 50%; /* Changed to #ff6b00 */
@@ -84,7 +84,9 @@
   }
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-size: 16px; /* Prevents zoom on iOS */
 }
 
@@ -144,15 +146,15 @@ input, textarea, select {
   .listing-enter {
     @apply transform translate-y-4 opacity-0;
   }
-  
+
   .listing-enter-active {
     @apply transform translate-y-0 opacity-100 transition duration-300;
   }
-  
+
   .listing-exit {
     @apply transform opacity-100;
   }
-  
+
   .listing-exit-active {
     @apply transform -translate-y-4 opacity-0 transition duration-300;
   }
@@ -202,8 +204,6 @@ input, textarea, select {
   transition: opacity 300ms, transform 300ms;
 }
 
-
-
 /* Responsive layout helpers */
 @media (max-width: 767px) {
   .content-container {
@@ -223,13 +223,9 @@ input, textarea, select {
   }
 }
 
-
-
 input:focus {
   transform: translateZ(0); /* Helps prevent layout shifts */
 }
-
-
 
 .auth-modal-overlay {
   position: fixed;
@@ -269,7 +265,6 @@ input:focus {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   max-height: 90vh;
   overflow-y: auto;
-
 
   will-change: transform;
   backface-visibility: hidden;
@@ -336,7 +331,6 @@ input:focus {
   display: flex;
   margin-bottom: 24px;
   border-bottom: 1px solid #e5e7eb;
-
 }
 
 .tab-button {
@@ -555,9 +549,21 @@ input:focus {
   cursor: not-allowed;
 }
 
-/* Messa */
+/* Message Scroll Area Wrapper */
 
-.scrollAreaWrapper > div 
-{
+.scrollAreaWrapper > div {
   height: 100%;
+}
+
+/* Dynamic Max Height */
+
+.max-h-old {
+  max-height: calc(100vh - 130px);
+}
+
+/* Dynamic Max Height override when dvh is supported */
+@supports (height: 100dvh) {
+  .max-h-old {
+    max-height: calc(100dvh - 130px);
+  }
 }
