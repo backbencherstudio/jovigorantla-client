@@ -9,7 +9,6 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
-
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSendMessage = (e: React.FormEvent) => {
