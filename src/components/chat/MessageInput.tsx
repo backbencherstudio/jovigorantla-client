@@ -19,6 +19,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
       setNewMessage("");
 
       setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight);
         inputRef.current?.focus();
       }, 300);
     }
