@@ -1042,8 +1042,16 @@ export default function Rides({ openModal }) {
   };
 
   // Use useCallback to prevent unnecessary re-renders
+
+  const currentActiveFilterRef = useRef(activeFilter);
+  const currentSearchQueryRef = useRef(searchQuery);
+
   const fetchNearByListings = useCallback(
     async (filter: string, query: string, isNewFilter = false) => {
+      // Update current active references
+      currentActiveFilterRef.current = filter;
+      currentSearchQueryRef.current = query;
+
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
         console.log("Already fetching, skipping request");
@@ -1082,6 +1090,14 @@ export default function Rides({ openModal }) {
         });
 
         const data = listingResponse.data;
+
+        if (
+          filter !== currentActiveFilterRef.current ||
+          query !== currentSearchQueryRef.current
+        ) {
+          // Ignoring response for outdated filter
+          return;
+        }
 
         // console.log("Fetch response:", {
         //   listingsCount: data.listings?.length || 0,
@@ -1315,11 +1331,15 @@ export default function Rides({ openModal }) {
     //   radius,
     // });
 
+    // Reset the fetching flag to allow new requests
+    isFetchingRef.current = false;
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
+    setLoading(true);
 
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);

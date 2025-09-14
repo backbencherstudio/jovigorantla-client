@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  CheckCircle,
   Home,
   Car,
   ShoppingCart,
@@ -27,17 +26,17 @@ import {
   Twitter,
 } from "lucide-react";
 
-import { FaXTwitter } from "react-icons/fa6";
-
 import heroAbstract from "@/assets/hero-abstract.jpg";
-import community3d from "@/assets/community-3d.jpg";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import AboutFooter from "./AboutFooter";
+import useRedirectNav from "@/hooks/useRedirectNav";
 
 // Call the function to clear content based on the date
 
 const AboutUs = () => {
+  const { redirectNavLink } = useRedirectNav();
+
   const navigate = useNavigate();
   // Function to check if the current date has passed the custom date
 
@@ -50,14 +49,6 @@ const AboutUs = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handlePostListing = () => {
-    navigate("/create-listing");
-  };
-
-  const handleBrowseListings = () => {
-    navigate("/");
-  };
 
   const features = [
     {
@@ -191,76 +182,6 @@ const AboutUs = () => {
   return (
     <div className="max-w-3xl mx-auto  bg-white min-h-[calc(100vh-110px)]">
       <div>
-        {/* Old Code */}
-        {/* <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">
-            Connecting the South Asian Community Abroad
-          </h2>
-          <p className="text-gray-700 mb-4">
-            Desieasy is a community-powered marketplace built to help South
-            Asians living abroad feel more connected and at home. Whether you're
-            new to a city or just looking to connect with others in the local
-            Desi network, our platform makes it easy to find housing, buy and
-            sell items, discover job opportunities, and share rides — all within
-            a culturally familiar space.
-          </p>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">
-            Built by the Community, for the Community
-          </h2>
-          <p className="text-gray-700 mb-4">
-            At DesiEasy, we believe in the power of connection. We don't offer
-            services ourselves; we create the platform where you and your fellow
-            community members can come together, support one another, and share
-            what you need. It's a space for Desis to help Desis — whether it's
-            finding a roommate, getting a ride, or sharing a job opportunity.
-            It's simple, easy to use, and designed for anyone, anywhere — so you
-            can always be a part of your community, no matter where life takes
-            you.
-          </p>
-        </section>
-
-        <section className="mb-8"></section>
-
-        <section>
-          <h2 className="text-xl font-semibold mb-3">Contact Us</h2>
-          <p className="text-gray-700">
-            Have questions or suggestions? We'd love to hear from you!
-          </p>
-          <p className="text-gray-700 mt-2">
-            Email:{" "}
-            <a
-              href="mailto:support@desieasy.com"
-              className="text-brand hover:underline"
-            >
-              support@desieasy.com
-            </a>
-          </p>
-        </section>
-        <div className="mt-10">
-          <div className="flex  gap-2">
-            <p
-              onClick={() => navigate("/privacy-policy")}
-              className="text-xs text-gray-500 hover:underline cursor-pointer"
-            >
-              Privacy Policy
-            </p>
-            <p
-              onClick={() => navigate("/user-agreement")}
-              className="text-xs text-gray-500 hover:underline cursor-pointer"
-            >
-              User Agreement
-            </p>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Desieasy © 2025. All rights reserved.
-          </p>
-        </div> */}
-
-        {/* ========================== New Code ========================== */}
-
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           <div
@@ -295,7 +216,7 @@ const AboutUs = () => {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2 lg:px-4 xl:px-2 w-full">
               <Button
                 size="lg"
-                onClick={handlePostListing}
+                onClick={() => redirectNavLink("/create-listing")}
                 className="text-base sm:text-lg px-6 sm:px-8 md:px-10 lg:px-7 xl:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white border-0 shadow-2xl transform hover:scale-105 transition-all duration-300"
               >
                 <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -305,7 +226,12 @@ const AboutUs = () => {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={handleBrowseListings}
+                onClick={() => {
+                  sessionStorage.removeItem("home_cached_data");
+                  sessionStorage.removeItem("home_scroll_position");
+                  navigate("/");
+                  scrollTo(0, 0);
+                }}
                 className="text-base sm:text-lg px-6 sm:px-8 md:px-10 lg:px-7 xl:px-10 py-3 sm:py-4 rounded-full border-2 border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white hover:text-white transform hover:scale-105 transition-all duration-300"
               >
                 <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -316,8 +242,6 @@ const AboutUs = () => {
         </section>
 
         {/* Why Desieasy Section */}
-
-{/* Here this is comment */}
 
         <section className="py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-br from-background via-background to-accent/5">
           <div className="w-full px-4 sm:px-6 md:px-8">
@@ -586,7 +510,12 @@ const AboutUs = () => {
               <div className="mt-8 sm:mt-12">
                 <Button
                   size="lg"
-                  onClick={handleBrowseListings}
+                  onClick={() => {
+                    sessionStorage.removeItem("home_cached_data");
+                    sessionStorage.removeItem("home_scroll_position");
+                    navigate("/");
+                    scrollTo(0, 0);
+                  }}
                   className="text-base sm:text-lg px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />

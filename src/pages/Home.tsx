@@ -128,8 +128,17 @@ export default function Home({ openModal }) {
   };
 
   // Use useCallback to prevent unnecessary re-renders
+
+  const currentActiveFilterRef = useRef(activeFilter);
+  const currentSearchQueryRef = useRef(searchQuery);
+
   const fetchNearByListings = useCallback(
     async (filter: string, query: string, isNewFilter = false) => {
+
+      // Update current active references
+      currentActiveFilterRef.current = filter;
+      currentSearchQueryRef.current = query;
+
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
         //console.log("Already fetching, skipping request");
@@ -173,6 +182,14 @@ export default function Home({ openModal }) {
         });
 
         const data = listingResponse.data;
+
+        if (
+          filter !== currentActiveFilterRef.current ||
+          query !== currentSearchQueryRef.current
+        ) {
+          // Ignoring response for outdated filter
+          return;
+        }
 
         // console.log('Fetch response:', {
         //   listingsCount: data.listings?.length || 0,
@@ -226,6 +243,7 @@ export default function Home({ openModal }) {
         setHasMore(false); // Stop trying to fetch more on error
       } finally {
         setLoading(false);
+
         isFetchingRef.current = false;
         setIsInitialLoad(false);
         if (!initialLoadComplete) {
@@ -410,11 +428,15 @@ export default function Home({ openModal }) {
     //   radius,
     // });
 
+    // Reset the fetching flag to allow new requests
+    isFetchingRef.current = false;
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
+    setLoading(true);
 
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
@@ -440,6 +462,7 @@ export default function Home({ openModal }) {
     //window.scrollTo(0, isMobile ? 200 : 0);
     window.scrollTo(0, 0);
     setIsTabChanging(true);
+
     setActiveFilter(filter);
 
     setTimeout(() => {

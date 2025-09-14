@@ -485,10 +485,9 @@ const UserAgreement = () => {
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <AboutFooter />
       </div>
+      {/* Footer */}
+      <AboutFooter />
     </div>
   );
 };

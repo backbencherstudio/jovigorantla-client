@@ -477,30 +477,29 @@ const SavedListings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // console.log("favoritesListings from context:", favoritesListings);
+  //console.log("favoritesListings from context:", favoritesListings);
 
   // Fetch saved listings from API
   const fetchSavedListings = useCallback(async () => {
     if (!user) return;
 
     try {
-      setIsLoading(true);
+      //setIsLoading(true);
 
       // If fetchFavoritesListings exists in context, use it
       if (fetchFavoritesListings) {
-        
-        //await fetchFavoritesListings();
+        // await fetchFavoritesListings();
       } else {
         // Otherwise fetch directly
-        /* const response = await api.get("/favorites");
-        const savedListings = response.data.data || [];
-        setListings(savedListings); */
+        // const response = await api.get("/favorites");
+        // const savedListings = response.data.data || [];
+        // setListings(savedListings);
       }
     } catch (error) {
       console.error("Error fetching saved listings:", error);
       toast.error("Failed to load saved listings");
     } finally {
-      setIsLoading(false);
+      //setIsLoading(false);
       setIsInitialized(true);
     }
   }, [user, fetchFavoritesListings]);
@@ -512,10 +511,10 @@ const SavedListings = () => {
       return;
     }
 
-    // If favoritesListings is already populated, use it
+    //If favoritesListings is already populated, use it
     if (favoritesListings && favoritesListings.length > 0) {
       setListings(favoritesListings);
-      setIsLoading(false);
+      //setIsLoading(false);
       setIsInitialized(true);
     } else if (!isInitialized) {
       // If favoritesListings is empty and we haven't initialized, fetch from API
@@ -527,7 +526,12 @@ const SavedListings = () => {
   useEffect(() => {
     if (favoritesListings && favoritesListings.length > 0) {
       setListings(favoritesListings);
-      setIsLoading(false);
+
+      //setIsLoading(false);
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     } else if (
       isInitialized &&
       favoritesListings &&
@@ -535,7 +539,12 @@ const SavedListings = () => {
     ) {
       // If initialized and favoritesListings is explicitly empty array
       setListings([]);
-      setIsLoading(false);
+
+      //setIsLoading(false);
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   }, [favoritesListings, isInitialized]);
 
@@ -544,7 +553,7 @@ const SavedListings = () => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && user) {
         console.log("Page became visible, refreshing saved listings");
-        fetchSavedListings();
+        //fetchSavedListings();
       }
     };
 
@@ -605,7 +614,7 @@ const SavedListings = () => {
   };
 
   // Show loading state
-  /*  if (isLoading) {
+  /* if (isLoading) {
     return (
       <div className="bg-white py-5 w-full h-[100%]">
         <div className="space-y-4 p-4">
@@ -629,15 +638,15 @@ const SavedListings = () => {
       <div className="bg-white h-full flex flex-col justify-between">
         {isLoading ? (
           <>
-            {/* <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-white p-4 rounded-lg">
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              </div>
-            ))}
-          </div> */}
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse bg-white p-4 rounded-lg">
+                  <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                  <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              ))}
+            </div>
           </>
         ) : (
           <>

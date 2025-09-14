@@ -209,7 +209,7 @@ const Header = ({
     searchInputRef.current?.focus();
 
     // Navigate to the current path without the query parameter
-    // navigate(location.pathname);
+    navigate(location.pathname);
   };
 
   useEffect(() => {
@@ -220,6 +220,8 @@ const Header = ({
     // Update the state with the query if it exists
     if (query) {
       setSearchValue(query);
+    } else {
+      setSearchValue("");
     }
   }, [location.search]);
 

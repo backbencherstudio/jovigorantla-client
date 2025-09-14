@@ -147,10 +147,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     // Do Focus On clear search input
     searchInputRef.current?.focus();
 
-    // navigate(location.pathname); // Navigate to home without query
+    navigate(location.pathname); // Navigate to home without query
   };
+
   useEffect(() => {
     const queryParam = new URLSearchParams(location.search).get("q") || "";
+
     setSearchQuery(queryParam);
   }, [location.search]);
 
