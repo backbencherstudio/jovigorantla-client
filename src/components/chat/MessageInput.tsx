@@ -46,6 +46,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
+
   return (
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>

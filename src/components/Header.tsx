@@ -227,7 +227,13 @@ const Header = ({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // onSearchInputChange(e.target.value);
-    setSearchValue(e.target.value);
+
+    if (e.target.value.trim() == "") {
+      handleClearInput();
+    } else {
+      setSearchValue(e.target.value);
+    }
+
     // if (!e.target.value.trim()) {
     //   navigate(location.pathname);
     // }

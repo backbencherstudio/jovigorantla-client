@@ -79,10 +79,10 @@ const ListingDetailPage = ({ openModal }) => {
     try {
       const { data } = await api.get(`/listings/${id}`);
       if (data?.success) {
-        setLoading(false);
+        //setLoading(false);
         setListing(data?.data);
       } else {
-        setLoading(false);
+        //setLoading(false);
         // if data not found redirect to home
         navigate("/");
       }
@@ -273,7 +273,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   if (loading || !listing) {
     return (
-      <div className="flex items-center justify-center h-[100vh]">
+      <div className="flex items-center justify-center h-[calc(100vh-120px)]">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );

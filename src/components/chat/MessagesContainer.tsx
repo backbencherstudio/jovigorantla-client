@@ -34,12 +34,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
     // From your timestamp (automatically uses local timezone)
     const date = dayjs(message.timestamp).local();
     const dateKey = date.format("YYYY-MM-DD"); // Converted to your local timezone
-    console.log(
+    /* console.log(
       dateKey,
       new Date(dateKey),
       new Date().toDateString(),
       dayjs().format("YYYY-MM-DD")
-    );
+    ); */
 
     if (!groupedMessages[dateKey]) {
       groupedMessages[dateKey] = [];

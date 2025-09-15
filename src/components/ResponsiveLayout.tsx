@@ -74,7 +74,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchQuery(value);
+
+    if (value.trim() == "") {
+      handleClearInput();
+    } else {
+      setSearchQuery(value);
+    }
 
     // If search field is cleared, navigate to home without query
     // if (!value.trim() && location.search.includes("q=")) {
