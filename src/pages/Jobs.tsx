@@ -773,7 +773,7 @@ export default function Jobs({ openModal }) {
   };
 
   useEffect(() => {
-    console.log("Distance from top:", distanceFromTop, "px");
+    //console.log("Distance from top:", distanceFromTop, "px");
   }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -825,7 +825,7 @@ export default function Jobs({ openModal }) {
             category: "JOBS",
             sub_category,
             search: query,
-            limit: 10,
+            limit: 20,
             numberOfShownListings: shownCount,
             lat: lat,
             lng: lng,
@@ -846,12 +846,12 @@ export default function Jobs({ openModal }) {
           return;
         }
 
-        console.log("Fetch response:", {
+        /* console.log("Fetch response:", {
           listingsCount: data.listings?.length || 0,
           hasMore: data.hasMore,
           totalCount: data.totalCount,
           numberOfShownListings: data.numberOfShownListings,
-        });
+        }); */
 
         if (data.listings && data.listings.length > 0) {
           if (isNewFilter || shownCount === 0) {
@@ -1127,14 +1127,14 @@ export default function Jobs({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      console.log("Intersection observed:", {
+      /* console.log("Intersection observed:", {
         isIntersecting: first.isIntersecting,
         hasMore,
         isLoading,
         isFetching: isFetchingRef.current,
         isTabChanging,
         isInitialLoad,
-      });
+      }); */
 
       if (
         first.isIntersecting &&
@@ -1151,7 +1151,7 @@ export default function Jobs({ openModal }) {
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: "50px", // Trigger 50px before the element is visible
+      rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
     const currentElement = loadMoreRef.current;

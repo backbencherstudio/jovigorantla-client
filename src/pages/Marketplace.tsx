@@ -1622,7 +1622,7 @@ export default function Marketplace({ openModal }) {
   };
 
   useEffect(() => {
-    console.log("Distance from top:", distanceFromTop, "px");
+    //console.log("Distance from top:", distanceFromTop, "px");
   }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -1681,7 +1681,7 @@ export default function Marketplace({ openModal }) {
             category: "MARKETPLACE",
             sub_category,
             search: query,
-            limit: 10,
+            limit: 20,
             numberOfShownListings: shownCount,
             lat: lat,
             lng: lng,
@@ -2012,7 +2012,7 @@ export default function Marketplace({ openModal }) {
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: "50px", // Trigger 50px before the element is visible
+      rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
     const currentElement = loadMoreRef.current;

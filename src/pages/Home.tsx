@@ -134,7 +134,6 @@ export default function Home({ openModal }) {
 
   const fetchNearByListings = useCallback(
     async (filter: string, query: string, isNewFilter = false) => {
-
       // Update current active references
       currentActiveFilterRef.current = filter;
       currentSearchQueryRef.current = query;
@@ -153,12 +152,12 @@ export default function Home({ openModal }) {
 
       isFetchingRef.current = true;
 
-      console.log("Starting fetch:", {
+      /* console.log("Starting fetch:", {
         filter,
         query,
         isNewFilter,
         numberOfShownListings: numberOfShownListings.current,
-      });
+      }); */
 
       try {
         setLoading(true);
@@ -170,7 +169,7 @@ export default function Home({ openModal }) {
           params: {
             is_usa: isUsa,
             search: query,
-            limit: 10,
+            limit: 20,
             numberOfShownListings: shownCount,
             lat: lat,
             lng: lng,
@@ -538,7 +537,7 @@ export default function Home({ openModal }) {
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1,
-      rootMargin: "50px",
+      rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
     const currentElement = loadMoreRef.current;

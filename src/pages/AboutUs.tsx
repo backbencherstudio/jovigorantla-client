@@ -87,24 +87,28 @@ const AboutUs = () => {
     {
       icon: ShoppingCart,
       title: "Marketplace",
+      href: "/marketplace",
       description: "Buy/sell items or promote your services",
       gradient: "from-green-500 to-emerald-500",
     },
     {
       icon: Car,
       title: "Rides",
+      href: "/rides",
       description: "Post or find rides between cities or local areas",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
       icon: Home,
       title: "Accommodations",
+      href: "/accommodations",
       description: "Find roommates or post rental spaces",
       gradient: "from-purple-500 to-pink-500",
     },
     {
       icon: Briefcase,
       title: "Jobs",
+      href: "/jobs",
       description: "Share job openings or explore work opportunities",
       gradient: "from-orange-500 to-red-500",
     },
@@ -295,7 +299,16 @@ const AboutUs = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-2xl mx-auto">
               {categories.map((category, index) => (
-                <div key={index} className="group">
+                <div
+                  key={index}
+                  className="group cursor-pointer"
+                  onClick={() => {
+                    sessionStorage.removeItem("home_cached_data");
+                    sessionStorage.removeItem("home_scroll_position");
+                    navigate(category.href);
+                    scrollTo(0, 0);
+                  }}
+                >
                   <div className="relative bg-gradient-to-br from-card to-card/80 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-3 h-full overflow-hidden">
                     {/* Animated background gradient */}
                     <div
