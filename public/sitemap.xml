@@ -4,13 +4,39 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
 
-<url>
-  <loc>https://desieasy.com/</loc>
-  <lastmod>2025-09-19T08:45:56+00:00</lastmod>
-</url>
-
+  <url>
+    <loc>https://desieasy.com/</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/marketplace</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/rides</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/accommodations</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/jobs</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/discover-desieasy</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/privacy-policy</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://desieasy.com/user-agreement</loc>
+    <lastmod>2025-09-19T08:45:56+00:00</lastmod>
+  </url>
 
 </urlset>
