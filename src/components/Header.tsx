@@ -299,7 +299,14 @@ const Header = ({
     sessionStorage.removeItem("home_scroll_position");
     //window.location.href = "/";
     navigate("/");
-    scrollTo(0, 0);
+
+    // scrollTo(0, 0);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+      });
+    });
   };
 
   return (
