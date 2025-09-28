@@ -1110,7 +1110,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
               getOptionLabel={(option: Location) => option.search}
               getOptionValue={(option: Location) => option.search}
               // getOptionValue={(option: Location) => option.zip.toString()}
-              placeholder="Search by city"
+              placeholder="City or Zipcode"
               className="text-sm "
               styles={{
                 control: (base, state) => ({

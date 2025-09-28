@@ -17,9 +17,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
       onSendMessage(newMessage);
       setNewMessage("");
 
-      setTimeout(() => {
+      /* setTimeout(() => {
         inputRef.current?.focus();
-      }, 300);
+      }, 300); */
     }
   };
 

@@ -297,16 +297,18 @@ const Header = ({
   const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-    //window.location.href = "/";
-    navigate("/");
-
+    
+    // navigate("/");
     // scrollTo(0, 0);
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-      });
-    });
+    navigate("/", { replace: true });
+
+    // Delay scroll to allow React Router to finish navigation
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }, 100); 
   };
 
   return (
