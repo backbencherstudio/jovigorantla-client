@@ -63,7 +63,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             /* onMouseDown={(e) => e.preventDefault()}
             onTouchStart={(e) => e.preventDefault()} */
             // onClick={handleSendMessage}
-            type="button"
+            type="submit"
             size="icon"
             disabled={!newMessage.trim()}
             className="rounded-full bg-primary hover:bg-primary/90 h-10 w-10 flex items-center justify-center"
