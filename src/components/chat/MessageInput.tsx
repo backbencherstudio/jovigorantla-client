@@ -46,7 +46,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-
   return (
     // max-w-xl lg:max-w-[30rem] xl:max-w-3xl w-full
     <div>
@@ -63,7 +62,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
           <Button
             /* onMouseDown={(e) => e.preventDefault()}
             onTouchStart={(e) => e.preventDefault()} */
-            onClick={handleSendMessage}
+            // onClick={handleSendMessage}
             type="button"
             size="icon"
             disabled={!newMessage.trim()}
