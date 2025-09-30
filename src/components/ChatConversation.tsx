@@ -270,8 +270,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   }, [isBlocked, blockedByMe, blockedByOther]);
 
   return (
-    // max-h-[calc(100vh-0px)]
-    <div className="flex flex-col h-full mt-[50px] overflow-hidden bg-gray-100 ">
+    <div className="flex flex-col max-h-[calc(100vh-130px)] h-full overflow-hidden bg-gray-100 ">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white">
         <ChatHeader
@@ -338,7 +337,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div> */}
 
       {/* relative bottom-0 left-0 right-0 z-20 bg-gray-100 */}
-      <div className="relative bottom-0 left-0 right-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
+      <div className="fixed bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
         {!isBlocked ? (
           <MessageInput onSendMessage={handleSendMessage} />
         ) : blockedByMe ? (

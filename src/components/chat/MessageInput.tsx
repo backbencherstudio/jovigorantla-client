@@ -9,7 +9,7 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  // const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type a message..."
-            ref={inputRef}
+            // ref={inputRef}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
