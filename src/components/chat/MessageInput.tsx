@@ -61,8 +61,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
             className="flex-1 rounded-full bg-white border-gray-200 focus:ring-primary/20"
           />
           <Button
-            onMouseDown={(e) => e.preventDefault()}
-            onTouchStart={(e) => e.preventDefault()}
+            /* onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.preventDefault()} */
             onClick={handleSendMessage}
             type="button"
             size="icon"
