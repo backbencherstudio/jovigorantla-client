@@ -145,6 +145,8 @@ type User = {
   name?: string;
   type: string;
   created_at: string;
+  name_change_count: number;
+  name_change_date: string;
 };
 
 type AuthContextType = {

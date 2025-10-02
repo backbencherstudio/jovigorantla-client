@@ -141,6 +141,80 @@ import {
 } from "@/components/ui/dialog";
 import AboutFooter from "./AboutFooter";
 
+// Change User Name
+function canChangeUsername(
+  createdAt: Date | string,
+  changeCount: number,
+  lastChangeDate?: Date | string | null
+): {
+  canChange: boolean;
+  reason: string;
+  changesLeft: number;
+  maxChanges: number;
+  resetInDays?: number;
+} {
+  const created = new Date(createdAt);
+  const now = new Date();
+  // Calculate if within first month
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const withinFirstMonth = created > oneMonthAgo;
+  // Determine max changes based on timeframe
+  const maxChanges = withinFirstMonth ? 2 : 1;
+  // Check if monthly reset applies (for users after first month)
+  if (!withinFirstMonth && lastChangeDate) {
+    const lastChange = new Date(lastChangeDate);
+    const isNewMonth =
+      lastChange.getMonth() !== now.getMonth() ||
+      lastChange.getFullYear() !== now.getFullYear();
+    if (isNewMonth) {
+      return {
+        canChange: true,
+        reason: "Monthly reset available",
+        changesLeft: maxChanges, // Reset counter
+        maxChanges,
+      };
+    }
+  }
+  // Check if user has changes left
+  const changesLeft = maxChanges - changeCount;
+  if (changesLeft <= 0) {
+    // Calculate days until reset
+    let resetInDays: number | undefined;
+    if (withinFirstMonth) {
+      // Reset when first month ends
+      const firstMonthEnd = new Date(created);
+      firstMonthEnd.setMonth(firstMonthEnd.getMonth() + 1);
+      resetInDays = Math.ceil(
+        (firstMonthEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      );
+    } else {
+      // Reset at start of next month
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      resetInDays = Math.ceil(
+        (nextMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      );
+    }
+    return {
+      canChange: false,
+      reason: withinFirstMonth
+        ? "First month limit reached (2 changes max)"
+        : "Monthly limit reached (1 change per month)",
+      changesLeft: 0,
+      maxChanges,
+      resetInDays,
+    };
+  }
+  return {
+    canChange: true,
+    reason: withinFirstMonth
+      ? `You have ${changesLeft} change(s) left in your first month`
+      : `You have ${changesLeft} change(s) left this month`,
+    changesLeft,
+    maxChanges,
+  };
+}
+
 const Profile = () => {
   const { user, updateMe } = useAuth();
   const navigate = useNavigate();
@@ -150,6 +224,7 @@ const Profile = () => {
   const [width, setWidth] = useState("768px");
   const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
   const [tempName, setTempName] = useState("");
+  const [allowedChangeUsername, setAllowedChangeUsername] = useState({});
 
   useEffect(() => {
     const updateWidth = () => {
@@ -176,6 +251,20 @@ const Profile = () => {
     }
     setEmail(user.email || "");
     setName(user.name || "");
+
+    // Calling User Change Allowed Function
+    const changeAllowedFunc = canChangeUsername(
+      user.created_at,
+      user.name_change_count,
+      user.name_change_date
+    );
+
+    // console.log(user.created_at, user.name_change_count, user.name_change_date);
+    // console.log("Hello22", changeAllowedFunc);
+
+    setAllowedChangeUsername(changeAllowedFunc);
+
+    //console.log("Hello", changeAllowedFunc);
   }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -268,14 +357,28 @@ const Profile = () => {
                 type="text"
                 value={name.slice(0, 15)}
                 readOnly
-                className="pl-10 pr-10 cursor-pointer"
-                onClick={openNameDialog}
+                disabled={!allowedChangeUsername?.canChange}
+                onClick={
+                  allowedChangeUsername?.canChange ? openNameDialog : undefined
+                }
+                className={`pl-10 pr-10 ${
+                  allowedChangeUsername?.canChange
+                    ? "cursor-pointer"
+                    : "cursor-not-allowed"
+                }`}
               />
               <ChevronRight
                 className="absolute right-3 top-3 h-4 w-4 text-gray-500 cursor-pointer"
-                onClick={openNameDialog}
+                onClick={
+                  allowedChangeUsername?.canChange ? openNameDialog : undefined
+                }
               />
             </div>
+            {allowedChangeUsername?.reason && (
+              <p className="text-sm text-gray-500">
+                {allowedChangeUsername?.reason}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -302,6 +405,7 @@ const Profile = () => {
               <DialogTitle>Edit Name</DialogTitle>
             </DialogHeader>
 
+            {/* onSubmit={saveName} */}
             <form onSubmit={saveName}>
               <div className="space-y-8">
                 <div className="relative">
@@ -318,13 +422,15 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <Button
-                    variant="outline"
+                  <button
+                    className="inline-flex px-3 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                    type="button"
                     onClick={closeNameDialog}
                     disabled={isLoading}
                   >
                     Cancel
-                  </Button>
+                  </button>
+
                   <Button
                     /* onClick={saveName} */
                     disabled={isLoading || !tempName.trim()}
