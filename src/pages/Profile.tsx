@@ -349,7 +349,7 @@ const Profile = () => {
       <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2 pt-1">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Display Name</Label>
             <div className="relative">
               <User className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
               <Input
