@@ -395,6 +395,14 @@ function App() {
       document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [showLoading]);
+
+  // Prevent Random Scroll (zia)
+  useEffect(() => {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  }, []);
+
   return (
     <>
       {showLoading && (

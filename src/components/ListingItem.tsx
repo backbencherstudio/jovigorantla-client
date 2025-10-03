@@ -51,9 +51,6 @@ const ListingItem = ({
       e.preventDefault();
     } else {
       const currentScrollY = window.scrollY;
-      //console.log("Saving scroll position:", currentScrollY);
-
-      // Save scroll position to session storage immediately
       sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
 
       // Navigate with scroll position in state
@@ -119,14 +116,14 @@ const ListingItem = ({
                 <span className="mx-2">•</span>
                 <div className="flex items-center">
                   <span>
-                  {/*   {listing.address
+                    {/*   {listing.address
                       ?.split(",")
                       .filter((_, i) => i === 0 || i === 1)
                       .join(", ")} */}
 
-                      {
-                        city + ", " + (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)
-                      }
+                    {city +
+                      ", " +
+                      (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)}
                   </span>
                 </div>
               </>

@@ -622,6 +622,8 @@ export default function Home({ openModal }) {
   //   });
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
+  
+
   return (
     // w-full mx-auto max-w-3xl
     <main

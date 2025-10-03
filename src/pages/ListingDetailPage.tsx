@@ -93,6 +93,18 @@ const ListingDetailPage = ({ openModal }) => {
     }
   }, [id, navigate]);
 
+  // For Set Page Position Top 0
+  /* useEffect(() => {
+    setTimeout(() => {
+      // Single, universal scroll method
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant", // Use 'instant' instead of 'smooth' for consistency
+      });
+    }, 100);
+  }); */
+
   const [city, stateAbbr] =
     listing.address?.split(",").map((part) => part.trim()) || [];
 
@@ -132,13 +144,13 @@ const ListingDetailPage = ({ openModal }) => {
   const [width, setWidth] = useState("500px");
 
   useEffect(() => {
-    const scrollToTop = () => {
+    /*  const scrollToTop = () => {
       window.scrollTo({ top: 0, behavior: "auto" });
       document.documentElement.scrollTo(0, 0);
-    };
+    }; */
 
     // Initial scroll
-    scrollToTop();
+    ///scrollToTop();
 
     // Function to update width based on screen size
     const updateWidth = () => {
@@ -159,6 +171,22 @@ const ListingDetailPage = ({ openModal }) => {
   }, [id, navigate]);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
+
+  // Prevent Random Scroll (zia)
+  useEffect(() => {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    const timeout = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }, 100); // You can try 150–200ms if needed
+
+    // ✅ Clean up only on unmount
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleContact = async () => {
     try {

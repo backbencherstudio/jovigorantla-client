@@ -303,21 +303,12 @@ const Header = ({
 
     navigate("/");
 
-    // setTimeout(() => {
-    //   if (document.documentElement.scrollTop > 0) {
-    //     document.documentElement.scrollTop = 0;
-    //   }
-    //   if (document.body.scrollTop > 0) {
-    //     document.body.scrollTop = 0;
-    //   }
-    // }, 100);
-
     setTimeout(() => {
       // Single, universal scroll method
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: "instant", // Use 'instant' instead of 'smooth' for consistency
+        behavior: "auto",
       });
     }, 100);
   };
