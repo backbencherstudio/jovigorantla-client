@@ -818,7 +818,8 @@ export default function Jobs({ openModal }) {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
-        const sub_category = filter !== "All" ? filter : null;
+        // const sub_category = filter !== "All" ? filter : null;
+        const sub_category = null;
 
         const { data: listingResponse } = await api.get("/listings/nearby", {
           params: {
@@ -1232,6 +1233,23 @@ export default function Jobs({ openModal }) {
     } */
   };
 
+
+  const tabsList = [
+    {
+      label: "All",
+      url: "/jobs",
+    },
+    
+    {
+      label: "Hiring",
+      url: "/jobs/hiring",
+    },
+    {
+      label: "Looking",
+      url: "/jobs/looking",
+    },
+  ];
+
   return (
     // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
@@ -1242,6 +1260,7 @@ export default function Jobs({ openModal }) {
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
+        tabsList={tabsList}
       />
 
       {!isTabChanging ? (

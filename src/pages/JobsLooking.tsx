@@ -1,10 +1,5 @@
-import { useState, useEffect, useRef, useCallback, act } from "react";
-import {
-  useNavigate,
-  useLocation,
-  useSearchParams,
-  Link,
-} from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "@/lib/axois";
 import { Search } from "lucide-react";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -17,12 +12,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import useScrollRestoration from "@/hooks/useScrollRestoration";
-import { cache } from "@/lib/cache";
 import AllCaughtUp from "@/components/AllCaughtUp";
-
-const cacheData: any = {
-  listings: [],
-};
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -51,9 +41,8 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   return distanceFromTop;
 };
 
-export default function Home({ openModal }) {
+export default function JobsLooking({ openModal }) {
   useScrollRestoration();
-
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,7 +60,7 @@ export default function Home({ openModal }) {
   const numberOfShownListings = useRef(0);
   const listingCutoffTime = useRef("");
   const isFetchingRef = useRef(false);
-  const [activeFilter, setActiveFilter] = useState("Nearby");
+  const [activeFilter, setActiveFilter] = useState("Looking");
   const [oldFilter, setOldFilter] = useState("");
   const { lat, lng, radius } = useLocationContext();
   const [isTabChanging, setIsTabChanging] = useState(false);
@@ -79,15 +68,18 @@ export default function Home({ openModal }) {
   // Add these new state variables for better tracking
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const [filterOptions, setFilterOptions] = useState(["Nearby", "USA"]);
-  const isFirstLoadDone = useRef(false);
-  const isNearbyEmpty = useRef(false);
+  const [filterOptions, setFilterOptions] = useState([
+    "All",
+    "Hiring",
+    "Looking",
+  ]);
 
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-
+  const isFirstLoadDone = useRef(false);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [autoSwitched, setAutoSwitched] = useState(false);
   const [locationChanged, setLocationChanged] = useState(false);
+
   const [isRestoringFromSession, setIsRestoringFromSession] = useState(() => {
     // Check for session data immediately on mount to prevent flash
     const cachedData = sessionStorage.getItem("home_cached_data");
@@ -111,9 +103,9 @@ export default function Home({ openModal }) {
     }
   };
 
-  // useEffect(() => {
-  //   console.log('Distance from top:', distanceFromTop, 'px');
-  // }, [distanceFromTop]);
+  useEffect(() => {
+    //console.log("Distance from top:", distanceFromTop, "px");
+  }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -140,34 +132,30 @@ export default function Home({ openModal }) {
 
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
-        //console.log("Already fetching, skipping request");
+        console.log("Already fetching, skipping request");
         return;
       }
 
       // Don't fetch if no more items and it's not a new filter
       if (!hasMore && !isNewFilter) {
-        //console.log("No more items to fetch");
+        console.log("No more items to fetch");
         return;
       }
 
       isFetchingRef.current = true;
-
-      /* console.log("Starting fetch:", {
-        filter,
-        query,
-        isNewFilter,
-        numberOfShownListings: numberOfShownListings.current,
-      }); */
+      // console.log('Starting fetch:', { filter, query, isNewFilter, numberOfShownListings: numberOfShownListings.current });
 
       try {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
-        const isUsa = filter === "USA";
+        // const sub_category = filter !== "All" ? filter : null;
+        const sub_category = "Looking";
 
         const { data: listingResponse } = await api.get("/listings/nearby", {
           params: {
-            is_usa: isUsa,
+            category: "JOBS",
+            sub_category,
             search: query,
             limit: 20,
             numberOfShownListings: shownCount,
@@ -190,12 +178,12 @@ export default function Home({ openModal }) {
           return;
         }
 
-        // console.log('Fetch response:', {
-        //   listingsCount: data.listings?.length || 0,
-        //   hasMore: data.hasMore,
-        //   totalCount: data.totalCount,
-        //   numberOfShownListings: data.numberOfShownListings
-        // });
+        /* console.log("Fetch response:", {
+          listingsCount: data.listings?.length || 0,
+          hasMore: data.hasMore,
+          totalCount: data.totalCount,
+          numberOfShownListings: data.numberOfShownListings,
+        }); */
 
         if (data.listings && data.listings.length > 0) {
           if (isNewFilter || shownCount === 0) {
@@ -223,31 +211,28 @@ export default function Home({ openModal }) {
           }
           setHasMore(false);
 
-          if (!initialLoadDone && filter === "Nearby" && !autoSwitched) {
+          if (!initialLoadDone && filter === "All" && !autoSwitched) {
             setAutoSwitched(true);
           }
         }
 
         if (!isFirstLoadDone.current) {
           isFirstLoadDone.current = true;
-          if (
-            filter === "Nearby" &&
+          /*   if (
+            filter === "All" &&
             !isNearbyEmpty.current &&
             listings.length === 0
           ) {
             isNearbyEmpty.current = true;
-          }
+          } */
         }
       } catch (error) {
+        console.error("Error fetching accommodations:", error);
         setHasMore(false); // Stop trying to fetch more on error
       } finally {
         setLoading(false);
-
         isFetchingRef.current = false;
         setIsInitialLoad(false);
-        if (!initialLoadComplete) {
-          setInitialLoadComplete(true);
-        }
 
         // Reset location changed flag after handling
         if (locationChanged) {
@@ -283,13 +268,15 @@ export default function Home({ openModal }) {
 
           // Restore cached data
           setListings(parsed.listings);
-          setActiveFilter(parsed.activeFilter || "Nearby");
+          setActiveFilter(parsed.activeFilter || "All");
           setSearchQuery(parsed.searchQuery || "");
           setSearchInput(parsed.searchQuery || "");
           setHasMore(parsed.hasMore !== undefined ? parsed.hasMore : true);
           numberOfShownListings.current = parsed.numberOfShownListings || 0;
           listingCutoffTime.current = parsed.listingCutoffTime || "";
-          setFilterOptions(parsed.filterOptions || ["Nearby", "USA"]);
+          setFilterOptions(
+            parsed.filterOptions || ["All", "Hiring", "Looking"]
+          );
           setInitialLoadDone(parsed.initialLoadDone || false);
           setAutoSwitched(parsed.autoSwitched || false);
 
@@ -335,10 +322,6 @@ export default function Home({ openModal }) {
         "Restoring scroll position from location state:",
         location.state.scrollY
       );
-
-      // Show loader to hide the process
-      setIsRestoringFromSession(true);
-
       // Use setTimeout to ensure DOM is ready
       setTimeout(() => {
         window.scrollTo(0, location.state.scrollY);
@@ -448,7 +431,6 @@ export default function Home({ openModal }) {
   }, [location.search]);
 
   const handleFilterClick = (filter: string) => {
-    setInitialLoadDone(true);
     // Get the current query parameters from the URL
     const currentParams = new URLSearchParams(location.search);
 
@@ -460,48 +442,13 @@ export default function Home({ openModal }) {
 
     //window.scrollTo(0, isMobile ? 200 : 0);
     window.scrollTo(0, 0);
+
     setIsTabChanging(true);
-
     setActiveFilter(filter);
-
     setTimeout(() => {
       setIsTabChanging(false);
     }, 500);
   };
-
-  // Add this effect for handling the initial auto-switch (Working on both location readius & Search)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-
-    // (urlParams.size == 0 || urlParams.has('tab')) && !initialLoadDone
-
-    if (!urlParams.has("q")) {
-      // when active filter is Nearby
-      if (
-        autoSwitched &&
-        !initialLoadDone &&
-        activeFilter === "Nearby" &&
-        listings.length === 0 &&
-        !isLoading
-      ) {
-        setInitialLoadDone(true);
-        setFilterOptions(["USA", "Nearby"]);
-        setActiveFilter("USA");
-
-        // Update URL without triggering navigation
-        const currentParams = new URLSearchParams(location.search);
-        currentParams.set("tab", "true");
-        navigate(`${location.pathname}?${currentParams.toString()}`, {
-          replace: true,
-        });
-        // Trigger fetch for USA listings
-        numberOfShownListings.current = 0;
-        setListings([]);
-        setHasMore(true);
-        fetchNearByListings("USA", searchQuery, true);
-      }
-    }
-  }, [autoSwitched, initialLoadDone, activeFilter, listings.length, isLoading]);
 
   // Improved intersection observer with better cleanup
   useEffect(() => {
@@ -512,15 +459,14 @@ export default function Home({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-
-      // console.log("Intersection observed:", {
-      //   isIntersecting: first.isIntersecting,
-      //   hasMore,
-      //   isLoading,
-      //   isFetching: isFetchingRef.current,
-      //   isTabChanging,
-      //   isInitialLoad,
-      // });
+      /* console.log("Intersection observed:", {
+        isIntersecting: first.isIntersecting,
+        hasMore,
+        isLoading,
+        isFetching: isFetchingRef.current,
+        isTabChanging,
+        isInitialLoad,
+      }); */
 
       if (
         first.isIntersecting &&
@@ -530,13 +476,13 @@ export default function Home({ openModal }) {
         !isTabChanging &&
         !isInitialLoad
       ) {
-        //console.log("Triggering load more");
+        console.log("Triggering load more");
         fetchNearByListings(activeFilter, searchQuery, false);
       }
     };
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1,
+      threshold: 0.1, // Trigger when 10% visible instead of 100%
       rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
@@ -567,14 +513,24 @@ export default function Home({ openModal }) {
   //     window.scrollTo(0, isMobile ? 200 : 0);
   //   }
   //   // window.scrollTo(0, isMobile ? 200 : 0);
-  // }); // Only run once on mount
+  // });
 
   useEffect(() => {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
-      // window.document.body.scrollTo(0, 0);
     }
   }, []);
+  // Debug logging
+  // useEffect(() => {
+  //   console.log('State update:', {
+  //     listings: listings.length,
+  //     hasMore,
+  //     isLoading,
+  //     numberOfShownListings: numberOfShownListings.current,
+  //     isTabChanging,
+  //     isInitialLoad
+  //   });
+  // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
   const yourTrackingFunction = async (listing: any) => {
     try {
@@ -598,41 +554,43 @@ export default function Home({ openModal }) {
     await yourTrackingFunction(listing);
 
     // Programmatic navigation after tracking
-    // window.open(listing.target_url, "_blank", "noopener,noreferrer");
-
-    // const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    // if (isSafari) {
-    //   window.location.href = listing.target_url;
-    // } else {
-    //   // For other browsers, open in a new tab
-    //   window.open(listing.target_url, "_blank", "noopener,noreferrer");
-    // }
+    //window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    /*  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isSafari) {
+      window.location.href = listing.target_url;
+    } else {
+      // For other browsers, open in a new tab
+      window.open(listing.target_url, "_blank", "noopener,noreferrer");
+    } */
   };
 
-  // Debug logging
-  // useEffect(() => {
-  //   console.log('State update:', {
-  //     listings: listings.length,
-  //     hasMore,
-  //     isLoading,
-  //     numberOfShownListings: numberOfShownListings.current,
-  //     isTabChanging,
-  //     isInitialLoad
-  //   });
-  // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+  const tabsList = [
+    {
+      label: "All",
+      url: "/jobs",
+    },
+
+    {
+      label: "Hiring",
+      url: "/jobs/hiring",
+    },
+    {
+      label: "Looking",
+      url: "/jobs/looking",
+    },
+  ];
 
   return (
-    // w-full mx-auto max-w-3xl
+    // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
-      className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
+      className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent sm:h-auto"
       ref={filterTabsRef}
     >
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
-        isTab={true}
+        tabsList={tabsList}
       />
 
       {!isTabChanging ? (
@@ -642,8 +600,9 @@ export default function Home({ openModal }) {
             <div className="fixed inset-0 p-2 md:p-0 bg-white z-[61] flex items-center justify-center w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto">
               <div className="space-y-4 w-full h-full mt-[120px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
-                  <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
-                  <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
+                  <div className="h-8 bg-gray-200 w-[60px] rounded-full"></div>
                 </div>
 
                 <div className="space-y-2 rounded-lg shadow-md p-4">
@@ -659,7 +618,6 @@ export default function Home({ openModal }) {
               </div>
             </div>
           )}
-          {/*  px-4 -- only it was before */}
           <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 md:mx-2 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
@@ -688,31 +646,19 @@ export default function Home({ openModal }) {
                         window.open(listing.target_url, "_blank");
                         handleAdClick(e, listing);
                       }}
-                      /*    onClick={(e) => handleAdClick(e, listing)}
+                      /*  onClick={(e) => handleAdClick(e, listing)}
                       onAuxClick={(e) => handleAdClick(e, listing)} // Catches middle mouse button */
                       // onContextMenu={() => yourTrackingFunction(listing)} // Right click menu
-
-                      /* onClick={(e) => {
-                        e.preventDefault(); // Prevent the default anchor click behavior
-                        window.open(listing.target_url, "_blank"); // Open in a new tab
-                        handleAdClick(e, listing); // Your custom tracking
-                      }}
-                      onAuxClick={(e) => {
-                        e.preventDefault(); // Prevent default behavior for middle mouse button
-                        window.open(listing.target_url, "_blank");
-                        handleAdClick(e, listing);
-                      }} */
                     >
                       <div
                         className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                        style={{ aspectRatio: "574/300", maxWidth: "100%" }}
+                        style={{ aspectRatio: "574/300", maxWidth: "574px" }}
                       >
                         <img
                           src={listing.image_url}
                           alt={listing.title}
                           className="absolute inset-0 w-full h-full object-cover rounded-lg"
                         />
-
                         <span className="bg-[#474849a6] text-xs font-medium text-white px-2 py-1 rounded-[20px] absolute bottom-2 right-1">
                           Sponsored
                         </span>
@@ -721,7 +667,7 @@ export default function Home({ openModal }) {
                   ) : (
                     <div
                       className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                      style={{ aspectRatio: "574/300", maxWidth: "100%" }}
+                      style={{ aspectRatio: "574/300", maxWidth: "574px" }}
                     >
                       <img
                         src={listing.image_url}
@@ -746,7 +692,6 @@ export default function Home({ openModal }) {
             )}
 
             {!hasMore && listings.length > 0 && <AllCaughtUp />}
-
             {!hasMore && listings.length === 0 && <NoListingsFound />}
 
             {/* Debug info - remove in production */}

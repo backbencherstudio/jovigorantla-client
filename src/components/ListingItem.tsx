@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ListingType } from "@/types/listing";
 import ListingActions from "./ListingActions";
 import { formatTime } from "@/lib/utils";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import usStates from "@/data/states";
 
 interface ListingItemProps {
@@ -62,9 +62,29 @@ const ListingItem = ({
     }
   };
 
+  const [redirectLink, setRedirectLink] = useState("");
+
+  useEffect(() => {
+    let redirectLink = `/listing/${listing.slug}`;
+    if (listing.category === "MARKETPLACE") {
+      redirectLink = `/marketplace/`;
+    }
+    if (listing.category === "RIDES") {
+      redirectLink = `/rides/`;
+    }
+    if (listing.category === "ACCOMMODATIONS") {
+      redirectLink = `/accommodations/`;
+    }
+    if (listing.category === "JOBS") {
+      redirectLink = `/jobs/`;
+    }
+
+    setRedirectLink(redirectLink);
+  });
+
   return (
     <Link
-      to={`/listing/${listing.slug}`}
+      to={`${redirectLink}${listing.slug}`}
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}

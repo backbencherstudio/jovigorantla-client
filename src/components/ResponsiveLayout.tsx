@@ -201,9 +201,17 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   const validPaths = [
     "/",
     "/marketplace",
+    "/marketplace/services",
+    "/marketplace/items",
     "/rides",
+    "/rides/available",
+    "/rides/looking",
     "/accommodations",
+    "/accommodations/available",
+    "/accommodations/looking",
     "/jobs",
+    "/jobs/hiring",
+    "/jobs/looking",
   ];
 
   // Check if current path matches any of the valid paths

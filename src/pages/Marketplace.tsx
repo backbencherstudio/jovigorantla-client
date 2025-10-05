@@ -1667,14 +1667,16 @@ export default function Marketplace({ openModal }) {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
-        const sub_category =
+        /* const sub_category =
           filter === "Services"
             ? "Service"
             : filter === "Items"
             ? "Item"
             : filter !== "All"
             ? filter
-            : null;
+            : null; */
+
+        const sub_category = null;
 
         const { data: listingResponse } = await api.get("/listings/nearby", {
           params: {
@@ -2127,6 +2129,21 @@ export default function Marketplace({ openModal }) {
     } */
   };
 
+  const tabsList = [
+    {
+      label: "All",
+      url: "/marketplace",
+    },
+    {
+      label: "Services",
+      url: "/marketplace/services",
+    },
+    {
+      label: "Items",
+      url: "/marketplace/items",
+    },
+  ];
+
   return (
     // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
@@ -2137,6 +2154,7 @@ export default function Marketplace({ openModal }) {
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
+        tabsList={tabsList}
       />
 
       {!isTabChanging ? (
