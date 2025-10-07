@@ -300,31 +300,32 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
-        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
+        // min-h-[calc(100vh-67px)];
+        <div className="flex flex-1 min-h-screen">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
               <Sidebar collapsed={isCollapsed} />
             </div>
           )}
-          {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
-            }  flex flex-col flex-1 min-h-[100%]`} */}
+
           {!isValidPage && (
             <main
-              className={`w-full mx-auto ${
+              className={`w-full mx-auto mt-[65px] ${
                 fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
               {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
-                <div className="relative">
+                // relative; chilo sudu
+                <div className="sticky top-[65px] z-20 bg-white border-b border-gray-100 px-3 py-2  w-full ">
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
-                    style={{
-                      // width: width,
-                      top: "65px" /* Header height */,
-                    }}
+                    className="flex items-center w-full"
+                    // className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem]"
+                    /* style={{
+                      top: "65px" 
+                    }} */
                   >
                     {!hideBackButton && (
                       <Button
@@ -342,14 +343,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       {title}
                     </h1>
                   </div>
-                  <div className="h-[50px] bg-white border-b"></div>
+                  {/* ata chilo comment kore rakhci */}
+                  {/* <div className="h-[50px] bg-white border-b"></div> */}
                 </div>
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 ">
-                {children}
-              </div>
+              {/*  mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 */}
+              <div className="flex-1 h-full bg-white  ">{children}</div>
             </main>
           )}
           {/* Main Content Area */}
