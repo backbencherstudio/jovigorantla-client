@@ -79,10 +79,10 @@ const ListingDetailPage = ({ openModal }) => {
     try {
       const { data } = await api.get(`/listings/${id}`);
       if (data?.success) {
-        setLoading(false);
+        //setLoading(false);
         setListing(data?.data);
       } else {
-        setLoading(false);
+        //setLoading(false);
         // if data not found redirect to home
         navigate("/");
       }
@@ -132,13 +132,13 @@ const ListingDetailPage = ({ openModal }) => {
   const [width, setWidth] = useState("500px");
 
   useEffect(() => {
-    const scrollToTop = () => {
+    /*  const scrollToTop = () => {
       window.scrollTo({ top: 0, behavior: "auto" });
       document.documentElement.scrollTo(0, 0);
-    };
+    }; */
 
     // Initial scroll
-    scrollToTop();
+    ///scrollToTop();
 
     // Function to update width based on screen size
     const updateWidth = () => {
@@ -273,7 +273,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   if (loading || !listing) {
     return (
-      <div className="flex items-center justify-center h-[100vh]">
+      <div className="flex items-center justify-center h-[calc(100vh-120px)]">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
       </div>
     );
@@ -311,10 +311,15 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      <div className="flex flex-col bg-white min-h-[calc(100vh-120px)]">
+      {/* min-h-[calc(100vh-120px)] */}
+      <div className="flex flex-col bg-white">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-        <div className="flex-1 overflow-y-auto pb-24 mx-auto w-full p-2 py-4">
+        <div
+          className={`flex-1 overflow-y-auto ${
+            isMobile && user?.id !== listing?.user_id && listing && "pb-24"
+          } mx-auto w-full p-2 py-4`}
+        >
           {/* Category, status and action buttons */}
           <div className="px-4">
             <div className="flex items-center justify-between mb-2">

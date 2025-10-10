@@ -209,7 +209,12 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
-  const { setLatLngRadius } = useLocationContext();
+  const {
+    lat,
+    lng,
+    radius: contextRadius,
+    setLatLngRadius,
+  } = useLocationContext();
 
   // console.log("default data => ", initialLocation, initialRadius)
 
@@ -257,6 +262,30 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
       setDisplayRadius(initialRadius.toString());
     }
   }, [initialLocation, initialRadius]);
+
+  // Listen to LocationContext changes and update the component state
+  useEffect(() => {
+    // Only update if we have valid coordinates from context
+    if (lat && lng) {
+      // Find the city that matches the current lat/lng from context
+      const matchingCity = locationsData.find(
+        (city: Location) =>
+          Math.abs(city.lat - lat) < 0.001 && Math.abs(city.lng - lng) < 0.001
+      );
+
+      if (matchingCity) {
+        //console.log("LocationWithRadius: Updating from context:", matchingCity);
+        setSelectedOption(matchingCity);
+        setDisplaySelectedOption(matchingCity);
+      }
+    }
+
+    // Update radius from context
+    if (contextRadius && contextRadius !== radius) {
+      setRadius(contextRadius);
+      setDisplayRadius(contextRadius.toString());
+    }
+  }, [lat, lng, contextRadius]);
 
   //   const getCurrentLocation = () => {
   //     setLocationLoading(true); // Start loading indicator
@@ -680,7 +709,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
       // localStorage.setItem('selectedRadius', radius.toString());
     }
 
-    console.log("inside with radius => ", lat, lng, radius);
+    //console.log("inside with radius => ", lat, lng, radius);
 
     if (lat && lng && r) {
       setLatLngRadius(lat, lng, r);
@@ -734,62 +763,62 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
   //     });
   // };
 
+  // const loadOptions = (inputValue: string) => {
+  //   return new Promise<Location[]>((resolve) => {
+  //     const filtered = (locationsData as Location[])
+  //       .filter((location: Location) => {
+  //         const searchValue = inputValue.toLowerCase();
+
+  //         // Check if the input matches any part of the 'search' field
+  //         // return location.search.toLowerCase().startsWith(searchValue);
+  //         return location.search.toLowerCase().includes(searchValue);
+  //       })
+  //       .slice(0, 5); // Limit results to 5 suggestions
+
+  //     resolve(filtered as Location[]); // Resolve the filtered results
+  //   });
+  // };
+
   const loadOptions = (inputValue: string) => {
     return new Promise<Location[]>((resolve) => {
+      const searchValue = inputValue.toLowerCase().trim();
+
+      // If empty search, return empty array
+      if (!searchValue) {
+        resolve([]);
+        return;
+      }
+
       const filtered = (locationsData as Location[])
         .filter((location: Location) => {
-          const searchValue = inputValue.toLowerCase();
+          // Check main search field
+          if (location.search.toLowerCase().includes(searchValue)) {
+            return true;
+          }
 
-          // Check if the input matches any part of the 'search' field
-          // return location.search.toLowerCase().startsWith(searchValue);
-          return location.search.toLowerCase().includes(searchValue);
+          // Check zip codes if they exist
+          if (location.zips && location.zips.length > 0) {
+            // Join all zips into a single string and check
+            const allZips = location.zips.join(" ");
+            if (allZips.includes(searchValue)) {
+              return true;
+            }
+
+            // Alternatively, check each zip individually
+            /*
+                      return location.zips.some(zipBlock => {
+                          return zipBlock.split(' ').some(zip => zip.includes(searchValue));
+                      });
+                      */
+          }
+
+          return false;
         })
         .slice(0, 5); // Limit results to 5 suggestions
 
-      resolve(filtered as Location[]); // Resolve the filtered results
+      resolve(filtered as Location[]);
     });
   };
-
-  // const loadOptions = (inputValue: string) => {
-  //     return new Promise<Location[]>((resolve) => {
-  //         const searchValue = inputValue.toLowerCase().trim();
-
-  //         // If empty search, return empty array
-  //         if (!searchValue) {
-  //             resolve([]);
-  //             return;
-  //         }
-
-  //         const filtered = (locationsData as Location[])
-  //             .filter((location: Location) => {
-  //                 // Check main search field
-  //                 if (location.search.toLowerCase().includes(searchValue)) {
-  //                     return true;
-  //                 }
-
-  //                 // Check zip codes if they exist
-  //                 if (location.zips && location.zips.length > 0) {
-  //                     // Join all zips into a single string and check
-  //                     const allZips = location.zips.join(' ');
-  //                     if (allZips.includes(searchValue)) {
-  //                         return true;
-  //                     }
-
-  //                     // Alternatively, check each zip individually
-  //                     /*
-  //                     return location.zips.some(zipBlock => {
-  //                         return zipBlock.split(' ').some(zip => zip.includes(searchValue));
-  //                     });
-  //                     */
-  //                 }
-
-  //                 return false;
-  //             })
-  //             .slice(0, 5); // Limit results to 5 suggestions
-
-  //         resolve(filtered as Location[]);
-  //     });
-  // };
 
   // const getNearbyCities = (lat: number, lng: number, radiusInMiles: number) => {
   //     const radiusInKm = milesToKilometers(radiusInMiles); // Convert radius to kilometers
@@ -1016,8 +1045,9 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
 
   // Location Abbribiation
   function formatLocation(address: string) {
-    const [city, stateAbbr] = address?.split(",").map((part) => part.trim()) || [];
-    return  city + ", " + (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr);
+    const [city, stateAbbr] =
+      address?.split(",").map((part) => part.trim()) || [];
+    return city + ", " + (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr);
   }
 
   return (
@@ -1049,10 +1079,12 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
                   )} • ${displayRadius} mi`
                 : "Select location"} */}
 
-                {dispalySelectedOption
-                ? `${formatLocation(dispalySelectedOption?.search || "")} • ${displayRadius} mi`
-                : "Select location"} 
-                
+              {dispalySelectedOption
+                ? `${formatLocation(
+                    dispalySelectedOption?.search || ""
+                  )} • ${displayRadius} mi`
+                : "Select location"}
+
               <span className="absolute bottom-0 left-0 w-full h-px bg-current" />
             </span>
           </div>
@@ -1078,7 +1110,7 @@ const LocationWithRadius: React.FC<LocationWithRadiusProps> = ({
               getOptionLabel={(option: Location) => option.search}
               getOptionValue={(option: Location) => option.search}
               // getOptionValue={(option: Location) => option.zip.toString()}
-              placeholder="Search by city"
+              placeholder="City or Zipcode"
               className="text-sm "
               styles={{
                 control: (base, state) => ({

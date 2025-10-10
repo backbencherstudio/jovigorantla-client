@@ -135,7 +135,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       <div className="flex flex-col h-full py-4 pl-2">
         <nav className="flex-1 px-2 space-y-1">
           {menuItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            // const isActive = location.pathname === item.path;
+            const isActive =
+              item.path === "/"
+                ? location.pathname === "/"
+                : location.pathname === item.path ||
+                  location.pathname.startsWith(item.path + "/");
+
             const Icon = item.icon;
 
             return (

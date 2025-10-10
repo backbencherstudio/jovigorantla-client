@@ -773,7 +773,7 @@ export default function Jobs({ openModal }) {
   };
 
   useEffect(() => {
-    console.log("Distance from top:", distanceFromTop, "px");
+    //console.log("Distance from top:", distanceFromTop, "px");
   }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -789,8 +789,16 @@ export default function Jobs({ openModal }) {
   };
 
   // Use useCallback to prevent unnecessary re-renders
+
+  const currentActiveFilterRef = useRef(activeFilter);
+  const currentSearchQueryRef = useRef(searchQuery);
+
   const fetchNearByListings = useCallback(
     async (filter: string, query: string, isNewFilter = false) => {
+      // Update current active references
+      currentActiveFilterRef.current = filter;
+      currentSearchQueryRef.current = query;
+
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
         console.log("Already fetching, skipping request");
@@ -810,14 +818,15 @@ export default function Jobs({ openModal }) {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
-        const sub_category = filter !== "All" ? filter : null;
+        // const sub_category = filter !== "All" ? filter : null;
+        const sub_category = null;
 
         const { data: listingResponse } = await api.get("/listings/nearby", {
           params: {
             category: "JOBS",
             sub_category,
             search: query,
-            limit: 10,
+            limit: 20,
             numberOfShownListings: shownCount,
             lat: lat,
             lng: lng,
@@ -829,12 +838,21 @@ export default function Jobs({ openModal }) {
         });
 
         const data = listingResponse.data;
-        console.log("Fetch response:", {
+
+        if (
+          filter !== currentActiveFilterRef.current ||
+          query !== currentSearchQueryRef.current
+        ) {
+          // Ignoring response for outdated filter
+          return;
+        }
+
+        /* console.log("Fetch response:", {
           listingsCount: data.listings?.length || 0,
           hasMore: data.hasMore,
           totalCount: data.totalCount,
           numberOfShownListings: data.numberOfShownListings,
-        });
+        }); */
 
         if (data.listings && data.listings.length > 0) {
           if (isNewFilter || shownCount === 0) {
@@ -1061,11 +1079,15 @@ export default function Jobs({ openModal }) {
     //   radius,
     // });
 
+    // Reset the fetching flag to allow new requests
+    isFetchingRef.current = false;
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
+    setLoading(true);
 
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
@@ -1106,14 +1128,14 @@ export default function Jobs({ openModal }) {
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       const first = entries[0];
-      console.log("Intersection observed:", {
+      /* console.log("Intersection observed:", {
         isIntersecting: first.isIntersecting,
         hasMore,
         isLoading,
         isFetching: isFetchingRef.current,
         isTabChanging,
         isInitialLoad,
-      });
+      }); */
 
       if (
         first.isIntersecting &&
@@ -1130,7 +1152,7 @@ export default function Jobs({ openModal }) {
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: "50px", // Trigger 50px before the element is visible
+      rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
     const currentElement = loadMoreRef.current;
@@ -1211,6 +1233,23 @@ export default function Jobs({ openModal }) {
     } */
   };
 
+
+  const tabsList = [
+    {
+      label: "All",
+      url: "/jobs",
+    },
+    
+    {
+      label: "Hiring",
+      url: "/jobs/hiring",
+    },
+    {
+      label: "Looking",
+      url: "/jobs/looking",
+    },
+  ];
+
   return (
     // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
@@ -1221,6 +1260,7 @@ export default function Jobs({ openModal }) {
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
+        tabsList={tabsList}
       />
 
       {!isTabChanging ? (

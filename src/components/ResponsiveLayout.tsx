@@ -74,7 +74,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchQuery(value);
+
+    if (value.trim() == "") {
+      handleClearInput();
+    } else {
+      setSearchQuery(value);
+    }
 
     // If search field is cleared, navigate to home without query
     // if (!value.trim() && location.search.includes("q=")) {
@@ -147,10 +152,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     // Do Focus On clear search input
     searchInputRef.current?.focus();
 
-    // navigate(location.pathname); // Navigate to home without query
+    navigate(location.pathname); // Navigate to home without query
   };
+
   useEffect(() => {
     const queryParam = new URLSearchParams(location.search).get("q") || "";
+
     setSearchQuery(queryParam);
   }, [location.search]);
 
@@ -194,9 +201,17 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   const validPaths = [
     "/",
     "/marketplace",
+    "/marketplace/services",
+    "/marketplace/items",
     "/rides",
+    "/rides/available",
+    "/rides/looking",
     "/accommodations",
+    "/accommodations/available",
+    "/accommodations/looking",
     "/jobs",
+    "/jobs/hiring",
+    "/jobs/looking",
   ];
 
   // Check if current path matches any of the valid paths
@@ -327,12 +342,13 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       {title}
                     </h1>
                   </div>
-                  <div className="h-[50px] bg-white border-b"></div>
+                  {/* <div className="h-[50px] bg-white border-b"></div> */}
                 </div>
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 ">
+              {/* flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 */}
+              <div className="flex-1 bg-white min-h-screen pt-[120px] md:mx-2 ">
                 {children}
               </div>
             </main>

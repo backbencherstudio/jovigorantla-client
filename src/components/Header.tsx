@@ -209,7 +209,7 @@ const Header = ({
     searchInputRef.current?.focus();
 
     // Navigate to the current path without the query parameter
-    // navigate(location.pathname);
+    navigate(location.pathname);
   };
 
   useEffect(() => {
@@ -220,12 +220,20 @@ const Header = ({
     // Update the state with the query if it exists
     if (query) {
       setSearchValue(query);
+    } else {
+      setSearchValue("");
     }
   }, [location.search]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // onSearchInputChange(e.target.value);
-    setSearchValue(e.target.value);
+
+    if (e.target.value.trim() == "") {
+      handleClearInput();
+    } else {
+      setSearchValue(e.target.value);
+    }
+
     // if (!e.target.value.trim()) {
     //   navigate(location.pathname);
     // }
@@ -277,9 +285,17 @@ const Header = ({
   const validPaths = [
     "/",
     "/marketplace",
+    "/marketplace/services",
+    "/marketplace/items",
     "/rides",
+    "/rides/available",
+    "/rides/looking",
     "/accommodations",
+    "/accommodations/available",
+    "/accommodations/looking",
     "/jobs",
+    "/jobs/hiring",
+    "/jobs/looking",
   ];
 
   // Check if current path matches any of the valid paths
@@ -289,9 +305,20 @@ const Header = ({
   const handleLogo = () => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
-    //window.location.href = "/";
+
+    // navigate("/");
+    // scrollTo(0, 0);
+
     navigate("/");
-    scrollTo(0, 0);
+
+    setTimeout(() => {
+      // Single, universal scroll method
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    }, 100);
   };
 
   return (

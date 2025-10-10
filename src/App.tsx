@@ -12,7 +12,6 @@ import PageLayout from "@/components/PageLayout";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import CreateListing from "@/pages/CreateListing";
-import ListingDetailPage from "@/pages/ListingDetailPage";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 import SavedListings from "@/pages/SavedListings";
@@ -32,6 +31,8 @@ import { SocketProvider } from "@/context/SocketContext";
 import { MessageProvider } from "./context/MessageContext";
 import PostListingForm from "./components/PostListingForm";
 import Marketplace from "./pages/Marketplace";
+import MarketplaceService from "./pages/MarketplaceService";
+import MarketplaceItems from "./pages/MarketplaceItems";
 import Rides from "./pages/Rides";
 import { LocationProvider } from "./context/LocationContext";
 import Accommodations from "./pages/Accommodations";
@@ -43,6 +44,13 @@ import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
 import useDataLoad from "./hooks/useDataLoad";
+import RidesAvailable from "./pages/RidesAvailable";
+import RidesLooking from "./pages/RidesLooking";
+import AccommodationsAvailable from "./pages/AccommodationsAvailable";
+import AccommodationsLooking from "./pages/AccommodationsLooking";
+import JobsHiring from "./pages/JobsHiring";
+import JobsLooking from "./pages/JobsLooking";
+import ListingDetailPage from "./pages/ListingDetailPage";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -136,6 +144,22 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/accommodations/available"
+          element={
+            <ResponsiveLayout>
+              <AccommodationsAvailable openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/accommodations/looking"
+          element={
+            <ResponsiveLayout>
+              <AccommodationsLooking openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
           path="/jobs"
           element={
             // <ResponsiveLayout>
@@ -148,6 +172,23 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/jobs/hiring"
+          element={
+            <ResponsiveLayout>
+              <JobsHiring openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/jobs/looking"
+          element={
+            <ResponsiveLayout>
+              <JobsLooking openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+
+        <Route
           path="/marketplace"
           element={
             // <ResponsiveLayout>
@@ -155,6 +196,22 @@ function AppRoutes() {
             // </ResponsiveLayout>
             <ResponsiveLayout>
               <Marketplace openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/marketplace/services"
+          element={
+            <ResponsiveLayout>
+              <MarketplaceService openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/marketplace/items"
+          element={
+            <ResponsiveLayout>
+              <MarketplaceItems openModal={openModal} />
             </ResponsiveLayout>
           }
         />
@@ -172,6 +229,23 @@ function AppRoutes() {
             // </ResponsiveLayout>
             <ResponsiveLayout>
               <Rides openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/rides/available"
+          element={
+            <ResponsiveLayout>
+              <RidesAvailable openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+
+        <Route
+          path="/rides/looking"
+          element={
+            <ResponsiveLayout>
+              <RidesLooking openModal={openModal} />
             </ResponsiveLayout>
           }
         />
@@ -210,6 +284,38 @@ function AppRoutes() {
             //   <ListingDetailPage />
             // </PageLayout>
 
+            <ResponsiveLayout title="Listing Details">
+              <ListingDetailPage openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/marketplace/:id"
+          element={
+            <ResponsiveLayout title="Listing Details">
+              <ListingDetailPage openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/rides/:id"
+          element={
+            <ResponsiveLayout title="Listing Details">
+              <ListingDetailPage openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/accommodations/:id"
+          element={
+            <ResponsiveLayout title="Listing Details">
+              <ListingDetailPage openModal={openModal} />
+            </ResponsiveLayout>
+          }
+        />
+        <Route
+          path="/jobs/:id"
+          element={
             <ResponsiveLayout title="Listing Details">
               <ListingDetailPage openModal={openModal} />
             </ResponsiveLayout>
@@ -395,6 +501,9 @@ function App() {
       document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [showLoading]);
+
+ 
+
   return (
     <>
       {showLoading && (

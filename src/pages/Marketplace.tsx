@@ -1622,7 +1622,7 @@ export default function Marketplace({ openModal }) {
   };
 
   useEffect(() => {
-    console.log("Distance from top:", distanceFromTop, "px");
+    //console.log("Distance from top:", distanceFromTop, "px");
   }, [distanceFromTop]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -1638,8 +1638,16 @@ export default function Marketplace({ openModal }) {
   };
 
   // Use useCallback to prevent unnecessary re-renders
+
+  const currentActiveFilterRef = useRef(activeFilter);
+  const currentSearchQueryRef = useRef(searchQuery);
+
   const fetchNearByListings = useCallback(
     async (filter: string, query: string, isNewFilter = false) => {
+      // Update current active references
+      currentActiveFilterRef.current = filter;
+      currentSearchQueryRef.current = query;
+
       // Prevent multiple simultaneous requests
       if (isFetchingRef.current) {
         // console.log('Already fetching, skipping request');
@@ -1659,21 +1667,23 @@ export default function Marketplace({ openModal }) {
         setLoading(true);
         const shownCount = isNewFilter ? 0 : numberOfShownListings.current;
 
-        const sub_category =
+        /* const sub_category =
           filter === "Services"
             ? "Service"
             : filter === "Items"
             ? "Item"
             : filter !== "All"
             ? filter
-            : null;
+            : null; */
+
+        const sub_category = null;
 
         const { data: listingResponse } = await api.get("/listings/nearby", {
           params: {
             category: "MARKETPLACE",
             sub_category,
             search: query,
-            limit: 10,
+            limit: 20,
             numberOfShownListings: shownCount,
             lat: lat,
             lng: lng,
@@ -1685,6 +1695,14 @@ export default function Marketplace({ openModal }) {
         });
 
         const data = listingResponse.data;
+
+        if (
+          filter !== currentActiveFilterRef.current ||
+          query !== currentSearchQueryRef.current
+        ) {
+          // Ignoring response for outdated filter
+          return;
+        }
 
         // console.log("Fetch response:", {
         //   listingsCount: data.listings?.length || 0,
@@ -1923,11 +1941,15 @@ export default function Marketplace({ openModal }) {
       });
     */
 
+    // Reset the fetching flag to allow new requests
+    isFetchingRef.current = false;
+
     // Reset state
     numberOfShownListings.current = 0;
     setListings([]);
     setHasMore(true);
     setIsInitialLoad(true);
+    setLoading(true);
 
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
@@ -1992,7 +2014,7 @@ export default function Marketplace({ openModal }) {
 
     observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold: 0.1, // Trigger when 10% visible instead of 100%
-      rootMargin: "50px", // Trigger 50px before the element is visible
+      rootMargin: "0px 0px 1000px 0px", // 50px
     });
 
     const currentElement = loadMoreRef.current;
@@ -2107,6 +2129,21 @@ export default function Marketplace({ openModal }) {
     } */
   };
 
+  const tabsList = [
+    {
+      label: "All",
+      url: "/marketplace",
+    },
+    {
+      label: "Services",
+      url: "/marketplace/services",
+    },
+    {
+      label: "Items",
+      url: "/marketplace/items",
+    },
+  ];
+
   return (
     // w-full mx-auto max-w-3xl bg-transparent min-h-[100vh] sm:h-auto bg-red-500
     <main
@@ -2117,6 +2154,7 @@ export default function Marketplace({ openModal }) {
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
+        tabsList={tabsList}
       />
 
       {!isTabChanging ? (

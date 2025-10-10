@@ -44,6 +44,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
       navigate(`/listing/${listingId}`);
     }
   };
+
   const [width, setWidth] = useState("768px");
   useEffect(() => {
     // Function to update width based on screen size

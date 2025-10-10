@@ -270,7 +270,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   }, [isBlocked, blockedByMe, blockedByOther]);
 
   return (
-    <div className="flex flex-col  h-full overflow-hidden bg-gray-100 ">
+    <div className="flex flex-col max-h-[calc(100vh-130px)] h-full overflow-hidden bg-gray-100 ">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white">
         <ChatHeader
@@ -289,8 +289,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div>
 
       {/* Messages Area */}
-      {/* max-h-[calc(100vh-70px)] pb-[60px] */}
-      <div className="max-h-old h-full flex pt-[40px] w-full">
+      {/* max-h-[calc(100vh-130px)]  chilo, overflow r scrollbar hidden chilo na */}
+      <div className="flex-1 overflow-y-scroll h-full flex pt-[40px] w-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {/* {isBlocked && (
           <div className="flex justify-center items-center text-center p-4">
             <Badge variant="destructive">You are blocked in this conversation</Badge>
@@ -337,7 +337,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
       </div> */}
 
       {/* relative bottom-0 left-0 right-0 z-20 bg-gray-100 */}
-      <div className="sticky bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
+      <div className="fixed bottom-0 z-20 bg-[#f0f2f5]  w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
         {!isBlocked ? (
           <MessageInput onSendMessage={handleSendMessage} />
         ) : blockedByMe ? (
