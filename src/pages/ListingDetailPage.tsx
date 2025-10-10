@@ -93,18 +93,6 @@ const ListingDetailPage = ({ openModal }) => {
     }
   }, [id, navigate]);
 
-  // For Set Page Position Top 0
-  /* useEffect(() => {
-    setTimeout(() => {
-      // Single, universal scroll method
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "instant", // Use 'instant' instead of 'smooth' for consistency
-      });
-    }, 100);
-  }); */
-
   const [city, stateAbbr] =
     listing.address?.split(",").map((part) => part.trim()) || [];
 
@@ -171,22 +159,6 @@ const ListingDetailPage = ({ openModal }) => {
   }, [id, navigate]);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
-
-  // Prevent Random Scroll (zia)
-  useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
-    }
-
-    const timeout = setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "auto" });
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }, 100); // You can try 150–200ms if needed
-
-    // ✅ Clean up only on unmount
-    return () => clearTimeout(timeout);
-  }, []);
 
   const handleContact = async () => {
     try {
@@ -339,7 +311,8 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      <div className="flex flex-col bg-white min-h-[calc(100vh-120px)]">
+      {/* min-h-[calc(100vh-120px)] */}
+      <div className="flex flex-col bg-white">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
         <div

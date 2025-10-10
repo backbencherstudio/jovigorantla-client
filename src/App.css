@@ -20,7 +20,7 @@ body {
 /* Improve scrolling performance */
 body,
 html {
-  overscroll-behavior-y: none;
+  /* overscroll-behavior-y: none; */
 }
 
 @layer components {
@@ -256,10 +256,7 @@ main.w-full.mx-auto.max-w-3xl {
   perspective: 1000;
 }
 
-html,
-body {
-  overscroll-behavior-y: none;
-}
+
 
 @keyframes spin {
   0% {

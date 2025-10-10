@@ -502,12 +502,7 @@ function App() {
     };
   }, [showLoading]);
 
-  // Prevent Random Scroll (zia)
-  useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
-    }
-  }, []);
+ 
 
   return (
     <>

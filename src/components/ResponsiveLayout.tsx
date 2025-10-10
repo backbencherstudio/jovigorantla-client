@@ -342,12 +342,13 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       {title}
                     </h1>
                   </div>
-                  <div className="h-[50px] bg-white border-b"></div>
+                  {/* <div className="h-[50px] bg-white border-b"></div> */}
                 </div>
               )}
 
               {/* Page Content */}
-              <div className="flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 ">
+              {/* flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 */}
+              <div className="flex-1 bg-white min-h-screen pt-[120px] md:mx-2 ">
                 {children}
               </div>
             </main>
