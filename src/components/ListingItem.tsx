@@ -89,9 +89,10 @@ const ListingItem = ({
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       // onClick={handleLinkClick}
       onClick={(e) => {
-        e.preventDefault();
-        handleLinkClick();
-        window.scrollTo(0, 0);
+        handleLinkClick(e);
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 0);
       }}
     >
       <div className="p-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
