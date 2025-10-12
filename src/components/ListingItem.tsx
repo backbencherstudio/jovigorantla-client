@@ -51,7 +51,7 @@ const ListingItem = ({
       e.preventDefault();
     } else {
       const currentScrollY = window.scrollY;
-      //sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
+      sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
 
       // Navigate with scroll position in state
       /* navigate(`/listing/${listing.slug}`, {
@@ -87,7 +87,11 @@ const ListingItem = ({
       to={`${redirectLink}${listing.slug}`}
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-      onClick={handleLinkClick}
+      // onClick={handleLinkClick}
+      onClick={() => {
+        handleLinkClick();
+        window.scrollTo(0, 0);
+      }}
     >
       <div className="p-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
         <div className="flex items-center text-sm text-gray-500 relative">
