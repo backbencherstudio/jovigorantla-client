@@ -91,7 +91,7 @@ const ListingItem = ({
       onClick={(e) => {
         handleLinkClick(e);
         setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo(0,0);
         }, 0);
       }}
     >
