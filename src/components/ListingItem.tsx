@@ -88,7 +88,8 @@ const ListingItem = ({
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       // onClick={handleLinkClick}
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         handleLinkClick();
         window.scrollTo(0, 0);
       }}
