@@ -75,6 +75,19 @@ const ListingDetailPage = ({ openModal }) => {
   // For now, we'll use mock data
   // const listing = mockListings.find((l) => l.id === id) || mockListings[0];
 
+  // Page Open in Top 0
+  useEffect(() => {
+    const t = setTimeout(() => {
+      alert('I am working')
+      window.scrollTo(0, 0);
+    }, 200); 
+
+    return () => clearTimeout(t);
+  }, []);
+
+
+
+
   const fetchListingsDetails = useCallback(async () => {
     try {
       const { data } = await api.get(`/listings/${id}`);
