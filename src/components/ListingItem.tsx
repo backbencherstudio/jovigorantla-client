@@ -88,12 +88,26 @@ const ListingItem = ({
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       // onClick={handleLinkClick}
-      // onClick={(e) => {
-      //   handleLinkClick(e);
-      //   setTimeout(() => {
-      //     window.scrollTo(0,0);
-      //   }, 0);
-      // }}
+      
+
+      onClick={(e) => {
+        handleLinkClick(e);
+      
+        const isiOS =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      
+        if (isiOS) {
+          // give iOS time to finish transition before scroll
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 700); // ← 600–800 ms works on iOS reliably
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }}
+      
+
     >
       <div className="p-4 flex flex-col flex-1 text-sm text-gray-500 overflow-hidden">
         <div className="flex items-center text-sm text-gray-500 relative">
