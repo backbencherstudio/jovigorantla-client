@@ -51,7 +51,7 @@ const ListingItem = ({
       e.preventDefault();
     } else {
       const currentScrollY = window.scrollY;
-      sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
+      //sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
 
       // Navigate with scroll position in state
       /* navigate(`/listing/${listing.slug}`, {

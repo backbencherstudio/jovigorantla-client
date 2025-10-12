@@ -659,7 +659,7 @@ export default function Home({ openModal }) {
               </div>
             </div>
           )}
-          {/*  px-4 -- only it was before */}
+       
           <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 md:mx-2 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>
