@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
+  ScrollRestoration,
 } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toaster } from 'sonner';
@@ -502,8 +503,6 @@ function App() {
     };
   }, [showLoading]);
 
- 
-
   return (
     <>
       {showLoading && (
@@ -547,6 +546,7 @@ function App() {
       )}
 
       <Router>
+        <ScrollRestoration />
         <AuthProvider>
           <ListingProvider>
             <LocationProvider>

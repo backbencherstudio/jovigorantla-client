@@ -80,32 +80,6 @@ const ListingDetailPage = ({ openModal }) => {
   // For now, we'll use mock data
   // const listing = mockListings.find((l) => l.id === id) || mockListings[0];
 
-  // Page Open in Top 0
-  const location = useLocation();
-
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-
-    // Handle back/forward cache (bfcache) restore
-    const handlePageShow = (event) => {
-      if (event.persisted) {
-        // This runs when page is restored from bfcache
-        window.scrollTo(0, 0);
-      }
-    };
-
-    window.addEventListener("pageshow", handlePageShow);
-
-    return () => {
-      window.removeEventListener("pageshow", handlePageShow);
-    };
-  }, [location.pathname]);
-
-
-
-
-  
-
   const fetchListingsDetails = useCallback(async () => {
     try {
       const { data } = await api.get(`/listings/${id}`);
@@ -533,7 +507,6 @@ const ListingDetailPage = ({ openModal }) => {
           defaultTab={defaultTab as "login" | "signup"}
         />
       </div>
-
       {/* Modal for full image display */}
       {isImageModalOpen && (
         <div
