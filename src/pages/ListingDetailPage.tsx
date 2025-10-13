@@ -1,5 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   MessageSquare,
   Share2,
@@ -76,17 +81,11 @@ const ListingDetailPage = ({ openModal }) => {
   // const listing = mockListings.find((l) => l.id === id) || mockListings[0];
 
   // Page Open in Top 0
-  useEffect(() => {
-    const t = setTimeout(() => {
-      alert('I am working')
-      window.scrollTo(0, 0);
-    }, 200); 
+  const location = useLocation();
 
-    return () => clearTimeout(t);
-  }, []);
-
-
-
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const fetchListingsDetails = useCallback(async () => {
     try {
