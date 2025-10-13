@@ -16,7 +16,7 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
-import useScrollRestoration from "@/hooks/useScrollRestoration";
+// import useScrollRestoration from "@/hooks/useScrollRestoration";
 import { cache } from "@/lib/cache";
 import AllCaughtUp from "@/components/AllCaughtUp";
 
@@ -52,7 +52,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Home({ openModal }) {
-  useScrollRestoration();
+  // useScrollRestoration();
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();

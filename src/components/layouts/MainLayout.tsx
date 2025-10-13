@@ -11,7 +11,11 @@ import { Input } from "../ui/input";
 import { Search } from "lucide-react";
 import FilterTabs from "../FilterTabs";
 
-export default function MainLayout({ children }: { children: React.ReactNode}) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const isMobile = useIsMobile();
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -22,21 +26,23 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="flex flex-1">
         {!isMobile && (
           <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
             <Sidebar collapsed={isTablet} />
           </div>
         )}
-          <div className="flex-1">
+        <div className="flex-1">
           {/* Mobile Search Header */}
-           {isMobile && (
+          {isMobile && (
             <div className="z-10 transition-transform bg-white px-4 pt-2 pb-2">
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                // onSearchSubmit(searchInput);
-              }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // onSearchSubmit(searchInput);
+                }}
+              >
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input
@@ -56,16 +62,16 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
               </div>
             </div>
           )}
-         
-        <div
-          className="flex-1"
-          style={{
-            marginLeft: !isMobile ? leftSidebarWidth : "0",
-            marginRight: isDesktop ? rightSidebarWidth : "0",
-          }}
-        >
-          {children}
-        </div>
+
+          <div
+            className="flex-1"
+            style={{
+              marginLeft: !isMobile ? leftSidebarWidth : "0",
+              marginRight: isDesktop ? rightSidebarWidth : "0",
+            }}
+          >
+            {children}
+          </div>
         </div>
         {isDesktop && (
           <div className="w-[260px] fixed right-0 top-[60px] bottom-0 bg-white shadow-sm">
@@ -78,7 +84,6 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
     </div>
   );
 }
-
 
 // // // components/MainLayout.tsx
 // import { ReactNode } from 'react';
@@ -116,7 +121,6 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
 
 //   const leftSidebarWidth = isDesktop ? "240px" : isTablet ? "70px" : "0px";
 //   const rightSidebarWidth = isDesktop ? "300px" : "0px";
-  
 
 //   return (
 //     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -164,15 +168,15 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
 
 //           {/* Filter Tabs (Common for all devices) */}
 //           {/* <div className="sticky top-[60px] z-10 border-b border-gray-100 bg-[#F9FAFB]">
-//             <FilterTabs 
-//               tabs={["All", "Available", "Looking"]} 
-//               activeTab={activeFilter} 
-//               onTabClick={onFilterClick} 
+//             <FilterTabs
+//               tabs={["All", "Available", "Looking"]}
+//               activeTab={activeFilter}
+//               onTabClick={onFilterClick}
 //             />
 //           </div> */}
 
 //           {/* Page Content */}
-         
+
 //           <div
 //           className="flex-1"
 //           style={{
@@ -182,7 +186,6 @@ export default function MainLayout({ children }: { children: React.ReactNode}) {
 //         >
 //           {children}
 //         </div>
-
 
 //           {/* Desktop Right Sidebar */}
 //           {isDesktop && (

@@ -1,9 +1,9 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
   useLocation,
+  ScrollRestoration,
 } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toaster } from 'sonner';
@@ -433,6 +433,11 @@ function AppRoutes() {
           }
         />
       </Routes>
+      <ScrollRestoration
+        getKey={(location, matches) => {
+          return location.pathname;
+        }}
+      />
       <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
@@ -503,22 +508,6 @@ function App() {
     };
   }, [showLoading]);
 
-  function ScrollToTop() {
-    const location = useLocation();
-
-    useLayoutEffect(() => {
-      window.scrollTo(0, 0);
-
-      // iOS Chrome specific fix
-      const isIOSChrome = /CriOS/.test(navigator.userAgent);
-      if (isIOSChrome) {
-        setTimeout(() => window.scrollTo(0, 0), 100);
-      }
-    }, [location.pathname]);
-
-    return null;
-  }
-
   return (
     <>
       {showLoading && (
@@ -561,21 +550,18 @@ function App() {
         </div>
       )}
 
-      <Router>
-        <AuthProvider>
-          <ListingProvider>
-            <LocationProvider>
-              <SocketProvider>
-                <MessageProvider>
-                  <ScrollToTop />
-                  <RouteChangeListener />
-                  <AppRoutes />
-                </MessageProvider>
-              </SocketProvider>
-            </LocationProvider>
-          </ListingProvider>
-        </AuthProvider>
-      </Router>
+      <AuthProvider>
+        <ListingProvider>
+          <LocationProvider>
+            <SocketProvider>
+              <MessageProvider>
+                <RouteChangeListener />
+                <AppRoutes />
+              </MessageProvider>
+            </SocketProvider>
+          </LocationProvider>
+        </ListingProvider>
+      </AuthProvider>
     </>
   );
 }
