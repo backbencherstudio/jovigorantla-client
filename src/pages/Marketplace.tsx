@@ -1528,7 +1528,6 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
-import useScrollRestoration from "@/hooks/useScrollRestoration";
 import AllCaughtUp from "@/components/AllCaughtUp";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
@@ -1559,8 +1558,6 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Marketplace({ openModal }) {
-  useScrollRestoration();
-
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();

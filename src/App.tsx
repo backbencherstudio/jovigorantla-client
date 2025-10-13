@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
-  ScrollRestoration,
+  useLocation,
 } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toaster } from 'sonner';
@@ -40,7 +40,7 @@ import Accommodations from "./pages/Accommodations";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
@@ -503,6 +503,22 @@ function App() {
     };
   }, [showLoading]);
 
+  function ScrollToTop() {
+    const location = useLocation();
+
+    useLayoutEffect(() => {
+      window.scrollTo(0, 0);
+
+      // iOS Chrome specific fix
+      const isIOSChrome = /CriOS/.test(navigator.userAgent);
+      if (isIOSChrome) {
+        setTimeout(() => window.scrollTo(0, 0), 100);
+      }
+    }, [location.pathname]);
+
+    return null;
+  }
+
   return (
     <>
       {showLoading && (
@@ -546,12 +562,12 @@ function App() {
       )}
 
       <Router>
-        <ScrollRestoration />
         <AuthProvider>
           <ListingProvider>
             <LocationProvider>
               <SocketProvider>
                 <MessageProvider>
+                  <ScrollToTop />
                   <RouteChangeListener />
                   <AppRoutes />
                 </MessageProvider>
