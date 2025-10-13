@@ -85,7 +85,26 @@ const ListingDetailPage = ({ openModal }) => {
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
+
+    // Handle back/forward cache (bfcache) restore
+    const handlePageShow = (event) => {
+      if (event.persisted) {
+        // This runs when page is restored from bfcache
+        window.scrollTo(0, 0);
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, [location.pathname]);
+
+
+
+
+  
 
   const fetchListingsDetails = useCallback(async () => {
     try {
