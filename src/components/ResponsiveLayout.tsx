@@ -301,7 +301,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
         )
       ) : (
         // flex flex-1 min-h-[calc(100vh-67px)]
-        <div className="flex flex-1 ">
+        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -319,13 +319,13 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {/* Page Header with back button */}
               {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
-                <div className="relative hidden">
+                <div className="relative">
                   {/* className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] " */}
                   <div
-                    className="z-20 bg-green-400 border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
-                    /* style={{
+                    className="fixed z-20 bg-green-400 border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
+                    style={{
                       top: "65px" 
-                    }} */
+                    }}
                   >
                     {!hideBackButton && (
                       <Button
@@ -433,7 +433,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 {/* Filter tabs should be in a fixed position with z-index above main content */}
                 {/* z-10 border-b border-gray-100 */}
                 <div
-                  className={`z-10 border-b border-gray-100 h-[calc(100vh-65px)] overflow-y-auto ${
+                  className={`z-10 border-b border-gray-100 ${
                     !isMobile && "mt-[60px]"
                   }`}
                 >
