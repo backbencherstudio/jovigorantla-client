@@ -59,6 +59,23 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 };
 
 const ListingDetailPage = ({ openModal }) => {
+  useEffect(() => {
+    const isDynamicIsland =
+      /iPhone/.test(navigator.userAgent) && window.screen.height >= 780;
+
+    // Fix for scroll leak on iPhone with Dynamic Island
+    if (isDynamicIsland && window.visualViewport?.offsetTop > 0) {
+      window.scrollTo(0, 0);
+    }
+
+    // Fallback scroll reset for Safari/iOS quirks
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+      });
+    }, 50);
+  }, []);
+
   const isDesktop = useMediaQuery("(min-width: 1101px)");
 
   const { id } = useParams<{ id: string }>();

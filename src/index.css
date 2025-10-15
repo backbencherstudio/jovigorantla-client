@@ -181,6 +181,16 @@ select {
   }
 }
 
+
+html, body {
+  padding-top: env(safe-area-inset-top);
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+
+
 /* Smooth page transitions */
 .page-transition-enter {
   opacity: 0;
