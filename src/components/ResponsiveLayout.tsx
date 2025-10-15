@@ -300,7 +300,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
-        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
+        // flex flex-1 min-h-[calc(100vh-67px)]
+        <div className="flex flex-1 ">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -318,13 +319,13 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {/* Page Header with back button */}
               {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
-                <div className="relative">
+                <div className="relative hidden">
+                  {/* className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] " */}
                   <div
-                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
-                    style={{
-                      // width: width,
-                      top: "65px" /* Header height */,
-                    }}
+                    className="z-20 bg-green-400 border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
+                    /* style={{
+                      top: "65px" 
+                    }} */
                   >
                     {!hideBackButton && (
                       <Button
@@ -347,8 +348,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              {/* flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 */}
-              <div className="flex-1 bg-white min-h-screen pt-[120px] md:mx-2 ">
+              {/* flex-1 bg-white min-h-screen pt-[120px] md:mx-2 */}
+              <div className="bg-white h-[calc(100vh-65px)] mt-[65px] overflow-y-auto md:mx-2 ">
                 {children}
               </div>
             </main>
@@ -412,8 +413,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 )}
 
                 {/* Filter tabs should be in a fixed position with z-index above main content */}
+                {/* z-10 border-b border-gray-100 */}
                 <div
-                  className={`z-10 border-b border-gray-100 ${
+                  className={`z-10 border-b border-gray-100 h-[calc(100vh-65px)] overflow-y-auto ${
                     !isMobile && "mt-[60px]"
                   }`}
                 >

@@ -181,21 +181,6 @@ select {
   }
 }
 
-html,
-body {
-  overscroll-behavior: none;
-  height: 100%;
-  overflow: auto;
-}
-
-@supports (padding-top: env(safe-area-inset-top)) {
-  body {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
 
 /* Smooth page transitions */
 .page-transition-enter {

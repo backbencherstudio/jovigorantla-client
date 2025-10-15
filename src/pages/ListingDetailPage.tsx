@@ -60,49 +60,6 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 
 const ListingDetailPage = ({ openModal }) => {
   
-  useEffect(() => {
-    const fixIOSScroll = () => {
-      // Check if we're on iOS
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      
-      if (!isIOS) return;
-  
-      // Method 1: Check if page is scrolled unexpectedly
-      if (window.pageYOffset > 0) {
-        window.scrollTo(0, 0);
-        return;
-      }
-  
-      // Method 2: Check visual viewport offset (for Safari 15+)
-      if (window.visualViewport?.pageTop > 0) {
-        window.scrollTo(0, 0);
-        return;
-      }
-  
-      // Method 3: Force reset after a brief delay
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        // Double check after another frame
-        requestAnimationFrame(() => {
-          if (window.pageYOffset > 0 || window.visualViewport?.pageTop > 0) {
-            window.scrollTo(0, 0);
-          }
-        });
-      }, 150);
-    };
-  
-    // Run on mount
-    fixIOSScroll();
-  
-    // Add event listeners for orientation changes
-    window.addEventListener('orientationchange', fixIOSScroll);
-    window.addEventListener('load', fixIOSScroll);
-  
-    return () => {
-      window.removeEventListener('orientationchange', fixIOSScroll);
-      window.removeEventListener('load', fixIOSScroll);
-    };
-  }, []);
 
   const isDesktop = useMediaQuery("(min-width: 1101px)");
 
