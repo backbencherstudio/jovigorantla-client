@@ -253,7 +253,7 @@ const ListingDetailPage = ({ openModal }) => {
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
           dignissimos cupiditate eius id accusantium minus possimus impedit at
           fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex.
+          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?
         </p>
       </div>
     </>
