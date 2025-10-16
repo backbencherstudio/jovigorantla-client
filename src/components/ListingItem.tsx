@@ -85,8 +85,8 @@ const ListingItem = ({
 
   return (
     <Link
-      // to={`${redirectLink}${listing.slug}`}
-      to={"/hello"}
+      to={`${redirectLink}${listing.slug}`}
+      // to={"/hello"}
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}

@@ -59,7 +59,26 @@ const renderDescriptionWithPhoneLinks = (text: string) => {
 };
 
 const ListingDetailPage = ({ openModal }) => {
-  
+  const [scrollY, setScrollY] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    setScrollY(0);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      setIsScrolling(true);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      setIsScrolling(false);
+    };
+  }, []);
 
   const isDesktop = useMediaQuery("(min-width: 1101px)");
 
@@ -319,10 +338,9 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <>
       {/* min-h-[calc(100vh-120px)] */}
-      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]"> 
+      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-
 
         {/* flex-1 overflow-y-auto */}
         <div
