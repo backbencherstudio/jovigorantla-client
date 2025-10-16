@@ -119,6 +119,10 @@ const ListingDetailPage = ({ openModal }) => {
     }
   }, [id, navigate]);
 
+  useEffect(() => {
+    fetchListingsDetails();
+  }, [id, navigate]);
+
   const [city, stateAbbr] =
     listing.address?.split(",").map((part) => part.trim()) || [];
 
@@ -162,12 +166,10 @@ const ListingDetailPage = ({ openModal }) => {
       window.scrollTo({ top: 0, behavior: "auto" });
       document.documentElement.scrollTo(0, 0);
     }; */
-
     // Initial scroll
     ///scrollToTop();
-
     // Function to update width based on screen size
-    const updateWidth = () => {
+    /* const updateWidth = () => {
       const screenWidth = window.innerWidth;
       if (screenWidth >= 1024 && screenWidth < 1300) {
         setWidth(`${screenWidth - 540}px`);
@@ -181,7 +183,7 @@ const ListingDetailPage = ({ openModal }) => {
     window.addEventListener("resize", updateWidth);
     fetchListingsDetails();
     // Clean up event listener
-    return () => window.removeEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth); */
   }, [id, navigate]);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
@@ -338,7 +340,8 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <>
       {/* min-h-[calc(100vh-120px)] */}
-      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]">
+      {/* flex flex-col */}
+      <div className=" bg-white min-h-[calc(100vh-110px)]">
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
 
