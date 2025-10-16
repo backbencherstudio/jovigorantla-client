@@ -248,54 +248,115 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <>
       <div className=" bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0">
-        <h1>TItle</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis?Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-          dignissimos cupiditate eius id accusantium minus possimus impedit at
-          fugit! Officiis numquam, minus voluptatum molestiae in voluptates
-          neque. Inventore, debitis. Ex. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis sunt facere ducimus error sequi inventore dolorem ut tenetur atque maiores vel excepturi, illum dolore fugiat ratione aspernatur architecto provident debitis? Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque consequatur nulla in molestias neque fugiat soluta dolore. Esse, voluptate nam!
-        </p>
+        <div
+          className={`${
+            isMobile && user?.id !== listing?.user_id && listing && "pb-24"
+          } mx-auto w-full p-2 py-4`}
+        >
+          {/* Category, status and action buttons */}
+          <div className="px-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center text-gray-500 text-base gap-1">
+                <span>{formatCategory(listing.category)}</span>
+                <span className="mx-2">•</span>
+                <span>
+                  {formatSubCategory(listing.category, listing.sub_category)}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <ListingActions
+                  listingId={listing.id}
+                  listingTitle={listing.title}
+                  isUsa={false}
+                  onToggleSave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onHide={() => {}}
+                  openModal={openModal}
+                />
+              </div>
+            </div>
+
+            {/* Title */}
+            <h1
+              className="text-2xl font-bold mb-4  line-2"
+              style={{ lineHeight: 1.4 }}
+            >
+              {listing.title}
+            </h1>
+
+            {/* User info and metadata - updated format */}
+            <div className="flex flex-wrap items-center text-base text-gray-500 mb-4">
+              <span>{listing?.user?.name?.slice(0, 15)}</span>
+              <span className="mx-2">•</span>
+              <span>{formatTime(listing?.created_at)}</span>
+              {listing?.address && (
+                <>
+                  <span className="mx-2">•</span>
+                  <div className="flex items-center">
+                    <span>
+                      {city +
+                        ", " +
+                        (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
+              <div
+                className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
+                style={{ aspectRatio: "574/300" }}
+              >
+                <img
+                  onClick={() => handleImageClick(listing.image_url)}
+                  src={listing.image_url}
+                  alt={listing.title}
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                />
+
+                <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#474849a6] rounded-full flex items-center justify-center pointer-events-none">
+                  <Expand className="h-5 w-5" />
+                </span>
+              </div>
+            )}
+
+            {/* Description - only show if it exists */}
+            {listing.description && (
+              <Card className="mb-6 border-none shadow-none mt-4">
+                <CardContent className="p-0">
+                  <h2 className="text-lg font-bold mb-0">Description</h2>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {renderDescriptionWithPhoneLinks(listing.description)}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+          {/* Contact button - only show on desktop */}
+          {!isMobile && user?.id !== listing?.user_id && listing && (
+            <div className="w-full relative">
+              <div
+                className={`my-8 p-4 bg-white  fixed ${
+                  user ? "" : "md:bottom-1 "
+                } ${
+                  isDesktop ? "lg:-bottom-10" : ""
+                } left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]`}
+              >
+                <Button
+                  onClick={handleContact}
+                  className="bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+                >
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Message
+                </Button>
+              </div>
+              <div className="h-16"></div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
