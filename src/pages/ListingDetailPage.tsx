@@ -167,6 +167,84 @@ const ListingDetailPage = ({ openModal }) => {
     }
   };
 
+  const toggleSaveListing = () => {
+    if (!user) {
+      setIsOpen(true);
+      return;
+    }
+    setIsSaved(!isSaved);
+  };
+
+  const handleShare = () => {
+    if (isMobile && navigator.share) {
+      // Use Web Share API for mobile
+      navigator.share({
+        title: listing.title,
+        text: `Check out this listing: ${listing.title}`,
+        url: window.location.href,
+      });
+    } else {
+      // Copy to clipboard for desktop
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
+  const handleListingAction = (e: React.MouseEvent, action: string) => {
+    e.stopPropagation();
+
+    switch (action) {
+      case "share":
+        toast.success(`Sharing listing: "${listing?.title}"`, {
+          description: "Opening sharing options",
+        });
+        // Use Web Share API if available, otherwise copy to clipboard
+        if (navigator.share) {
+          navigator.share({
+            title: listing?.title,
+            text: `Check out this listing: ${listing?.title}`,
+            url: `${window.location.origin}/listing/${listing?.id}`,
+          });
+        } else {
+          navigator.clipboard.writeText(
+            `${window.location.origin}/listing/${listing?.id}`
+          );
+          toast.success("Link copied to clipboard");
+        }
+        break;
+      case "hide":
+        toast.success(`Listing hidden: "${listing?.title}"`, {
+          description: "You won't see this listing anymore",
+        });
+        break;
+      case "report":
+        toast.success(`Listing reported: "${listing?.title}"`, {
+          description: "Thank you for helping keep our community safe",
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const closeModal = () => setIsOpen(false);
+
+  if (loading || !listing) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-110px)]">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  const handleImageClick = (imageUrl: string) => {
+    setIsImageModalOpen(true);
+    setImageUrl(imageUrl);
+  };
+
   return (
     <>
       <div className=" bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0">
