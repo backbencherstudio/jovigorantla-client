@@ -1,4 +1,6 @@
+import { Mail } from "lucide-react";
 import React from "react";
+import AboutFooter from "./AboutFooter";
 
 export default function HelloPost() {
   return (
