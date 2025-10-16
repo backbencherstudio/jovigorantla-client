@@ -320,11 +320,10 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
                 <div className="relative">
-                  {/* className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] " */}
                   <div
-                    className="fixed z-20 bg-green-400 border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
+                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
                     style={{
-                      top: "65px" 
+                      top: "65px",
                     }}
                   >
                     {!hideBackButton && (
@@ -348,26 +347,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              {/* flex-1 bg-white min-h-screen pt-[120px] md:mx-2 */}
-              <div className="bg-white h-[calc(100vh-65px)] mt-[65px] overflow-y-auto md:mx-2 ">
-                <div className="z-20 sticky top-[0px] bg-white border-b border-gray-100 px-3 py-2 flex items-center ">
-                  {!hideBackButton && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleBack}
-                      className=""
-                    >
-                      <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                  )}
-                  <h1
-                    className={`text-xl font-bold sm:font-medium text-center w-full flex-1  mr-10 `}
-                  >
-                    {title}
-                  </h1>
-                </div>
-
+              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
                 {children}
               </div>
             </main>
