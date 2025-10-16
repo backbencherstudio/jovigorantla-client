@@ -247,7 +247,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      <div className=" bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0">
+      <div className=" bg-white min-h-[calc(100vh-110px)]">
         <div
           className={`${
             isMobile && user?.id !== listing?.user_id && listing && "pb-24"
@@ -357,6 +357,31 @@ const ListingDetailPage = ({ openModal }) => {
             </div>
           )}
         </div>
+
+        {/* Fixed button at the bottom only for mobile */}
+        {isMobile && user?.id !== listing?.user_id && listing && (
+          <div
+            className={`fixed ${
+              user ? "bottom-0" : "bottom-10"
+            } left-0 right-0 py-4 px-4 bg-white border-t shadow-md`}
+          >
+            <div className="max-w-3xl mx-auto">
+              <Button
+                onClick={handleContact}
+                className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Message
+              </Button>
+            </div>
+          </div>
+        )}
+
+        <AuthModal
+          open={isOpen}
+          onOpenChange={closeModal}
+          defaultTab={defaultTab as "login" | "signup"}
+        />
       </div>
     </>
   );
