@@ -124,7 +124,7 @@ function AppRoutes() {
         <Route
           path="/hello"
           element={
-            <ResponsiveLayout title="Hello Post">
+            <ResponsiveLayout>
               <HelloPost />
             </ResponsiveLayout>
           }
