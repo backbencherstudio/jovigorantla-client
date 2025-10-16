@@ -382,32 +382,30 @@ const ListingDetailPage = ({ openModal }) => {
           onOpenChange={closeModal}
           defaultTab={defaultTab as "login" | "signup"}
         />
-
-        {/* Modal for full image display */}
-        {isImageModalOpen && (
-          <div
-            className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
-            onClick={() => setIsImageModalOpen(false)}
-          >
-            <div
-              className="h-auto max-h-[90vh] max-w-[768px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            >
-              <img
-                src={image_url}
-                alt="Image"
-                className="w-full object-contain rounded-md"
-              />
-
-              <button
-                className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#474849a6] rounded-full flex items-center justify-center"
-                onClick={() => setIsImageModalOpen(false)}
-              >
-                <RxCross2 className="text-xl" />
-              </button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Modal for full image display */}
+      {isImageModalOpen && (
+        <div
+          className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div className="h-auto max-h-[90vh] max-w-[768px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <img
+              src={image_url}
+              alt="Image"
+              className="w-full object-contain rounded-md"
+            />
+
+            <button
+              className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#474849a6] rounded-full flex items-center justify-center"
+              onClick={() => setIsImageModalOpen(false)}
+            >
+              <RxCross2 className="text-xl" />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
