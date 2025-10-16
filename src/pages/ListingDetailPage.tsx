@@ -319,11 +319,14 @@ const ListingDetailPage = ({ openModal }) => {
   return (
     <>
       {/* min-h-[calc(100vh-120px)] */}
-      <div className="flex flex-col bg-white">
+      <div className="flex flex-col bg-white min-h-[calc(100vh-110px)]"> 
         {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
         {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
+
+
+        {/* flex-1 overflow-y-auto */}
         <div
-          className={`flex-1 overflow-y-auto ${
+          className={`${
             isMobile && user?.id !== listing?.user_id && listing && "pb-24"
           } mx-auto w-full p-2 py-4`}
         >

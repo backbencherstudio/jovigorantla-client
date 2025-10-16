@@ -52,6 +52,7 @@ import AccommodationsLooking from "./pages/AccommodationsLooking";
 import JobsHiring from "./pages/JobsHiring";
 import JobsLooking from "./pages/JobsLooking";
 import ListingDetailPage from "./pages/ListingDetailPage";
+import HelloPost from "./pages/HelloPost";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -119,6 +120,15 @@ function AppRoutes() {
     <div className="min-h-screen bg-gray-50">
       <Routes>
         <Route path="/auth" element={<Navigate to="/" replace />} />
+
+        <Route
+          path="/hello"
+          element={
+            <ResponsiveLayout title="Hello Post">
+              <HelloPost />
+            </ResponsiveLayout>
+          }
+        />
 
         {/* Main Menu Pages (with dual sidebars on desktop) */}
         <Route
