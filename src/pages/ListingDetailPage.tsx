@@ -119,10 +119,6 @@ const ListingDetailPage = ({ openModal }) => {
     }
   }, [id, navigate]);
 
-  useEffect(() => {
-    fetchListingsDetails();
-  }, [id, navigate]);
-
   const [city, stateAbbr] =
     listing.address?.split(",").map((part) => part.trim()) || [];
 
@@ -166,10 +162,12 @@ const ListingDetailPage = ({ openModal }) => {
       window.scrollTo({ top: 0, behavior: "auto" });
       document.documentElement.scrollTo(0, 0);
     }; */
+
     // Initial scroll
     ///scrollToTop();
+
     // Function to update width based on screen size
-    /* const updateWidth = () => {
+    const updateWidth = () => {
       const screenWidth = window.innerWidth;
       if (screenWidth >= 1024 && screenWidth < 1300) {
         setWidth(`${screenWidth - 540}px`);
@@ -183,7 +181,7 @@ const ListingDetailPage = ({ openModal }) => {
     window.addEventListener("resize", updateWidth);
     fetchListingsDetails();
     // Clean up event listener
-    return () => window.removeEventListener("resize", updateWidth); */
+    return () => window.removeEventListener("resize", updateWidth);
   }, [id, navigate]);
 
   // const timeAgo = formatTime(new Date(listing.created_at));
@@ -339,229 +337,10 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      {/* min-h-[calc(100vh-120px)] */}
-      {/* flex flex-col */}
       <div className=" bg-white min-h-[calc(100vh-110px)]">
-        {/* Listing content - make it scrollable but with room for the fixed button at bottom */}
-        {/* Previously Class flex-1 py-[10px] overflow-y-auto pb-24  mx-auto w-full p-0 sm:pl-16 lg:pl-0 */}
-
-        {/* flex-1 overflow-y-auto */}
-        <div
-          className={`${
-            isMobile && user?.id !== listing?.user_id && listing && "pb-24"
-          } mx-auto w-full p-2 py-4`}
-        >
-          {/* Category, status and action buttons */}
-          <div className="px-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center text-gray-500 text-base gap-1">
-                <span>{formatCategory(listing.category)}</span>
-                <span className="mx-2">•</span>
-                <span>
-                  {formatSubCategory(listing.category, listing.sub_category)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                {/* <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleSaveListing}
-                className="h-8 w-8"
-              >
-                <Star
-                  className={`h-5 w-5 ${
-                    isSaved ? "fill-[#ff6b00] text-[#ff6b00]" : ""
-                  }`}
-                />
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={(e) => handleListingAction(e, "share")}
-                  >
-                    <Share2 className="h-4 w-4 mr-2" />
-                    <span>Share</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => handleListingAction(e, "hide")}
-                  >
-                    <EyeOff className="h-4 w-4 mr-2" />
-                    <span>Hide</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => handleListingAction(e, "report")}
-                  >
-                    <Flag className="h-4 w-4 mr-2" />
-                    <span>Report</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-                <ListingActions
-                  listingId={listing.id}
-                  listingTitle={listing.title}
-                  isUsa={false}
-                  // saved={listing.saved || false}
-                  // saved={false}
-                  // onToggleSave={onToggleSave}
-                  onToggleSave={(e) => {
-                    e.preventDefault(); // ✅ prevent default link navigation
-                    e.stopPropagation(); // ✅ stop event bubbling
-                  }}
-                  onHide={() => {}}
-                  openModal={openModal}
-                />
-              </div>
-            </div>
-
-            {/* Title */}
-            <h1
-              className="text-2xl font-bold mb-4  line-2"
-              style={{ lineHeight: 1.4 }}
-            >
-              {listing.title}
-              {/* Private accommodation available in Irving from August 1st for 2 males in 2bed 2bath */}
-            </h1>
-
-            {/* User info and metadata - updated format */}
-            <div className="flex flex-wrap items-center text-base text-gray-500 mb-4">
-              <span>{listing?.user?.name?.slice(0, 15)}</span>
-              <span className="mx-2">•</span>
-              <span>{formatTime(listing?.created_at)}</span>
-              {listing?.address && (
-                <>
-                  <span className="mx-2">•</span>
-                  <div className="flex items-center">
-                    <span>
-                      {/* {listing.address
-                        ?.split(",")
-                        .filter((_, i) => i === 0 || i === 1)
-                        .join(", ")} */}
-                      {city +
-                        ", " +
-                        (usStates[stateAbbr.toLocaleLowerCase()] || stateAbbr)}
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {listing.image && !["Jobs", "Rides"].includes(listing.category) && (
-              // <PhotoGallery images={[listing.image]} listingId={listing.id} />
-              <div
-                className="relative w-full max-w-full rounded-lg shadow-md bg-white cursor-pointer"
-                style={{ aspectRatio: "574/300" }}
-              >
-                <img
-                  onClick={() => handleImageClick(listing.image_url)}
-                  src={listing.image_url}
-                  alt={listing.title}
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                />
-
-                <span className="absolute bottom-2 right-2 text-white h-[40px] w-[40px] bg-[#474849a6] rounded-full flex items-center justify-center pointer-events-none">
-                  <Expand className="h-5 w-5" />
-                </span>
-
-                {/* <img src={`${listing.image_url}`} alt="listing" className="w-full h-[400px] object-cover rounded-lg" /> */}
-              </div>
-            )}
-
-            {/* Description - only show if it exists */}
-            {listing.description && (
-              <Card className="mb-6 border-none shadow-none mt-4">
-                <CardContent className="p-0">
-                  <h2 className="text-lg font-bold mb-0">Description</h2>
-                  <p className="text-gray-700 whitespace-pre-line">
-                    {renderDescriptionWithPhoneLinks(listing.description)}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-          {/* Contact button - only show on desktop */}
-          {/* max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
-          {!isMobile && user?.id !== listing?.user_id && listing && (
-            <div className="w-full relative">
-              <div
-                // style={{ width: width }}
-                className={`my-8 p-4 bg-white  fixed ${
-                  user ? "" : "md:bottom-1 "
-                } ${
-                  isDesktop ? "lg:-bottom-10" : ""
-                } left-1/2 -translate-x-1/2 -bottom-10 mx-auto w-full max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]`}
-              >
-                <Button
-                  onClick={handleContact}
-                  className="bg-[#ff6b00] w-full hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
-                >
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  Message
-                </Button>
-              </div>
-              <div className="h-16"></div>
-            </div>
-          )}
-        </div>
-
-        {/* Fixed button at the bottom only for mobile */}
-        {isMobile && user?.id !== listing?.user_id && listing && (
-          <div
-            className={`fixed ${
-              user ? "bottom-0" : "bottom-10"
-            } left-0 right-0 py-4 px-4 bg-white border-t shadow-md`}
-          >
-            <div className="max-w-3xl mx-auto">
-              <Button
-                onClick={handleContact}
-                className="w-full bg-[#ff6b00] hover:bg-[#ff6b00]/90 text-white py-6 text-lg text-center"
-              >
-                <MessageSquare className="h-5 w-5 mr-2" />
-                Message
-              </Button>
-            </div>
-          </div>
-        )}
-        <AuthModal
-          open={isOpen}
-          onOpenChange={closeModal}
-          defaultTab={defaultTab as "login" | "signup"}
-        />
+        <h1>TItle</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore dignissimos cupiditate eius id accusantium minus possimus impedit at fugit! Officiis numquam, minus voluptatum molestiae in voluptates neque. Inventore, debitis. Ex.</p>
       </div>
-      {/* Modal for full image display */}
-      {isImageModalOpen && (
-        <div
-          className="fixed h-full w-full top-0 left-0 z-[103] p-2 flex items-center justify-center bg-[rgba(0,0,0,0.6)] cursor-pointer"
-          onClick={() => setIsImageModalOpen(false)}
-        >
-          <div
-            className="h-auto max-h-[90vh] max-w-[768px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            /* style={{
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-            }} */
-          >
-            <img
-              src={image_url}
-              alt="Image"
-              className="w-full object-contain rounded-md"
-            />
-
-            <button
-              className="absolute top-5 right-4 text-white h-[30px] w-[30px] bg-[#474849a6] rounded-full flex items-center justify-center"
-              onClick={() => setIsImageModalOpen(false)}
-            >
-              <RxCross2 className="text-xl" />
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };
