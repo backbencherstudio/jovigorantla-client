@@ -89,7 +89,7 @@ function canChangeUsername(
 }
 
 const Profile = () => {
-  const [scrollY, setScrollY] = useState(0);
+  /* const [scrollY, setScrollY] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const Profile = () => {
       window.removeEventListener("scroll", handleScroll);
       setIsScrolling(false);
     };
-  }, []);
+  }, []); */
 
   const { user, updateMe } = useAuth();
   const navigate = useNavigate();
