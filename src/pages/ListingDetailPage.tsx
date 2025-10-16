@@ -118,6 +118,55 @@ const ListingDetailPage = ({ openModal }) => {
   const [city, stateAbbr] =
     listing.address?.split(",").map((part) => part.trim()) || [];
 
+  const [width, setWidth] = useState("500px");
+
+  useEffect(() => {
+    // Function to update width based on screen size
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 1024 && screenWidth < 1300) {
+        setWidth(`${screenWidth - 540}px`);
+      } else {
+        setWidth("768px");
+      }
+    };
+    // Set initial width
+    updateWidth();
+    // Add event listener for window resize
+    window.addEventListener("resize", updateWidth);
+    fetchListingsDetails();
+    // Clean up event listener
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [id, navigate]);
+
+  const handleContact = async () => {
+    try {
+      if (user) {
+        const conversation = await api.post("/chat/conversation", {
+          creator_id: user?.id,
+          participant_id: listing?.user?.id,
+          listing_id: listing?.id,
+        });
+
+        console.log("conversation", conversation);
+
+        if (conversation?.data?.success) {
+          handleConversationCreated({ data: conversation?.data?.data });
+          // console.log("conversation", conversation?.data?.data.id);
+          navigate(`/messages/${conversation?.data?.data.id}`);
+          // navigate(`/messages/${1}`);
+        }
+
+        // Redirect to the specific conversation
+        // navigate(`/messages/${conversationId}`);
+      } else {
+        setIsOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div className=" bg-white min-h-[calc(100vh-110px)] p-2 py-4 lg:p-4 pb-0 lg:pb-0">
