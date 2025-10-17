@@ -306,17 +306,24 @@ const Header = ({
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
 
+    // navigate("/");
+
+    // Prevent any scrolling temporarily
+    document.body.style.overflow = "hidden";
+
     navigate("/");
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
-    });
-  };
+      document.body.scrollTop = 0;
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+      // Re-enable scrolling after a moment
+      setTimeout(() => {
+        document.body.style.overflow = "auto";
+      }, 200);
+    }, 100);
+  };
 
   return (
     <>

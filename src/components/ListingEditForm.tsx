@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import * as z from "zod";
 import LocationWithRadius from "./LocationWithRedius";
 import CustomModal from "./shared/CustomModal";
@@ -94,6 +94,14 @@ const ListingEditForm = ({
   isEditing = false,
   isSubmitting = false,
 }: ListingFormProps) => {
+  
+  // useLocation is a hook that returns the current location object
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const [selectedCategory, setSelectedCategory] = useState(
     initialValues?.category || ""
   );

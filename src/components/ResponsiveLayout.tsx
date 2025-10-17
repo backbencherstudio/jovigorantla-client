@@ -311,6 +311,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
             }  flex flex-col flex-1 min-h-[100%]`} */}
           {!isValidPage && (
+
             <main
               className={`w-full mx-auto ${
                 fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"

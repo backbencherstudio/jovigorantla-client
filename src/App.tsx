@@ -121,14 +121,6 @@ function AppRoutes() {
       <Routes>
         <Route path="/auth" element={<Navigate to="/" replace />} />
 
-        <Route
-          path="/hello"
-          element={
-            <ResponsiveLayout title="Hello Post">
-              <HelloPost />
-            </ResponsiveLayout>
-          }
-        />
 
         {/* Main Menu Pages (with dual sidebars on desktop) */}
         <Route
@@ -384,7 +376,7 @@ function AppRoutes() {
           path="/my-listings"
           element={
             <PrivateRoute>
-              <ResponsiveLayout title="My Listings">
+              <ResponsiveLayout title="Manage Listings">
                 <ManageListings />
               </ResponsiveLayout>
             </PrivateRoute>
