@@ -117,10 +117,9 @@ function AppRoutes() {
   const isEditing = Boolean(editId);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen  bg-gray-50">
       <Routes>
         <Route path="/auth" element={<Navigate to="/" replace />} />
-
 
         {/* Main Menu Pages (with dual sidebars on desktop) */}
         <Route

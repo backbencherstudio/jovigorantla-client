@@ -94,14 +94,6 @@ const ListingEditForm = ({
   isEditing = false,
   isSubmitting = false,
 }: ListingFormProps) => {
-  
-  // useLocation is a hook that returns the current location object
-  const location = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
-
   const [selectedCategory, setSelectedCategory] = useState(
     initialValues?.category || ""
   );
