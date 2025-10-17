@@ -54,8 +54,9 @@ const ManageListings = () => {
       location: "Denton, TX",
     },
   ];
- 
+
   const handleEditListing = (id: string) => {
+    window.scrollTo(0, 0);
     navigate(`/create-listing?id=${id}`);
   };
   const openDeleteDialog = (e: React.MouseEvent, id: string) => {
@@ -104,8 +105,7 @@ const ManageListings = () => {
   if (!user) return null;
   return (
     <div className="p-2 py-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-110px)] flex flex-col justify-between gap-4">
-      {/*  h-full  */}
-      <div className="bg-white flex flex-col justify-between">
+      <div className="bg-white flex h-full  flex-col justify-between">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
