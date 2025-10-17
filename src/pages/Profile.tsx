@@ -89,27 +89,6 @@ function canChangeUsername(
 }
 
 const Profile = () => {
-  /* const [scrollY, setScrollY] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  useEffect(() => {
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0);
-    setScrollY(0);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-      setIsScrolling(true);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      setIsScrolling(false);
-    };
-  }, []); */
-
   const { user, updateMe } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
