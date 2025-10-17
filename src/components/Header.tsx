@@ -306,10 +306,11 @@ const Header = ({
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
 
-    // navigate("/");
+    navigate("/");
+    window.scrollTo(0, 0);
 
     // Prevent any scrolling temporarily
-    document.body.style.overflow = "hidden";
+    /* document.body.style.overflow = "hidden";
 
     navigate("/");
 
@@ -322,7 +323,7 @@ const Header = ({
       setTimeout(() => {
         document.body.style.overflow = "auto";
       }, 200);
-    }, 100);
+    }, 100); */
   };
 
   return (
