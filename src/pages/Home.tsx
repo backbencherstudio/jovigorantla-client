@@ -52,7 +52,6 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Home({ openModal }) {
-
   const [scrollY, setScrollY] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -73,8 +72,6 @@ export default function Home({ openModal }) {
       setIsScrolling(false);
     };
   }, []);
-
-
 
   // useScrollRestoration();
 
@@ -645,6 +642,15 @@ export default function Home({ openModal }) {
   //     isInitialLoad
   //   });
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("shouldScrollToTop") === "true") {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      sessionStorage.removeItem("shouldScrollToTop");
+    }
+  }, []);
 
   return (
     // w-full mx-auto max-w-3xl

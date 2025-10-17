@@ -308,12 +308,9 @@ const Header = ({
 
     navigate("/");
 
-    setTimeout(() => {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    }, 100);
+    sessionStorage.setItem("shouldScrollToTop", "true");
   };
+  
 
   return (
     <>
