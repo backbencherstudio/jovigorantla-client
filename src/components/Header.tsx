@@ -306,18 +306,12 @@ const Header = ({
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
 
-    // navigate("/");
-    // scrollTo(0, 0);
-
     navigate("/");
 
     setTimeout(() => {
-      // Single, universal scroll method
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "auto",
-      });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }, 100);
   };
 

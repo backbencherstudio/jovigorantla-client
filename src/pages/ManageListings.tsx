@@ -127,7 +127,7 @@ const ManageListings = () => {
 
   if (!user) return null;
   return (
-    <div className="p-2 py-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-120px)] h-full flex flex-col justify-between gap-4">
+    <div className="p-2 py-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-110px)] flex flex-col justify-between gap-4">
       <div className="bg-white h-full flex flex-col justify-between">
         {isLoading ? (
           <div className="space-y-4">
