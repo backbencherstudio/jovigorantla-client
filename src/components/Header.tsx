@@ -308,9 +308,15 @@ const Header = ({
 
     navigate("/");
 
-    sessionStorage.setItem("shouldScrollToTop", "true");
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+    });
   };
-  
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

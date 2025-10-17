@@ -247,8 +247,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      {/* min-h-[calc(100vh-110px)] */}
-      <div className="bg-white h-full">
+      <div className="bg-white min-h-[calc(100vh-110px)]">
         <div
           className={`${
             isMobile && user?.id !== listing?.user_id && listing && "pb-24"

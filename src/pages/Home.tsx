@@ -643,15 +643,6 @@ export default function Home({ openModal }) {
   //   });
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
-  useEffect(() => {
-    if (sessionStorage.getItem("shouldScrollToTop") === "true") {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      sessionStorage.removeItem("shouldScrollToTop");
-    }
-  }, []);
-
   return (
     // w-full mx-auto max-w-3xl
     <main

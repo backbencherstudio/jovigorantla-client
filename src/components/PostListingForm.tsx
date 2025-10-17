@@ -91,31 +91,6 @@ interface Location {
 }
 
 function PostListingForm() {
-
-
-  const [scrollY, setScrollY] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  useEffect(() => {
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0);
-    setScrollY(0);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-      setIsScrolling(true);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      setIsScrolling(false);
-    };
-  }, []);
-
-
-
   const [searchParams] = useSearchParams();
   const listingId = searchParams.get("id");
   const location = useLocation();
@@ -771,9 +746,10 @@ function PostListingForm() {
   return (
     <>
       <div className="p-2 py-4 bg-white min-h-[calc(100vh-110px)]">
+        {/*  min-h-[calc(100vh-160px)] */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6 bg-white px-4 rounded-lg max-w-3xl mx-auto min-h-[calc(100vh-160px)]"
+          className="space-y-6 bg-white px-4 rounded-lg max-w-3xl mx-auto"
         >
           {/* <h2 className="text-xl font-bold">
         {isEditMode ? "Edit Listing" : "Create New Listing"}
@@ -897,7 +873,9 @@ function PostListingForm() {
               )}
             />
             {errors.title && (
-              <p className="text-[#b3261e] text-xs font-normal">{errors.title.message}</p>
+              <p className="text-[#b3261e] text-xs font-normal">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
