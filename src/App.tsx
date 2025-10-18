@@ -110,6 +110,16 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const ScrollRoute = ({ children }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  return children;
+};
+
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
@@ -127,21 +137,16 @@ function AppRoutes() {
           <Route
             path="/"
             element={
-              // <MainLayout>
-              //   {/* <Index /> */}
-              //   <Home />
-              // </MainLayout>
-              <ResponsiveLayout>
-                <Home openModal={openModal} />
-              </ResponsiveLayout>
+              <ScrollRoute>
+                <ResponsiveLayout>
+                  <Home openModal={openModal} />
+                </ResponsiveLayout>
+              </ScrollRoute>
             }
           />
           <Route
             path="/accommodations"
             element={
-              // <ResponsiveLayout>
-              //   <Index />
-              // </ResponsiveLayout>
               <ResponsiveLayout>
                 <Accommodations openModal={openModal} />
               </ResponsiveLayout>
@@ -166,10 +171,6 @@ function AppRoutes() {
           <Route
             path="/jobs"
             element={
-              // <ResponsiveLayout>
-              //   <Index />
-              // </ResponsiveLayout>
-              // <MainLayout>
               <ResponsiveLayout>
                 <Jobs openModal={openModal} />
               </ResponsiveLayout>
@@ -258,13 +259,6 @@ function AppRoutes() {
           <Route
             path="/create-listing"
             element={
-              // <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
-
-              //   {/* <CreateListing isEditing={isEditing} /> */}
-              //   <PostListingForm />
-
-              // </PageLayout>
-
               <ResponsiveLayout
                 title={isEditing ? "Editing Listing" : "Create Listing"}
               >
@@ -273,21 +267,9 @@ function AppRoutes() {
             }
           />
 
-          {/* <Route
-          path='listing/create'
-          element={
-            <PageLayout title="Post Create Listing">
-              
-            </PageLayout>
-          } /> */}
-
           <Route
             path="/listing/:id"
             element={
-              // <PageLayout title="Listing Details">
-              //   <ListingDetailPage />
-              // </PageLayout>
-
               <ResponsiveLayout title="Listing Details">
                 <ListingDetailPage openModal={openModal} />
               </ResponsiveLayout>
@@ -366,11 +348,13 @@ function AppRoutes() {
           <Route
             path="/saved-listings"
             element={
-              <PrivateRoute>
-                <ResponsiveLayout title="Saved Listings">
-                  <SavedListings />
-                </ResponsiveLayout>
-              </PrivateRoute>
+              <ScrollRoute>
+                <PrivateRoute>
+                  <ResponsiveLayout title="Saved Listings">
+                    <SavedListings />
+                  </ResponsiveLayout>
+                </PrivateRoute>
+              </ScrollRoute>
             }
           />
           <Route
@@ -437,12 +421,11 @@ function AppRoutes() {
           />
         </Routes>
       </ScrollToTop>
-
-      <ScrollRestoration
+      {/* <ScrollRestoration
         getKey={(location, matches) => {
           return location.pathname;
         }}
-      />
+      /> */}
       <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
