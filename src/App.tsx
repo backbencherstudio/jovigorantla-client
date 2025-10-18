@@ -117,8 +117,13 @@ function AppRoutes() {
   const editId = searchParams.get("id");
   const isEditing = Boolean(editId);
 
+  //  className="min-h-screen  bg-gray-50"
+
   return (
-    <div className="min-h-screen  bg-gray-50">
+    <div
+      id="main-scroll-container"
+      className="h-screen overflow-y-auto bg-gray-50"
+    >
       <ScrollToTop>
         <Routes>
           <Route path="/auth" element={<Navigate to="/" replace />} />
