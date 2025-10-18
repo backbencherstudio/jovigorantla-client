@@ -4,6 +4,7 @@ import {
   Navigate,
   useLocation,
   ScrollRestoration,
+  useNavigationType,
 } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toaster } from 'sonner';
@@ -110,13 +111,13 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
   const searchParams = new URLSearchParams(window.location.search);
   const editId = searchParams.get("id");
   const isEditing = Boolean(editId);
-
 
   return (
     <div className="min-h-screen  bg-gray-50">

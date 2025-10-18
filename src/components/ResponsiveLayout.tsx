@@ -311,6 +311,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
             }  flex flex-col flex-1 min-h-[100%]`} */}
           {!isValidPage && (
+
             <main
               className={`w-full mx-auto ${
                 fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"
@@ -347,8 +348,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              {/* pt-[120px] */}
-              <div className="bg-white flex-1 min-h-screen  md:mx-2">
+              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
                 {children}
               </div>
             </main>

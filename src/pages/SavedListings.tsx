@@ -169,8 +169,8 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    //  min-h-[calc(100vh-110px)]
-    <div className="p-2 py-4 pb-0 lg:pb-0 w-full h-full bg-white flex flex-col justify-between gap-4">
+    // h-full
+    <div className="p-2 py-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-110px)]  bg-white flex flex-col justify-between gap-4">
       {isLoading ? (
         <>
           <div className="space-y-4">
