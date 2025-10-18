@@ -110,16 +110,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const ScrollRoute = ({ children }) => {
-  const location = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
-
-  return children;
-};
-
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
@@ -137,11 +127,9 @@ function AppRoutes() {
           <Route
             path="/"
             element={
-              <ScrollRoute>
-                <ResponsiveLayout>
-                  <Home openModal={openModal} />
-                </ResponsiveLayout>
-              </ScrollRoute>
+              <ResponsiveLayout>
+                <Home openModal={openModal} />
+              </ResponsiveLayout>
             }
           />
           <Route
@@ -348,13 +336,11 @@ function AppRoutes() {
           <Route
             path="/saved-listings"
             element={
-              <ScrollRoute>
-                <PrivateRoute>
-                  <ResponsiveLayout title="Saved Listings">
-                    <SavedListings />
-                  </ResponsiveLayout>
-                </PrivateRoute>
-              </ScrollRoute>
+              <PrivateRoute>
+                <ResponsiveLayout title="Saved Listings">
+                  <SavedListings />
+                </ResponsiveLayout>
+              </PrivateRoute>
             }
           />
           <Route
