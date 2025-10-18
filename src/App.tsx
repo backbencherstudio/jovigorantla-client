@@ -438,11 +438,11 @@ function AppRoutes() {
         </Routes>
       </ScrollToTop>
 
-      {/* <ScrollRestoration
+      <ScrollRestoration
         getKey={(location, matches) => {
           return location.pathname;
         }}
-      /> */}
+      />
       <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
