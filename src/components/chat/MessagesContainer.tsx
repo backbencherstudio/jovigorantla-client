@@ -73,46 +73,46 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({
 
   return (
     <ScrollArea className="flex-1 pb-4 bg-gray-100">
-    <div className="px-4 pb-3 pt-[10px] h-full w-full overflow-y-auto  flex flex-col-reverse [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      {dateKeys.map((dateKey) => {
-        // const dateMessages = groupedMessages[dateKey];
-        // const date = new Date(dateKey);
-        // const isToday = new Date().toDateString() === date.toDateString();
-        // const isYesterday =
-        //   new Date(Date.now() - 86400000).toDateString() ===
-        //   date.toDateString();
+      <div className="px-4 pb-3 pt-[10px] h-full w-full overflow-y-auto  flex flex-col-reverse [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {dateKeys.map((dateKey) => {
+          // const dateMessages = groupedMessages[dateKey];
+          // const date = new Date(dateKey);
+          // const isToday = new Date().toDateString() === date.toDateString();
+          // const isYesterday =
+          //   new Date(Date.now() - 86400000).toDateString() ===
+          //   date.toDateString();
 
-        // // console.log(dateKey)
-        // // console.log(date)
+          // // console.log(dateKey)
+          // // console.log(date)
 
-        // let dateLabel = date.toLocaleDateString();
-        // // console.log("data label", dateLabel)
-        // if (isToday) dateLabel = "Today";
-        // else if (isYesterday) dateLabel = "Yesterday";
+          // let dateLabel = date.toLocaleDateString();
+          // // console.log("data label", dateLabel)
+          // if (isToday) dateLabel = "Today";
+          // else if (isYesterday) dateLabel = "Yesterday";
 
-        const dateMessages = groupedMessages[dateKey];
-        const date = dayjs(dateKey); // ✅ instead of new Date(dateKey)
+          const dateMessages = groupedMessages[dateKey];
+          const date = dayjs(dateKey); // ✅ instead of new Date(dateKey)
 
-        const isToday = dayjs().isSame(date, "day");
-        const isYesterday = dayjs().subtract(1, "day").isSame(date, "day");
+          const isToday = dayjs().isSame(date, "day");
+          const isYesterday = dayjs().subtract(1, "day").isSame(date, "day");
 
-        let dateLabel = date.format("M/D/YYYY"); // e.g., 8/26/2025
-        if (isToday) dateLabel = "Today";
-        else if (isYesterday) dateLabel = "Yesterday";
+          let dateLabel = date.format("M/D/YYYY"); // e.g., 8/26/2025
+          if (isToday) dateLabel = "Today";
+          else if (isYesterday) dateLabel = "Yesterday";
 
-        return (
-          <MessageGroup
-            key={dateKey}
-            dateLabel={dateLabel}
-            messages={dateMessages}
-            currentUserId={currentUserId}
-            otherUserName={otherUserName}
-            otherUserAvatar={otherUserAvatar}
-          />
-        );
-      })}
-      <div ref={messagesEndRef} />
-    </div>
+          return (
+            <MessageGroup
+              key={dateKey}
+              dateLabel={dateLabel}
+              messages={dateMessages}
+              currentUserId={currentUserId}
+              otherUserName={otherUserName}
+              otherUserAvatar={otherUserAvatar}
+            />
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
     </ScrollArea>
   );
 };
