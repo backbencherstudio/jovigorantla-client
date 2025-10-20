@@ -12,6 +12,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import AllCaughtUp from "@/components/AllCaughtUp";
+import { Helmet } from "react-helmet-async";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -561,6 +562,10 @@ export default function RidesLooking({ openModal }) {
     } */
   };
 
+  const pageTitle = "Desieasy Rides – Looking | See Who Needs a Ride Near You";
+  const pageDesc =
+    "Browse posts from people looking for rides — from local commutes to airport trips. Find who’s nearby and connect easily if you can offer a ride.";
+
   const tabList = [
     {
       label: "All",
@@ -582,6 +587,16 @@ export default function RidesLooking({ openModal }) {
       className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
       ref={filterTabsRef}
     >
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href="https://desieasy.com/rides" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/rides" />
+      </Helmet>
+
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
