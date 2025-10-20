@@ -565,6 +565,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import AllCaughtUp from "@/components/AllCaughtUp";
+import { Helmet } from "react-helmet-async";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -1116,6 +1117,10 @@ export default function Accommodations({ openModal }) {
     } */
   };
 
+  const pageTitle = "Desieasy Accommodations | Post or Find Rooms & Apartments";
+  const pageDesc =
+    "Find or offer rooms, houses, and rentals on Desieasy. Connect locally with people offering space, finding housing or searching for roommates near you.";
+
   const tabsList = [
     {
       label: "All",
@@ -1137,6 +1142,16 @@ export default function Accommodations({ openModal }) {
       className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent sm:h-auto"
       ref={filterTabsRef}
     >
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href="https://desieasy.com/accommodations" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/accommodations" />
+      </Helmet>
+
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
