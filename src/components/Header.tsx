@@ -306,7 +306,7 @@ const Header = ({
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
 
-    navigate("/");
+    navigate("/", { replace: true });
     window.scrollTo(0, 0);
 
     // Prevent any scrolling temporarily
