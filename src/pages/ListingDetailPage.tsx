@@ -392,7 +392,7 @@ const ListingDetailPage = ({ openModal }) => {
             <div className="h-auto max-h-[90vh] max-w-[768px] w-full mx-auto flex items-center justify-center relative rounded-md overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <img
                 src={image_url}
-                alt="Image"
+                alt={listing.title}
                 className="w-full object-contain rounded-md"
               />
 

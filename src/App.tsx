@@ -55,6 +55,7 @@ import JobsLooking from "./pages/JobsLooking";
 import ListingDetailPage from "./pages/ListingDetailPage";
 import HelloPost from "./pages/HelloPost";
 import ScrollToTop from "./hooks/useScrollTop";
+import { Helmet } from "react-helmet-async";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -111,7 +112,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
@@ -121,6 +121,27 @@ function AppRoutes() {
 
   return (
     <div className="min-h-screen  bg-gray-50">
+      <Helmet>
+        <title>
+          Desieasy | Post. Find. Connect. | Free Local Listings in USA
+        </title>
+        <meta
+          name="description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <link rel="canonical" href="https://desieasy.com/" />
+        <meta
+          property="og:title"
+          content="Desieasy | Post. Find. Connect. | Free Local Listings in USA"
+        />
+        <meta
+          property="og:description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/" />
+      </Helmet>
+
       <ScrollToTop>
         <Routes>
           <Route path="/auth" element={<Navigate to="/" replace />} />
