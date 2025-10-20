@@ -19,6 +19,7 @@ import ListingSkeleton from "@/components/ListingSkeleton";
 // import useScrollRestoration from "@/hooks/useScrollRestoration";
 import { cache } from "@/lib/cache";
 import AllCaughtUp from "@/components/AllCaughtUp";
+import { Helmet } from "react-helmet-async";
 
 const cacheData: any = {
   listings: [],
@@ -649,6 +650,30 @@ export default function Home({ openModal }) {
       className="min-h-[calc(100vh-110px)] w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
       ref={filterTabsRef}
     >
+      <Helmet>
+        <title>
+          Desieasy | Post. Find. Connect. | Free Local Listings in USA
+        </title>
+        <meta
+          name="description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <link rel="canonical" href="https://desieasy.com/" />
+        <meta
+          property="og:title"
+          content="Desieasy | Post. Find. Connect. | Free Local Listings in USA"
+        />
+        <meta
+          property="og:description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://desieasy.com/"
+        />
+      </Helmet>
+
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
