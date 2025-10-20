@@ -563,10 +563,7 @@ export default function JobsHiring({ openModal }) {
     } */
   };
 
-    "Explore Desieasy Jobs to find or post opportunities. Connect with local employers and job seekers — from part-time gigs to full-time roles.";
-
   const pageTitle = "Desieasy Jobs – Hiring | Explore Jobs, Gigs & Local Openings";
-
   const pageDesc = "Post your hiring opportunities on Desieasy — from full-time and part-time jobs to freelance gigs. Reach skilled candidates across the U.S. and hire faster.";
 
   const tabsList = [

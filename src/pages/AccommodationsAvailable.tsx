@@ -564,12 +564,8 @@ export default function AccommodationsAvailable({ openModal }) {
     } */
   };
 
-  const baseTitle = "Desieasy Accommodations | Post or Find Rooms & Apartments";
-  const baseDesc =
-    "Find or offer rooms, houses, and rentals on Desieasy. Connect locally with people offering space, finding housing or searching for roommates near you.";
 
   const pageTitle = "Desieasy Accommodations: Available Rooms & Apartments for Rent";
-
   const pageDesc = "Explore available listings for rooms, shared apartments, and houses for rent. Find a place to stay and connect directly with people offering accommodations.";
 
   const tabsList = [
