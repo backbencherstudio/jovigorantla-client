@@ -12,6 +12,7 @@ import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
 import AllCaughtUp from "@/components/AllCaughtUp";
+import { Helmet } from "react-helmet-async";
 
 const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
   const [distanceFromTop, setDistanceFromTop] = useState(0);
@@ -562,6 +563,12 @@ export default function JobsHiring({ openModal }) {
     } */
   };
 
+    "Explore Desieasy Jobs to find or post opportunities. Connect with local employers and job seekers — from part-time gigs to full-time roles.";
+
+  const pageTitle = "Desieasy Jobs – Hiring | Explore Jobs, Gigs & Local Openings";
+
+  const pageDesc = "Post your hiring opportunities on Desieasy — from full-time and part-time jobs to freelance gigs. Reach skilled candidates across the U.S. and hire faster.";
+
   const tabsList = [
     {
       label: "All",
@@ -584,6 +591,16 @@ export default function JobsHiring({ openModal }) {
       className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent sm:h-auto"
       ref={filterTabsRef}
     >
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href="https://desieasy.com/jobs" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/jobs" />
+      </Helmet>
+
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
