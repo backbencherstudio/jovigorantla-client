@@ -120,7 +120,7 @@ function AppRoutes() {
   const isEditing = Boolean(editId);
 
   return (
-    <div className="min-h-screen  bg-gray-50">
+    <div className="min-h-screen bg-gray-50" id="main-layout">
       <Helmet>
         <title>
           Desieasy | Post. Find. Connect. | Free Local Listings in USA
@@ -430,11 +430,12 @@ function AppRoutes() {
           />
         </Routes>
       </ScrollToTop>
-      {/* <ScrollRestoration
+
+      <ScrollRestoration
         getKey={(location, matches) => {
           return location.pathname;
         }}
-      /> */}
+      />
       <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
