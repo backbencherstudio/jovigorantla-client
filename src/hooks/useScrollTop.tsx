@@ -32,14 +32,14 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
           layout.scrollTop = 0;
 
           // iOS Chrome workaround: force reflow
-          layout.style.transform = "translateY(0px)";
+          //layout.style.transform = "translateY(0px)";
           requestAnimationFrame(() => {
             layout.scrollTop = 0;
           });
         } else {
           window.scrollTo(0, 0);
           // iOS Chrome workaround: force reflow + scroll again
-          document.body.style.transform = "translateY(0px)";
+          //document.body.style.transform = "translateY(0px)";
           requestAnimationFrame(() => {
             window.scrollTo(0, 0);
           });
