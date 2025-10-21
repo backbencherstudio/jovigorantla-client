@@ -190,42 +190,116 @@ const SavedListings = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-white min-h-[calc(100vh-110px)]">
-      <div className="mx-auto w-full px-4 py-4">
-        <h1>Saved Listing Page</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti
-          amet, alias odio mollitia quae tenetur non optio eius pariatur ducimus
-          quod tempora eligendi vero, facere minus laudantium molestiae ab a
-          similique eveniet, nulla ipsa? Id vero illum, explicabo ipsam ullam
-          blanditiis nemo accusantium amet architecto, recusandae voluptatem
-          minus inventore harum aliquam aut deserunt cumque dolores fugiat quae
-          labore beatae porro! Earum autem eos, neque tempore fugit saepe
-          molestias illo nobis a aliquam quas! Saepe ab consequatur illo,
-          molestias ea, nulla nostrum, ipsum hic fuga quod sunt corrupti culpa
-          cum adipisci necessitatibus vel qui illum nam ullam deserunt assumenda
-          error quis? Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Deleniti amet, alias odio mollitia quae tenetur non optio eius
-          pariatur ducimus quod tempora eligendi vero, facere minus laudantium
-          molestiae ab a similique eveniet, nulla ipsa? Id vero illum, explicabo
-          ipsam ullam blanditiis nemo accusantium amet architecto, recusandae
-          voluptatem minus inventore harum aliquam aut deserunt cumque dolores
-          fugiat quae labore beatae porro! Earum autem eos, neque tempore fugit
-          saepe molestias illo nobis a aliquam quas! Saepe ab consequatur illo,
-          molestias ea, nulla nostrum, ipsum hic fuga quod sunt corrupti culpa
-          cum adipisci necessitatibus vel qui illum nam ullam deserunt assumenda
-          error quis? Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Deleniti amet, alias odio mollitia quae tenetur non optio eius
-          pariatur ducimus quod tempora eligendi vero, facere minus laudantium
-          molestiae ab a similique eveniet, nulla ipsa? Id vero illum, explicabo
-          ipsam ullam blanditiis nemo accusantium amet architecto, recusandae
-          voluptatem minus inventore harum aliquam aut deserunt cumque dolores
-          fugiat quae labore beatae porro! Earum autem eos, neque tempore fugit
-          saepe molestias illo nobis a aliquam quas! Saepe ab consequatur illo,
-          molestias ea, nulla nostrum, ipsum hic fuga quod sunt corrupti culpa
-          cum adipisci necessitatibus vel qui illum nam ullam deserunt assumenda
-          error quis?
-        </p>
+    <div className="p-2 py-4 pb-0 lg:pb-0 w-full min-h-[calc(100vh-110px)] h-full bg-white flex flex-col justify-between gap-4">
+      {isLoading ? (
+        <>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse bg-white p-4 rounded-lg">
+                <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          {listings.length === 0 ? (
+            <div className="bg-white p-8 text-center">
+              <h3 className="text-lg font-medium mb-2">No saved listings</h3>
+              <p className="text-gray-500 mb-4">
+                You haven't saved any listings yet.
+              </p>
+              <Button
+                onClick={() => {
+                  sessionStorage.removeItem("home_cached_data");
+                  sessionStorage.removeItem("home_scroll_position");
+                  navigate("/");
+                  scrollTo(0, 0);
+                }}
+                variant="default"
+              >
+                Browse Listings
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4 ">
+              {listings.map((listing) => {
+                const [city, stateAbbr] =
+                  listing.address?.split(",").map((part) => part.trim()) || [];
+
+                return (
+                  <div
+                    key={listing.id}
+                    className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => handleListingClick(listing.id)}
+                  >
+                    <div className="py-4 px-4">
+                      <div className="flex justify-between">
+                        <div className="flex items-center text-sm text-gray-500 mb-1">
+                          <span>{formatCategory(listing.category)}</span>
+                          <span className="mx-2">•</span>
+                          <span>
+                            {formatSubCategory(
+                              listing.category,
+                              listing.sub_category
+                            )}
+                          </span>
+                        </div>
+
+                        <ListingActions
+                          listingId={listing.id}
+                          listingTitle={listing.title}
+                          isUsa={false}
+                          onToggleSave={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleSaveListing(e, listing.id);
+                          }}
+                          onHide={() =>
+                            handleListingAction(null, "hide", listing.id)
+                          }
+                          openModal={() =>
+                            handleListingAction(null, "report", listing.id)
+                          }
+                        />
+                      </div>
+
+                      <h3 className="text-lg font-medium text-gray-900">
+                        {listing.title}
+                      </h3>
+
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <span>{listing?.user?.name?.slice(0, 15)}</span>
+                          <span className="mx-2">•</span>
+                          <span>{formatTime(listing.created_at)}</span>
+                          <span className="mx-2">•</span>
+                          <span>
+                            {/*  {listing.address
+                              ?.split(",")
+                              .filter((_, i) => i === 0 || i === 1)
+                              .join(", ")} */}
+
+                            {city +
+                              ", " +
+                              (usStates[stateAbbr.toLocaleLowerCase()] ||
+                                stateAbbr)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+      {/* About Footer */}
+      <div className="mt-4">
+        <AboutFooter />
       </div>
     </div>
   );
