@@ -367,9 +367,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 {/* Mobile: Search, Location and Categories */}
                 {isMobile && (
                   <div
-                    /* ref={mobileHeaderRef} */
-                    // transition-transform
-                    className="z-10  bg-white pt-3"
+                    className="z-10 transition-transform bg-white pt-3"
+                    ref={mobileHeaderRef}
                   >
                     {/*  <div className="px-4 pt-16 pb-2"> */}
                     {/* <form onSubmit={handleSearchSubmit}>
@@ -398,34 +397,18 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       </div> */}
                     {/* </div> */}
 
+                    <div className="mt-[65px]"></div>
+
+                    {/* Mobile: Category Icons */}
+                    <div className="px-4 pb-2">
+
                     <div>
                       <p>
                         I am in this position - i am adding search bar here{" "}
                       </p>
-
-                      <form onSubmit={handleSearchSubmit}>
-                        <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
-                          <Input
-                            ref={searchInputRef}
-                            type="text"
-                            placeholder="Search"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            className="relative z-1 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 focus:bg-gray-100"
-                          />
-                          {searchQuery && (
-                            <X
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                              onClick={handleClearInput} // Clear the input on click
-                            />
-                          )}
-                        </div>
-                      </form>
+                      <input type="search" className="border border-red-500" placeholder="Search here....." />
                     </div>
 
-                    {/* Mobile: Category Icons */}
-                    <div className="px-4 pb-2">
                       <CategoryIcons />
                     </div>
                   </div>
