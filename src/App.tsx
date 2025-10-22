@@ -271,7 +271,7 @@ function AppRoutes() {
             path="/create-listing"
             element={
               <ResponsiveLayout
-                title={isEditing ? "Editing Listing" : "Create Listing"}
+                title={isEditing ? "Edit Listing" : "Create Listing"}
               >
                 <PostListingForm />
               </ResponsiveLayout>

@@ -20,6 +20,7 @@ import { formatCategory, formatSubCategory } from "@/lib/format";
 import { formatTime } from "@/lib/utils";
 import AboutFooter from "./AboutFooter";
 import usStates from "@/data/states";
+import useRedirectNav from "@/hooks/useRedirectNav";
 // type ListingType = {
 //   id: string;
 //   title: string;
@@ -55,10 +56,14 @@ const ManageListings = () => {
     },
   ];
 
+  const { redirectNavLink } = useRedirectNav();
+
   const handleEditListing = (id: string) => {
-    window.scrollTo(0, 0);
-    navigate(`/create-listing?id=${id}`);
+    // navigate(`/create-listing?id=${id}`);
+
+    redirectNavLink(`/create-listing?id=${id}`);
   };
+
   const openDeleteDialog = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     setListingToDelete(id);
