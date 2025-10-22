@@ -356,14 +356,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {isValidPage && (
             <div
               className="flex-1 listings-container"
-               /* style={{
+              /* style={{
                 marginLeft: !isMobile ? leftSidebarWidth : "0",
                 marginRight: isDesktop ? rightSidebarWidth : "0",
               }} */
             >
               {/* Center Content Container */}
-
-
 
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
                 {/* Mobile: Search, Location and Categories */}
@@ -372,6 +370,35 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     /* ref={mobileHeaderRef} */
                     className="z-10 transition-transform bg-white pt-3"
                   >
+                    {/*  <div className="px-4 pt-16 pb-2"> */}
+                    {/* <form onSubmit={handleSearchSubmit}>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
+                          <Input
+                            ref={searchInputRef}
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="relative z-1 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 focus:bg-gray-100"
+                          />
+                          {searchQuery && (
+                            <X
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                              onClick={handleClearInput} // Clear the input on click
+                            />
+                          )}
+                        </div>
+                      </form> */}
+
+                    {/* mr-[-18px] */}
+                    {/*  <div className="mt-2 flex items-center justify-end">
+                        <LocationWithRadius popupStyle="mr-2" />
+                      </div> */}
+                    {/* </div> */}
+
+                    <div>I am showing myself on mobile 1</div>
+
                     <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
@@ -392,20 +419,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                           )}
                         </div>
                       </form>
-
-                      {/* Mobile: Location display - no border or box */}
-                      {/* <div className="mt-2 flex items-center justify-end"> */}
-                      {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
-                      {/* <LocationWithRadius /> */}
-                      {/* </div> */}
-
-                      {/* mr-[-18px] */}
-                      <div className="mt-2 flex items-center justify-end">
-                        <LocationWithRadius popupStyle="mr-2" />
-                      </div>
                     </div>
 
-                    <div>I am showing myself on mobile</div>
+                    <div>I am showing myself on mobile 2</div>
 
                     {/* Mobile: Category Icons */}
                     <div className="px-4 pb-2">
@@ -426,7 +442,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
-   
         </div>
       )}
 
