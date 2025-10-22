@@ -307,7 +307,10 @@ const Header = ({
     sessionStorage.removeItem("home_scroll_position");
 
     navigate("/", { replace: true });
-    window.scrollTo(0, 0);
+
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
 
     // Prevent any scrolling temporarily
     /* document.body.style.overflow = "hidden";
@@ -328,9 +331,8 @@ const Header = ({
 
   return (
     <>
-      {/* bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex flex-1 shadow-sm py-[13px] */}
       <header
-        className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-2 top-0 flex flex-1 shadow-sm py-[13px] ${
+        className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex flex-1 shadow-sm py-[13px] ${
           !isModalOpen ? "z-[102]" : "z-[22]"
         }`}
       >
