@@ -370,8 +370,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     className="z-10 transition-transform bg-white pt-3"
                     ref={mobileHeaderRef}
                   >
-                     <div className="px-4 pt-16 pb-2">
-                    <form onSubmit={handleSearchSubmit}>
+                    <div className="px-4 pt-16 pb-2">
+                      <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
                           <Input
@@ -391,8 +391,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         </div>
                       </form>
 
-                    {/* mr-[-18px] */}
-                     <div className="mt-2 flex items-center justify-end">
+                      {/* mr-[-18px] */}
+                      <div className="mt-2 flex items-center justify-end">
                         <LocationWithRadius popupStyle="mr-2" />
                       </div>
                     </div>

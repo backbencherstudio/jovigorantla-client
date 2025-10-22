@@ -464,8 +464,8 @@ export default function Home({ openModal }) {
     // Navigate to the same path but with the updated query parameters
     navigate(`${location.pathname}?${currentParams.toString()}`);
 
-    //window.scrollTo(0, isMobile ? 200 : 0);
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
+    window.scrollTo(0, isMobile ? 200 : 0);
     setIsTabChanging(true);
 
     setActiveFilter(filter);
@@ -578,6 +578,7 @@ export default function Home({ openModal }) {
   useEffect(() => {
     if (isInitialLoad) {
       window.scrollTo(0, 0);
+
       // window.document.body.scrollTo(0, 0);
     }
   }, []); // isInitialLoad dependency add koreci
