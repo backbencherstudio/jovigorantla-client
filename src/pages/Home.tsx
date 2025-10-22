@@ -53,27 +53,6 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Home({ openModal }) {
-  const [scrollY, setScrollY] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  useEffect(() => {
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0);
-    setScrollY(0);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-      setIsScrolling(true);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      setIsScrolling(false);
-    };
-  }, []);
-
   // useScrollRestoration();
 
   const isMobile = useIsMobile();
@@ -459,6 +438,11 @@ export default function Home({ openModal }) {
     setIsInitialLoad(true);
     setLoading(true);
 
+    // Add delay to ensure DOM is ready before scrolling
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
@@ -596,7 +580,17 @@ export default function Home({ openModal }) {
       window.scrollTo(0, 0);
       // window.document.body.scrollTo(0, 0);
     }
-  }, []);
+  }, [isInitialLoad]); // isInitialLoad dependency add koreci
+
+  /* useEffect(() => {
+    if (isInitialLoad) {
+      // Only scroll to top on initial load if we're not in a filter change scenario
+      // The main effect will handle scrolling for filter changes
+      if (!isTabChanging) {
+        window.scrollTo(0, 0);
+      }
+    }
+  }, [isInitialLoad, isTabChanging]); */
 
   const yourTrackingFunction = async (listing: any) => {
     try {
@@ -668,10 +662,7 @@ export default function Home({ openModal }) {
           content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
         />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://desieasy.com/"
-        />
+        <meta property="og:url" content="https://desieasy.com/" />
       </Helmet>
 
       <FilterTabs

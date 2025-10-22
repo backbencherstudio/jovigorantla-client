@@ -120,7 +120,7 @@ function AppRoutes() {
   const isEditing = Boolean(editId);
 
   return (
-    <div className="min-h-screen bg-gray-50" id="main-layout">
+    <div className="min-h-screen bg-gray-50">
       <Helmet>
         <title>
           Desieasy | Post. Find. Connect. | Free Local Listings in USA

@@ -1,4 +1,6 @@
-/* import { useEffect } from "react";
+// First Approach
+
+import { useEffect } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
@@ -13,9 +15,12 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
 
   return <>{children}</>;
 };
-export default ScrollToTop; */
+export default ScrollToTop;
 
-import { useEffect } from "react";
+
+// 2nd Approach
+
+/* import { useEffect } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
@@ -53,4 +58,46 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default ScrollToTop;
+export default ScrollToTop; */
+
+
+// 3rd approach
+
+/* import { useEffect } from "react";
+import { useLocation, useNavigationType } from "react-router-dom";
+
+const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const navigationType = useNavigationType();
+
+  useEffect(() => {
+    // Only preserve scroll position for back/forward navigation (POP)
+    // But always scroll to top for logo clicks and other navigations
+    const shouldScrollToTop = navigationType !== "POP" || 
+                             location.pathname === "/"; // Always scroll to top when going home
+
+    if (shouldScrollToTop) {
+      const timeout = setTimeout(() => {
+        const layout = document.getElementById("main-layout");
+
+        if (layout && layout.scrollHeight > layout.clientHeight) {
+          layout.scrollTop = 0;
+          requestAnimationFrame(() => {
+            layout.scrollTop = 100;
+          });
+        } else {
+          window.scrollTo(0, 100);
+          requestAnimationFrame(() => {
+            window.scrollTo(0, 100);
+          });
+        }
+      }, 50);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [location, navigationType]);
+
+  return <>{children}</>;
+};
+
+export default ScrollToTop; */
