@@ -406,7 +406,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
                     {/* Mobile: Category Icons */}
                     <div className="px-4 pb-2">
-                      <CategoryIcons />
+                      {/* <CategoryIcons /> */}
                     </div>
                   </div>
                 )}
