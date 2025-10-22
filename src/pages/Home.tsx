@@ -38,7 +38,8 @@ export default function Home({ openModal }) {
         dolorem eius. Similique eveniet quaerat, consequuntur impedit expedita
         dolorum quae ipsa totam voluptatum explicabo repellendus architecto
         adipisci doloribus vel vero, earum alias dignissimos sint molestiae iste
-        sit? Quos, consequatur.
+        sit? Quos, consequatur. 
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem, unde, voluptates beatae aperiam necessitatibus modi nesciunt veritatis repellendus nam ex, consequuntur rerum accusamus? Dignissimos numquam provident impedit reiciendis tempore. Dolores minus quas dolore molestias! Aliquid nemo voluptatem laboriosam facilis qui nulla, odit inventore doloremque minima debitis assumenda voluptates repudiandae quidem. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita porro impedit consectetur numquam tempore omnis, iusto repudiandae doloremque. Quasi excepturi ab assumenda dolores, voluptatem minima quis id eum debitis ipsum cumque sequi nam praesentium doloribus modi aut mollitia obcaecati neque itaque aliquam eos accusamus omnis facilis? Amet, id. Quae, iure?
       </p>
     </main>
   );
