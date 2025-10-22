@@ -368,7 +368,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 {isMobile && (
                   <div
                     /* ref={mobileHeaderRef} */
-                    className="z-10 transition-transform bg-white pt-3"
+                    // transition-transform
+                    className="z-10  bg-white pt-3"
                   >
                     {/*  <div className="px-4 pt-16 pb-2"> */}
                     {/* <form onSubmit={handleSearchSubmit}>
@@ -397,9 +398,11 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                       </div> */}
                     {/* </div> */}
 
-                    <div>I am showing myself on mobile 1</div>
+                    <div>
+                      <p>
+                        I am in this position - i am adding search bar here{" "}
+                      </p>
 
-                    <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
@@ -420,8 +423,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         </div>
                       </form>
                     </div>
-
-                    <div>I am showing myself on mobile 2</div>
 
                     {/* Mobile: Category Icons */}
                     <div className="px-4 pb-2">
