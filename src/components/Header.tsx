@@ -307,26 +307,7 @@ const Header = ({
     sessionStorage.removeItem("home_scroll_position");
 
     navigate("/", { replace: true });
-
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
-
-    // Prevent any scrolling temporarily
-    /* document.body.style.overflow = "hidden";
-
-    navigate("/");
-
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-
-      // Re-enable scrolling after a moment
-      setTimeout(() => {
-        document.body.style.overflow = "auto";
-      }, 200);
-    }, 100); */
+    window.scrollTo(0, 0);
   };
 
   return (
