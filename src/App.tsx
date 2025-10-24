@@ -458,15 +458,6 @@ function App() {
 
   useDataLoad();
 
-  const location = useLocation();
-
-  // scroll to top of page after a page transition.
-  useLayoutEffect(() => {
-      document.documentElement.scrollTo({ top:0, left:0, behavior: "instant" });
-  }, [location.pathname]);
-
-
-
   // Add this to your App.jsx or main component
   useEffect(() => {
     let startY = 0;
