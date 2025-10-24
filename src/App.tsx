@@ -112,6 +112,10 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+
+ 
+
+
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
@@ -453,6 +457,15 @@ function App() {
   const [showLoading, setShowLoading] = useState(false);
 
   useDataLoad();
+
+  const location = useLocation();
+
+  // scroll to top of page after a page transition.
+  useLayoutEffect(() => {
+      document.documentElement.scrollTo({ top:0, left:0, behavior: "instant" });
+  }, [location.pathname]);
+
+
 
   // Add this to your App.jsx or main component
   useEffect(() => {
