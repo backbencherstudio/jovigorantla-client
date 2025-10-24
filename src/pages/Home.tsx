@@ -318,8 +318,7 @@ export default function Home({ openModal }) {
       console.log("Restoring scroll position from session storage:", scrollY);
 
       setTimeout(() => {
-       // window.scrollTo(0, scrollY);
-        window.scrollTo(0, 0);
+        window.scrollTo(0, scrollY);
         sessionStorage.removeItem("home_scroll_position");
 
         // Hide loader after scroll position is set with extra delay to prevent FilterTabs flash
@@ -332,7 +331,7 @@ export default function Home({ openModal }) {
   }, []);
 
   // Restore scroll position when returning from listing page
- /*  useEffect(() => {
+  useEffect(() => {
     if (location.state?.scrollY && isReturningFromListing.current) {
       console.log(
         "Restoring scroll position from location state:",
@@ -353,7 +352,7 @@ export default function Home({ openModal }) {
         }, 400);
       }, 100); // Delay for DOM load
     }
-  }, [location.state, listings.length]); */
+  }, [location.state, listings.length]); 
 
   // Save data before navigating away
   useEffect(() => {
@@ -583,7 +582,7 @@ export default function Home({ openModal }) {
 
       // window.document.body.scrollTo(0, 0);
     }
-  }, []); // isInitialLoad dependency add koreci
+  }, []); 
 
   /* useEffect(() => {
     if (isInitialLoad) {

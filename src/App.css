@@ -266,3 +266,46 @@ main.w-full.mx-auto.max-w-3xl {
     transform: rotate(360deg);
   }
 }
+
+
+/* New Code */
+/* Reserve space for the fixed header and make anchors/hash scroll visible */
+:root {
+  --header-h: 64px;     /* JS sets real value at runtime */
+  --dvh: 100vh;         /* JS keeps this in sync with visualViewport */
+}
+
+/* Critical: prevent browser scroll anchoring from nudging the page */
+html, body {
+  overflow-anchor: none;
+}
+
+/* Disable smooth scroll during route changes; smooth + restoration ≈ jumpiness */
+html.route-changing {
+  scroll-behavior: auto !important;
+}
+
+/* Make hash/focus targets account for the sticky header overlap */
+html { scroll-padding-top: var(--header-h); }
+[id]  { scroll-margin-top: var(--header-h); }
+
+/* Fix 100vh on iOS: use dynamic viewport height for full-screen sections */
+.full-viewport {
+  min-height: var(--dvh);
+}
+
+/* Ensure header doesn’t change height after paint (fonts, banners) */
+[data-sticky-header] {
+  position: sticky; /* or fixed */
+  top: 0;
+  height: 64px;     /* match your actual value if possible */
+  contain: layout paint size; /* reduce layout ripple effects */
+}
+
+/* If you had global smooth scrolling, keep it but we’ll toggle it off during nav */
+html { scroll-behavior: smooth; }
+
+/* Optional: if you use content-visibility, don’t apply to containers that wrap the top hero/search */
+.avoid-anchor-shift {
+  content-visibility: visible;
+}

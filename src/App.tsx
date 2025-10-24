@@ -56,6 +56,7 @@ import ListingDetailPage from "./pages/ListingDetailPage";
 import HelloPost from "./pages/HelloPost";
 import ScrollToTop from "./hooks/useScrollTop";
 import { Helmet } from "react-helmet-async";
+import ScrollManager from "./hooks/ScrollManager";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -141,6 +142,8 @@ function AppRoutes() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://desieasy.com/" />
       </Helmet>
+
+      <ScrollManager />
 
       <ScrollToTop>
         <Routes>

@@ -222,12 +222,12 @@ const Header = ({
 
   // Handle Logo Click
   const handleLogo = () => {
-    //sessionStorage.removeItem("home_cached_data");
-    //sessionStorage.removeItem("home_scroll_position");
+    sessionStorage.removeItem("home_cached_data");
+    sessionStorage.removeItem("home_scroll_position");
 
     redirectNavLink("/");
     //navigate("/", { replace: true });
-     //window.scrollTo(0, 0);
+    //window.scrollTo(0, 0);
   };
 
   return (
