@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Building2, Briefcase, Store, Car, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -54,6 +54,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const { setCategory, setIsUsa, setSubCategory } = useListing();
   const navigate = useNavigate();
   const { search } = location; // Get the current query parameters
+
+  // Track navigation history to determine correct active state
+  const [navigationContext, setNavigationContext] = useState<string>("");
   // This is a placeholder for real authentication logic
   // In a real app, you would check if the user has employee or admin role
   const isEmployee =
@@ -71,6 +74,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const handleSetCategory = (menu: string) => {
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
+
+    // Set navigation context when user clicks on a menu item
+    setNavigationContext(menu);
 
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
@@ -110,24 +116,46 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       setCategory("MARKETPLACE");
       setIsUsa(false);
       setSubCategory("");
+      // Only set navigation context if not already set (to preserve user's navigation intent)
+      if (!navigationContext) {
+        setNavigationContext("Marketplace");
+      }
     } else if (currentPath.includes("/rides")) {
       setCategory("RIDES");
       setIsUsa(false);
       setSubCategory("");
+      if (!navigationContext) {
+        setNavigationContext("Rides");
+      }
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
       setIsUsa(false);
       setSubCategory("");
+      if (!navigationContext) {
+        setNavigationContext("Accommodations");
+      }
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
       setIsUsa(false);
       setSubCategory("");
+      if (!navigationContext) {
+        setNavigationContext("Jobs");
+      }
     } else {
       setCategory("");
       setIsUsa(false);
       setSubCategory("");
+      if (currentPath === "/") {
+        setNavigationContext("Home");
+      }
     }
-  }, [location.pathname, setCategory, setIsUsa, setSubCategory]);
+  }, [
+    location.pathname,
+    setCategory,
+    setIsUsa,
+    setSubCategory,
+    navigationContext,
+  ]);
 
   return (
     // Previous w-[70px]
@@ -135,12 +163,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
       <div className="flex flex-col h-full py-4 pl-2">
         <nav className="flex-1 px-2 space-y-1">
           {menuItems.map((item) => {
-            // const isActive = location.pathname === item.path;
-            const isActive =
-              item.path === "/"
-                ? location.pathname === "/"
-                : location.pathname === item.path ||
-                  location.pathname.startsWith(item.path + "/");
+            const isActive = navigationContext === item.label;
 
             const Icon = item.icon;
 
