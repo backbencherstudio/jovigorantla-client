@@ -642,9 +642,9 @@ export default function Home({ openModal }) {
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
   return (
-    // w-full mx-auto max-w-3xl
+    // min-h-[calc(100vh-110px)] 
     <main
-      className="min-h-[calc(100vh-110px)] w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
+      className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
       ref={filterTabsRef}
     >
       <Helmet>
@@ -668,12 +668,12 @@ export default function Home({ openModal }) {
         <meta property="og:url" content="https://desieasy.com/" />
       </Helmet>
 
-      <FilterTabs
+      {/* <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
         onTabClick={handleFilterClick}
         isTab={true}
-      />
+      /> */}
 
       {!isTabChanging ? (
         <>
