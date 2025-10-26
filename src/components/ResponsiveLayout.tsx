@@ -226,6 +226,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   useEffect(() => {
     if (isHome) {
       setTimeout(() => {
+        window.scrollTo(0,0);
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
     }
@@ -368,9 +369,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     </div>
 
                
-                    {/* <div className="px-4 pb-2">
+                    <div className="px-4 pb-2">
                       <CategoryIcons />
-                    </div> */}
+                    </div>
                   </div>
                 )}
 

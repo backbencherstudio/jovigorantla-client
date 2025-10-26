@@ -59,6 +59,11 @@ export default function Home({ openModal }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(()=>{
+    console.log('I am working');
+    window.scrollTo(0,0);
+  },[location.pathname]);
+
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);
@@ -577,12 +582,13 @@ export default function Home({ openModal }) {
   // }); // Only run once on mount
 
   useEffect(() => {
-    if (isInitialLoad) {
+     if (isInitialLoad) {
       window.scrollTo(0, 0);
-
       // window.document.body.scrollTo(0, 0);
     }
   }, []); 
+
+
 
   /* useEffect(() => {
     if (isInitialLoad) {
