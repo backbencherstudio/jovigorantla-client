@@ -282,7 +282,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
-        <div className="flex flex-1 mt-5">
+        <div className="flex flex-1 mt-4">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
@@ -335,12 +335,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {isValidPage && (
             <div className="flex-1 listings-container">
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
-                {/* {isMobile && (
+                {isMobile && (
                   <div
-                    className="z-10 transition-transform bg-white pt-3"
+                    className="z-10 transition-transform bg-white pt-16"
                     ref={mobileHeaderRef}
                   >
-                    <div className="px-4 pt-16 pb-2">
+                    <div className="px-4 pb-2">
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
@@ -371,16 +371,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     <div className="px-4 pb-2">
                       <CategoryIcons />
                     </div>
-                  </div>
-                )} */}
-
-                {isMobile && (
-                  <div className="pt-16 px-4 pb-2">
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Fugiat esse libero iusto perspiciatis dolorum perferendis
-                      hic sunt expedita ipsa sint!
-                    </p>
                   </div>
                 )}
 
