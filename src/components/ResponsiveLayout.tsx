@@ -368,9 +368,9 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     </div>
 
                
-                    <div className="px-4 pb-2">
+                    {/* <div className="px-4 pb-2">
                       <CategoryIcons />
-                    </div>
+                    </div> */}
                   </div>
                 )}
 
