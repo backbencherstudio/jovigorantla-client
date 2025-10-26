@@ -133,7 +133,8 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
         // scrolling up
         setIsVisible(true);
       }
-      setLastScrollY(window.scrollY);
+      // setLastScrollY(window.scrollY);
+      setLastScrollY(0);
     };
 
     window.addEventListener("scroll", controlNavbar);
@@ -217,31 +218,12 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   // Check if current path matches any of the valid paths
   const isValidPage = validPaths.includes(location.pathname);
 
-  //  useEffect(() => {
-  //   if (isMobile && mobileHeaderRef.current) {
-  //     console.log("Mobile header has rendered");
-  //     setTimeout(() => {
-  //       setIsMobileHeaderRendered(true);
-  //     }, 1000); // Adjust the delay as needed
-  //     // setIsMobileHeaderRendered(true);
-
-  //     // You can perform any state changes or side effects here
-  //     // For example:
-  //     // setSomeOtherState(someValue);
-  //   }
-  // }, [isMobile]);
-
   const pathname = location.pathname;
   const isHome = location.pathname === "/";
   const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
   // const [isVisiblef, setIsVisiblef] = useState(true);
 
   useEffect(() => {
-    /* setTimeout(() => {
-      setIsVisiblef(false);
-    }, 300);
-    setIsVisiblef(true); */
-
     if (isHome) {
       setTimeout(() => {
         setIsVisiblef(false);
@@ -300,16 +282,14 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
-        // flex flex-1 min-h-[calc(100vh-67px)]
-        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
+        <div className="flex flex-1 mt-5">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
             <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
               <Sidebar collapsed={isCollapsed} />
             </div>
           )}
-          {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
-            }  flex flex-col flex-1 min-h-[100%]`} */}
+
           {!isValidPage && (
             <main
               className={`w-full mx-auto ${
@@ -317,7 +297,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               }  flex flex-col flex-1 min-h-[100%]`}
             >
               {/* Page Header with back button */}
-              {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
               {title && (
                 <div className="relative">
                   <div
@@ -347,25 +326,16 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
+              <div className="bg-white flex-1 min-h-screen pt-[100px] md:mx-2">
                 {children}
               </div>
             </main>
           )}
           {/* Main Content Area */}
           {isValidPage && (
-            <div
-              className="flex-1 listings-container"
-              /* style={{
-                marginLeft: !isMobile ? leftSidebarWidth : "0",
-                marginRight: isDesktop ? rightSidebarWidth : "0",
-              }} */
-            >
-              {/* Center Content Container */}
-
+            <div className="flex-1 listings-container">
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
-                {/* Mobile: Search, Location and Categories */}
-                {isMobile && (
+                {/* {isMobile && (
                   <div
                     className="z-10 transition-transform bg-white pt-3"
                     ref={mobileHeaderRef}
@@ -391,21 +361,29 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         </div>
                       </form>
 
-                      {/* mr-[-18px] */}
+                  
                       <div className="mt-2 flex items-center justify-end">
                         <LocationWithRadius popupStyle="mr-2" />
                       </div>
                     </div>
 
-                    {/* Mobile: Category Icons */}
+               
                     <div className="px-4 pb-2">
                       <CategoryIcons />
                     </div>
                   </div>
+                )} */}
+
+                {isMobile && (
+                  <div className="pt-16 px-4 pb-2">
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      Fugiat esse libero iusto perspiciatis dolorum perferendis
+                      hic sunt expedita ipsa sint!
+                    </p>
+                  </div>
                 )}
 
-                {/* Filter tabs should be in a fixed position with z-index above main content */}
-                {/* z-10 border-b border-gray-100 */}
                 <div
                   className={`z-10 border-b border-gray-100 ${
                     !isMobile && "mt-[60px]"
