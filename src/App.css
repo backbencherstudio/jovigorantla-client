@@ -21,6 +21,7 @@ body {
 body,
 html {
   /* overscroll-behavior-y: none; */
+  overscroll-behavior: none;
 }
 
 @layer components {
@@ -190,17 +191,17 @@ html {
 
   /* Make sure the filter tabs remain visible and fixed */
   .filter-tabs-container {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky;
     top: 60px;
     z-index: 9;
     background-color: #fff;
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform;
-    
+
     /* iOS fixes */
     transform: translateZ(0);
-    -webkit-backface-visibility: hidden; 
+    -webkit-backface-visibility: hidden;
   }
 }
 

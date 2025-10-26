@@ -17,7 +17,6 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
 };
 export default ScrollToTop;
 
-
 // 2nd Approach
 
 /* import { useEffect } from "react";
@@ -59,7 +58,6 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default ScrollToTop; */
-
 
 // 3rd approach
 
