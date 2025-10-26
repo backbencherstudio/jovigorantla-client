@@ -59,11 +59,6 @@ export default function Home({ openModal }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(()=>{
-    console.log('I am working');
-    window.scrollTo(0,0);
-  },[location.pathname]);
-
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);

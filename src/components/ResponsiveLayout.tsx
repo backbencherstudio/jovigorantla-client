@@ -124,7 +124,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     }
   }, [location.search]);
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const controlNavbar = () => {
       if (window.scrollY > lastScrollY) {
         // scrolling down
@@ -143,7 +143,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY]); */
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -226,7 +226,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   useEffect(() => {
     if (isHome) {
       setTimeout(() => {
-        window.scrollTo(0,0);
         setIsVisiblef(false);
       }, 300); // Adjust the delay as needed
     }
@@ -275,7 +274,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   }
 
   return (
-    <div className={`flex flex-col bg-gray-50 relative`}>
+    <div className={`flex flex-col flex-1 relative`}>
       <Header />
 
       {isVisiblef ? (
@@ -295,7 +294,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
             <main
               className={`w-full mx-auto ${
                 fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"
-              }  flex flex-col flex-1 min-h-[100%]`}
+              }  flex flex-col flex-1`}
             >
               {/* Page Header with back button */}
               {title && (
@@ -327,7 +326,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="bg-white flex-1 min-h-screen pt-[100px] md:mx-2">
+              <div className="bg-white flex-1 pt-[100px] md:mx-2">
                 {children}
               </div>
             </main>
@@ -338,7 +337,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
                 {isMobile && (
                   <div
-                    className="z-10 transition-transform bg-white pt-16"
+                    className="transition-transform bg-white pt-16"
                     ref={mobileHeaderRef}
                   >
                     <div className="px-4 pb-2">
@@ -376,7 +375,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 )}
 
                 <div
-                  className={`z-10 border-b border-gray-100 ${
+                  className={`z-10 border-b flex-1 border-gray-100 ${
                     !isMobile && "mt-[60px]"
                   }`}
                 >
