@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { ArrowLeft, Search, X } from "lucide-react";
+import { ArrowLeft, Divide, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -274,9 +274,10 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   }
 
   return (
-    <div>
+    <div className="min-h-screen h-screen pt-[65px]">
       <Header />
-      <div className="pt-[65px]">
+
+      <div className="h-full w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
         {isValidPage && isMobile && (
           <div
             className="z-10 transition-transform bg-white pt-3"

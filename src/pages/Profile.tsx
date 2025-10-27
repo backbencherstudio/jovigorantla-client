@@ -218,7 +218,8 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="bg-white min-h-[calc(100vh-110px)] p-2 py-4 pb-0 lg:pb-0 flex flex-col justify-between">
+    // min-h-[calc(100vh-110px)]
+    <div className="bg-white h-full p-2 py-4 pb-0 lg:pb-0 flex flex-col justify-between">
       <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2 pt-1">

@@ -40,7 +40,6 @@ const FilterTabs = ({
     });
   }, []);
 
-
   return (
     <div
       className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between z-[60]"
@@ -78,8 +77,6 @@ const FilterTabs = ({
                 {tab.label}
               </Link>
             ))}
-
-      
       </div>
 
       {/* This is filter top with arrow */}
@@ -112,4 +109,3 @@ const FilterTabs = ({
 };
 
 export default FilterTabs;
-
