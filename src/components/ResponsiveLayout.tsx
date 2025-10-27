@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { ArrowLeft, Divide, Search, X } from "lucide-react";
+import { ArrowLeft, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -124,7 +124,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     }
   }, [location.search]);
 
-  /*  useEffect(() => {
+  useEffect(() => {
     const controlNavbar = () => {
       if (window.scrollY > lastScrollY) {
         // scrolling down
@@ -133,8 +133,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
         // scrolling up
         setIsVisible(true);
       }
-      // setLastScrollY(window.scrollY);
-      setLastScrollY(0);
+      setLastScrollY(window.scrollY);
     };
 
     window.addEventListener("scroll", controlNavbar);
@@ -143,7 +142,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };
-  }, [lastScrollY]); */
+  }, [lastScrollY]);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -218,12 +217,31 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   // Check if current path matches any of the valid paths
   const isValidPage = validPaths.includes(location.pathname);
 
+  //  useEffect(() => {
+  //   if (isMobile && mobileHeaderRef.current) {
+  //     console.log("Mobile header has rendered");
+  //     setTimeout(() => {
+  //       setIsMobileHeaderRendered(true);
+  //     }, 1000); // Adjust the delay as needed
+  //     // setIsMobileHeaderRendered(true);
+
+  //     // You can perform any state changes or side effects here
+  //     // For example:
+  //     // setSomeOtherState(someValue);
+  //   }
+  // }, [isMobile]);
+
   const pathname = location.pathname;
   const isHome = location.pathname === "/";
   const [isVisiblef, setIsVisiblef] = useState(isHome ? true : false);
   // const [isVisiblef, setIsVisiblef] = useState(true);
 
   useEffect(() => {
+    /* setTimeout(() => {
+      setIsVisiblef(false);
+    }, 300);
+    setIsVisiblef(true); */
+
     if (isHome) {
       setTimeout(() => {
         setIsVisiblef(false);
@@ -274,50 +292,179 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   }
 
   return (
-    <div className="min-h-screen h-screen pt-[65px]">
+    <div className={`flex flex-col bg-gray-50 relative`}>
       <Header />
 
-      <div className="h-full w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
-        {isValidPage && isMobile && (
-          <div
-            className="z-10 transition-transform bg-white pt-3"
-            ref={mobileHeaderRef}
-          >
-            <div className="px-4 pb-2">
-              <form onSubmit={handleSearchSubmit}>
+      {isVisiblef ? (
+        isDesktop ? null : (
+          <PageSkeleton />
+        )
+      ) : (
+        // flex flex-1 min-h-[calc(100vh-67px)]
+        <div className="flex flex-1 min-h-[calc(100vh-67px)]">
+          {/* Left Sidebar - Menu (only on desktop/tablet) */}
+          {!isMobile && (
+            <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto z-10 bg-white shadow-sm">
+              <Sidebar collapsed={isCollapsed} />
+            </div>
+          )}
+          {/* className={`w-full mx-auto ${fullWidth ? "" : "max-w-3xl bg-white"
+            }  flex flex-col flex-1 min-h-[100%]`} */}
+          {!isValidPage && (
+            <main
+              className={`w-full mx-auto ${
+                fullWidth ? "" : "max-w-3xl md:max-w-xl xl:max-w-3xl bg-white"
+              }  flex flex-col flex-1 min-h-[100%]`}
+            >
+              {/* Page Header with back button */}
+              {/* fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl  */}
+              {title && (
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
-                  <Input
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="relative z-1 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 focus:bg-gray-100"
-                  />
-                  {searchQuery && (
-                    <X
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                      onClick={handleClearInput} // Clear the input on click
-                    />
-                  )}
+                  <div
+                    className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
+                    style={{
+                      top: "65px",
+                    }}
+                  >
+                    {!hideBackButton && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleBack}
+                        className=""
+                      >
+                        <ArrowLeft className="h-5 w-5" />
+                      </Button>
+                    )}
+                    <h1
+                      className={`text-xl font-bold sm:font-medium text-center w-full flex-1  mr-10 `}
+                    >
+                      {title}
+                    </h1>
+                  </div>
+                  {/* <div className="h-[50px] bg-white border-b"></div> */}
                 </div>
-              </form>
+              )}
 
-              {/* mr-[-18px] */}
-              <div className="mt-2 flex items-center justify-end">
-                <LocationWithRadius popupStyle="mr-2" />
+              {/* Page Content */}
+              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
+                {children}
               </div>
-            </div>
+            </main>
+          )}
+          {/* Main Content Area */}
+          {isValidPage && (
+            <div
+              className="flex-1 listings-container"
+              /* style={{
+                marginLeft: !isMobile ? leftSidebarWidth : "0",
+                marginRight: isDesktop ? rightSidebarWidth : "0",
+              }} */
+            >
+              {/* Center Content Container */}
 
-            {/* Mobile: Category Icons */}
-            <div className="px-4 pb-2">
-              <CategoryIcons />
+              <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
+                {/* Mobile: Search, Location and Categories */}
+                {isMobile && (
+                  <div
+                    className="z-10 transition-transform bg-white pt-3"
+                    ref={mobileHeaderRef}
+                  >
+                    <div className="px-4 pt-16 pb-2">
+                      <form onSubmit={handleSearchSubmit}>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-10" />
+                          <Input
+                            ref={searchInputRef}
+                            type="text"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="relative z-1 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10 focus:bg-gray-100"
+                          />
+                          {searchQuery && (
+                            <X
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
+                              onClick={handleClearInput} // Clear the input on click
+                            />
+                          )}
+                        </div>
+                      </form>
+
+                      {/* mr-[-18px] */}
+                      <div className="mt-2 flex items-center justify-end">
+                        <LocationWithRadius popupStyle="mr-2" />
+                      </div>
+                    </div>
+
+                    {/* Mobile: Category Icons */}
+                    <div className="px-4 pb-2">
+                      <CategoryIcons />
+                    </div>
+                  </div>
+                )}
+
+                {/* Filter tabs should be in a fixed position with z-index above main content */}
+                {/* z-10 border-b border-gray-100 */}
+                <div
+                  className={`z-10 border-b border-gray-100 ${
+                    !isMobile && "mt-[60px]"
+                  }`}
+                >
+                  {children}
+                </div>
+              </main>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* Right side ads */}
+      {isDesktop && (
+        <div className="w-[240px] 2xl:w-[260px] fixed z-5 right-0 top-[60px] bottom-0 bg-white shadow-sm">
+          <div className="sticky top-[70px] p-2 space-y-4 overflow-y-auto h-[calc(100vh-70px)] thin-scrollbar">
+            {/* <AdBanner position="right_top" className="mb-4" /> */}
+            <SidebarAds className="mb-4" />
           </div>
-        )}
-        {children}
-      </div>
+        </div>
+      )}
+
+      {!isDesktop && !user && (
+        <footer className="bg-gray-50 py-4 fixed bottom-[-1px] left-0 right-0 z-[1]">
+          <div className="container mx-auto text-center">
+            <p
+              className="text-sm text-gray-600 flex gap-1 justify-center items-center text-[10px]"
+              style={{ fontSize: "11px" }}
+            >
+              <span
+                className="cursor-pointer hover:underline"
+                onClick={() => redirectNavLink("/discover-desieasy")}
+              >
+                Discover Desieasy
+              </span>
+              <span className="inline-flex gap-1">
+                •{" "}
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() => redirectNavLink("/privacy-policy")}
+                >
+                  Privacy Policy
+                </span>
+              </span>
+              <span className="inline-flex gap-1">
+                {" "}
+                &bull;{" "}
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() => redirectNavLink("/user-agreement")}
+                >
+                  User Agreement
+                </span>
+              </span>
+            </p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };

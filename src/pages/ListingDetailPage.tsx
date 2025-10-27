@@ -247,7 +247,7 @@ const ListingDetailPage = ({ openModal }) => {
 
   return (
     <>
-      {/*  min-h-[calc(100vh-110px)] */}
+    
       <div className="bg-white min-h-[calc(100vh-110px)] h-full">
         <div
           className={`${
