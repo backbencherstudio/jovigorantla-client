@@ -140,19 +140,6 @@ const Profile = () => {
     //console.log("Hello", changeAllowedFunc);
   }, [user, navigate]);
 
-  useEffect(() => {
-    const setVH = () => {
-      document.documentElement.style.setProperty(
-        "--vh",
-        `${window.innerHeight * 0.01}px`
-      );
-    };
-
-    setVH();
-    window.addEventListener("resize", setVH);
-
-    return () => window.removeEventListener("resize", setVH);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,8 +219,7 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    // min-h-[calc(100vh-110px)]
-    <div className="bg-white  min-h-[calc(var(--vh)*100-110px)] supports-[height:100dvh]:min-h-[calc(100dvh-110px)] h-full p-2 py-4 pb-0 lg:pb-0 flex flex-col justify-between">
+    <div className="bg-white  min-h-[calc(100vh-110px)] h-full p-2 py-4 pb-0 lg:pb-0 flex flex-col justify-between">
       <div className="px-4 space-y-6 bg-white">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2 pt-1">
