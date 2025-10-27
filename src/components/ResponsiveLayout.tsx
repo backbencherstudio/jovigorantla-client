@@ -347,7 +347,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
+              <div className="bg-white flex-1 min-h-screen pt-[200px] md:mx-2">
                 {children}
               </div>
             </main>
