@@ -456,19 +456,6 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
-  useEffect(() => {
-    const isiOS = /iP(hone|ad|od).+AppleWebKit/i.test(navigator.userAgent);
-    const handleVisibilityChange = () => {
-      if (isiOS && document.visibilityState === "visible") {
-        requestAnimationFrame(() => window.scrollTo(0, 0));
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
   useDataLoad();
 
   // Add this to your App.jsx or main component

@@ -50,23 +50,26 @@ const SavedListings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  //console.log("favoritesListings from context:", favoritesListings);
+  // console.log("favoritesListings from context:", favoritesListings);
 
   // Fetch saved listings from API
   const fetchSavedListings = useCallback(async () => {
-    if (!user) return;
-
+    // if (!user) return;
+ 
     try {
       //setIsLoading(true);
 
       // If fetchFavoritesListings exists in context, use it
       if (fetchFavoritesListings) {
-        // await fetchFavoritesListings();
+        //  await fetchFavoritesListings();
+       
+
       } else {
         // Otherwise fetch directly
         // const response = await api.get("/favorites");
         // const savedListings = response.data.data || [];
         // setListings(savedListings);
+
       }
     } catch (error) {
       console.error("Error fetching saved listings:", error);
@@ -98,17 +101,18 @@ const SavedListings = () => {
   // Update listings when favoritesListings changes
   useEffect(() => {
     if (favoritesListings && favoritesListings.length > 0) {
-      setListings(favoritesListings);
-
+      //setListings(favoritesListings);
       //setIsLoading(false);
 
       setTimeout(() => {
+        setListings(favoritesListings);
         setIsLoading(false);
+
       }, 1000);
     } else if (
       isInitialized &&
       favoritesListings &&
-      favoritesListings.length === 0
+      favoritesListings?.length === 0
     ) {
       // If initialized and favoritesListings is explicitly empty array
       setListings([]);
@@ -126,7 +130,7 @@ const SavedListings = () => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && user) {
         console.log("Page became visible, refreshing saved listings");
-        //fetchSavedListings();
+        // fetchSavedListings();
       }
     };
 
