@@ -234,7 +234,7 @@ const Header = ({
     {/* flex-1  */}
       <header
         className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex shadow-sm py-[13px] ${
-          !isModalOpen ? "z-[102]" : "z-[22]"
+          !isModalOpen ? "z-[102]" : "z-[62]"
         }`}
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">

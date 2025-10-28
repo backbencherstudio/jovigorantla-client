@@ -327,7 +327,6 @@ export default function Home({ openModal }) {
         }, 400);
       }, 100);
     }
-
   }, []);
 
   // Restore scroll position when returning from listing page
@@ -352,7 +351,7 @@ export default function Home({ openModal }) {
         }, 400);
       }, 100); // Delay for DOM load
     }
-  }, [location.state, listings.length]); 
+  }, [location.state, listings.length]);
 
   // Save data before navigating away
   useEffect(() => {
@@ -577,13 +576,11 @@ export default function Home({ openModal }) {
   // }); // Only run once on mount
 
   useEffect(() => {
-     if (isInitialLoad) {
+    if (isInitialLoad) {
       window.scrollTo(0, 0);
       // window.document.body.scrollTo(0, 0);
     }
-  }, []); 
-
-
+  }, []);
 
   /* useEffect(() => {
     if (isInitialLoad) {
@@ -642,7 +639,7 @@ export default function Home({ openModal }) {
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
   return (
-    // min-h-[calc(100vh-110px)] 
+    // min-h-[calc(100vh-110px)]
     <main
       className="h-full w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent sm:h-auto"
       ref={filterTabsRef}
@@ -680,7 +677,7 @@ export default function Home({ openModal }) {
           {/* Loader Skeleton For Content and Position of FilterTabs */}
           {isRestoringFromSession && (
             <div className="fixed inset-0 p-2 md:p-0 bg-white z-[61] flex items-center justify-center w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto">
-              <div className="space-y-4 w-full h-full mt-[120px]">
+              <div className="space-y-4 w-full h-full mt-[140px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>

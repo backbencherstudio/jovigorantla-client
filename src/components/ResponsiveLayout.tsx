@@ -331,7 +331,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         variant="ghost"
                         size="icon"
                         onClick={handleBack}
-                        className=""
+                        className="focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-transparent active:bg-accent active:text-accent-foreground"
                       >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
@@ -408,7 +408,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 {/* z-10 border-b border-gray-100 */}
                 <div
                   className={`z-10 border-b border-gray-100 ${
-                    !isMobile && "mt-[60px]"
+                    !isMobile && "mt-[67px]"
                   }`}
                 >
                   {children}
