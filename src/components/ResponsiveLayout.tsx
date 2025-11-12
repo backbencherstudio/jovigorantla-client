@@ -355,12 +355,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {/* Main Content Area */}
           {isValidPage && (
             <div
-              className="flex-1 listings-container"
-              /* style={{
-                marginLeft: !isMobile ? leftSidebarWidth : "0",
-                marginRight: isDesktop ? rightSidebarWidth : "0",
-              }} */
-            >
+              className="flex-1 listings-container">
               {/* Center Content Container */}
 
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">

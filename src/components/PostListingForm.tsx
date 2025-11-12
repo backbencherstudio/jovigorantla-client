@@ -125,7 +125,6 @@ function PostListingForm() {
 
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-
   interface FileRecord {
     id: number;
     name: string;
@@ -162,7 +161,9 @@ function PostListingForm() {
   const showPhotoUpload =
     selectedCategory === "Marketplace" ||
     selectedCategory === "Accommodations" ||
-    (selectedCategory === "Jobs" && selectedSubCategory === "Hiring");
+    selectedCategory === "Jobs" ||
+    selectedSubCategory === "Hiring";
+
   // let availableSubCategories = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
 
   // console.log("availble sub categories => ", availableSubCategories)

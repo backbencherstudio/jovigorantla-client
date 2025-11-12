@@ -728,12 +728,6 @@ const ListingActions = ({
           </ModalPortal>
         )}
       </div>
-
-      {/* <AuthModal
-        open={isOpen}
-        onOpenChange={closeModal}
-        defaultTab={defaultTab as "login" | "signup"}
-      /> */}
     </>
   );
 };

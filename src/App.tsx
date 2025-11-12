@@ -113,9 +113,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 
- 
-
-
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();

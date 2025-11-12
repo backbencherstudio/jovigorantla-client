@@ -24,19 +24,19 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const socialIcons = [
   {
-    icon: <FaXTwitter className="h-4 w-4  text-primary" />,
+    icon: <FaXTwitter className="h-4 w-4  text-white" />,
     link: "https://x.com/desieasyteam",
   },
   {
-    icon: <Facebook className="h-4 w-4 text-primary" />,
+    icon: <Facebook className="h-4 w-4 text-white" />,
     link: "https://www.facebook.com/desieasy",
   },
   {
-    icon: <Youtube className="h-4 w-4  text-primary" />,
+    icon: <Youtube className="h-4 w-4  text-white" />,
     link: "https://www.youtube.com/@desieasy",
   },
   {
-    icon: <Instagram className="h-4 w-4 text-primary" />,
+    icon: <Instagram className="h-4 w-4 text-white" />,
     link: "https://www.instagram.com/desieasyofficial/",
   },
 ];
@@ -231,8 +231,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                /* className="rounded-full bg-gray-500 hover:bg-gray-700 p-2 transition-all duration-300" */
-                className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30"
+                className="rounded-full bg-gray-500 hover:bg-gray-700  p-2 transition-all duration-300"
+                /* className="bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 rounded-lg sm:rounded-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center transition-all duration-300 hover:scale-110 border border-border/30 hover:border-primary/30" */
               >
                 {item.icon}
               </a>

@@ -139,7 +139,6 @@ const ListingForm = ({
     },
   });
 
-
   useEffect(() => {
     if (
       selectedCategory &&
@@ -163,7 +162,6 @@ const ListingForm = ({
 
     form.setValue("postToUSA", false);
   }, [selectedCategory, form]);
-
 
   useEffect(() => {
     const shouldShowUSAOption =
