@@ -53,7 +53,6 @@ const ListingItem = ({
       const currentScrollY = window.scrollY;
       sessionStorage.setItem("home_scroll_position", currentScrollY.toString());
 
-
       // Navigate with scroll position in state
       /* navigate(`/listing/${listing.slug}`, {
         state: {
@@ -86,7 +85,6 @@ const ListingItem = ({
   return (
     <Link
       to={`${redirectLink}${listing.slug}`}
-      // to={"/hello"}
       key={listing.id}
       className="bg-white flex max-w-full rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleLinkClick}

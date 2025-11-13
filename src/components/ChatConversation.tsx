@@ -14,6 +14,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   otherUserName,
   listingTitle,
   listingId,
+  categoryName,
+  listingSlug,
   otherUserAvatar,
   messages = [],
   onSendMessage,
@@ -29,7 +31,6 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   const isBlocked = conversation?.isBlocked;
   const blockedByMe = conversation?.blockedByMe;
   const blockedByOther = conversation?.blockedByOther;
-  //
 
   // console.log(conversation, isBlocked)
 
@@ -138,6 +139,8 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
           otherUserName={otherUserName}
           listingTitle={listingTitle}
           listingId={listingId}
+          categoryName={categoryName}
+          listingSlug={listingSlug}
           otherUserAvatar={otherUserAvatar}
           isBlocked={blockedByMe}
           onBack={onBack}

@@ -55,21 +55,18 @@ const SavedListings = () => {
   // Fetch saved listings from API
   const fetchSavedListings = useCallback(async () => {
     // if (!user) return;
- 
+
     try {
       //setIsLoading(true);
 
       // If fetchFavoritesListings exists in context, use it
       if (fetchFavoritesListings) {
         //  await fetchFavoritesListings();
-       
-
       } else {
         // Otherwise fetch directly
         // const response = await api.get("/favorites");
         // const savedListings = response.data.data || [];
         // setListings(savedListings);
-
       }
     } catch (error) {
       console.error("Error fetching saved listings:", error);
@@ -107,7 +104,6 @@ const SavedListings = () => {
       setTimeout(() => {
         setListings(favoritesListings);
         setIsLoading(false);
-
       }, 1000);
     } else if (
       isInitialized &&
@@ -141,8 +137,9 @@ const SavedListings = () => {
     };
   }, [fetchSavedListings, user]);
 
-  const handleListingClick = (id) => {
-    navigate(`/listing/${id}`);
+  const handleListingClick = (category: string, slug: string) => {
+    const redirectLink = `/${category.toLowerCase()}/${slug}`;
+    navigate(redirectLink);
   };
 
   const toggleSaveListing = async (e, listingId) => {
@@ -237,7 +234,9 @@ const SavedListings = () => {
                   <div
                     key={listing.id}
                     className="bg-white rounded-lg border-b border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => handleListingClick(listing.id)}
+                    onClick={() =>
+                      handleListingClick(listing.category, listing.slug)
+                    }
                   >
                     <div className="py-4 px-4">
                       <div className="flex justify-between">

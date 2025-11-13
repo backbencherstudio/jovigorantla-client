@@ -588,7 +588,8 @@ export default function MarketplaceItems({ openModal }) {
 
   const pageTitle =
     "Desieasy Marketplace – Items | Buy & Sell New or Used Items";
-  const pageDesc = "Buy and sell new or used items — from furniture and electronics to cars and more. Post listings easily and connect with buyers or sellers near you.";
+  const pageDesc =
+    "Buy and sell new or used items — from furniture and electronics to cars and more. Post listings easily and connect with buyers or sellers near you.";
 
   const tabsList = [
     {

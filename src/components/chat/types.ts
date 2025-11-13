@@ -13,6 +13,8 @@ export interface ChatConversationProps {
   otherUserName: string;
   listingTitle: string;
   listingId?: string;
+  categoryName?: string;
+  listingId?: string;
   otherUserAvatar?: string;
   messages?: Message[];
   onSendMessage?: (content: string) => void;

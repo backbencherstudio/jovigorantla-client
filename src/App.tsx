@@ -45,7 +45,7 @@ import { useEffect, useState, useLayoutEffect } from "react";
 import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
-import useDataLoad from "./hooks/useDataLoad";
+// import useDataLoad from "./hooks/useDataLoad";
 import RidesAvailable from "./pages/RidesAvailable";
 import RidesLooking from "./pages/RidesLooking";
 import AccommodationsAvailable from "./pages/AccommodationsAvailable";
@@ -112,7 +112,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-
 // Move AppRoutes outside of App and make it a separate component
 function AppRoutes() {
   const { isOpen, defaultTab, openModal, closeModal } = useAuthModal();
@@ -142,7 +141,6 @@ function AppRoutes() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://desieasy.com/" />
       </Helmet>
-
 
       <ScrollToTop>
         <Routes>
@@ -453,7 +451,7 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
-  useDataLoad();
+   
 
   // Add this to your App.jsx or main component
   useEffect(() => {

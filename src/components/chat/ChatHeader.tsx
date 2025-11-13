@@ -14,6 +14,8 @@ interface ChatHeaderProps {
   otherUserName: string;
   listingTitle: string;
   listingId?: string;
+  categoryName?: string;
+  listingSlug?: string;
   otherUserAvatar?: string;
   isBlocked?: boolean;
   blockedByOther: boolean;
@@ -28,6 +30,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   otherUserName,
   listingTitle,
   listingId,
+  categoryName,
+  listingSlug,
   otherUserAvatar,
   isBlocked,
   onBack,
@@ -41,7 +45,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   const handleListingClick = () => {
     if (listingId) {
-      navigate(`/listing/${listingId}`);
+      navigate(`/${categoryName.toLowerCase()}/${listingSlug}`);
     }
   };
 
