@@ -1,4 +1,8 @@
-import { useEffect } from "react";
+export default function useScrollRestoration() {
+  return;
+}
+
+/* import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const scrollPositions = new Map<string, number>();
@@ -30,3 +34,4 @@ export default function useScrollRestoration() {
     };
   }, [location.pathname]);
 }
+ */

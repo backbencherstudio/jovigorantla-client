@@ -20,6 +20,7 @@ import { formatCategory, formatSubCategory } from "@/lib/format";
 import { formatTime } from "@/lib/utils";
 import AboutFooter from "./AboutFooter";
 import usStates from "@/data/states";
+import useRedirectNav from "@/hooks/useRedirectNav";
 // type ListingType = {
 //   id: string;
 //   title: string;
@@ -54,34 +55,15 @@ const ManageListings = () => {
       location: "Denton, TX",
     },
   ];
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/auth");
-  //     return;
-  //   }
-  //   setIsLoading(true);
 
-  //   // In a real app, we would fetch the user's listings from the database
-  //   // For now, we'll use mock data
-  //   // setTimeout(() => {
-  //   //   // Check if we have listings data stored in localStorage
-  //   //   const storedListings = localStorage.getItem(`userListings_${user.id}`);
-  //   //   if (storedListings) {
-  //   //     setListings(JSON.parse(storedListings));
-  //   //   } else {
-  //   //     // If no stored listings, use the mock data and save it to localStorage
-  //   //     setListings();
-  //   //     localStorage.setItem(
-  //   //       `userListings_${user.id}`,
-  //   //       JSON.stringify()
-  //   //     );
-  //   //   }
-  //   //   setIsLoading(false);
-  //   // }, 1000);
-  // }, [user, navigate]);
+  const { redirectNavLink } = useRedirectNav();
+
   const handleEditListing = (id: string) => {
-    navigate(`/create-listing?id=${id}`);
+    // navigate(`/create-listing?id=${id}`);
+
+    redirectNavLink(`/create-listing?id=${id}`);
   };
+
   const openDeleteDialog = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     setListingToDelete(id);
@@ -127,8 +109,8 @@ const ManageListings = () => {
 
   if (!user) return null;
   return (
-    <div className="p-2 py-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-120px)] h-full flex flex-col justify-between gap-4">
-      <div className="bg-white h-full flex flex-col justify-between">
+    <div className="p-2 py-4 pb-0 lg:pb-0 bg-white min-h-[calc(100vh-110px)] h-full flex flex-col justify-between gap-4">
+      <div className="bg-white flex h-full flex-1 flex-col justify-between">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (

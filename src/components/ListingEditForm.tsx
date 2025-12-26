@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import * as z from "zod";
 import LocationWithRadius from "./LocationWithRedius";
 import CustomModal from "./shared/CustomModal";
@@ -231,78 +231,6 @@ const ListingEditForm = ({
       fetchEditListing();
     }
   }, [id]);
-
-  // useEffect(() => {
-  //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
-  //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
-  //     setAvailableSubCategories(subcats);
-
-  //     const currentSubCat = form.getValues("subCategory");
-  //     if (currentSubCat && !subcats.includes(currentSubCat)) {
-  //       form.setValue("subCategory", subcats[0] || "");
-  //       setSelectedSubCategory(subcats[0] || "");
-  //     }
-  //   } else {
-  //     setAvailableSubCategories([]);
-  //     form.setValue("subCategory", "");
-  //     setSelectedSubCategory("");
-  //   }
-
-  //   form.setValue("postToUSA", false);
-  // }, [selectedCategory, form]);
-
-  // useEffect(() => {
-  //   if (selectedCategory && categoriesConfig[selectedCategory as keyof typeof categoriesConfig]) {
-  //     const subcats = categoriesConfig[selectedCategory as keyof typeof categoriesConfig] || [];
-  //     setAvailableSubCategories(subcats);
-
-  //     const currentSubCat = form.getValues("subCategory");
-  //     if (currentSubCat && !subcats.includes(currentSubCat)) {
-  //       form.setValue("subCategory", subcats[0] || "");
-  //       setSelectedSubCategory(subcats[0] || "");
-  //     }
-  //     // Only reset postToUSA when category changes
-  //     form.setValue("postToUSA", false);
-  //   } else {
-  //     setAvailableSubCategories([]);
-  //     form.setValue("subCategory", "");
-  //     setSelectedSubCategory("");
-  //     form.setValue("postToUSA", false);
-  //   }
-  // }, [selectedCategory]); // Removed form from dependencies
-
-  // useEffect(() => {
-  //   if (
-  //     selectedCategory &&
-  //     categoriesConfig[selectedCategory as keyof typeof categoriesConfig]
-  //   ) {
-  //     const subcats =
-  //       categoriesConfig[selectedCategory as keyof typeof categoriesConfig] ||
-  //       [];
-  //     setAvailableSubCategories(subcats);
-
-  //     const currentSubCat = form.getValues('subCategory');
-  //     if (!id) {
-  //       // Only reset for new listings
-  //       if (currentSubCat && !subcats.includes(currentSubCat)) {
-  //         form.setValue('subCategory', subcats[0] || '');
-  //         setSelectedSubCategory(subcats[0] || '');
-  //       } else if (!currentSubCat && subcats.length > 0) {
-  //         form.setValue('subCategory', subcats[0] || '');
-  //         setSelectedSubCategory(subcats[0] || '');
-  //       }
-  //       form.setValue('postToUSA', false);
-  //     }
-  //   } else {
-  //     setAvailableSubCategories([]);
-  //     if (!id) {
-  //       // Only reset for new listings
-  //       form.setValue('subCategory', '');
-  //       setSelectedSubCategory('');
-  //       form.setValue('postToUSA', false);
-  //     }
-  //   }
-  // }, [selectedCategory]);
 
   useEffect(() => {
     const shouldResetSubCategory =

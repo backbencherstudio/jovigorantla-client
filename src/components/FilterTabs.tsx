@@ -28,23 +28,6 @@ const FilterTabs = ({
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
-      // if (containerRef.current) {
-      //   // const rect = containerRef.current.getBoundingClientRect();
-      //   // console.log("Element position relative to viewport:", {
-      //   //   top: rect.top,
-      //   //   right: rect.right,
-      //   //   bottom: rect.bottom,
-      //   //   left: rect.left,
-      //   //   width: rect.width,
-      //   //   height: rect.height,
-      //   // });
-      //   if (rect.top == 60) {
-      //     setShowArrow(true);
-      //   } else {
-      //     setShowArrow(false);
-      //   }
-      // }
-
       const scrollPosition =
         window.scrollY || document.documentElement.scrollTop;
       if (scrollPosition > 200) {
@@ -57,49 +40,12 @@ const FilterTabs = ({
     });
   }, []);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     if (containerRef.current) {
-  //       const rect = containerRef.current.getBoundingClientRect();
-
-  //       // Trigger when the element crosses 60px for the first time
-  //       if (rect.top <= 60 && !hasCrossed60) {
-  //         setShowArrow(true);
-  //         setHasCrossed60(true); // Set flag to true so it doesn't log again
-  //       } else if (rect.top > 60 && hasCrossed60) {
-  //         setShowArrow(false); // Hide arrow if it's scrolled past 60px
-  //         setHasCrossed60(false); // Reset flag if scrolled back above 60px
-  //       }
-  //     }
-
-  //   };
-
-  //   document.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     document.removeEventListener("scroll", handleScroll); // Clean up event listener on unmount
-  //   };
-  // }, [hasCrossed60]);
-
   return (
     <div
       className="filter-tabs-container border-b border-gray-100 md:px-2 bg-[#F9FAFB] flex items-center justify-between z-[60]"
       ref={containerRef}
     >
       <div className="flex gap-2 px-4 md:px-0 overflow-x-auto thin-scrollbar py-3 md:py-4 bg-[#F9FAFB]">
-        {/* {tabs.map((tab) => (
-          <div
-            key={tab}
-            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${
-              activeTab === tab
-                ? "bg-brand text-white"
-                : "bg-gray-100 text-gray-800"
-            } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
-            onClick={() => onTabClick?.(tab)}
-          >
-            {tab}
-          </div>
-        ))} */}
-
         {isTab
           ? tabs.map((tab) => (
               <div
@@ -131,20 +77,6 @@ const FilterTabs = ({
                 {tab.label}
               </Link>
             ))}
-
-        {/* {tabsList.map((tab, idx) => (
-          <Link
-            to={tab.url}
-            key={idx}
-            className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${
-              activeTab === tab.label
-                ? "bg-brand text-white"
-                : "bg-gray-100 text-gray-800"
-            } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
-          >
-            {tab.label}
-          </Link>
-        ))} */}
       </div>
 
       {/* This is filter top with arrow */}
@@ -171,47 +103,9 @@ const FilterTabs = ({
         >
           <MoveUp className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5" />
         </button>
-
-        {/* Optional tooltip */}
-        {/* <span className="
-      absolute right-full top-1/2 -translate-y-1/2
-      mr-2 px-2 py-1
-      bg-gray-800 text-white text-xs
-      rounded whitespace-nowrap
-      opacity-0 group-hover:opacity-100
-      transition-opacity duration-200
-      pointer-events-none
-    ">
-      Scroll tabs
-      <span className="absolute top-1/2 right-0 w-2 h-2 bg-gray-800 transform translate-x-1/2 -translate-y-1/2 rotate-45" />
-    </span> */}
       </div>
     </div>
   );
 };
 
 export default FilterTabs;
-
-// const FilterTabs = ({ tabs, activeTab, onTabClick }: FilterTabsProps) => {
-//   const isMobile = useMediaQuery("(max-width: 767px)");
-
-//   return (
-//     <div className={`${isMobile? 'filter-tabs-container': 'fixed w-[610px] top-[63px]'} border-b border-gray-100 bg-background py-4 z-50`}>
-//       <div className="flex gap-2 px-4 overflow-x-auto thin-scrollbar ">
-//         {tabs.map((tab) => (
-//           <div
-//             key={tab}
-//             className={`px-4 py-2 rounded-full cursor-pointer text-center font-medium ${
-//               activeTab === tab
-//                 ? "bg-brand text-white"
-//                 : "bg-gray-100 text-gray-800"
-//             } ${isMobile ? "text-sm" : "text-sm md:text-xs md:px-3 md:py-1.5"}`}
-//             onClick={() => onTabClick?.(tab)}
-//           >
-//             {tab}
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };

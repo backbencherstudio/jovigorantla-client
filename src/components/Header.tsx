@@ -115,88 +115,7 @@ const Header = ({
 
   const handlePostAd = () => {
     redirectNavLink("/create-listing");
-    // if (user) {
-    //   navigate("/create-listing");
-    // } else {
-    //   openModal("login");
-    // }
   };
-
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (searchQuery.trim()) {
-  //     navigate(`/?q=${encodeURIComponent(searchQuery)}`);
-  //   } else {
-  //     // If search is empty, navigate to home without query params
-  //     navigate("/");
-  //   }
-  // };
-
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (searchQuery.trim()) {
-  //     navigate(`${location.pathname}?q=${encodeURIComponent(searchQuery)}`);
-  //   } else {
-  //     // If search is empty, navigate to current path without query params
-  //     navigate(location.pathname);
-  //   }
-  // };
-
-  //   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const value = e.target.value;
-  //     setSearchQuery(value);
-
-  //     // If search field is cleared, navigate to home without query
-  //     if (!value.trim() && location.search.includes("q=")) {
-  //       navigate("/");
-  //     }
-  //   };
-
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   const currentPath = location.pathname;
-
-  //   if (searchQuery.trim()) {
-  //     navigate(`${currentPath}?query=${encodeURIComponent(searchQuery.trim())}`);
-  //     handleSetSearchQuery?.(searchQuery.trim());
-  //   } else {
-  //     // If empty, clear the query from current path
-  //     navigate(currentPath);
-  //     handleSetSearchQuery?.("");
-  //   }
-  // };
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   setSearchQuery(value);
-
-  //   // Optional: Auto-reset if user clears input and URL has a query
-  //   if (!value.trim() && location.search.includes("query=")) {
-  //     navigate(location.pathname);
-  //     handleSetSearchQuery?.("");
-
-  //   }
-  // };
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   onSearchChange(value);
-
-  //   if (!value.trim()) {
-  //     navigate(location.pathname);
-  //   }
-  // };
-
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   const trimmed = searchQuery.trim();
-  //   if (trimmed) {
-  //     navigate(`${location.pathname}?query=${encodeURIComponent(trimmed)}`);
-  //   } else {
-  //     navigate(location.pathname);
-  //   }
-  // };
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -306,26 +225,16 @@ const Header = ({
     sessionStorage.removeItem("home_cached_data");
     sessionStorage.removeItem("home_scroll_position");
 
-    // navigate("/");
-    // scrollTo(0, 0);
-
-    navigate("/");
-
-    setTimeout(() => {
-      // Single, universal scroll method
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "auto",
-      });
-    }, 100);
+    navigate("/", { replace: true });
+    window.scrollTo(0, 0);
   };
 
   return (
     <>
+    {/* flex-1  */}
       <header
-        className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex flex-1 shadow-sm py-[13px] ${
-          !isModalOpen ? "z-[102]" : "z-[22]"
+        className={`bg-white px-4 md:px-6  fixed  right-0 left-0 pt-9 -top-6 flex shadow-sm py-[13px] ${
+          !isModalOpen ? "z-[102]" : "z-[62]"
         }`}
       >
         <div className="max-w-full mx-auto flex w-[100%] justify-between">

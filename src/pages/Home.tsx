@@ -16,9 +16,10 @@ import { useLocationContext } from "@/context/LocationContext";
 import NoListingsFound from "@/components/NoListingsFound";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ListingSkeleton from "@/components/ListingSkeleton";
-import useScrollRestoration from "@/hooks/useScrollRestoration";
+// import useScrollRestoration from "@/hooks/useScrollRestoration";
 import { cache } from "@/lib/cache";
 import AllCaughtUp from "@/components/AllCaughtUp";
+import { Helmet } from "react-helmet-async";
 
 const cacheData: any = {
   listings: [],
@@ -52,7 +53,7 @@ const useElementDistanceFromTop = (ref: React.RefObject<HTMLElement>) => {
 };
 
 export default function Home({ openModal }) {
-  useScrollRestoration();
+  // useScrollRestoration();
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -437,6 +438,11 @@ export default function Home({ openModal }) {
     setIsInitialLoad(true);
     setLoading(true);
 
+    // Add delay to ensure DOM is ready before scrolling
+    /* setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100); */
+
     // Fetch with new filter flag
     fetchNearByListings(activeFilter, searchQuery, true);
   }, [activeFilter, searchQuery, lat, lng, radius]);
@@ -458,8 +464,8 @@ export default function Home({ openModal }) {
     // Navigate to the same path but with the updated query parameters
     navigate(`${location.pathname}?${currentParams.toString()}`);
 
-    //window.scrollTo(0, isMobile ? 200 : 0);
     window.scrollTo(0, 0);
+    // window.scrollTo(0, isMobile ? 200 : 0);
     setIsTabChanging(true);
 
     setActiveFilter(filter);
@@ -576,6 +582,16 @@ export default function Home({ openModal }) {
     }
   }, []);
 
+  /* useEffect(() => {
+    if (isInitialLoad) {
+      // Only scroll to top on initial load if we're not in a filter change scenario
+      // The main effect will handle scrolling for filter changes
+      if (!isTabChanging) {
+        window.scrollTo(0, 0);
+      }
+    }
+  }, [isInitialLoad, isTabChanging]); */
+
   const yourTrackingFunction = async (listing: any) => {
     try {
       await api.post(`/ads/${listing.id}/track-click`);
@@ -623,11 +639,32 @@ export default function Home({ openModal }) {
   // }, [listings.length, hasMore, isLoading, isTabChanging, isInitialLoad]);
 
   return (
-    // w-full mx-auto max-w-3xl
+    // min-h-[calc(100vh-110px)]
     <main
-      className="w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent  sm:h-auto"
+      className="h-full w-full mx-auto max-w-3xl md:max-w-xl xl:max-w-3xl bg-transparent sm:h-auto"
       ref={filterTabsRef}
     >
+      <Helmet>
+        <title>
+          Desieasy | Post. Find. Connect. | Free Local Listings in USA
+        </title>
+        <meta
+          name="description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <link rel="canonical" href="https://desieasy.com/" />
+        <meta
+          property="og:title"
+          content="Desieasy | Post. Find. Connect. | Free Local Listings in USA"
+        />
+        <meta
+          property="og:description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/" />
+      </Helmet>
+
       <FilterTabs
         tabs={filterOptions}
         activeTab={activeFilter}
@@ -640,7 +677,7 @@ export default function Home({ openModal }) {
           {/* Loader Skeleton For Content and Position of FilterTabs */}
           {isRestoringFromSession && (
             <div className="fixed inset-0 p-2 md:p-0 bg-white z-[61] flex items-center justify-center w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto">
-              <div className="space-y-4 w-full h-full mt-[120px]">
+              <div className="space-y-4 w-full h-full mt-[140px]">
                 <div className="rounded-sm shadow-md flex items-center gap-2 p-4">
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
                   <div className="h-8 bg-gray-200 w-[80px] rounded-full"></div>
@@ -659,7 +696,7 @@ export default function Home({ openModal }) {
               </div>
             </div>
           )}
-          {/*  px-4 -- only it was before */}
+
           <div className="pb-5 lg:pb-0 px-4 md:px-0 my-4 md:mx-2 space-y-4">
             {listings.map((listing, index) => (
               <div key={`${listing.id}-${index}`}>

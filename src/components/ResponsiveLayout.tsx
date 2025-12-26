@@ -300,6 +300,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           <PageSkeleton />
         )
       ) : (
+        // flex flex-1 min-h-[calc(100vh-67px)]
         <div className="flex flex-1 min-h-[calc(100vh-67px)]">
           {/* Left Sidebar - Menu (only on desktop/tablet) */}
           {!isMobile && (
@@ -322,8 +323,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                   <div
                     className="fixed z-20 bg-white border-b border-gray-100 px-3 py-2 flex items-center w-full mx-auto max-w-3xl md:max-w-[35rem] md:mx-2 xl:max-w-[47rem] "
                     style={{
-                      // width: width,
-                      top: "65px" /* Header height */,
+                      top: "65px",
                     }}
                   >
                     {!hideBackButton && (
@@ -331,7 +331,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         variant="ghost"
                         size="icon"
                         onClick={handleBack}
-                        className=""
+                        className="focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-transparent active:bg-accent active:text-accent-foreground"
                       >
                         <ArrowLeft className="h-5 w-5" />
                       </Button>
@@ -347,8 +347,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               )}
 
               {/* Page Content */}
-              {/* flex-1 h-full bg-white mt-[70px] min-h-[calc(100vh-120px)] md:mx-2 */}
-              <div className="flex-1 bg-white min-h-screen pt-[120px] md:mx-2 ">
+              <div className="bg-white flex-1 min-h-screen pt-[120px] md:mx-2">
                 {children}
               </div>
             </main>
@@ -356,20 +355,15 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           {/* Main Content Area */}
           {isValidPage && (
             <div
-              className="flex-1 listings-container"
-              /*  style={{
-                marginLeft: !isMobile ? leftSidebarWidth : "0",
-                marginRight: isDesktop ? rightSidebarWidth : "0",
-              }} */
-            >
+              className="flex-1 listings-container">
               {/* Center Content Container */}
 
               <main className="w-full max-w-3xl md:max-w-xl xl:max-w-3xl mx-auto bg-transparent">
                 {/* Mobile: Search, Location and Categories */}
                 {isMobile && (
                   <div
-                    ref={mobileHeaderRef}
                     className="z-10 transition-transform bg-white pt-3"
+                    ref={mobileHeaderRef}
                   >
                     <div className="px-4 pt-16 pb-2">
                       <form onSubmit={handleSearchSubmit}>
@@ -392,12 +386,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                         </div>
                       </form>
 
-                      {/* Mobile: Location display - no border or box */}
-                      {/* <div className="mt-2 flex items-center justify-end"> */}
-                      {/* <LocationSelector className="text-sm border-none shadow-none p-0" /> */}
-                      {/* <LocationWithRadius /> */}
-                      {/* </div> */}
-
                       {/* mr-[-18px] */}
                       <div className="mt-2 flex items-center justify-end">
                         <LocationWithRadius popupStyle="mr-2" />
@@ -412,9 +400,10 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 )}
 
                 {/* Filter tabs should be in a fixed position with z-index above main content */}
+                {/* z-10 border-b border-gray-100 */}
                 <div
                   className={`z-10 border-b border-gray-100 ${
-                    !isMobile && "mt-[60px]"
+                    !isMobile && "mt-[67px]"
                   }`}
                 >
                   {children}
@@ -422,77 +411,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               </main>
             </div>
           )}
-          {/* 
-          {isMobile && !isModalOpen && isValidPage && (
-            <div
-              ref={mobileHeaderRef}
-              // className={`z-[100] pt-3 transition-transform duration-300 ease-in-out  bg-white ${lastScrollY > 100 && isVisible ? 'translate-y-0 top-[60px]' : '-translate-y-full'
-              //   }`}
-              // style={{
-              //   position: 'fixed',
-              //   // top: '60px', // Below the main header
-              //   left: 0,
-              //   right: 0,
-              //   // Remove the display property and use opacity to prevent layout shift
-              //   opacity: lastScrollY > 100 ? 1 : 0,
-              //   pointerEvents: lastScrollY > 100 ? 'auto' : 'none'
-              // }}
-
-              // className={`z-[100] pt-3 transition-all duration-500 ease-in-out bg-white ${
-              //   lastScrollY > 100 && isVisible
-              //     ? 'translate-y-0 opacity-100 pointer-events-auto'
-              //     : '-translate-y-full opacity-0 pointer-events-none'
-              // }`}
-              // style={{
-              //   position: 'fixed',
-              //   top: '60px',
-              //   left: 0,
-              //   right: 0,
-              // }}
-
-              className={`fixed z-[101] pt-3 transition-all duration-300 ease-in-out bg-white ${
-                lastScrollY > 100 && isVisible
-                  ? "translate-y-0"
-                  : "-translate-y-full"
-              }`}
-              style={{
-                top: "60px",
-                left: 0,
-                right: 0,
-              }}
-            >
-              <div className="px-4 pt-2 pb-2">
-                <form onSubmit={handleSearchSubmit}>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <Input
-                      type="text"
-                      placeholder="Search"
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                      className="pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none h-10"
-                    />
-                    {searchQuery && (
-                      <X
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer w-5 h-5"
-                        onClick={handleClearInput}
-                      />
-                    )}
-                  </div>
-                </form>
-
-                <div className="mt-2 mr-[-18px] flex items-center justify-end">
-                  <LocationWithRadius popupStyle="mr-2 relative z-[101]" />
-                </div>
-              </div>
-
-              <div className="px-4 pb-2 ">
-                <CategoryIcons />
-              </div>
-            </div>
-          )}
-
-          */}
         </div>
       )}
 

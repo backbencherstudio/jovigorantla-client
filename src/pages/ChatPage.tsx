@@ -955,6 +955,8 @@ const ChatPage = () => {
       otherUserName={activeConversation.other?.name}
       listingTitle={activeConversation.listing.title}
       listingId={activeConversation.listing.id}
+      categoryName={activeConversation.listing.category}
+      listingSlug={activeConversation.listing.slug}
       messages={activeConversation.messages}
       onSendMessage={handleSendMessage}
       onBack={handleBack}

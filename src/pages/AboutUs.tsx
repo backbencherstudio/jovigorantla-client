@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import AboutFooter from "./AboutFooter";
 import useRedirectNav from "@/hooks/useRedirectNav";
+import { Helmet } from "react-helmet-async";
 
 // Call the function to clear content based on the date
 
@@ -185,6 +186,29 @@ const AboutUs = () => {
 
   return (
     <div className="max-w-3xl mx-auto  bg-white min-h-[calc(100vh-110px)]">
+      <Helmet>
+        <title>
+          Discover Desieasy | Connecting South Asians | Local Listings
+        </title>
+        <meta
+          name="description"
+          content="Desieasy is built to connect South Asians living in the U.S. through local listings — from accommodations and rides to jobs and services."
+        />
+        <link rel="canonical" href="https://desieasy.com/discover-desieasy" />
+        <meta
+          property="og:title"
+          content="Discover Desieasy | Connecting South Asians | Local Listings"
+        />
+        <meta
+          property="og:description"
+          content="Desieasy is built to connect South Asians living in the U.S. through local listings — from accommodations and rides to jobs and services."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://desieasy.com/discover-desieasy"
+        />
+      </Helmet>
       <div>
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

@@ -181,6 +181,7 @@ select {
   }
 }
 
+
 /* Smooth page transitions */
 .page-transition-enter {
   opacity: 0;

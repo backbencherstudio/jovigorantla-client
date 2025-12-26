@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Store, Building2, Car, Briefcase } from "lucide-react";
 import { useListing } from "@/context/ListingContext";
@@ -8,7 +8,7 @@ const CategoryIcons: React.FC = () => {
   const location = useLocation();
   const { setCategory, setIsUsa, setSubCategory } = useListing(); // Assuming setCategory is available in ListingContext
   const { search } = location;
-
+  const [navigationContext, setNavigationContext] = useState<string>("");
   const categories = [
     { icon: Home, label: "Home", path: "/" },
     { icon: Store, label: "Marketplace", path: "/marketplace" },
@@ -18,18 +18,22 @@ const CategoryIcons: React.FC = () => {
   ];
 
   const handleSetCategory = (menu: string) => {
+    setNavigationContext(menu);
     if (menu === "Marketplace") {
       setCategory("MARKETPLACE");
       setIsUsa(false);
       setSubCategory("");
+     
     } else if (menu === "Rides") {
       setCategory("RIDES");
       setIsUsa(false);
       setSubCategory("");
+     
     } else if (menu === "Accommodations") {
       setCategory("ACCOMMODATIONS");
       setIsUsa(false);
       setSubCategory("");
+     
     } else if (menu === "Jobs") {
       setCategory("JOBS");
       setIsUsa(false);
@@ -38,6 +42,7 @@ const CategoryIcons: React.FC = () => {
       setCategory("");
       setIsUsa(false);
       setSubCategory("");
+     
     }
   };
 
@@ -47,24 +52,39 @@ const CategoryIcons: React.FC = () => {
       setCategory("MARKETPLACE");
       setIsUsa(false);
       setSubCategory("");
+      if(!navigationContext) {
+        setNavigationContext("Marketplace");
+      }
     } else if (currentPath.includes("/rides")) {
       setCategory("RIDES");
       setIsUsa(false);
       setSubCategory("");
+      if(!navigationContext) {
+        setNavigationContext("Rides");
+      }
     } else if (currentPath.includes("/accommodations")) {
       setCategory("ACCOMMODATIONS");
       setIsUsa(false);
       setSubCategory("");
+      if(!navigationContext) {
+        setNavigationContext("Accommodations");
+      }
     } else if (currentPath.includes("/jobs")) {
       setCategory("JOBS");
       setIsUsa(false);
       setSubCategory("");
+      if(!navigationContext) {
+        setNavigationContext("Jobs");
+      }
     } else {
       setCategory("");
       setIsUsa(false);
       setSubCategory("");
+      if(!navigationContext) {
+        setNavigationContext("Home");
+      }
     }
-  }, [location.pathname, setCategory]);
+  }, [location.pathname, setCategory, navigationContext]);
 
   const handleClick = (path: string) => {
     // Parse the current query parameters from the URL
@@ -86,11 +106,14 @@ const CategoryIcons: React.FC = () => {
     <div className="flex justify-between py-2">
       {categories.map((category) => {
         // const isActive = location.pathname === category.path;
-        const isActive =
+        /* const isActive =
           category.path === "/"
             ? location.pathname === "/"
             : location.pathname === category.path ||
-              location.pathname.startsWith(category.path + "/");
+              location.pathname.startsWith(category.path + "/"); */
+
+        const isActive = navigationContext === category.label;
+
         const Icon = category.icon;
 
         return (

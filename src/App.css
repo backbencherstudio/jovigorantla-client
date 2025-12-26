@@ -190,18 +190,16 @@ html {
 
   /* Make sure the filter tabs remain visible and fixed */
   .filter-tabs-container {
-    position: -webkit-sticky; /* Safari prefix - MUST COME FIRST */
+    position: -webkit-sticky;
     position: sticky;
-    /* top: 62px; */
     top: 60px;
     z-index: 9;
     background-color: #fff;
     transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
     will-change: transform;
 
-    /* iOS fixes */
-    transform: translateZ(0); /* Creates new stacking context */
-    -webkit-backface-visibility: hidden; /* Prevents flickering */
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
   }
 }
 
@@ -255,8 +253,6 @@ main.w-full.mx-auto.max-w-3xl {
   -ms-perspective: 1000;
   perspective: 1000;
 }
-
-
 
 @keyframes spin {
   0% {

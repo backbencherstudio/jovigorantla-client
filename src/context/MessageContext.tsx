@@ -913,6 +913,8 @@ export const MessageProvider = ({
   const [activeConversation, setActiveConversation] = useState<any | null>(
     null
   );
+
+  
   const [unreadMessages, setUnreadMessages] = useState<UnReadMessages>({});
 
   const getUnreadCount = useCallback(

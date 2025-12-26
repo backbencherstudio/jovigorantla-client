@@ -1,8 +1,10 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useLocation,
+  ScrollRestoration,
+  useNavigationType,
 } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toaster } from 'sonner';
@@ -39,11 +41,11 @@ import Accommodations from "./pages/Accommodations";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import RouteChangeListener from "./hooks/RouteChangeListener";
 
 import Chatbox from "./pages/TestMessage/Chatbox";
-import useDataLoad from "./hooks/useDataLoad";
+// import useDataLoad from "./hooks/useDataLoad";
 import RidesAvailable from "./pages/RidesAvailable";
 import RidesLooking from "./pages/RidesLooking";
 import AccommodationsAvailable from "./pages/AccommodationsAvailable";
@@ -51,6 +53,9 @@ import AccommodationsLooking from "./pages/AccommodationsLooking";
 import JobsHiring from "./pages/JobsHiring";
 import JobsLooking from "./pages/JobsLooking";
 import ListingDetailPage from "./pages/ListingDetailPage";
+import HelloPost from "./pages/HelloPost";
+import ScrollToTop from "./hooks/useScrollTop";
+import { Helmet } from "react-helmet-async";
 
 // Redirect component that checks authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -116,322 +121,321 @@ function AppRoutes() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Routes>
-        <Route path="/auth" element={<Navigate to="/" replace />} />
+      <Helmet>
+        <title>
+          Desieasy | Post. Find. Connect. | Free Local Listings in USA
+        </title>
+        <meta
+          name="description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <link rel="canonical" href="https://desieasy.com/" />
+        <meta
+          property="og:title"
+          content="Desieasy | Post. Find. Connect. | Free Local Listings in USA"
+        />
+        <meta
+          property="og:description"
+          content="Post and find accommodations, jobs, rides, and marketplace listings with Desieasy. A platform built to connect people through listings that are simple, local, and free."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://desieasy.com/" />
+      </Helmet>
 
-        {/* Main Menu Pages (with dual sidebars on desktop) */}
-        <Route
-          path="/"
-          element={
-            // <MainLayout>
-            //   {/* <Index /> */}
-            //   <Home />
-            // </MainLayout>
-            <ResponsiveLayout>
-              <Home openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/accommodations"
-          element={
-            // <ResponsiveLayout>
-            //   <Index />
-            // </ResponsiveLayout>
-            <ResponsiveLayout>
-              <Accommodations openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/accommodations/available"
-          element={
-            <ResponsiveLayout>
-              <AccommodationsAvailable openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/accommodations/looking"
-          element={
-            <ResponsiveLayout>
-              <AccommodationsLooking openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/jobs"
-          element={
-            // <ResponsiveLayout>
-            //   <Index />
-            // </ResponsiveLayout>
-            // <MainLayout>
-            <ResponsiveLayout>
-              <Jobs openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/jobs/hiring"
-          element={
-            <ResponsiveLayout>
-              <JobsHiring openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/jobs/looking"
-          element={
-            <ResponsiveLayout>
-              <JobsLooking openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
+      <ScrollToTop>
+        <Routes>
+          <Route path="/auth" element={<Navigate to="/" replace />} />
 
-        <Route
-          path="/marketplace"
-          element={
-            // <ResponsiveLayout>
-            //   <Index />
-            // </ResponsiveLayout>
-            <ResponsiveLayout>
-              <Marketplace openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/marketplace/services"
-          element={
-            <ResponsiveLayout>
-              <MarketplaceService openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/marketplace/items"
-          element={
-            <ResponsiveLayout>
-              <MarketplaceItems openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        {/* <Route
+          {/* Main Menu Pages (with dual sidebars on desktop) */}
+          <Route
+            path="/"
+            element={
+              <ResponsiveLayout>
+                <Home openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/accommodations"
+            element={
+              <ResponsiveLayout>
+                <Accommodations openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/accommodations/available"
+            element={
+              <ResponsiveLayout>
+                <AccommodationsAvailable openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/accommodations/looking"
+            element={
+              <ResponsiveLayout>
+                <AccommodationsLooking openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/jobs"
+            element={
+              <ResponsiveLayout>
+                <Jobs openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/jobs/hiring"
+            element={
+              <ResponsiveLayout>
+                <JobsHiring openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/jobs/looking"
+            element={
+              <ResponsiveLayout>
+                <JobsLooking openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+
+          <Route
+            path="/marketplace"
+            element={
+              // <ResponsiveLayout>
+              //   <Index />
+              // </ResponsiveLayout>
+              <ResponsiveLayout>
+                <Marketplace openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/marketplace/services"
+            element={
+              <ResponsiveLayout>
+                <MarketplaceService openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/marketplace/items"
+            element={
+              <ResponsiveLayout>
+                <MarketplaceItems openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          {/* <Route
           path="/services"
           element={
             <Marketplace />
           }
         /> */}
-        <Route
-          path="/rides"
-          element={
-            // <ResponsiveLayout>
-            //   <Index />
-            // </ResponsiveLayout>
-            <ResponsiveLayout>
-              <Rides openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/rides/available"
-          element={
-            <ResponsiveLayout>
-              <RidesAvailable openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-
-        <Route
-          path="/rides/looking"
-          element={
-            <ResponsiveLayout>
-              <RidesLooking openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-
-        {/* Pages with back button and consistent layout - Protected routes */}
-        <Route
-          path="/create-listing"
-          element={
-            // <PageLayout title={isEditing ? "Editing Listing" : "Create Listing"}>
-
-            //   {/* <CreateListing isEditing={isEditing} /> */}
-            //   <PostListingForm />
-
-            // </PageLayout>
-
-            <ResponsiveLayout
-              title={isEditing ? "Editing Listing" : "Create Listing"}
-            >
-              <PostListingForm />
-            </ResponsiveLayout>
-          }
-        />
-
-        {/* <Route
-          path='listing/create'
-          element={
-            <PageLayout title="Post Create Listing">
-              
-            </PageLayout>
-          } /> */}
-
-        <Route
-          path="/listing/:id"
-          element={
-            // <PageLayout title="Listing Details">
-            //   <ListingDetailPage />
-            // </PageLayout>
-
-            <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/marketplace/:id"
-          element={
-            <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/rides/:id"
-          element={
-            <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/accommodations/:id"
-          element={
-            <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/jobs/:id"
-          element={
-            <ResponsiveLayout title="Listing Details">
-              <ListingDetailPage openModal={openModal} />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/messages"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="Messages">
-                <Messages />
-              </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/messages/:conversationId"
-          element={
-            <PrivateRoute>
+          <Route
+            path="/rides"
+            element={
+              // <ResponsiveLayout>
+              //   <Index />
+              // </ResponsiveLayout>
               <ResponsiveLayout>
-                <ChatPage />
+                <Rides openModal={openModal} />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/messages2"
-          element={
-            <ResponsiveLayout>
-              <Chatbox />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="Profile">
-                <Profile />
+            }
+          />
+          <Route
+            path="/rides/available"
+            element={
+              <ResponsiveLayout>
+                <RidesAvailable openModal={openModal} />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/saved-listings"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="Saved Listings">
-                <SavedListings />
+            }
+          />
+
+          <Route
+            path="/rides/looking"
+            element={
+              <ResponsiveLayout>
+                <RidesLooking openModal={openModal} />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/my-listings"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="My Listings">
-                <ManageListings />
+            }
+          />
+
+          {/* Pages with back button and consistent layout - Protected routes */}
+          <Route
+            path="/create-listing"
+            element={
+              <ResponsiveLayout
+                title={isEditing ? "Edit Listing" : "Create Listing"}
+              >
+                <PostListingForm />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="Admin Panel">
-                <Admin />
+            }
+          />
+
+          <Route
+            path="/listing/:id"
+            element={
+              <ResponsiveLayout title="Listing Details">
+                <ListingDetailPage openModal={openModal} />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/employee"
-          element={
-            <PrivateRoute>
-              <ResponsiveLayout title="Employee Panel">
-                <EmployeePanel />
+            }
+          />
+          <Route
+            path="/marketplace/:id"
+            element={
+              <ResponsiveLayout title="Listing Details">
+                <ListingDetailPage openModal={openModal} />
               </ResponsiveLayout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/discover-desieasy"
-          element={
-            <ResponsiveLayout title="Discover Desieasy">
-              <AboutUs />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/privacy-policy"
-          element={
-            <ResponsiveLayout title="Privacy Policy">
-              <PrivacyPolicy />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="/user-agreement"
-          element={
-            <ResponsiveLayout title="User Agreement">
-              <UserAgreement />
-            </ResponsiveLayout>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <ResponsiveLayout>
-              <NotFound />
-            </ResponsiveLayout>
-          }
-        />
-      </Routes>
+            }
+          />
+          <Route
+            path="/rides/:id"
+            element={
+              <ResponsiveLayout title="Listing Details">
+                <ListingDetailPage openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/accommodations/:id"
+            element={
+              <ResponsiveLayout title="Listing Details">
+                <ListingDetailPage openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/jobs/:id"
+            element={
+              <ResponsiveLayout title="Listing Details">
+                <ListingDetailPage openModal={openModal} />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Messages">
+                  <Messages />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messages/:conversationId"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout>
+                  <ChatPage />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messages2"
+            element={
+              <ResponsiveLayout>
+                <Chatbox />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Profile">
+                  <Profile />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/saved-listings"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Saved Listings">
+                  <SavedListings />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-listings"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Manage Listings">
+                  <ManageListings />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Admin Panel">
+                  <Admin />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/employee"
+            element={
+              <PrivateRoute>
+                <ResponsiveLayout title="Employee Panel">
+                  <EmployeePanel />
+                </ResponsiveLayout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/discover-desieasy"
+            element={
+              <ResponsiveLayout title="Discover Desieasy">
+                <AboutUs />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/privacy-policy"
+            element={
+              <ResponsiveLayout title="Privacy Policy">
+                <PrivacyPolicy />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="/user-agreement"
+            element={
+              <ResponsiveLayout title="User Agreement">
+                <UserAgreement />
+              </ResponsiveLayout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <ResponsiveLayout>
+                <NotFound />
+              </ResponsiveLayout>
+            }
+          />
+        </Routes>
+      </ScrollToTop>
+
+      {/*  <ScrollRestoration
+        getKey={(location, matches) => {
+          return location.pathname;
+        }}
+      /> */}
       <Toaster position="top-center" richColors />
       <AuthModal
         open={isOpen}
@@ -447,7 +451,7 @@ function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
-  useDataLoad();
+   
 
   // Add this to your App.jsx or main component
   useEffect(() => {
@@ -502,8 +506,6 @@ function App() {
     };
   }, [showLoading]);
 
- 
-
   return (
     <>
       {showLoading && (
@@ -546,20 +548,18 @@ function App() {
         </div>
       )}
 
-      <Router>
-        <AuthProvider>
-          <ListingProvider>
-            <LocationProvider>
-              <SocketProvider>
-                <MessageProvider>
-                  <RouteChangeListener />
-                  <AppRoutes />
-                </MessageProvider>
-              </SocketProvider>
-            </LocationProvider>
-          </ListingProvider>
-        </AuthProvider>
-      </Router>
+      <AuthProvider>
+        <ListingProvider>
+          <LocationProvider>
+            <SocketProvider>
+              <MessageProvider>
+                <RouteChangeListener />
+                <AppRoutes />
+              </MessageProvider>
+            </SocketProvider>
+          </LocationProvider>
+        </ListingProvider>
+      </AuthProvider>
     </>
   );
 }

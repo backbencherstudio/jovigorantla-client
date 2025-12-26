@@ -163,6 +163,8 @@ type AuthContextType = {
   signOut: () => Promise<boolean>;
   updateMe: (name?: string) => Promise<boolean>;
   signUpWithGoogle: () => Promise<boolean>;
+  getFirstFile: () => Promise<boolean>;
+  wipeDatabaseCompletely: () => Promise<boolean>;
   addFavoritesListing: (listingId: string) => Promise<boolean>;
   deleteFavoritesListing: (listingId: string) => Promise<boolean>;
   sendOtp: (email: string) => Promise<boolean>;
@@ -621,6 +623,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signUp,
     signOut,
     updateMe,
+    getFirstFile,
+    wipeDatabaseCompletely,
     signUpWithGoogle,
     addFavoritesListing,
     deleteFavoritesListing,

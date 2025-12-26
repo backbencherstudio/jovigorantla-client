@@ -14,6 +14,8 @@ interface ChatHeaderProps {
   otherUserName: string;
   listingTitle: string;
   listingId?: string;
+  categoryName?: string;
+  listingSlug?: string;
   otherUserAvatar?: string;
   isBlocked?: boolean;
   blockedByOther: boolean;
@@ -28,6 +30,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   otherUserName,
   listingTitle,
   listingId,
+  categoryName,
+  listingSlug,
   otherUserAvatar,
   isBlocked,
   onBack,
@@ -41,7 +45,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   const handleListingClick = () => {
     if (listingId) {
-      navigate(`/listing/${listingId}`);
+      navigate(`/${categoryName.toLowerCase()}/${listingSlug}`);
     }
   };
 
@@ -70,7 +74,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     //  max-w-3xl md:max-w-xl lg:max-w-[30rem] xl:max-w-3xl
-    <div className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-10 w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
+    <div className="p-3 bg-white border-t flex items-center justify-between fixed top-[60px] z-[62] w-full mx-auto max-w-3xl md:max-w-[35rem] xl:max-w-[47rem]">
       <div className="flex items-center flex-1">
         <Button
           variant="ghost"
